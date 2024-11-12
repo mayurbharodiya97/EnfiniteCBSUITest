@@ -209,7 +209,7 @@ export const AddNewBeneficiaryDetail: FC<{
         formMode === "new"
           ? t("AreYouSaveThisRecord")
           : t("AreYouSureInactiveThisRecord"),
-      buttonNames: ["No", "Yes"],
+      buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],
     });
     if (buttonName === "Yes") {
@@ -217,16 +217,12 @@ export const AddNewBeneficiaryDetail: FC<{
     }
   };
 
-  AddNewBenfiDetailGridMetadata.gridConfig.gridLabel =
-    t("ListOfBeneficiaryAcOrdering") +
-    t("ACNo") +
-    ".: " +
-    authState?.companyID +
-    isBenAuditTrailData?.BRANCH_CD +
-    " / " +
-    isBenAuditTrailData?.ACCT_TYPE +
-    " / " +
-    isBenAuditTrailData?.ACCT_CD;
+  AddNewBenfiDetailGridMetadata.gridConfig.gridLabel = `${t(
+    "ListOfBeneficiaryAcOrdering"
+  )} ${t(
+    "ACNo"
+  )}: ${authState?.companyID?.trim()}-${isBenAuditTrailData?.BRANCH_CD?.trim()}-${isBenAuditTrailData?.ACCT_TYPE?.trim()}-${isBenAuditTrailData?.ACCT_CD?.trim()}`;
+
   return (
     <>
       <Dialog

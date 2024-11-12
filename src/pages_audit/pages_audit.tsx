@@ -8,14 +8,8 @@ import { OperationsMenu } from "./pages/operations";
 import AccountDetails from "./pages/STATEMENT/accountDetails";
 import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
-import Trn001 from "./pages/operations/DailyTransaction/TRN001";
-import Trn002 from "./pages/operations/DailyTransaction/TRN002";
-import TRN368 from "./pages/operations/DailyTransaction/CashExchange/TRN368/TRN368";
-import TRN043 from "./pages/operations/DailyTransaction/CashExchange/TRN043/TRN043";
-import TRN044 from "./pages/operations/DailyTransaction/CashExchange/TRN044/TRN044";
 import Master from "./pages/master/master";
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
-import TRN001Provider from "./pages/operations/DailyTransaction/TRN001/Trn001Reducer";
 // import { AccDetailContext } from "./auth";
 import { AuthContext } from "./auth";
 import { AuthContextProvider } from "@acuteinfo/common-base";
@@ -30,6 +24,7 @@ import { Quick_View } from "./appBar/quickView";
 import { Notification_App } from "./appBar/notification";
 import { IconButton, Tooltip } from "@mui/material";
 import { Accountinquiry } from "./acct_Inquiry/acct_inquiry";
+import AllScreensGridWrapper from "./pages/allScreens/index";
 
 export const PagesAudit = (props, { columns }) => {
   const [acctInq, setAcctInq] = useState(false);
@@ -126,24 +121,12 @@ export const PagesAudit = (props, { columns }) => {
                   <Route path="master/*" element={<Master />} />
                   <Route path="operation/*" element={<OperationsMenu />} />
                   <Route path="view-statement/*" element={<AccountDetails />} />
+                  <Route
+                    path="all-screens/*"
+                    element={<AllScreensGridWrapper />}
+                  />
                   <Route path="configuration/*" element={<Configuration />} />
                   <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
-                  <Route
-                    path="operation/daily_tran_F1"
-                    element={
-                      <TRN001Provider>
-                        <Trn001 />
-                      </TRN001Provider>
-                    }
-                  />
-                  <Route
-                    path="operation/cnf_daily_tran_F2"
-                    element={
-                      <TRN001Provider>
-                        <Trn002 />
-                      </TRN001Provider>
-                    }
-                  />
 
                   {/* <Route
                   path="branch-selection/*"
@@ -155,9 +138,6 @@ export const PagesAudit = (props, { columns }) => {
                 path="*"
                 element={<RedirectComponent isValidURL={isValidURL} />}
               />
-              <Route path="cash/368" element={<TRN368 />} />
-              <Route path="cash/043" element={<TRN043 />} />
-              <Route path="cash/044" element={<TRN044 />} />
             </Routes>
             {/* <div
             style={{

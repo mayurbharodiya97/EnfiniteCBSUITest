@@ -49,6 +49,7 @@ import { DualConfHistoryGridMetaData } from "../../rtgsEntry/confirmation/Confir
 import { getConfirmHistoryData } from "../../rtgsEntry/confirmation/api";
 import { format } from "date-fns";
 import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
+import { FdPaymentAdvicePrint } from "./fdPaymentAdvice";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -86,6 +87,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
   const [displayPhotoSign, setDisplayPhotoSign] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState({});
   const [openConfHistoryForm, setOpenConfHistoryForm] = useState(false);
+  const [openAdviceReport, setOpenAdviceReport] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
 
   const setCurrentAction = useCallback(async (data) => {
@@ -215,28 +217,20 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
   }, []);
 
   const validateDelete = useMutation(ValidateFDDelete, {
-    onError: (error: any) => {
-      // remain to add
-    },
+    onError: (error: any) => {},
     onSuccess: (data) => {},
   });
   const deleteMutation = useMutation(fdConfirmationDeleteFormData, {
-    onError: (error: any) => {
-      // remain to add
-    },
+    onError: (error: any) => {},
     onSuccess: (data) => {},
   });
   const validateConfirm = useMutation(ValidateFDConfirm, {
-    onError: (error: any) => {
-      // remain to add
-    },
+    onError: (error: any) => {},
     onSuccess: (data) => {},
   });
 
   const confirmMutation = useMutation(fdConfirmFormData, {
-    onError: (error: any) => {
-      // remain to add
-    },
+    onError: (error: any) => {},
     onSuccess: (data) => {},
   });
 
@@ -277,6 +271,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
               messageTitle: "Confirmation",
               message: data[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
             if (btnName === "No") {
               break;
@@ -321,6 +316,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                 message: data[i]?.O_MESSAGE,
                 buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
+                icon: "CONFIRM",
               });
               if (btnName === "No") {
                 break;
@@ -356,6 +352,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                         messageTitle: "Confirmation",
                         message: confirmdata[i]?.O_MESSAGE,
                         buttonNames: ["Yes", "No"],
+                        icon: "CONFIRM",
                       });
                       if (btnName === "No") {
                         break;
@@ -458,7 +455,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                 onClick={() => setOpenViewMaster(true)}
                 color={"primary"}
                 disabled={isLoading || isFetching || disableButton}
-                style={{ width: "150px" }}
+                style={{ width: "160px" }}
               >
                 {t("ViewMaster")}
               </GradientButton>
@@ -471,41 +468,45 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                     setOpenConfHistoryForm(true);
                   }}
                   color={"primary"}
-                  disabled={
-                    isLoading ||
-                    isFetching ||
-                    confirmMutation?.isLoading ||
-                    validateDelete?.isLoading ||
-                    validateConfirm?.isLoading ||
-                    deleteMutation?.isLoading
-                  }
-                  style={{ width: "230px" }}
+                  disabled={isLoading || isFetching || disableButton}
+                  style={{ width: "250px" }}
                 >
                   {t("ConfirmationHistory")}
                 </GradientButton>
               ) : null}
 
-              <GradientButton
-                color={"primary"}
-                disabled={
-                  isLoading ||
-                  isFetching ||
-                  confirmMutation?.isLoading ||
-                  validateDelete?.isLoading ||
-                  validateConfirm?.isLoading ||
-                  deleteMutation?.isLoading ||
-                  confirmMutation?.isError ||
-                  validateConfirm?.isError
-                }
-                endIcon={
-                  validateConfirm?.isLoading ? (
-                    <CircularProgress size={20} />
-                  ) : null
-                }
-                onClick={handleConfirm}
-              >
-                {t("Confirm")}
-              </GradientButton>
+              {rows?.[0]?.data?.TRN_FLAG === "P" ? (
+                <GradientButton
+                  onClick={() => {
+                    setOpenAdviceReport(true);
+                  }}
+                  color={"primary"}
+                  disabled={isLoading || isFetching}
+                >
+                  {t("Advice")}
+                </GradientButton>
+              ) : null}
+
+              {rows?.[0]?.data?.ALLOW_CONFIRM === "Y" ? (
+                <GradientButton
+                  color={"primary"}
+                  disabled={
+                    isLoading ||
+                    isFetching ||
+                    disableButton ||
+                    confirmMutation?.isError ||
+                    validateConfirm?.isError
+                  }
+                  endIcon={
+                    validateConfirm?.isLoading ? (
+                      <CircularProgress size={20} />
+                    ) : null
+                  }
+                  onClick={handleConfirm}
+                >
+                  {t("Confirm")}
+                </GradientButton>
+              ) : null}
 
               {rows?.[0]?.data?.ALLOW_DELETE === "Y" ? (
                 <GradientButton
@@ -513,10 +514,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                   disabled={
                     isLoading ||
                     isFetching ||
-                    confirmMutation?.isLoading ||
-                    validateDelete?.isLoading ||
-                    validateConfirm?.isLoading ||
-                    deleteMutation?.isLoading ||
+                    disableButton ||
                     deleteMutation?.isError ||
                     validateDelete?.isError
                   }
@@ -758,6 +756,21 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
               </Dialog>
             </>
           ) : null}
+          {openAdviceReport && (
+            <FdPaymentAdvicePrint
+              closeDialog={() => setOpenAdviceReport(false)}
+              requestData={{
+                BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
+                COMP_CD: authState?.companyID ?? "",
+                ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
+                ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+                FD_NO: rows?.[0]?.data?.FD_NO ?? "",
+                A_FLAG: rows?.[0]?.data?.TRN_FLAG ?? "",
+              }}
+              setOpenAdvice={setOpenAdviceReport}
+              screenFlag={"FDCONF"}
+            />
+          )}
 
           {isDelete && (
             <RemarksAPIWrapper
@@ -806,6 +819,7 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                           messageTitle: "Confirmation",
                           message: deleteData[i]?.O_MESSAGE,
                           buttonNames: ["Yes", "No"],
+                          icon: "CONFIRM",
                         });
                         if (btnName === "No") {
                           break;

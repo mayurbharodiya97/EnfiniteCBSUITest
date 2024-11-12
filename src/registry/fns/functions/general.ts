@@ -1,7 +1,6 @@
 import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 import { AuthSDK } from "../auth";
-import { format } from "date-fns";
-import { useEffect } from "react";
+import { format, isValid } from "date-fns";
 
 const GeneralAPISDK = () => {
   const GetMiscValue = async (ReqData) => {
@@ -384,7 +383,7 @@ const GeneralAPISDK = () => {
       await AuthSDK.internalFetcher("GETTBGFROMCONFIGLIST", {
         BRANCH_CD: reqData?.[3]?.user?.branchCode,
         COMP_CD: reqData?.[3]?.companyID,
-        DOC_CD: reqData?.[4] ?? "",
+        DOC_CD: reqData?.[1]?.docCD ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -503,7 +502,7 @@ const GeneralAPISDK = () => {
   const getDependentFieldList = async (...reqData) => {
     const { status, data, message, messageDetails } =
       await AuthSDK.internalFetcher("GETFIELDLIST", {
-        DOC_CD: reqData?.[4] ?? "",
+        DOC_CD: reqData?.[1]?.docCD ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -715,7 +714,7 @@ const GeneralAPISDK = () => {
 
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
-          ({ ACCT_TYPE, PARENT_CODE, CONCDESCRIPTION, ...other }) => {
+          ({ ACCT_TYPE, CONCDESCRIPTION, ...other }) => {
             return {
               value: ACCT_TYPE,
               label: ACCT_TYPE + " - " + other.DESCRIPTION,
@@ -820,6 +819,18 @@ const GeneralAPISDK = () => {
     }
   };
 
+  const getDateWithCurrentTime = async (date) => {
+    if (isValid(date)) {
+      const selectedDate = new Date(date);
+      selectedDate.setHours(new Date().getHours());
+      selectedDate.setMinutes(new Date().getMinutes());
+      selectedDate.setSeconds(new Date().getSeconds());
+      const formattedDate = format(selectedDate, "eee MMM dd yyyy HH:mm:ss");
+      return formattedDate;
+    }
+    return "";
+  };
+
   return {
     GetMiscValue,
     getValidateValue,
@@ -854,6 +865,7 @@ const GeneralAPISDK = () => {
     getPhotoSignHistory,
     getCustAccountLatestDtl,
     getCalGstAmountData,
+    getDateWithCurrentTime,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

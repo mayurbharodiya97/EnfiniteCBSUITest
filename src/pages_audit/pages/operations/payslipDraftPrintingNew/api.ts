@@ -44,3 +44,14 @@ export const getDDPrintPara = async ({ comp_cd, branch_cd, user_level }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getPayslipPrintConfigDTL = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDDPRINTCONFIGDTL", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

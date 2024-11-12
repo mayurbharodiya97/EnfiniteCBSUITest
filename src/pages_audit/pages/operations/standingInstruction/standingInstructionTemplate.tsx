@@ -113,7 +113,7 @@ const StandingInstruction = ({
         BRANCH_CD: authState?.user?.branchCode,
         DEF_TRAN_CD: data.COMM_TYPE_DESC,
         DESCRIPTION: data.DESCRIPTION,
-        _isNewRow: defaultView === "add" ? true : false,
+        _isNewRow: defaultView === "new" ? true : false,
         SI_SDT: {
           ...updPara2,
         },
@@ -130,7 +130,6 @@ const StandingInstruction = ({
       VALID_UPTO: format(new Date(data.SI_SDT[0].VALID_UPTO), "dd/MMM/yyyy"),
     });
   };
-
   return (
     <>
       <FormWrapper
@@ -141,11 +140,12 @@ const StandingInstruction = ({
             formMode
           ) as MetaDataType
         }
+        subHeaderLabel={`${t("EnteredBy")} : ${authState?.user?.id}`}
         displayMode={formMode}
         onSubmitHandler={onSubmitHandler}
         initialValues={
           // data ?? {} ,
-          formMode === "add"
+          formMode === "new"
             ? {
                 ...siDetails,
               }

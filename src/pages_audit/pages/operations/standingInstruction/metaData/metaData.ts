@@ -289,7 +289,7 @@ export const StandingInstructionMainMetaData = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: [t("StartDateisrequired.")] }],
+            rules: [{ name: "required", params: [t("StartDateisrequired")] }],
           },
           validate: (fieldValue, dependentFields) => {
             if (

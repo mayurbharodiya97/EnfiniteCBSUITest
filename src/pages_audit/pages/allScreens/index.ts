@@ -1,2 +1,1 @@
-//export * from "./releaseUserGrid";
-export * from "./allScreensGrid";
+export { AllScreensGridWrapper as default } from "./allScreensGrid";

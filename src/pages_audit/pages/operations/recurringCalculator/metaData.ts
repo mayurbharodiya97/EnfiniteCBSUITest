@@ -59,7 +59,7 @@ export const RecurringCalculatotMetaData = {
       render: { componentType: "autocomplete" },
       name: "ACCT_TYPE",
       label: "AccountType",
-      placeholder: "AccountType",
+      placeholder: "AccountTypePlaceHolder",
       options: (dependentValue, formState, _, authState) =>
         GeneralAPI.get_Account_Type({
           COMP_CD: authState?.companyID,
@@ -79,7 +79,7 @@ export const RecurringCalculatotMetaData = {
       render: { componentType: "autocomplete" },
       name: "CATEG_CD",
       label: "Category",
-      placeholder: "Category",
+      placeholder: "SelectCategoryPlaceHolder",
       options: (dependentValue, formState, _, authState) =>
         API.getCategoryType({
           COMP_CD: authState?.companyID,
@@ -87,11 +87,6 @@ export const RecurringCalculatotMetaData = {
         }),
       _optionsKey: "getcategory",
       GridProps: { xs: 6, sm: 3, md: 4, lg: 4, xl: 4 },
-      required: true,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Categoryisrequired"] }],
-      },
     },
     {
       render: {
@@ -100,6 +95,11 @@ export const RecurringCalculatotMetaData = {
       name: "START_DT",
       label: "StartDate",
       fullWidth: true,
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["StartDateisrequired"] }],
+      },
       GridProps: { xs: 6, sm: 4, md: 2, lg: 2, xl: 2 },
     },
     {
@@ -123,7 +123,7 @@ export const RecurringCalculatotMetaData = {
       render: { componentType: "autocomplete" },
       name: "INST_NO",
       label: "InstallmentType",
-      placeholder: "InstallmentType",
+      placeholder: "SelectInstallmentTypePlaceHolder",
       options: (dependentValue, formState, _, authState) =>
         API.getInstallmentPeriodData({
           COMP_CD: authState?.companyID,
@@ -232,6 +232,7 @@ export const RecurringCalculatotMetaData = {
       },
       name: "INT_RATE",
       label: "IntRate",
+      defaultValue: "0.00",
       type: "text",
       fullWidth: true,
       className: "textInputFromRight",
@@ -375,10 +376,7 @@ export const RecurringGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 180,
       isDisplayTotal: true,
-      FormatProps: {
-        decimalScale: 2,
-        fixedDecimalScale: true,
-      },
+      totalDecimalCount: 2,
     },
     {
       accessor: "BALANCE_AMT",
@@ -386,14 +384,11 @@ export const RecurringGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "right",
       componentType: "currency",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 180,
+      width: 200,
+      minWidth: 180,
+      maxWidth: 220,
       isDisplayTotal: true,
-      FormatProps: {
-        decimalScale: 2,
-        fixedDecimalScale: true,
-      },
+      totalDecimalCount: 2,
     },
     {
       accessor: "MONTH_INT",
@@ -405,10 +400,7 @@ export const RecurringGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 300,
       isDisplayTotal: true,
-      FormatProps: {
-        decimalScale: 2,
-        fixedDecimalScale: true,
-      },
+      totalDecimalCount: 2,
     },
     {
       accessor: "CUM_INT",

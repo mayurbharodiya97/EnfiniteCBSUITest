@@ -84,7 +84,7 @@ export const RetrievalParameters = ({ closeDialog, retrievalParaValues }) => {
             display: "flex",
             flexDirection: "column",
             height: "100%",
-            padding: "10px",
+            padding: "5px",
           }}
           onKeyDown={handleKeyDown}
         >
@@ -127,7 +127,6 @@ export const RetrievalParameters = ({ closeDialog, retrievalParaValues }) => {
                   disabled={isSubmitting}
                   color={"primary"}
                   ref={okButtonRef}
-                  style={{ marginRight: "5px" }}
                 >
                   {t("Ok")}
                 </GradientButton>
@@ -154,6 +153,9 @@ export const RetrievalParametersFormWrapper = ({
         style: {
           width: "100%",
           overflow: "auto",
+          position: "absolute",
+          top: 100,
+          margin: 0,
         },
       }}
       maxWidth="sm"

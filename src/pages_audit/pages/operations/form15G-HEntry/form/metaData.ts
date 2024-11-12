@@ -45,6 +45,7 @@ export const form15GHEntryMetaData = {
         placeholder: "EnterCustomerID",
         type: "text",
         autoComplete: "off",
+        maxLength: 13,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["CustomerIDisrequired"] }],
@@ -119,6 +120,7 @@ export const form15GHEntryMetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.[0]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 formState.setDataOnFieldChange("GRID_DATA", []);
                 if (buttonName === "No") {
@@ -180,6 +182,7 @@ export const form15GHEntryMetaData = {
                       messageTitle: "Confirmation",
                       message: postData2[j]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
                     btn99 = btnName;
                     if (btnName === "No") {
@@ -250,7 +253,6 @@ export const form15GHEntryMetaData = {
             }
           },
         },
-        // disableCaching: true,
         runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
       },
@@ -459,10 +461,6 @@ export const form15GHEntryMetaData = {
             }
           },
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         GridProps: { xs: 12, sm: 6, md: 6, lg: 4, xl: 3 },
       },
       {
@@ -537,10 +535,6 @@ export const form15GHEntryMetaData = {
             }
           },
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         GridProps: { xs: 12, sm: 6, md: 5.5, lg: 4, xl: 3 },
       },
 
@@ -596,7 +590,7 @@ export const form15GHEntryMetaData = {
         render: { componentType: "datePicker" },
         name: "LAST_ASS_YEAR",
         label: "IfYesLatestAssessmentDate",
-        placeholder: "",
+        placeholder: "DD/MM/YYYY",
         __EDIT__: { isReadOnly: true },
         __VIEW__: { isReadOnly: true },
         autoComplete: "off",
@@ -668,6 +662,7 @@ export const form15GHEntryMetaData = {
               messageTitle: "Validation Failed",
               message: "ActiveValidationMessage",
               buttonNames: ["Ok"],
+              icon: "ERROR",
             });
             if (buttonName === "Ok") {
               return {
@@ -835,6 +830,7 @@ export const form15GHEntryMetaData = {
       containerHeight: { min: "40vh", max: "40vh" },
       allowRowSelection: false,
       disableLoader: false,
+      paginationText: "FDs",
     },
     columns: [
       {
@@ -953,6 +949,7 @@ export const RetrievalParameterFormMetaData = {
       name: "FROM_DT",
       label: "FromDate",
       fullWidth: true,
+      placeholder: "DD/MM/YYYY",
       required: true,
       validate: (value) => {
         if (Boolean(value?.value) && !isValid(value?.value)) {
@@ -972,7 +969,7 @@ export const RetrievalParameterFormMetaData = {
       },
       name: "TO_DT",
       label: "ToDate",
-      placeholder: "",
+      placeholder: "DD/MM/YYYY",
       fullWidth: true,
       required: true,
       schemaValidation: {

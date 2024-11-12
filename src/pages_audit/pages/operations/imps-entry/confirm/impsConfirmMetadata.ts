@@ -122,7 +122,7 @@ export const impsCfmMetaData = {
           componentType: "datetimePicker",
         },
         name: "REG_DATE",
-        label: "Activation Date",
+        label: "ActivationDate",
         format: "dd/MM/yyyy HH:mm:ss",
         fullWidth: true,
         isReadOnly: true,
@@ -149,7 +149,7 @@ export const impsCfmMetaData = {
         },
         name: "DEACTIVE_DT",
         fullWidth: true,
-        label: "DeActive Date",
+        label: "DeActiveDateIMPS",
         GridProps: {
           xs: 12,
           md: 2.5,
@@ -203,7 +203,7 @@ export const impsCfmMetaData = {
       },
       {
         accessor: "REG_DATE",
-        columnName: "Reg. Date",
+        columnName: "RegDate",
         sequence: 2,
         componentType: "date",
         dateFormat: "dd/MM/yyyy",
@@ -262,7 +262,7 @@ export const impsCfmMetaData = {
       },
       {
         accessor: "PERDAY_IFT_LIMIT",
-        columnName: "IFT/Daily Limit",
+        columnName: "IFTDailyLimit",
         sequence: 8,
         componentType: "currency",
         width: 170,
@@ -282,7 +282,7 @@ export const impsCfmMetaData = {
       },
       {
         accessor: "PERDAY_RTGS_LIMIT",
-        columnName: "RTGS/Daily Limit",
+        columnName: "RTGSDayLimit",
         sequence: 10,
         componentType: "currency",
         width: 170,
@@ -302,7 +302,7 @@ export const impsCfmMetaData = {
       },
       {
         accessor: "PERDAY_NEFT_LIMIT",
-        columnName: "NEFT/Day Limit",
+        columnName: "NEFTDayLimit",
         sequence: 12,
         componentType: "currency",
         width: 170,
@@ -322,7 +322,7 @@ export const impsCfmMetaData = {
       },
       {
         accessor: "PERDAY_P2P_LIMIT",
-        columnName: "IMPS P2P Day Limit",
+        columnName: "IMPSP2PDayLimit",
         sequence: 14,
         componentType: "currency",
         width: 170,
@@ -332,7 +332,7 @@ export const impsCfmMetaData = {
       },
       {
         accessor: "PERDAY_P2A_LIMIT",
-        columnName: "IMPR P2A Day Limit",
+        columnName: "IMPRP2ADayLimit",
         sequence: 15,
         componentType: "currency",
         width: 170,
@@ -352,7 +352,7 @@ export const impsCfmMetaData = {
       },
       {
         accessor: "PERDAY_OWN_LIMIT",
-        columnName: "OWN/Day Limit",
+        columnName: "OWNDayLimit",
         sequence: 17,
         componentType: "currency",
         width: 170,
@@ -372,7 +372,7 @@ export const impsCfmMetaData = {
       },
       {
         accessor: "PERDAY_BBPS_LIMIT",
-        columnName: "BBPS/Day Limit",
+        columnName: "BBPSDayLimit",
         sequence: 19,
         componentType: "currency",
         width: 170,
@@ -392,7 +392,7 @@ export const impsCfmMetaData = {
       },
       {
         accessor: "PERDAY_PG_AMT",
-        columnName: "P.Gateway/Daily Limit",
+        columnName: "PGatewayDailyLimit",
         sequence: 21,
         componentType: "currency",
         width: 170,

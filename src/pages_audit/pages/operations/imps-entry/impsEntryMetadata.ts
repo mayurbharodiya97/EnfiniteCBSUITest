@@ -150,7 +150,6 @@ export const impsEntryMetadata = {
           }
           return {
             ORGINAL_NM: { value: "" },
-            // CUSTOMER_ID: { value: "" },
             UNIQUE_ID: { value: "" },
             MOB_NO: { value: "" },
             PAN_NO: { value: "" },
@@ -273,7 +272,7 @@ export const impsEntryMetadata = {
         componentType: "datetimePicker",
       },
       name: "REG_DATE",
-      label: "Activation Date",
+      label: "ActivationDate",
       format: "dd/MM/yyyy HH:mm:ss",
       fullWidth: true,
       isReadOnly: true,
@@ -346,7 +345,7 @@ export const impsEntryMetadata = {
       fullWidth: true,
       isReadOnly: true,
       isWorkingDate: true,
-      label: "DeActive Date",
+      label: "DeActiveDateIMPS",
       dependentFields: ["ACTIVE", "RETRIEVE_DATA"],
       shouldExclude: (field, dependent, __) => {
         if (
@@ -452,15 +451,7 @@ export const impsRegDetails = {
         componentType: "arrayField",
       },
       name: "accMapping",
-      // displayCountName: "Account Mapping",
-      //   disagreeButtonName: "No",
-      //   agreeButtonName: "Yes",
-      //   errorTitle: "Are you Sure you want to delete this row?",
-      //   removeRowFn: "deleteFormArrayFieldData",
       fixedRows: true,
-      // isScreenStyle: true,
-      // isRemoveButton: false,
-
       dependentFields: ["ROWDATA_LENGTH"],
       shouldExclude: (field, dependent) => {
         if (dependent?.ROWDATA_LENGTH?.value > 0) {
@@ -474,12 +465,12 @@ export const impsRegDetails = {
         sm: 12,
         lg: 12,
         xl: 12,
-        sx: {
-          "& .MuiPaper-root": {
-            height: "calc(100vh - 370px)",
-            overflow: "scroll",
-          },
-        },
+        // sx: {
+        //   "& .MuiPaper-root": {
+        //     height: "calc(100vh - 370px)",
+        //     overflow: "scroll",
+        //   },
+        // },
       },
       _fields: [
         {
@@ -508,7 +499,7 @@ export const impsRegDetails = {
           render: { componentType: "datePicker" },
           name: "REG_DT",
           type: "date",
-          label: "Reg. Date",
+          label: "RegDate",
           required: true,
           isReadOnly: true,
           isWorkingDate: true,
@@ -593,7 +584,7 @@ export const impsRegDetails = {
           render: { componentType: "amountField" },
           name: "PERDAY_IFT_LIMIT",
           type: "text",
-          label: "IFT/Daily Limit",
+          label: "IFTDailyLimit",
           dependentFields: ["IFT"],
           GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
           // required: true,
@@ -661,7 +652,7 @@ export const impsRegDetails = {
           render: { componentType: "amountField" },
           name: "PERDAY_RTGS_LIMIT",
           type: "text",
-          label: "RTGS/Day Limit",
+          label: "RTGSDayLimit",
           GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
           FormatProps: {
             thousandSeparator: false,
@@ -724,7 +715,7 @@ export const impsRegDetails = {
           render: { componentType: "amountField" },
           name: "PERDAY_NEFT_LIMIT",
           type: "text",
-          label: "NEFT/Day Limit",
+          label: "NEFTDayLimit",
           GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
           FormatProps: {
             thousandSeparator: false,
@@ -780,7 +771,7 @@ export const impsRegDetails = {
           render: { componentType: "checkbox" },
           type: "checkbox",
           name: "OWN_ACT",
-          label: "Own A/c",
+          label: "OwnAc",
           defaultValue: false,
           GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
         },
@@ -788,7 +779,7 @@ export const impsRegDetails = {
           render: { componentType: "amountField" },
           name: "PERDAY_OWN_LIMIT",
           type: "text",
-          label: "OWN/Day Limit",
+          label: "OWNDayLimit",
           GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
           FormatProps: {
             thousandSeparator: false,
@@ -860,7 +851,7 @@ export const impsRegDetails = {
           name: "JOINT_DETAILS",
           dependentFields: ["COMP_CD", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
 
-          label: "Joint Details",
+          label: "JointDetails",
           __VIEW__: {
             render: {
               componentType: "hidden",
@@ -879,7 +870,7 @@ export const impsRegDetails = {
             componentType: "formbutton",
           },
           name: "PHOTO_SIGN",
-          label: "Photo/sign",
+          label: "PhotoSign",
           dependentFields: ["COMP_CD", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
           __VIEW__: {
             render: {
@@ -907,7 +898,7 @@ export const impsRegDetails = {
           render: { componentType: "amountField" },
           name: "PERDAY_BBPS_LIMIT",
           type: "text",
-          label: "BBPS/Day Limit",
+          label: "BBPSDailyLimit",
           GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
           FormatProps: {
             thousandSeparator: false,
@@ -965,14 +956,14 @@ export const impsRegDetails = {
           type: "checkbox",
           name: "PG_TRN",
           defaultValue: false,
-          label: "Payment Gateway",
+          label: "PaymentGateway",
           GridProps: { xs: 6, md: 1, sm: 1, lg: 1, xl: 1 },
         },
         {
           render: { componentType: "amountField" },
           name: "PERDAY_PG_AMT",
           type: "text",
-          label: "P.Gateway/Daily Limit",
+          label: "PGatewayDailyLimit",
           GridProps: { xs: 12, md: 2, sm: 4, lg: 2, xl: 1.5 },
           FormatProps: {
             thousandSeparator: false,
@@ -1035,7 +1026,7 @@ export const impsRegDetails = {
           render: { componentType: "amountField" },
           name: "PERDAY_P2P_LIMIT",
           type: "text",
-          label: "IMPS P2P Day Limit",
+          label: "IMPSP2PDayLimit",
           GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
           FormatProps: {
             thousandSeparator: false,
@@ -1090,7 +1081,7 @@ export const impsRegDetails = {
           render: { componentType: "amountField" },
           name: "PERDAY_P2A_LIMIT",
           type: "text",
-          label: "IMPR P2A Day Limit",
+          label: "IMPRP2ADayLimit",
           GridProps: { xs: 12, md: 3, sm: 4, lg: 2, xl: 1.5 },
           FormatProps: {
             thousandSeparator: false,

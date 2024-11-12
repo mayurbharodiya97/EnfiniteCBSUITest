@@ -12,6 +12,7 @@ import {
 import { useQuery } from "react-query";
 import { FDConfirmationGridMetaData } from "./gridMetadata";
 import { FDConfirmationFormWrapper } from "./form/fixDepositConfForm";
+import { FdPaymentAdvicePrint } from "./form/fdPaymentAdvice";
 
 const actions: ActionTypes[] = [
   {
@@ -38,6 +39,8 @@ export const FDConfirmationGrid = () => {
   const [actionMenu, setActionMenu] = useState(actions);
   const [displayAction, setDisplayAction] = useState("P");
   const [gridData, setGridData] = useState([]);
+  const [openAdvice, setOpenAdvice] = useState(false);
+  const [requestData, setRequestData] = useState({});
 
   const navigate = useNavigate();
 
@@ -56,7 +59,7 @@ export const FDConfirmationGrid = () => {
         if (Boolean(displayAction) && displayAction === "V") {
           setGridData(data);
         } else if (Boolean(displayAction) && displayAction === "P") {
-          const filterData = data.filter((item) => item.CONFIRMED !== "Y");
+          const filterData = data.filter((item) => item.ALLOW_CONFIRM === "Y");
           setGridData(filterData);
         } else {
           setGridData(data);
@@ -133,6 +136,19 @@ export const FDConfirmationGrid = () => {
         actions={actionMenu}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
+        onClickActionEvent={async (index, id, data) => {
+          if (id === "ADVICE") {
+            setRequestData({
+              BRANCH_CD: data?.BRANCH_CD ?? "",
+              COMP_CD: authState?.companyID ?? "",
+              ACCT_TYPE: data?.ACCT_TYPE ?? "",
+              ACCT_CD: data?.ACCT_CD ?? "",
+              FD_NO: data?.FD_NO ?? "",
+              A_FLAG: data?.TRN_FLAG ?? "",
+            });
+            setOpenAdvice(true);
+          }
+        }}
       />
       <Routes>
         <Route
@@ -145,6 +161,14 @@ export const FDConfirmationGrid = () => {
           }
         />
       </Routes>
+      {openAdvice && (
+        <FdPaymentAdvicePrint
+          closeDialog={() => setOpenAdvice(false)}
+          requestData={requestData}
+          setOpenAdvice={setOpenAdvice}
+          screenFlag={"FDCONF"}
+        />
+      )}
     </>
   );
 };

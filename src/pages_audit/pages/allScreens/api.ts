@@ -1,49 +1,76 @@
-import { AllScreensGridMetaData } from "./gridMetadata";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
+import { AuthSDK } from "registry/fns/auth";
 
-export const getGridFormMetaData =
-  ({ gridCode }) =>
-  async () => {
-    switch (gridCode) {
-      case "CCC/001":
-        return AllScreensGridMetaData;
-      default:
-        /* eslint-disable no-throw-literal */
-        throw { error_msg: "Invalid Product type" };
+export const QuickAccessTableGridData = async ({
+  COMP_CD,
+  BASE_BRANCH_CD,
+  GROUP_NAME,
+  APP_TRAN_CD,
+  FLAG,
+  workingDate,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETQUICKACCESS", {
+      COMP_CD: COMP_CD,
+      BASE_BRANCH_CD: BASE_BRANCH_CD,
+      ASON_DT: workingDate,
+      GROUP_NAME: GROUP_NAME,
+      FLAG: FLAG.toUpperCase(),
+      APP_TRAN_CD: APP_TRAN_CD,
+    });
+  if (status === "0") {
+    return data.map((item) => ({
+      ...item,
+      FAVOURITE: item?.FAVOURITE === "Y" ? true : false,
+    }));
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const addToFavorite = async (payload: any) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "SAVEFVSCREENDATA",
+    {
+      ...(payload ?? {}),
     }
-  };
-
-export const getAllScreensGridData = async () => {
-  let responseData = [
-    {
-      screenname: "Release Block Users",
-      user_code: "NETT/001",
-      system_code: "NETT/001",
-      href: "technical-support/release-block-users",
-    },
-    {
-      screenname: "Release Card PIN Block Users",
-      user_code: "NETT/002",
-      system_code: "NETT/002",
-      href: "technical-support/release-card-block-users",
-    },
-    {
-      screenname: "Customer Searching",
-      user_code: "NETT/002",
-      system_code: "NETT/002",
-      href: "operation/customer-searching",
-    },
-    {
-      screenname: "Tag Account Request",
-      user_code: "NETT/002",
-      system_code: "NETT/002",
-      href: "operation/tag-account",
-    },
-    {
-      screenname: "Tag Card Request",
-      user_code: "NETT/002",
-      system_code: "NETT/002",
-      href: "operation/tag-card",
-    },
-  ];
-  return responseData;
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getrReportSqlQuery = async (payload: any) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETREPORTDETAIL", {
+      ...(payload ?? {}),
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const generateReportMetadata = async (payload: any) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVEFVSCREENDATA", {
+      ...(payload ?? {}),
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const saveReportConfiguration = async (payload: any) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVEFVSCREENDATA", {
+      ...(payload ?? {}),
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };

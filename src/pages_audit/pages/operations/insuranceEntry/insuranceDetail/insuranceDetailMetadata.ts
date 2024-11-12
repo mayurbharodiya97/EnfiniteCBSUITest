@@ -1,7 +1,7 @@
 import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions/general";
 import * as API from "../api";
-import { addMonths, format, subDays } from "date-fns";
+import { addMonths, format, isValid, subDays } from "date-fns";
 
 export const InsuranceDetailFormMetaData = {
   masterForm: {
@@ -40,6 +40,7 @@ export const InsuranceDetailFormMetaData = {
         render: {
           componentType: "_accountNumber",
         },
+        name: "",
         branchCodeMetadata: {
           GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
           runPostValidationHookAlways: true,
@@ -64,22 +65,6 @@ export const InsuranceDetailFormMetaData = {
               DOC_CD: "RPT/70",
             });
           },
-          postValidationSetCrossFieldValues: (
-            field,
-            formState,
-            auth,
-            dependentFieldsValues
-          ) => {
-            if (!field?.value) {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: false,
-              });
-              return {
-                ACCT_CD: { value: "", ignoreUpdate: true },
-                ACCT_NM: { value: "" },
-              };
-            }
-          },
         },
         accountCodeMetadata: {
           fullWidth: true,
@@ -93,124 +78,12 @@ export const InsuranceDetailFormMetaData = {
               return true;
             },
           },
-          disableCaching: false,
-          postValidationSetCrossFieldValues: async (
+          postValidationSetCrossFieldValues: (
             field,
             formState,
             auth,
             dependentFieldsValues
-          ) => {
-            if (
-              field.value &&
-              dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-              dependentFieldsValues?.["BRANCH_CD"]?.value
-            ) {
-              if (formState?.isSubmitting) return {};
-              let Apireq = {
-                COMP_CD: auth?.companyID,
-                ACCT_CD: utilFunction.getPadAccountNumber(
-                  field?.value,
-                  dependentFieldsValues?.["ACCT_TYPE"]?.optionData
-                ),
-                ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-                BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-                SCREEN_REF: "RPT/70",
-              };
-              let postData = await GeneralAPI.getAccNoValidation(Apireq);
-
-              formState.setDataOnFieldChange("TAB_REQUEST", Apireq);
-
-              let btn99, returnVal;
-              const getButtonName = async (obj) => {
-                let btnName = await formState.MessageBox(obj);
-                return { btnName, obj };
-              };
-              for (let i = 0; i < postData?.MSG?.length; i++) {
-                if (postData?.MSG?.[i]?.O_STATUS === "999") {
-                  formState.setDataOnFieldChange("IS_VISIBLE", {
-                    IS_VISIBLE: false,
-                  });
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "ValidationFailed",
-                    message: postData?.MSG?.[i]?.O_MESSAGE,
-                    icon: "ERROR",
-                  });
-                  returnVal = "";
-                } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
-                  formState.setDataOnFieldChange("IS_VISIBLE", {
-                    IS_VISIBLE: false,
-                  });
-                  if (btn99 !== "No") {
-                    const { btnName, obj } = await getButtonName({
-                      messageTitle: "Alert",
-                      message: postData?.MSG?.[i]?.O_MESSAGE,
-                      icon: "WARNING",
-                    });
-                  }
-                  returnVal = postData;
-                } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
-                  formState.setDataOnFieldChange("IS_VISIBLE", {
-                    IS_VISIBLE: false,
-                  });
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "Confirmation",
-                    message: postData?.MSG?.[i]?.O_MESSAGE,
-                    buttonNames: ["Yes", "No"],
-                  });
-
-                  btn99 = btnName;
-                  if (btnName === "No") {
-                    returnVal = "";
-                  }
-                } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
-                  formState.setDataOnFieldChange("IS_VISIBLE", {
-                    IS_VISIBLE: true,
-                  });
-                  if (btn99 !== "No") {
-                    returnVal = postData;
-                  } else {
-                    returnVal = "";
-                  }
-                }
-              }
-              btn99 = 0;
-              return {
-                ACCT_CD:
-                  returnVal !== ""
-                    ? {
-                        value: utilFunction.getPadAccountNumber(
-                          field?.value,
-                          dependentFieldsValues?.ACCT_TYPE?.optionData
-                        ),
-                        isFieldFocused: false,
-                        ignoreUpdate: true,
-                      }
-                    : {
-                        value: "",
-                        isFieldFocused: true,
-                        ignoreUpdate: true,
-                      },
-                ACCT_NM: {
-                  value: returnVal?.ACCT_NM ?? "",
-                },
-                COVER_NOTE: {
-                  value: "",
-                  isFieldFocused: true,
-                },
-              };
-            } else {
-              formState.setDataOnFieldChange("IS_VISIBLE", {
-                IS_VISIBLE: false,
-              });
-              return {
-                ACCT_CD: {
-                  value: "",
-                },
-                ACCT_NM: { value: "" },
-              };
-            }
-          },
-          runPostValidationHookAlways: true,
+          ) => {},
           GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
         },
       },
@@ -251,6 +124,18 @@ export const InsuranceDetailFormMetaData = {
             return null;
           }
         },
+        validate: (currentField, dependentField) => {
+          if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+            return "Mustbeavaliddate";
+          }
+          if (
+            new Date(currentField?.value) <=
+            new Date(dependentField?.INSURANCE_DATE?.value)
+          ) {
+            return `DueDateShouldGreaterDateInsurance`;
+          }
+          return "";
+        },
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       },
       {
@@ -272,6 +157,7 @@ export const InsuranceDetailFormMetaData = {
         label: "CoverNote",
         type: "text",
         fullWidth: true,
+        maxLength: 50,
         txtTransform: "uppercase",
         required: true,
         schemaValidation: {
@@ -341,6 +227,7 @@ export const InsuranceDetailFormMetaData = {
         txtTransform: "uppercase",
         fullWidth: true,
         required: true,
+        maxLength: 25,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["PleaseEnterPolicyNo"] }],
@@ -366,6 +253,7 @@ export const InsuranceDetailFormMetaData = {
         name: "DESCRIPTION",
         label: "Description",
         fullWidth: true,
+        maxLength: 100,
         txtTransform: "uppercase",
         GridProps: { xs: 12, sm: 3.6, md: 3.6, lg: 3.6, xl: 3.6 },
       },
@@ -378,6 +266,54 @@ export const InsuranceDetailFormMetaData = {
         label: "InsuranceAmount",
         fullWidth: true,
         required: true,
+        dependentFields: ["NET_PREMIUM_AMOUNT"],
+        FormatProps: {
+          allowLeadingZeros: false,
+          allowNegative: false,
+          isAllowed: (values) => {
+            if (values?.value?.length > 15) {
+              return false;
+            }
+            if (values?.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
+        },
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          auth,
+          dependentFieldsValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          if (field.value) {
+            if (
+              Number(field.value) <
+              Number(dependentFieldsValues?.NET_PREMIUM_AMOUNT?.value)
+            ) {
+              let buttonName = await formState?.MessageBox({
+                messageTitle: "Alert",
+                message: `InsuranceAmountCannotLessPremiumAmount`,
+                buttonNames: ["Ok"],
+                icon: "WARNING",
+              });
+              if (buttonName === "Ok") {
+                return {
+                  INSURANCE_AMOUNT: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                  NET_PREMIUM_AMOUNT: {
+                    isFieldFocused: false,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
+            }
+          }
+        },
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["PleaseEnterInsuranceAmount"] }],
@@ -399,6 +335,19 @@ export const InsuranceDetailFormMetaData = {
           rules: [
             { name: "required", params: ["PleaseEnterNetPremiumAmount"] },
           ],
+        },
+        FormatProps: {
+          allowLeadingZeros: false,
+          allowNegative: false,
+          isAllowed: (values) => {
+            if (values?.value?.length > 15) {
+              return false;
+            }
+            if (values?.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
         },
         GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
         dependentFields: [
@@ -462,11 +411,11 @@ export const InsuranceDetailFormMetaData = {
               return {
                 SERVICE_CHARGE: { value: postData?.[0]?.TAX_AMOUNT },
               };
+            } else if (!field?.value) {
+              return {
+                SERVICE_CHARGE: { value: "" },
+              };
             }
-          } else if (!field?.value) {
-            return {
-              SERVICE_CHARGE: { value: "" },
-            };
           }
         },
       },
@@ -479,6 +428,19 @@ export const InsuranceDetailFormMetaData = {
         fullWidth: true,
         label: "GST",
         GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2.1 },
+        FormatProps: {
+          allowLeadingZeros: false,
+          allowNegative: false,
+          isAllowed: (values) => {
+            if (values?.value?.length > 15) {
+              return false;
+            }
+            if (values?.floatValue === 0) {
+              return false;
+            }
+            return true;
+          },
+        },
         dependentFields: ["NET_PREMIUM_AMOUNT"],
         postValidationSetCrossFieldValues: async (
           field,
@@ -490,7 +452,7 @@ export const InsuranceDetailFormMetaData = {
           if (field.value) {
             if (
               Number(field.value) >
-              Number(dependentFieldsValues?.SERVICE_CHARGE?.value)
+              Number(dependentFieldsValues?.NET_PREMIUM_AMOUNT?.value)
             ) {
               let buttonName = await formState?.MessageBox({
                 messageTitle: "Alert",
@@ -513,10 +475,6 @@ export const InsuranceDetailFormMetaData = {
                 };
               }
             }
-          } else if (!field?.value) {
-            return {
-              SERVICE_CHARGE: { value: "" },
-            };
           }
         },
       },
@@ -545,6 +503,7 @@ export const InsuranceDetailFormMetaData = {
         label: "Remarks",
         fullWidth: true,
         txtTransform: "uppercase",
+        maxLength: 100,
         GridProps: { xs: 12, sm: 3.6, md: 3.6, lg: 3.6, xl: 3.6 },
       },
       {
@@ -554,6 +513,7 @@ export const InsuranceDetailFormMetaData = {
         name: "PROPOSER1",
         label: "Proposer1",
         fullWidth: true,
+        maxLength: 100,
         GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
       },
       {
@@ -563,6 +523,7 @@ export const InsuranceDetailFormMetaData = {
         name: "PROPOSER2",
         fullWidth: true,
         label: "Proposer2",
+        maxLength: 100,
         GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
       },
       {
@@ -603,6 +564,7 @@ export const InsuranceDetailFormMetaData = {
         render: {
           componentType: "hidden",
         },
+        name: "",
         __EDIT__: {
           render: {
             componentType: "datePicker",
@@ -713,11 +675,6 @@ export const InsuranceDetailFormMetaData = {
           }
           return "";
         },
-        // schemaValidation: {
-        //   type: "string",
-        //   rules: [{ name: "required", params: ["This field is required"] }],
-        // },
-        // isReadOnly: true,
         __EDIT__: { isReadOnly: false },
         __VIEW__: { isReadOnly: true },
         __NEW__: { isReadOnly: false },
@@ -744,7 +701,7 @@ export const InsuranceDetailFormMetaData = {
           decimalScale: 2,
           fixedDecimalScale: true,
           isAllowed: (values) => {
-            if (values?.value?.length > 14) {
+            if (values?.value?.length > 15) {
               return false;
             }
             if (values.floatValue === 0) {
@@ -753,15 +710,8 @@ export const InsuranceDetailFormMetaData = {
             return true;
           },
         },
-        // validation: (value, data) => {
-        //   if (!Boolean(value) || !Boolean(data["MAX_AMT"])) {
-        //     return "";
-        //   }
-        //   if (Number.parseFloat(value) > Number.parseFloat(data["MAX_AMT"])) {
-        //     return "Minimum Amount should be Less than or equal To Maximum Amount.";
-        //   }
-        //   return "";
-        // },
+        isDisplayTotal: true,
+        footerLabel: "Total Amount",
       },
       {
         columnName: "Action",

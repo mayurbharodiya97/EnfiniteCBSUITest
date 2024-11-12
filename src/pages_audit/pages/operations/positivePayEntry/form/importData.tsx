@@ -60,6 +60,7 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
               messageTitle: "ValidationFailed",
               message: data[i]?.O_MESSAGE,
               buttonNames: ["Ok"],
+              icon: "ERROR",
             });
             if (btnName === "Ok") {
               setOpenGrid(true);
@@ -78,12 +79,14 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
             const btnName = await MessageBox({
               messageTitle: "Alert",
               message: data[i]?.O_MESSAGE,
+              icon: "WARNING",
             });
           } else if (data[i]?.O_STATUS === "99") {
             const btnName = await MessageBox({
               messageTitle: "Confirmation",
               message: data[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
             if (btnName === "No") {
               setOpenGrid(true);
@@ -138,6 +141,7 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
                 messageTitle: "Confirmation",
                 buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
+                icon: "CONFIRM",
               });
 
               if (btnName === "Yes") {

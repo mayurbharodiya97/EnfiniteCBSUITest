@@ -152,7 +152,7 @@ const StandingInstructionGrid = () => {
             <StandingInstructionFormWrapper
               isDataChangedRef={isDataChangedRef}
               closeDialog={ClosedEventCall}
-              defaultView={"add"}
+              defaultView={"new"}
               data={data}
             />
           }

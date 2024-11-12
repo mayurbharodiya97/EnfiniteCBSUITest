@@ -132,11 +132,12 @@ export const en_language_data = {
   InstallmentAmount: "Installment Amount",
   DueAmount: "Due Amount",
   DueDate: "Due Date",
+  DueDateRequire: "Due Date is required.",
   InstallmentDepositedAmount: "Installment Deposited Amount",
   DepositedInstallment: "Deposited Installment",
   Interest: "Interest",
   InterestDetail: "Interest Detail",
-  NoOfDays: "No of Day(s)",
+  NoOfDays: "No. of Days",
   LastProvisionDate: "Last Provision Date",
   ProvisionalAmount: "Provisional Amount",
   DateFrom: "Date From",
@@ -240,6 +241,7 @@ export const en_language_data = {
   TotalRecords: "Total Records",
   AccountBranch: "Account Branch",
   PrematurePayment: "Premature Payment",
+  SelectPaymentmode: "Select Payment Mode",
 
   // GridWrapper
   Search: "Search",
@@ -343,6 +345,7 @@ export const en_language_data = {
   PassbookStatementPreview: "Passbook Statement Preview",
   PassbookUpdateMessage:
     "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
+  TemplateReqired: "Template Reqired",
 
   //for priority master main
   ParentGroup: "Parent Group",
@@ -849,7 +852,7 @@ export const en_language_data = {
   RBICodeIsRequired: "RBI Code is required.",
   EnterBankName: "Enter Bank Name",
   BankNameIsRequired: "Bank Name is required.",
-  AtleastOneBranchShouldBeSelected: "Atleast one branch should be selected",
+  AtleastOneBranchShouldBeSelected: "Atleast one branch should be selected.",
   Select: "Select",
   DisplayName: "Display Name",
   CTS: "CTS",
@@ -882,15 +885,19 @@ export const en_language_data = {
   },
 
   // common
-  newmode: "new mode",
-  editmode: "edit mode",
-  viewmode: "view mode",
+  newmode: "New Mode",
+  editmode: "Edit Mode",
+  viewmode: "View Mode",
+  FileName: "File Name",
+  ClearAll: "Clear All",
+  ViewFile: "View File",
   BranchCode: "Branch Code",
   BranchCodeReqired: "Branch Code is required",
   BranchCodePlaceHolder: "Select branch code",
   AccountType: "Account Type",
   stopDate: "Stop Date",
   realeaseDate: "Realease Date",
+  Realease: "Realease",
   AccountTypeReqired: "Account Type is required",
   AccountTypePlaceHolder: "Select account type",
   AccountNumber: "Account Code",
@@ -916,11 +923,13 @@ export const en_language_data = {
   ConfirmationDetail: "Confirmation Detail",
   AreYouSureToConfirm: "Are you sure to Confirm",
   AreYouSureToReject: "Are you sure to Reject",
+  AreYouSureToProcced: "Are you sure to Procced ?",
   Confirm: "Confirm",
-  ConfirmRestrictMsg: "You can not confirm your own posted transaction",
+  ConfirmRestrictMsg: "You can not confirm your own posted transaction.",
   CannotModifyConfirmedTransaction: "Cannot Modify Confirmed Transaction",
   CannotModifyBackDatedEntry: "Cannot Modify Back Dated Entry",
   CannotDeleteBackDatedEntry: "Cannot Delete Back Dated Entry",
+  BackDatedEntryCantBeDelete: "Backdated Entry Can't be Delete",
   CannotDeleteConfirmedTransaction: "Cannot Delete Confirmed Transaction",
   EnterRemarks: "Enter Remarks",
   EnteredBy: "Entered By",
@@ -949,10 +958,10 @@ export const en_language_data = {
   ToDateshouldbegreaterthanorequaltoFromDate:
     "To Date should be greater than or equal to From Date.",
   OptionIsAlreadyEntered: "Option is Already entered",
-
+  FooterNoteMsgCfmRej: "Note :- Double-click the record to confirm or reject",
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
-  DoYouWantDeleteRow: "Do You want to delete this row?",
+  DoYouWantDeleteRow: "Do you want to delete this row?",
   JointDetails: "Joint - Details",
   Amount: "Amount",
   SlipNo: "Slip No.",
@@ -991,7 +1000,7 @@ export const en_language_data = {
   Apply: "Apply",
   Clear: "Clear",
   AppliedFilters: "Applied Filters",
-  TotalNoofRecords: "Total No. of ",
+  TotalNoofRecords: "Total No. of",
   RetrievalParameters: "Retrieval Parameters",
   Searched: "Search",
   Showexportoptions: "Show export options",
@@ -1013,13 +1022,20 @@ export const en_language_data = {
   Futuredatesarenotallowed: "Future dates are not allowed.",
   FromDateshouldbelessthanorequaltoToDate:
     "From Date should be less than or equal to To Date.",
-
+  ClearingDateshouldbelessthanorequaltoGdDate:
+    "Clearing Date should be less than or equal to Working Date.",
   Whichformatdoyouwanttodownload: "Which format do you want to download?",
+  PleaseEnterValidDate: "Please Enter Valid Date",
   Excel: "Excel",
   CSV: "CSV",
   Nodatafoundtoexports: "No data found to export!",
   Pleaseselectatleastonecolumn: "Please select atleast one column!",
   ColumnstoExport: "Columns to Export",
+  ExportReportform: "Export Report form",
+  Selectfiletype: "Select file type",
+  Selectpagesize: "Select page size",
+  Selectorientation: "Select orientation",
+  ShowHeader: "Show Header",
   AreyousureyouwanttodeletetheselectedRecords:
     "Are you sure you want to delete the selected Records",
   AllRecordssuccessfullydeleted: "All Records successfully deleted",
@@ -1120,16 +1136,18 @@ export const en_language_data = {
   CollateralAmount: "Collateral Amount",
   CollateralRate: "Collateral Rate%",
   IssueCompany: "Issue Company",
+  IssuedBy: "Issued By",
   IssueBy: "Issue By",
   MaturedAmount: "Matured Amount",
   PeriodNumber: "Period No.",
   Period: "Period",
+  PeriodType: "Period Type",
   RegistrationNumber: "Registration No.",
   LienYesNo: "Lien Yes No",
   RemovalRemarksLimit: "Enter Removal Remarks for Limit Confirmation (TRN/374)",
-  IntrestAmount: "Intrest Amount",
-  IntrestMargin: "Intrest Margin%",
-  SecurityInterstAmount: "Security Interst Amount",
+  IntrestAmount: "Interest Amount",
+  IntrestMargin: "Interest Margin%",
+  SecurityInterstAmount: "Security Interest Amount",
   OverDrawn: "Over Drawn%",
   DocketNumber: "Docket No.",
   GST: "GST",
@@ -1213,14 +1231,14 @@ export const en_language_data = {
     "Enter Removal Remarks for Stock Confirmation (ETRN/377)",
   LimitAmount: "Limit Amount",
   StockConfirmation: "Stock Confirmation",
-  StockAsonDate: "Stock Ason Date",
+  StockAsonDate: "Stock As on Date",
   AreYouSureToWithdrawShare: "Are you sure to Withdraw Share(s)?",
   DateShouldBeLessThanEqualToWorkingDT:
     "date should be less than or equal to Working date.",
   StmtTillDateShouldBeGreterThanStmt:
     "Stock Statement Till date should be greter than or equal to Statement date",
   StockDeleteTitle: "Enter Removal Remarks For Stock Entry (TRN/047)",
-
+  Holder: "Holder",
   // Lien Entry
 
   LienEntryNotConfirmed: "Lien Entry Not Confirmed",
@@ -1244,7 +1262,7 @@ export const en_language_data = {
   RemovalRemarksLien: "Enter Removal Remarks for Lien Confirmation (TRN/655)",
   LienReason: "Lien Reason",
   RemovalDtShouldBeGreterThanEqualToEffDT:
-    "Removal Date should be greter than or Equal to Effective date",
+    "Removal Date should be greater than or Equal to Effective date",
 
   // Temporary OD
 
@@ -1276,7 +1294,10 @@ export const en_language_data = {
     "Effective From Date should be greater than or equal to working date.",
   ToDateGreaterThanOrEqualToFromDate:
     "Effective To Date should be greater than or equal to From Date.",
-
+  Parametersrequired: "Parameters are required",
+  EffectiveFromDateRequired: "Effective From Date is Required",
+  EffectiveToDateRequired: "Effective To Date is Required",
+  AmountUpToRequired: "Amount Up To is Required",
   // ATM registration Entry
 
   CardDetails: "Card Details",
@@ -1311,12 +1332,53 @@ export const en_language_data = {
   Prev: "Prev",
   New: "New",
   PhotoSign: "Photo/Sign",
+  ViewChanges: "View Changes",
+
+  // IMPS Registration Entry
+  RetrieveInformation: "Retrieve Information",
+  ActivationDate: "Activation Date",
+  DeActiveDateIMPS: "DeActive Date",
+  EnteredBranch: "Entered Branch",
+  LastModifiedBy: "Last Modified By",
+  LastModifiedDate: "Last Modified Date",
+  RegDate: "Reg. Date",
+  IFT: "IFT",
+  IMPS: "IMPS",
+  UPI: "UPI",
+  BBPS: "BBPS",
+  RTGS: "RTGS",
+  OwnAc: "Own A/c",
+  ATM: "ATM",
+  POS: "POS",
+  ECOM: "ECOM",
+  PaymentGateway: "Payment Gateway",
+  IFTDailyLimit: "IFT/Daily Limit",
+  BBPSDailyLimit: "BBPS/Daily Limit",
+  RTGSDayLimit: "RTGS/Day Limit",
+  NEFTDayLimit: "NEFT/Day Limit",
+  OWNDayLimit: "OWN/Day Limit",
+  PGatewayDailyLimit: "P.Gateway/Daily Limit",
+  IMPSP2PDayLimit: "IMPS P2P Day Limit",
+  IMPRP2ADayLimit: "IMPR P2A Day Limit",
+  ATMDailyLimit: "ATM/Daily Limit",
+  POSDailyLimit: "POS/Daily Limit",
+  ECOMDailyLimit: "ECOM/Daily Limit",
+  UPIDailyLimit: "UPI/Daily Limit",
+  DoYouWantSaveChanges: "Do You Want Save Changes ?",
+  limitamountlessthan: "limit amount should be less than",
+  ModifiedBy: "Modified By",
+  ModifiedDate: "Modified Date",
+  MachineName: "Machine Name",
+  SrCode: "Sr Code",
+  ViewChangesHederTitle: "Online Transaction Registration changes",
+  ATMConfirmationRetrieveData: "ATM Confirmation Retrieve Data",
+  IMPSConfirmationRetrieveData: "IMPS Confirmation Retrieve Data",
 
   // lien Mater
   MinimumNoofJoints: "Minimum No. of Joints",
   MaximumNoofJoints: "Maximum No. of Joints",
   // Ac period Mater
-  PeriodName: "Period-Name",
+  PeriodName: "Period Name",
   InstNo: "Inst. No.",
   InstallmentPeriod: "Installment Period",
 
@@ -1416,12 +1478,13 @@ export const en_language_data = {
   TotalBenificiaryAmount: "Total Benificiary Amount",
   AuditTrail: "Audit Trail",
   RemittanceInfo: "Remittance Info.",
-  IfscDetail: "Ifsc Detail",
+  IfscDetail: "IFSC Detail",
   ListOfBeneficiaryAcOrdering: "List Of Beneficiary A/c of Ordering ",
   BeneficiaryAccountAuditTrail: "Beneficiary Account Audit Trail",
   AreYouSaveThisRecord: "Are you sure to save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
+  UTRConfirmation: "UTR(s) Confirmation",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1505,7 +1568,7 @@ export const en_language_data = {
   AreYouSureContinue: "Are you sure to continue!",
   ChequeCount: "Cheque Count",
   ChequeNoList: "Cheque No. List",
-  CLGDate: "CLG Date",
+  CLGDate: "CLG. Date",
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",
 
@@ -1516,7 +1579,7 @@ export const en_language_data = {
   EnterRemovalRemarksINWARDRETURNCONFIRMATION:
     "Enter Removal Remarks For INWARD RETURN CONFIRMATION(TRN/332)",
   EnterRemovalRemarksOUTWARDRETURNCONFIRMATION:
-    "Enter Removal Remarks For OUTWARD RETURN CONFIRMATION(TRN/346)",
+    "Enter Removal Remarks for Outward Return Confirmation (TRN/346)",
   ClearingRetrieveInformation: "Clearing Retrieve Information",
 
   // date clearing transfer
@@ -1600,6 +1663,7 @@ export const en_language_data = {
 
   //payslip issue entry
   branchCode: "Branch Code",
+  stopRemarksRequired: "stop remarks is required",
   issueBranch: "Issue Branch",
   entryStatus: "Entry Status",
   confirmStatus: "Confirmation Status",
@@ -1689,6 +1753,7 @@ export const en_language_data = {
   Uploaded: "Uploaded",
   ConfirmMessage: "Do you want to confirm this transaction?",
   RejectMessage: "Do you want to reject this transaction?",
+  PositivePayConfirmRestictionMessage: "You can not confirm your own Entry.",
 
   // Form 15GH entry and confirmation
   NoteDoubleClickOnViewDetails: "Note : Double-click to View-Details.",
@@ -1721,7 +1786,7 @@ export const en_language_data = {
   FinInterest: "Fin Interest",
   FromDateIsRequired: "From Date is required.",
   ToDateIsRequired: "To Date is required.",
-  NoRecordFound: "No Record Found",
+  NoRecordFound: "No Record Found.",
   ConfirmFormData: "Are you sure to confirm this Form?",
   ConfirmRestrictionMessage: "You can not confirm your own entered Form.",
   DeleteWarning: "Delete Warning",
@@ -1730,9 +1795,10 @@ export const en_language_data = {
   PrintFormConfirmation: "Do you want to print form?",
   Success: "Success",
   DataUpdatedSuccessfully: "Data Updated Successfully",
+  ConfirmationStatus: "Confirm Status",
   TotalIncomeValidateMessage:
     "This Customer is not eligible for {{formName}}.Total Income of this Financial Year exceeds {{interestAmtLimit}}.",
-
+  FormConfirmationMsg: "Form confirmed successfully.",
   // GST Outward Entry
   TranCd: "Tran Cd",
   taxAmount: "Tax Amount",
@@ -1795,6 +1861,8 @@ export const en_language_data = {
   InsuranceDetail: "Insurance Detail",
   InsuranceEntry: "Insurance Entry",
   InsuranceDate: "Insurance Date",
+  InsuranceRequired: "Insurance Date is required.",
+  ConfirmedStatus: "Confirmed Status",
   CoverNote: "Cover Note",
   PleaseEnterCoverNote: "Please enter Cover Note.",
   Company: "Company",
@@ -1828,6 +1896,10 @@ export const en_language_data = {
   EnterRemovalRemarksForInsuranceConfirmation:
     "Enter Removal Remarks For Insurance Confirmation",
   InsuranceConfirmationDetail: "Insurance Confirmation Detail",
+  InsuranceAmountCannotLessPremiumAmount:
+    "Insurance Amount cannot be less than Premium Amount",
+  DueDateShouldGreaterDateInsurance:
+    "Due Date should be Greater than Date of Insurance",
 
   //standing instruction entry
   CommisionType: "Commision Type",
@@ -1838,9 +1910,9 @@ export const en_language_data = {
   CreditPhotoSign: "Credit Photo/Sign",
   StartDate: "Start Date",
   ExecuteOnDay: "Execute On Day",
-  FrequncyType: "Frequncy Type",
+  FrequncyType: "Frequency Type",
   FrequencyValue: "Frequency Value",
-  DebitBranchCode: "Credit A/C Branch Code",
+  DebitBranchCode: "Debit A/C Branch Code",
   DebitAcctType: "Debit A/C Type",
   DebitAcctNo: "Debit A/c No.",
   DebitPhotoSign: "Debit Photo/Sign",
@@ -1848,6 +1920,7 @@ export const en_language_data = {
   SICharge: "SI Charge",
   Remark: "Remark",
   ValidUpTo: "Valid UpTo",
+  ValidUpto: "Valid Upto",
   SINumber: "SI Number",
   CreditAcctName: "Credit A/C Name",
   DebitAcctName: "Debit A/C Name",
@@ -1860,7 +1933,7 @@ export const en_language_data = {
   ActivityTime: "Activity Time",
   ColumnName: "Column Name",
   OldValue: "Old Value",
-  NewValue: "NewValue",
+  NewValue: "New Value",
   ColorandSi:
     "Red Color Indicates the Deactivated SI & Double Click to View SI Details",
   EnterCommisionType: "Enter Commision Type",
@@ -1889,15 +1962,15 @@ export const en_language_data = {
     "WRONG ENTRY FROM STANDING INSTRUCTION ENTRY (TRN/394)",
   AllSIasExecuted: "All SI as Executed",
   ConsiderSIasExecuted: "Consider SI as Executed",
-  SearchSI: "SearchSI",
+  SearchSI: "Search SI",
   SIasExecuted: "SI as Executed",
   CannotRevertBack:
     "This Can't be Revert back! Do you want to Consider it as executed?",
   DataNotFound: "Data Not Found",
   TotalNoofActiveSI: "Total No. of Active SI",
-  EnterRemovalRemarksForSI:
-    "Enter Removal Remarks For Standing Instruction Entry (TRN/394)",
+  EnterRemovalRemarksForSI: "Enter Removal Remarks For Search SI",
   IncompleteDocument: "Incomplete Document(s)",
+  RemovalRemarkRequire: "Removal Remarks are required",
 
   //standing instruction Confirmation
   SInotConfirmByYou: "You can not confirm SI entered by you.",
@@ -1905,11 +1978,13 @@ export const en_language_data = {
 
   //Recurring Interest Calculator
   Categoryisrequired: "Category is required",
-  IntType: "InterestType",
+  IntType: "Interest Type",
   InstallmentType: "Installment Type",
   InstallmentTypeisrequired: "Installment Type is required",
   InstAmount: "Installment Amount",
   RunningIntAmt: "Running Int. Amt.",
+  SelectCategoryPlaceHolder: "Select Category",
+  SelectInstallmentTypePlaceHolder: "Select Installment Type",
 
   //EMI Calculator
   InterestFunded: "Interest Funded",
@@ -1928,7 +2003,7 @@ export const en_language_data = {
   DisburseAmountisrequired: "Disburse Amount is required",
 
   //fd interest calculator
-  rateRequired: "rate is required",
+  rateRequired: "Rate is required",
   normalPremature: "Normal/Premature",
   realizePending: "Realize Pending",
   confirmPending: "Confirmation Pending",
@@ -1936,8 +2011,10 @@ export const en_language_data = {
   asonDate: "As on Date",
   maturityDate: "Maturity Date",
   categCdRequired: "Category is required.",
-  definationRequired: "definayion is required.",
+  definationRequired: "Defination is required.",
   term: "Term",
+  termrequire: "Term is required",
+  principleAmtrequire: "Principal Amount is required",
   interestRs: "Interest Rs.",
   rateDefination: "Rate Defination",
   Customer: "Customer",
@@ -2023,6 +2100,10 @@ export const en_language_data = {
   BeneficiaryAccountName: "Beneficiary Account Name",
   BeneficiaryAddress: "Beneficiary Address",
   maturityDateValidationMsg: "Maturity Date Should be Greater than AsOn Date",
+  EnterBranchCode: "Enter Branch Code",
+  EnterAccountName: "Enter Account Name",
+  EnterDepositeDate: "Enter Deposite Date",
+  EnterMaturityDate: "Enter Maturity Date",
 
   // Daily Transaction Import
   errors: "Errors",
@@ -2061,6 +2142,9 @@ export const en_language_data = {
   FinalInstallment: "Final Installment",
   ResolutionNo: "Resolution No.",
   Subsidy: "Subsidy",
+  ConfirmRestrictionMsg: "You can not confirm your own rescheduled loan",
+  ConfirmReschedulingMessage: "Are you sure to confirm rescheduling?",
+  RejectReschedulingMessage: "Are you sure to delete/reject rescheduling?",
   confirmMsg: "Record has been confirmed.",
   FDRDDtl: "FD/RD Detail",
   OrderingNameRequired: "Ordering A/c Name is Required",
@@ -2075,9 +2159,9 @@ export const en_language_data = {
   EnterOrderingAcName: "Enter Ordering A/c Name",
   EnterOrderingAcAddress: "Enter Ordering A/c Address",
   EnterOrderingAcContact: "Enter Ordering A/c Contact",
-  EnterBeneficiaryAccountType: "Enter Beneficiary Account Type",
+  EnterBeneficiaryAccountType: "Select Beneficiary Account Type",
   EnterBeneficiaryContact: "Enter Beneficiary Contact",
-  EnterBeneficiaryAccountNumber: "Enter Beneficiary Account Number",
+  EnterBeneficiaryAccountNumber: "Select Beneficiary Account Number",
   EnterBeneficiaryAccountName: "Enter Beneficiary Account Name",
   EnterBeneficiaryAddress: "Enter Beneficiary Address",
   EnterIFSCCode: "Enter IFSC Code",
@@ -2095,4 +2179,43 @@ export const en_language_data = {
   Sign: "Sign",
   LabelName: "Label Name",
   ViewMaster: "View Master",
+  Advice: "Advice",
+  // Parameter Master
+  ModifiedDateTime: "Modified Date-Time",
+  ModifiedMachineName: "Modified Machine Name",
+  VerifiedMachineName: "Verified Machine Name",
+  //FD Interest Payment Confirmation
+  CompanyCode: "Company Code",
+  // Security User
+  DefaultBankRequired: "Default Bank is required",
+  DefaultBranchRequired: "Default Branch is required",
+  UsernameRequired: "User Name is required",
+  EnterUsernames: "Enter User Name",
+  GroupName: "Group Name",
+  SelectGroupName: "Select Group Name",
+  CustomerIdName: "Customer ID Name",
+  EnterCustomerIDName: "Enter Customer ID Name",
+  ReportingName: "Reporting Name",
+  EnterReportingName: "Enter Reporting Name",
+  UserLevel: "User Level",
+  EnterUserLevel: "Enter User Level",
+  UserLevelRequired: "User Level is required",
+  DefaultBank: "Default Bank",
+  SelectDefaultBank: "Select Default Bank",
+  SelectDefaultBranch: "Select Default Branch",
+  ClgSlipNoStartFrom: "Clg.Slip No.Start From",
+  DigitalSignConfig: "Digital Sign Config",
+  ADUsername: "Ad Username",
+  ADUsernameRequire: "Ad User Name is required",
+  AllowRelease: "Allow Release",
+  AllowDigitalSign: "Allow Digital Sign",
+  AllowConcurrentAppLogin: "Allow Concurrent App. Login",
+  DebitCashLimit: "Debit Cash Limit",
+  DebitClearingLimit: "Debit Clearing Limit",
+  DebitTransferLimit: "Debit Transfer Limit",
+  CreditCashLimit: "Credit Cash Limit",
+  CreditClearingLimit: "Credit Clearing Limit",
+  CreditTransferLimit: "Credit Transfer Limit",
+  DoubleClickForEditDetail: "Double click or right click for Edit-Detail.",
+  RDAC_NO: "RD A/c No.",
 };

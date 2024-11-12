@@ -216,6 +216,7 @@ export const CTSOutwardClearingFormMetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -837,6 +838,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
                       messageTitle: "Confirmation",
                       message: data?.[0]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
                     if (buttonNames === "Yes") {
                       return {
@@ -1431,7 +1433,6 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           label: "Description",
           type: "text",
           fullWidth: true,
-          required: true,
           maxLength: 100,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
         },
@@ -1554,12 +1555,14 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                   messageTitle: "Information",
                   message: postData?.[0]?.ERR_MSG,
                   buttonNames: ["Ok"],
+                  icon: "INFO",
                 });
                 if (buttonName === "Ok") {
                   let continueButtonName = await formState?.MessageBox({
                     messageTitle: "Confirmation",
                     message: "AreYouSureContinue",
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
                   if (continueButtonName === "No") {
                     return {
@@ -1594,6 +1597,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                     messageTitle: "Confirmation",
                     message: postData[i]?.O_MESSAGE,
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
 
                   btn99 = btnName;
@@ -1910,7 +1914,6 @@ export const RetrieveFormConfigMetaData = {
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
-      requestProps: "ZONE_TRAN_TYPE",
     },
     {
       render: {
@@ -2026,6 +2029,10 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 100,
       maxWidth: 150,
+      isDisplayTotal: true,
+      setFooterValue(total, rows) {
+        return [rows.length ?? 0];
+      },
     },
     {
       accessor: "CHQ_CNT",
@@ -2060,6 +2067,23 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 500,
       isDisplayTotal: true,
+      footerLabel: "Total Cheque Amount",
+      setFooterValue(total, rows) {
+        const filteredRows = rows?.filter(
+          ({ original }) => original.CHQ_AMT_LIST
+        );
+        const sum =
+          filteredRows?.reduce((acc, { original }) => {
+            // Split the CHQ_AMT_LIST by commas, convert each to a number, and sum them
+            const chqAmtListSum = original.CHQ_AMT_LIST.split(",")
+              .map(Number) // Convert to numbers
+              .reduce((a, b) => a + b, 0); // Sum the numbers in this row
+            return acc + chqAmtListSum; // Add to the accumulator
+          }, 0) ?? 0;
+        const formattedSum = sum.toFixed(2);
+
+        return [formattedSum];
+      },
     },
     {
       accessor: "TRAN_DT",

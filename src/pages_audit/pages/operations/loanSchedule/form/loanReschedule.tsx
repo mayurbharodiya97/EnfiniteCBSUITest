@@ -35,11 +35,13 @@ import {
   usePopupContext,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
+import { cloneDeep } from "lodash";
 
 export const LoanRescheduleForm = ({
   isDataChangedRef,
   closeDialog,
   handleFormClose,
+  formFlag,
 }) => {
   const isErrorFuncRef = useRef<any>(null);
   const { state: rows }: any = useLocation();
@@ -271,6 +273,7 @@ export const LoanRescheduleForm = ({
                   messageTitle: "Confirmation",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 if (btnName === "No") {
                   endSubmit(true);
@@ -300,6 +303,7 @@ export const LoanRescheduleForm = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         const savePara = {
@@ -340,6 +344,7 @@ export const LoanRescheduleForm = ({
                   messageTitle: "Confirmation",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 if (btnName === "No") {
                   endSubmit(true);
@@ -371,30 +376,23 @@ export const LoanRescheduleForm = ({
     }
   };
 
-  useEffect(() => {
-    LoanScheduleGridMetaData.gridConfig.hideHeader = true;
-    LoanScheduleGridMetaData.gridConfig.containerHeight = {
+  let headerGridMetadata: GridMetaDataType = {} as GridMetaDataType;
+  headerGridMetadata = cloneDeep(LoanScheduleGridMetaData) as GridMetaDataType;
+  let gridMetadata: GridMetaDataType = {} as GridMetaDataType;
+  gridMetadata = cloneDeep(LoanScheduleDetailsGridMetadata) as GridMetaDataType;
+
+  if (formFlag === "RESCHEDULE") {
+    headerGridMetadata.gridConfig.hideHeader = true;
+    headerGridMetadata.gridConfig.containerHeight = {
       min: "15vh",
       max: "15vh",
     };
-    LoanScheduleDetailsGridMetadata.gridConfig.containerHeight = {
+    gridMetadata.gridConfig.containerHeight = {
       min: "25vh",
       max: "25vh",
     };
-    LoanScheduleDetailsGridMetadata.columns[8].isVisible = false;
-    return () => {
-      LoanScheduleGridMetaData.gridConfig.hideHeader = false;
-      LoanScheduleGridMetaData.gridConfig.containerHeight = {
-        min: "28vh",
-        max: "28vh",
-      };
-      LoanScheduleDetailsGridMetadata.gridConfig.containerHeight = {
-        min: "45vh",
-        max: "45vh",
-      };
-      LoanScheduleDetailsGridMetadata.columns[8].isVisible = true;
-    };
-  }, []);
+    gridMetadata.columns[8].isVisible = false;
+  }
 
   const handleDeleteData = async () => {
     if (Array.isArray(gridData) && gridData.length > 0) {
@@ -403,6 +401,7 @@ export const LoanRescheduleForm = ({
         message: "DeleteProceedMessage",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (confirmation === "Yes") {
         const deletePara = {
@@ -467,6 +466,11 @@ export const LoanRescheduleForm = ({
       );
     }
   };
+
+  console.log(
+    LoanScheduleGridMetaData.gridConfig.hideHeader,
+    LoanScheduleGridMetaData.gridConfig.containerHeight
+  );
 
   return (
     <>
@@ -591,7 +595,7 @@ export const LoanRescheduleForm = ({
           )}
           <GridWrapper
             key={`loanRescheduleGridData`}
-            finalMetaData={LoanScheduleGridMetaData as GridMetaDataType}
+            finalMetaData={headerGridMetadata as GridMetaDataType}
             data={gridData ?? []}
             setData={setGridData}
             loading={gridlsLoading || gridIsFetching}
@@ -606,7 +610,7 @@ export const LoanRescheduleForm = ({
           )}
           <GridWrapper
             key={`loanRescheduleDetailsData`}
-            finalMetaData={LoanScheduleDetailsGridMetadata as GridMetaDataType}
+            finalMetaData={gridMetadata as GridMetaDataType}
             data={detailsGridData ?? []}
             setData={setDetailsGridData}
             loading={detaiIsFetching || detailsLoading}
@@ -621,6 +625,7 @@ export const LoanRescheduleFormWrapper = ({
   isDataChangedRef,
   closeDialog,
   handleFormClose,
+  formFlag,
 }) => {
   return (
     <Dialog
@@ -638,6 +643,7 @@ export const LoanRescheduleFormWrapper = ({
         isDataChangedRef={isDataChangedRef}
         closeDialog={closeDialog}
         handleFormClose={handleFormClose}
+        formFlag={formFlag}
       />
     </Dialog>
   );

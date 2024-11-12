@@ -847,6 +847,50 @@ export const getCustDocumentOpDtl = async ({
   }
 };
 
+export const validateNewAcct = async (reqData) => {
+  const {
+    IsNewRow,
+    REQ_CD,
+    REQ_FLAG,
+    SAVE_FLAG,
+    CUSTOMER_ID,
+    ACCT_TYPE,
+    ACCT_CD,
+    COMP_CD,
+    formData,
+    OP_DATE,
+  } = reqData;
+  const jointTabs = [
+    "JOINT_HOLDER_DTL",
+    "JOINT_NOMINEE_DTL",
+    "JOINT_GUARDIAN_DTL",
+    "JOINT_GUARANTOR_DTL",
+    "JOINT_HYPOTHICATION_DTL",
+    "JOINT_SIGNATORY_DTL",
+    "JOINT_INTRODUCTOR_DTL",
+  ];
+  let JOINT_ACCOUNT_DTL: any[] = [];
+  jointTabs.forEach((jointTab) => {
+    if (Object.hasOwn(formData, jointTab)) {
+      JOINT_ACCOUNT_DTL = [...JOINT_ACCOUNT_DTL, formData[jointTab]];
+    }
+  });
+  const payload = {
+    IsNewRow,
+    SCREEN_REF: "MST/002",
+    MAIN_DETAIL: { ...formData["MAIN_DETAIL"] },
+    JOINT_ACCOUNT_DTL,
+    DOC_MST: formData["DOC_MST"],
+  };
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEACCOUNTDTL", payload);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const accountSave = async (reqData) => {
   const {
     IsNewRow,

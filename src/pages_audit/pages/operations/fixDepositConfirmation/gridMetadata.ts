@@ -18,8 +18,8 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
     pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
-      min: "77vh",
-      max: "77vh",
+      min: "72vh",
+      max: "72vh",
     },
     isCusrsorFocused: true,
     allowRowSelection: false,
@@ -38,11 +38,11 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "BRANCH_CD",
-      columnName: "Branch",
+      columnName: "BranchCode",
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 90,
+      width: 110,
       minWidth: 40,
       maxWidth: 150,
     },
@@ -117,6 +117,24 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
       minWidth: 130,
       maxWidth: 170,
     },
+    {
+      accessor: "ADVICE",
+      columnName: "",
+      componentType: "buttonRowCell",
+      buttonLabel: "Advice",
+      sequence: 14,
+      alignment: "right",
+      width: 100,
+      minWidth: 70,
+      maxWidth: 150,
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (original?.TRN_FLAG === "P") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
   ],
 };
 
@@ -170,7 +188,7 @@ export const FDConfDetailsGridMetadata: GridMetaDataType = {
       sequence: 3,
       alignment: "left",
       componentType: "default",
-      width: 80,
+      width: 85,
       minWidth: 50,
       maxWidth: 150,
     },
@@ -242,7 +260,7 @@ export const FDConfDetailsGridMetadata: GridMetaDataType = {
       sequence: 10,
       alignment: "left",
       componentType: "default",
-      width: 70,
+      width: 65,
       minWidth: 50,
       maxWidth: 150,
       showTooltip: true,

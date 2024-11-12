@@ -79,9 +79,9 @@ const AuditData = ({ griddata, open, onClose }) => {
     return `${day}-${month}-${year}`;
   };
 
-  AuditgridMetaData.gridConfig.gridLabel = `Execute Date : ${formatDate(
+  AuditgridMetaData.gridConfig.gridLabel = `SI Audit Trail Execute Date : ${formatDate(
     griddata.EXECUTE_DT
-  )} SI Audit Trail`;
+  )}`;
   return (
     <Fragment>
       <Dialog

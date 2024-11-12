@@ -143,7 +143,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
       },
       name: "BENEFIACCTDTL",
       isScreenStyle: true,
-      displayCountName: "BeneficiaryACDetails",
+      displayCountName: "Record",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       addRowFn: (data) => {
         const dataArray = Array.isArray(data?.BENEFIACCTDTL)

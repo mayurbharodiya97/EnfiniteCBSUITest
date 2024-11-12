@@ -2,7 +2,7 @@ import { Box, Dialog } from "@mui/material";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { fetchFDPaymentConfAcct } from "../FDInterestPaymentConf/api";
 import { updateRecInterestPaymentEntry } from "../recInterestPayment/api";
 import { FdInterestPaymentFormMetaData } from "../FDInterestPayment/viewDetails/metaData";
@@ -20,6 +20,7 @@ import {
   SubmitFnType,
   Transition,
   usePopupContext,
+  utilFunction,
 } from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { FdInterestPaymentConfmGridMetaData } from "../FDInterestPaymentConf/FdInterestPaymentConfmMetaData";
@@ -72,8 +73,11 @@ export const RecInterestPaymentConf = () => {
     updateRecInterestPaymentEntry,
     {
       onSuccess: async (data) => {
-        enqueueSnackbar(t("RecordRemovedMsg"), {
-          variant: "success",
+        const btnName = await MessageBox({
+          messageTitle: "Success",
+          message: "RecordReject",
+          buttonNames: ["Ok"],
+          icon: "SUCCESS",
         });
         CloseMessageBox();
         handleFDDetailClose();
@@ -90,8 +94,11 @@ export const RecInterestPaymentConf = () => {
     API.doRecPaymentInstruEntryConfm,
     {
       onSuccess: async (...data) => {
-        enqueueSnackbar(t("confirmMsg"), {
-          variant: "success",
+        const btnName = await MessageBox({
+          messageTitle: "Success",
+          message: "confirmMsg",
+          buttonNames: ["Ok"],
+          icon: "SUCCESS",
         });
 
         CloseMessageBox();
@@ -145,6 +152,7 @@ export const RecInterestPaymentConf = () => {
           message: "ConfirmMsg",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           doRecPaymentInstruEntryConfm.mutate({
@@ -162,6 +170,7 @@ export const RecInterestPaymentConf = () => {
         message: "ConfirmReject",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         deleteFDInterestPaymentEntry.mutate({
@@ -193,6 +202,11 @@ export const RecInterestPaymentConf = () => {
       keysToRemove.forEach((key) => queryClient.removeQueries(key));
     };
   }, []);
+  FdInterestPaymentFormMetaData.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    false
+  );
 
   return (
     <Fragment>
@@ -261,6 +275,16 @@ export const RecInterestPaymentConf = () => {
               initialValues={{
                 ...recPaymentInstructions?.[0],
                 ACCT_NAME: rowData?.[0]?.data?.ACCT_NM,
+                NEFT_FORM_HIDDEN:
+                  recPaymentInstructions?.[0]?.PAYMENT_MODE === "NEFT" ||
+                  recPaymentInstructions?.[0]?.PAYMENT_MODE === ""
+                    ? "SHOW"
+                    : "HIDE",
+                BANK_FORM_HIDDEN:
+                  recPaymentInstructions?.[0]?.PAYMENT_MODE === "BANKACCT" ||
+                  recPaymentInstructions?.[0]?.PAYMENT_MODE === ""
+                    ? "SHOW"
+                    : "HIDE",
               }}
               displayMode={"view"}
               formState={{
@@ -269,31 +293,29 @@ export const RecInterestPaymentConf = () => {
             >
               {({ isSubmitting, handleSubmit }) => (
                 <>
-                  <Box display="flex" gap={2}>
-                    <GradientButton
-                      onClick={(event) => {
-                        handleSubmit(event, "Confirm");
-                      }}
-                      disabled={rowData?.[0]?.data?.ALLOW_CONFIRM === "N"}
-                      color={"primary"}
-                    >
-                      {t("Confirm")}
-                    </GradientButton>
-                    <GradientButton
-                      onClick={(event) => {
-                        handleSubmit(event, "Reject");
-                      }}
-                      color={"primary"}
-                    >
-                      {t("Reject")}
-                    </GradientButton>
-                    <GradientButton
-                      onClick={handleFDDetailClose}
-                      color={"primary"}
-                    >
-                      {t("Close")}
-                    </GradientButton>
-                  </Box>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Confirm");
+                    }}
+                    disabled={rowData?.[0]?.data?.ALLOW_CONFIRM === "N"}
+                    color={"primary"}
+                  >
+                    {t("Confirm")}
+                  </GradientButton>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Reject");
+                    }}
+                    color={"primary"}
+                  >
+                    {t("Reject")}
+                  </GradientButton>
+                  <GradientButton
+                    onClick={handleFDDetailClose}
+                    color={"primary"}
+                  >
+                    {t("Close")}
+                  </GradientButton>
                 </>
               )}
             </FormWrapper>

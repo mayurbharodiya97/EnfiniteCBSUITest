@@ -74,6 +74,7 @@ export const LienReasonMstForm = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         mutation.mutate(
@@ -155,7 +156,6 @@ export const LienReasonMstForm = ({
                         setFormMode("view");
                       }}
                       color={"primary"}
-                      disabled={isSubmitting}
                     >
                       {t("Cancel")}
                     </GradientButton>

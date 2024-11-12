@@ -460,9 +460,11 @@ export const getVoucherList = async (reqdata) => {
     throw DefaultErrorObject(message);
   }
 };
-export const getDDtransaction = async () => {
+export const getDDtransactionScreenList = async ({ FLAG }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETPAYSLIPDOCDTL", {});
+    await AuthSDK.internalFetcher("GETPAYSLIPDOCDTL", {
+      FLAG: FLAG,
+    });
 
   if (status === "0") {
     let responseData = data;

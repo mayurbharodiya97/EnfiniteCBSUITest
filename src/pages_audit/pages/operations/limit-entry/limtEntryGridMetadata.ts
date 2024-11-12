@@ -72,6 +72,20 @@ export const limitEntryGridMetaData: GridMetaDataType = {
       width: 114,
       minWidth: 90,
       maxWidth: 150,
+      isDisplayTotal: true,
+      footerLabel: "{0}",
+      footerIsMultivalue: true,
+      setFooterValue(total, rows) {
+        const maxDate: any =
+          rows.length > 0
+            ? new Date(
+                Math.max(
+                  ...rows.map(({ original }) => new Date(original?.EXPIRY_DT))
+                )
+              )
+            : null;
+        return maxDate ? [new Date(maxDate).toLocaleDateString("en-UK")] : [""];
+      },
     },
     {
       accessor: "INT_RATE",

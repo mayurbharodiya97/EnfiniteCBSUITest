@@ -81,11 +81,11 @@ const Form15GHEntry = ({
         authState?.menulistdata,
         false
       );
-      const label2 = `${label ?? ""}\u00A0\u00A0 ${
-        formData?.CONFIRMED_DIS ?? ""
-      }\u00A0\u00A0 ${t("Uploaded")}: ${
-        formData?.UPLOAD_DIS ?? ""
-      }\u00A0\u00A0`;
+      const label2 = `${label ?? ""}\u00A0\u00A0||\u00A0 ${t(
+        "ConfirmStatus"
+      )}: ${formData?.CONFIRMED_DIS ?? ""}\u00A0\u00A0||\u00A0\u00A0${t(
+        "Uploaded"
+      )}: ${formData?.UPLOAD_DIS ?? ""}\u00A0\u00A0`;
       setMetadata((prevMetadata) => {
         const newMetadata = cloneDeep(prevMetadata);
         newMetadata.masterForm.form.label = label2;
@@ -158,6 +158,7 @@ const Form15GHEntry = ({
           message: isErrorFuncRef?.current?.data?.PRINT_MSG,
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (confirmation === "Yes") {
           let newTranCD = data?.[0]?.TRAN_CD.endsWith(".00")
@@ -272,7 +273,7 @@ const Form15GHEntry = ({
     },
     onSuccess: (data, variables) => {
       if (variables?._isDeleteRow === false) {
-        enqueueSnackbar(data, {
+        enqueueSnackbar(t("FormConfirmationMsg"), {
           variant: "success",
         });
         isDataChangedRef.current = true;
@@ -498,6 +499,7 @@ const Form15GHEntry = ({
         messageTitle: "ValidationFailed",
         message: "CannotDeleteConfirmedForm",
         buttonNames: ["Ok"],
+        icon: "ERROR",
       });
     } else {
       const confirmation = await MessageBox({
@@ -505,6 +507,7 @@ const Form15GHEntry = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (confirmation === "Yes") {
         const deleteData = {
@@ -708,6 +711,7 @@ const Form15GHEntry = ({
                           messageTitle: "InvalidConfirmation",
                           message: "ConfirmRestrictionMessage",
                           buttonNames: ["Ok"],
+                          icon: "ERROR",
                         });
                       } else {
                         const confirmation = await MessageBox({
@@ -715,6 +719,7 @@ const Form15GHEntry = ({
                           messageTitle: "Confirmation",
                           buttonNames: ["Yes", "No"],
                           loadingBtnName: ["Yes"],
+                          icon: "CONFIRM",
                         });
                         if (confirmation === "Yes") {
                           handleSubmit(event, "Confirm");
@@ -733,6 +738,7 @@ const Form15GHEntry = ({
                         message: "RejectFormMessage",
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (confirmation === "Yes") {
                         handleSubmit(event, "Reject");

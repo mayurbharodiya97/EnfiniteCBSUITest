@@ -1,4 +1,4 @@
-import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
+import { AppBar, Dialog, LinearProgress } from "@mui/material";
 import { dayLimitFormMetaData } from "./dayLimitFormMetadata";
 import { t } from "i18next";
 import { useLocation } from "react-router-dom";
@@ -13,6 +13,7 @@ import {
   MetaDataType,
   ClearCacheProvider,
   utilFunction,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { enqueueSnackbar } from "notistack";
@@ -22,6 +23,8 @@ const DayLimitCustom = ({ navigate }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
 
   const dailyLimitData: any = useMutation("validateDeleteData", dayLimitData);
+
+  //API calling for data insert and update
   const crudDayLimit: any = useMutation(
     "validateDeleteData",
     crudDayLimitDataIMPS,
@@ -44,6 +47,7 @@ const DayLimitCustom = ({ navigate }) => {
     }
   );
 
+  // affter doubleclick on row so ope component and API calling for  initial value
   useEffect(() => {
     return () => {
       dailyLimitData.mutate({
@@ -114,7 +118,7 @@ const DayLimitCustom = ({ navigate }) => {
     });
     let buttonName = await MessageBox({
       messageTitle: "confirmation",
-      message: "Do You Want Save Changes ?",
+      message: "DoYouWantSaveChanges",
       defFocusBtnName: "Yes",
       buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],
@@ -189,18 +193,18 @@ const DayLimitCustom = ({ navigate }) => {
               <>
                 {dailyLimitData?.data?.[0]?.READ_ONLY !== "Y" ||
                 rows?.FLAG !== "C" ? (
-                  <Button
+                  <GradientButton
                     color={"primary"}
                     onClick={(event) => handleSubmit(event, "BUTTON_CLICK")}
                     disabled={isSubmitting}
                   >
                     {t("Save")}
-                  </Button>
+                  </GradientButton>
                 ) : null}
 
-                <Button onClick={() => navigate(".")} color={"primary"}>
+                <GradientButton onClick={() => navigate(".")} color={"primary"}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             )}
           </FormWrapper>

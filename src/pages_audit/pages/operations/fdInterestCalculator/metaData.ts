@@ -7,6 +7,7 @@ import {
   parse,
 } from "date-fns";
 import * as API from "./api";
+import { Label, Placeholder } from "reactstrap";
 export const metaData = {
   form: {
     name: "",
@@ -417,6 +418,10 @@ export const metaData = {
         { label: "Month(s)", value: "M" },
         { label: "Year(s)", value: "Y" },
       ],
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
       defaultValue: "D",
       fullWidth: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 1, xl: 1 },
@@ -506,10 +511,15 @@ export const metaData = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "PERIOD_NO_D",
       label: "",
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
       GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1, xl: 1 },
       dependentFields: [
         "CALCSWITCH",
@@ -590,14 +600,15 @@ export const metaData = {
       },
       setFieldLabel: (dependentFields, currVal) => {
         let duration = dependentFields.PERIOD_CD_D?.value;
+        console.log(duration);
 
         return duration === "D"
-          ? "Day(s)"
+          ? { label: "Day(s)" }
           : duration === "M"
-          ? "Month(s)"
+          ? { label: "Month(s)" }
           : duration === "Y"
-          ? "Year(s)"
-          : "Day(s)";
+          ? { label: "Year(s)" }
+          : { label: "Day(s)" };
       },
 
       shouldExclude: (val1, dependent) => {
@@ -614,6 +625,10 @@ export const metaData = {
       name: "PRINCIPAL_AMT_D",
       required: true,
       label: "PrincipalAmount",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["principleAmtrequire"] }],
+      },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: [
         "CALCSWITCH",
@@ -704,7 +719,9 @@ export const metaData = {
         componentType: "rateOfInt",
       },
       name: "INT_RATE_D",
-      label: "Rate ",
+      label: "Rate",
+      defaultValue: "0.00",
+      Placeholder: "0.00",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       required: true,
       schemaValidation: {
@@ -742,14 +759,15 @@ export const metaData = {
         let branchCd = dependentFields?.BRANCH_CD?.value;
         let catCd = dependentFields?.CATEG_CD_D?.value;
         let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = format(
-          new Date(dependentFields?.MATURITY_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
+        let tranDate = dependentFields?.TRAN_DT_D?.value
+          ? format(new Date(dependentFields?.TRAN_DT_D?.value), "dd/MMM/yyyy")
+          : "";
+        let maturityDate = dependentFields?.MATURITY_DT_D?.value
+          ? format(
+              new Date(dependentFields?.MATURITY_DT_D?.value),
+              "dd/MMM/yyyy"
+            )
+          : "";
         let reqData = {
           duration,
           period,
@@ -811,6 +829,10 @@ export const metaData = {
         { label: "Half-Yearly", value: "H" },
         { label: "Yearly", value: "Y" },
       ],
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["termrequire"] }],
+      },
       defaultValue: "M",
       fullWidth: true,
       GridProps: { xs: 1.5, sm: 1.5, md: 2, lg: 2, xl: 2 },
@@ -845,14 +867,15 @@ export const metaData = {
         let branchCd = dependentFields?.BRANCH_CD?.value;
         let catCd = dependentFields?.CATEG_CD_D?.value;
         let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = format(
-          new Date(dependentFields?.MATURITY_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
+        let tranDate = dependentFields?.TRAN_DT_D?.value
+          ? format(new Date(dependentFields?.TRAN_DT_D?.value), "dd/MMM/yyyy")
+          : "";
+        let maturityDate = dependentFields?.MATURITY_DT_D?.value
+          ? format(
+              new Date(dependentFields?.MATURITY_DT_D?.value),
+              "dd/MMM/yyyy"
+            )
+          : "";
         let reqData = {
           duration,
           period,
@@ -1080,6 +1103,7 @@ export const metaData = {
       name: "ACCT_TYPE_P",
       label: "Type",
       validationRun: "onBlur",
+      required: true,
       _optionsKey: "gettypeDDWdata",
       options: (dependentValue, formState, _, authState) => {
         return API.gettypeDDWdata({
@@ -1089,7 +1113,6 @@ export const metaData = {
         });
       },
       fullWidth: true,
-      required: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["typeRequired"] }],
@@ -1459,9 +1482,7 @@ export const metaData = {
       validate: (currentField, dependentField) => {
         if (
           new Date(currentField?.value) <
-            new Date(dependentField?.TRAN_DT_D?.value) ||
-          new Date(currentField?.value) ===
-            new Date(dependentField?.TRAN_DT_D?.value)
+          new Date(dependentField?.TRAN_DT_P?.value)
         ) {
           return "maturityDateValidationMsg";
         }
@@ -1481,7 +1502,9 @@ export const metaData = {
       label: "Period",
       defaultValue: "Day",
       fullWidth: true,
+
       isReadOnly: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: ["CALCSWITCH"],
 
@@ -1607,6 +1630,10 @@ export const metaData = {
       name: "PRINCIPAL_AMT_P",
       required: true,
       label: "PrincipalAmount",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["principleAmtrequire"] }],
+      },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: [
         "CALCSWITCH",
@@ -1698,6 +1725,8 @@ export const metaData = {
       },
       name: "INT_RATE_P",
       label: "Rate",
+      defaultValue: "0.00",
+      Placeholder: "0.00",
       required: true,
       schemaValidation: {
         type: "string",
@@ -1860,6 +1889,10 @@ export const metaData = {
         { label: "Yearly", value: "Y" },
       ],
       defaultValue: "M",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["termrequire"] }],
+      },
       fullWidth: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: [
@@ -2158,7 +2191,6 @@ export const metaData = {
       name: "TRAN_DT_S",
       label: "asonDate",
       defaultValue: new Date(),
-      isReadOnly: true,
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
@@ -2193,23 +2225,24 @@ export const metaData = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "PERIOD_NO_S",
       label: "",
       GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1, xl: 1 },
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       dependentFields: ["CALCSWITCH", "PERIOD_NO_DISP_S"],
       setFieldLabel: (dependentFields, currVal) => {
         let duration = dependentFields.PERIOD_NO_DISP_S?.value;
         console.log(duration);
 
         return duration === "D"
-          ? "Day(s)"
+          ? { label: "Day(s)" }
           : duration === "M"
-          ? "Month(s)"
+          ? { label: "Month(s)" }
           : duration === "Y"
-          ? "Year(s)"
-          : "Day(s)";
+          ? { label: "Year(s)" }
+          : { label: "Day(s)" };
       },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "S") {
@@ -2398,7 +2431,7 @@ export const metaData = {
         componentType: "autocomplete",
       },
       name: "RATE_DEFINATION_F",
-      label: "rateDefination",
+      label: "Defination",
       _optionsKey: "getFdDefinationDdw",
       options: (dependentValue, formState, _, authState) => {
         return API.getFdDefinationDdw({
@@ -2425,7 +2458,6 @@ export const metaData = {
         componentType: "textField",
       },
       name: "REMARK_F",
-      required: true,
       defaultValue: "Customer",
       label: "proposedto",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },

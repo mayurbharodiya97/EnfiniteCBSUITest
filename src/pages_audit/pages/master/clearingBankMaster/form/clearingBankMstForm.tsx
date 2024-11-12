@@ -77,6 +77,7 @@ export const ClearingBankMstForm = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         mutation.mutate(
@@ -159,7 +160,6 @@ export const ClearingBankMstForm = ({
                         setFormMode("view");
                       }}
                       color={"primary"}
-                      disabled={isSubmitting}
                     >
                       {t("Cancel")}
                     </GradientButton>

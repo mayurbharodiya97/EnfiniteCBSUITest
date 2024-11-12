@@ -81,6 +81,7 @@ export const AdvocateMstForm = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         mutation.mutate(
@@ -175,7 +176,6 @@ export const AdvocateMstForm = ({
                         setFormMode("view");
                       }}
                       color={"primary"}
-                      disabled={isSubmitting}
                     >
                       {t("Cancel")}
                     </GradientButton>

@@ -44,15 +44,6 @@ const actions: ActionTypes[] = [
     actionLabel: "Delete",
     multiple: false,
     rowDoubleClick: false,
-    shouldExclude: (data, authDetails) => {
-      if (Array.isArray(data) && data.length > 0) {
-        if (Boolean(data[0]?.data?.STATUS)) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    },
   },
 ];
 
@@ -74,10 +65,12 @@ export const AdvocateMstGrid = () => {
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
             ...isDeleteDataRef.current?.data,
+            STATUS: Boolean(isDeleteDataRef.current?.data?.STATUS) ? "I" : "A",
             _isDeleteRow: true,
           });
         }

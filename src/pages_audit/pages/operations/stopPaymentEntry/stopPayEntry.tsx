@@ -1,7 +1,6 @@
 import {
   AppBar,
   Box,
-  Button,
   Container,
   Grid,
   LinearProgress,
@@ -23,6 +22,7 @@ import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
+import { GeneralAPI } from "registry/fns/functions";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
 
@@ -38,6 +38,7 @@ import {
   FormWrapper,
   MetaDataType,
   utilFunction,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { cloneDeep } from "lodash";
 
@@ -54,7 +55,6 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const reqDataRef = useRef<any>({});
-  const { insertReq, deleteReq } = reqDataRef.current;
   const stopPaymentDtlForTrnmetaData = useRef<any>(null);
 
   const releaseActions: ActionTypes[] = [
@@ -75,10 +75,7 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
       },
     }
   );
-  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
-    any,
-    any
-  >(
+  const { data, isLoading, refetch, error, isError } = useQuery<any, any>(
     ["getStopPaymentList", { reqData }],
     () =>
       API.stopPayDetail({
@@ -93,36 +90,6 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
     "validateInsert",
     API.validateInsert,
     {
-      onSuccess: (data, variables) => {
-        validateInsertData.isLoading = false;
-        async function insertData() {
-          if (data?.O_STATUS !== "0") {
-            let res = await MessageBox({
-              messageTitle: "confirmation",
-              message:
-                variables?.FLAG === "P"
-                  ? "InsertStopPaymentMsg"
-                  : variables?.FLAG === "S"
-                  ? "InsertStopPaymentMsg2"
-                  : variables?.FLAG === "D"
-                  ? "InsertStopPaymentMsg3"
-                  : "",
-              buttonNames: ["Yes", "No"],
-              defFocusBtnName: "Yes",
-              loadingBtnName: ["Yes"],
-            });
-            if (res === "Yes") {
-              crudStopPay.mutate({ ...reqDataRef?.current?.insertReq });
-            }
-          } else {
-            MessageBox({
-              messageTitle: "ValidationAlert",
-              message: data?.[0]?.O_MESSAGE,
-            });
-          }
-        }
-        insertData();
-      },
       onError: (error: any) => {
         setIsData((old) => ({ ...old, closeAlert: true }));
       },
@@ -232,6 +199,61 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
         });
     }
   }
+
+  const onSubmitHandler = async (data: any, displayData, endSubmit) => {
+    let insertReq = {
+      ...data,
+      CHEQUE_DT: await GeneralAPI.getDateWithCurrentTime(data?.CHEQUE_DT),
+      TRAN_DT: data?.TRAN_DT || data?.SURR_DT,
+      _isNewRow: true,
+    };
+    validateInsertData.mutate(
+      {
+        BRANCH_CD: data?.BRANCH_CD,
+        ACCT_TYPE: data?.ACCT_TYPE,
+        ACCT_CD: data?.ACCT_CD,
+        CHEQUE_FROM: data?.CHEQUE_FROM,
+        CHEQUE_TO: data?.CHEQUE_TO,
+        RELEASE_DATE: "",
+        SCREEN_REF: "ETRN/048",
+      },
+      {
+        onSuccess: (respdata) => {
+          async function insertData() {
+            if (respdata?.[0]?.O_STATUS !== "0") {
+              MessageBox({
+                messageTitle: "ValidationAlert",
+                message: respdata?.[0]?.O_MESSAGE,
+                defFocusBtnName: "Ok",
+              });
+            } else {
+              let res = await MessageBox({
+                messageTitle: "confirmation",
+                message:
+                  data?.FLAG === "P"
+                    ? "InsertStopPaymentMsg"
+                    : data?.FLAG === "S"
+                    ? "InsertStopPaymentMsg2"
+                    : data?.FLAG === "D"
+                    ? "InsertStopPaymentMsg3"
+                    : "",
+                buttonNames: ["Yes", "No"],
+                defFocusBtnName: "Yes",
+                loadingBtnName: ["Yes"],
+              });
+              if (res === "Yes") {
+                crudStopPay.mutate(insertReq);
+              }
+            }
+          }
+          insertData();
+        },
+      }
+    );
+
+    //@ts-ignore
+    endSubmit(true);
+  };
 
   return (
     <>
@@ -351,25 +373,7 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
                 <FormWrapper
                   key={"stopPayEntry"}
                   metaData={StopPayEntryMetadata as MetaDataType}
-                  onSubmitHandler={(data: any, displayData, endSubmit) => {
-                    reqDataRef.current.insertReq = {
-                      ...data,
-                      TRAN_DT: data?.TRAN_DT || data?.SURR_DT,
-                      _isNewRow: true,
-                    };
-                    validateInsertData.mutate({
-                      BRANCH_CD: data?.BRANCH_CD,
-                      ACCT_TYPE: data?.ACCT_TYPE,
-                      ACCT_CD: data?.ACCT_CD,
-                      CHEQUE_FROM: data?.CHEQUE_FROM,
-                      CHEQUE_TO: data?.CHEQUE_TO,
-                      RELEASE_DATE: "",
-                      SCREEN_REF: "ETRN/048",
-                    });
-
-                    //@ts-ignore
-                    endSubmit(true);
-                  }}
+                  onSubmitHandler={onSubmitHandler}
                   formState={{ MessageBox: MessageBox }}
                   setDataOnFieldChange={(action, payload) => {
                     if (action === "IS_VISIBLE") {
@@ -383,7 +387,7 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
                 >
                   {({ isSubmitting, handleSubmit }) => (
                     <>
-                      <Button
+                      <GradientButton
                         onClick={(event) => {
                           handleSubmit(event, "Save");
                         }}
@@ -392,7 +396,7 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
                         color={"primary"}
                       >
                         {t("Save")}
-                      </Button>
+                      </GradientButton>
                     </>
                   )}
                 </FormWrapper>
@@ -463,7 +467,7 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
               AcceptbuttonLabelText="Ok"
               CanceltbuttonLabelText="Cancel"
               open={isData.isDelete}
-              rows={deleteReq}
+              rows={reqDataRef?.current?.deleteReq}
               defaultValue={"WRONG ENTRY FROM STOP PAYMENT ENTRY (TRN/048)"}
             />
           )}

@@ -58,7 +58,7 @@ export const PositivePayEntryFormMetadata = {
             CHEQUE_NO: { value: "" },
           };
         },
-        GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
+        GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
       },
       accountTypeMetadata: {
         dependentFields: ["BRANCH_CD"],
@@ -110,7 +110,7 @@ export const PositivePayEntryFormMetadata = {
             };
           }
         },
-        GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
+        GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
       },
       accountCodeMetadata: {
         autoComplete: "off",
@@ -165,6 +165,7 @@ export const PositivePayEntryFormMetadata = {
                 ) ?? "",
               SCREEN_REF: "MST/968",
             };
+            formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
             let btn99, returnVal;
             const getButtonName = async (obj) => {
@@ -173,6 +174,7 @@ export const PositivePayEntryFormMetadata = {
             };
             for (let i = 0; i < postData?.MSG?.length; i++) {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
+                formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
@@ -180,6 +182,7 @@ export const PositivePayEntryFormMetadata = {
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
+                formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
@@ -189,10 +192,12 @@ export const PositivePayEntryFormMetadata = {
                 }
                 returnVal = postData;
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
+                formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -200,6 +205,7 @@ export const PositivePayEntryFormMetadata = {
                   returnVal = "";
                 }
               } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
+                formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
                   returnVal = postData;
                 } else {
@@ -233,6 +239,7 @@ export const PositivePayEntryFormMetadata = {
               CHEQUE_NO: { value: "" },
             };
           } else if (!currentField?.value) {
+            formState?.handleButtonDisable(false);
             return {
               ACCT_NM: { value: "", isFieldFocused: false },
               CHEQUE_NO: {
@@ -244,12 +251,8 @@ export const PositivePayEntryFormMetadata = {
           }
           return {};
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         fullWidth: true,
-        GridProps: { xs: 12, sm: 6, md: 4, lg: 2, xl: 2 },
+        GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
       },
     },
     {
@@ -259,7 +262,7 @@ export const PositivePayEntryFormMetadata = {
       name: "ACCT_NM",
       label: "AccountName",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 6, md: 4.5, lg: 4, xl: 4 },
+      GridProps: { xs: 12, sm: 6, md: 4.5, lg: 4.5, xl: 4.5 },
     },
     {
       render: {
@@ -278,11 +281,7 @@ export const PositivePayEntryFormMetadata = {
       type: "text",
       maxLength: 10,
       autoComplete: "off",
-      textFieldStyle: {
-        "& .MuiInputBase-input": {
-          textAlign: "right",
-        },
-      },
+      className: "textInputFromRight",
       FormatProps: {
         isAllowed: (values) => {
           if (values?.value.length > 10) {
@@ -386,7 +385,7 @@ export const PositivePayEntryFormMetadata = {
           dependentFieldValues?.ACCT_CD?.value &&
           dependentFieldValues?.BRANCH_CD?.value
         ) {
-          let postData = await await GeneralAPI.getChequeNoValidation({
+          const reqParameters = {
             COMP_CD: authState?.companyID ?? "",
             BRANCH_CD: dependentFieldValues["BRANCH_CD"]?.value ?? "",
             ACCT_TYPE: dependentFieldValues["ACCT_TYPE"]?.value ?? "",
@@ -394,7 +393,11 @@ export const PositivePayEntryFormMetadata = {
             CHEQUE_NO: currentField?.value,
             SCREEN_REF: "MST/968",
             TYPE_CD: dependentFieldValues["TYPE_CD"]?.value ?? "",
-          });
+          };
+          formState?.handleButtonDisable(true);
+          const postData = await GeneralAPI.getChequeNoValidation(
+            reqParameters
+          );
 
           let btn99, returnVal;
 
@@ -405,6 +408,7 @@ export const PositivePayEntryFormMetadata = {
 
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.ERR_CODE === "999") {
+              formState?.handleButtonDisable(false);
               const { btnName, obj } = await getButtonName({
                 messageTitle: "ValidationFailed",
                 message: postData[i]?.ERR_MSG,
@@ -412,6 +416,7 @@ export const PositivePayEntryFormMetadata = {
               });
               returnVal = "";
             } else if (postData[i]?.ERR_CODE === "9") {
+              formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Alert",
@@ -421,16 +426,19 @@ export const PositivePayEntryFormMetadata = {
               }
               returnVal = postData;
             } else if (postData[i]?.ERR_CODE === "99") {
+              formState?.handleButtonDisable(false);
               const { btnName, obj } = await getButtonName({
                 messageTitle: "Confirmation",
                 message: postData[i]?.ERR_MSG,
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               btn99 = btnName;
               if (btnName === "No") {
                 returnVal = "";
               }
             } else if (postData[i]?.ERR_CODE === "0") {
+              formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
                 returnVal = postData;
               } else {
@@ -454,17 +462,14 @@ export const PositivePayEntryFormMetadata = {
                   },
           };
         } else if (!currentField?.value) {
+          formState?.handleButtonDisable(false);
           return {
             CHEQUE_NO: { value: "" },
           };
         }
         return {};
       },
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
-      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 1.75, xl: 1.75 },
     },
     {
       render: {
@@ -509,7 +514,7 @@ export const PositivePayEntryFormMetadata = {
         rules: [{ name: "required", params: ["AmountIsRequired"] }],
       },
       autoComplete: "off",
-      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.25, xl: 2.25 },
     },
     {
       render: {
@@ -647,7 +652,7 @@ export const PositivePayEntryFormMetadata = {
           return false;
         }
       },
-      GridProps: { xs: 3, sm: 3, md: 2, lg: 1.5, xl: 1.5 },
+      GridProps: { xs: 3, sm: 3, md: 2, lg: 2, xl: 2 },
     },
     {
       render: {
@@ -917,6 +922,7 @@ export const ResponseParameterFormMetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -1105,9 +1111,9 @@ export const ImportGridMetaData: GridMetaDataType = {
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 60,
+      width: 80,
       minWidth: 40,
-      maxWidth: 70,
+      maxWidth: 100,
       isAutoSequence: true,
     },
     {
@@ -1116,9 +1122,9 @@ export const ImportGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 60,
+      width: 90,
       minWidth: 50,
-      maxWidth: 90,
+      maxWidth: 120,
     },
     {
       accessor: "ACCT_TYPE",
@@ -1126,9 +1132,9 @@ export const ImportGridMetaData: GridMetaDataType = {
       sequence: 3,
       alignment: "left",
       componentType: "default",
-      width: 70,
+      width: 90,
       minWidth: 50,
-      maxWidth: 90,
+      maxWidth: 120,
     },
     {
       accessor: "ACCT_CD",
@@ -1136,9 +1142,9 @@ export const ImportGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "left",
       componentType: "default",
-      width: 80,
+      width: 110,
       minWidth: 50,
-      maxWidth: 90,
+      maxWidth: 150,
     },
     {
       accessor: "CHEQUE_AMT",
@@ -1177,7 +1183,7 @@ export const ImportGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "left",
       componentType: "default",
-      width: 900,
+      width: 850,
       minWidth: 500,
       maxWidth: 950,
     },

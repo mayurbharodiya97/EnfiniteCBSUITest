@@ -61,7 +61,7 @@ const FdInterestPaymentconfForm = ({
       onSuccess: async (data) => {
         const btnName = await MessageBox({
           messageTitle: "Success",
-          message: "RecordSave",
+          message: "confirmMsg",
           buttonNames: ["Ok"],
           icon: "SUCCESS",
         });
@@ -103,9 +103,10 @@ const FdInterestPaymentconfForm = ({
           message: "ConfirmMsg",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
-          doFDPaymentInstruEntryConfm.mutate({
+          doFDPaymentInstruEntryConfm?.mutate({
             DETAIL_DATA: {
               isNewRow: [],
               isDeleteRow: [],
@@ -120,9 +121,10 @@ const FdInterestPaymentconfForm = ({
         message: "ConfirmReject",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
-        deleteFDInterestPaymentEntry.mutate({
+        deleteFDInterestPaymentEntry?.mutate({
           DETAILS_DATA: {
             isDeleteRow: fdDetails,
             isUpdatedRow: [],
@@ -137,22 +139,27 @@ const FdInterestPaymentconfForm = ({
     <>
       {loader ? (
         <LoaderPaperComponent />
-      ) : Array.isArray(fdDetails) && fdDetails?.length > 0 ? (
+      ) : (
         <FormWrapper
           key={"FdInterestPaymentConfmMetaData" + fdDetails?.length}
           metaData={FdInterestPaymentconfFormMetaData as MetaDataType}
           onSubmitHandler={onSubmitHandler}
           initialValues={{
             FDINTPAYDTL: fdDetails,
-            TOTAL_DEPOSIT_AMOUNT: fdDetails.reduce(
-              (acc, item) => acc + (Number(item.TOT_AMT) || 0),
+            BRANCH_CD: rowsData?.[0]?.data?.BRANCH_CD ?? "",
+            ACCT_TYPE: rowsData?.[0]?.data?.ACCT_TYPE ?? "",
+            ACCT_CD: rowsData?.[0]?.data?.ACCT_CD ?? "",
+            ACCT_NM: rowsData?.[0]?.data?.ACCT_NM ?? "",
+            TOTAL_DEPOSIT_AMOUNT: fdDetails?.reduce(
+              (acc, item) => acc + (Number(item?.TOT_AMT) || 0),
               0
             ),
-            TOTAL_MATURITY_AMOUNT: fdDetails.reduce(
-              (acc, item) => acc + (Number(item.MATURITY_AMT) || 0),
+            TOTAL_MATURITY_AMOUNT: fdDetails?.reduce(
+              (acc, item) => acc + (Number(item?.MATURITY_AMT) || 0),
               0
             ),
           }}
+          formState={{ fdDetails: fdDetails }}
           displayMode={"view"}
           formStyle={{
             background: "white",
@@ -161,32 +168,30 @@ const FdInterestPaymentconfForm = ({
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <Box display="flex" gap={2}>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Confirm");
-                  }}
-                  disabled={rowsData?.[0]?.data?.ALLOW_CONFIRM === "N"}
-                  color={"primary"}
-                >
-                  {t("Confirm")}
-                </GradientButton>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Reject");
-                  }}
-                  color={"primary"}
-                >
-                  {t("Reject")}
-                </GradientButton>
-                <GradientButton onClick={closeDialog} color={"primary"}>
-                  {t("Close")}
-                </GradientButton>
-              </Box>
+              <GradientButton
+                onClick={(event) => {
+                  handleSubmit(event, "Confirm");
+                }}
+                disabled={rowsData?.[0]?.data?.ALLOW_CONFIRM === "N"}
+                color={"primary"}
+              >
+                {t("Confirm")}
+              </GradientButton>
+              <GradientButton
+                onClick={(event) => {
+                  handleSubmit(event, "Reject");
+                }}
+                color={"primary"}
+              >
+                {t("Reject")}
+              </GradientButton>
+              <GradientButton onClick={closeDialog} color={"primary"}>
+                {t("Close")}
+              </GradientButton>
             </>
           )}
         </FormWrapper>
-      ) : null}
+      )}
     </>
   );
 };

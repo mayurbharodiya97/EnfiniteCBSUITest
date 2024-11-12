@@ -3,7 +3,7 @@ import { GridMetaDataType } from "@acuteinfo/common-base";
 export const RetrieveGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "",
+    gridLabel: "IMPSConfirmationRetrieveData",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,
@@ -73,7 +73,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
 
     {
       accessor: "DEACTIVE_DT",
-      columnName: "DeActive Date",
+      columnName: "DeActiveDateIMPS",
       sequence: 7,
       alignment: "center",
       componentType: "date",
@@ -96,7 +96,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
 
     {
       accessor: "ENTERED_BRANCH_CD",
-      columnName: "Entered Branch",
+      columnName: "EnteredBranch",
       sequence: 12,
       alignment: "left",
       componentType: "default",
@@ -107,7 +107,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
 
     {
       accessor: "LAST_ENTERED_BY",
-      columnName: "Last Modified By",
+      columnName: "LastModifiedBy",
       sequence: 13,
       alignment: "left",
       componentType: "default",
@@ -117,7 +117,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LAST_MODIFIED_DATE",
-      columnName: "Last Modified Date",
+      columnName: "LastModifiedDate",
       sequence: 14,
       alignment: "left",
       componentType: "date",

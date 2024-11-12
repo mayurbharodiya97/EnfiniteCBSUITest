@@ -1,11 +1,4 @@
-import {
-  FC,
-  useRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useRef, useCallback, useContext, useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
@@ -22,7 +15,6 @@ import {
   GradientButton,
   GridWrapper,
   MetaDataType,
-  SubmitFnType,
 } from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
@@ -52,13 +44,13 @@ export const RetrieveCfmDataCustom = ({
   const [flag, setFlag] = useState<any>("");
 
   const setCurrentAction = useCallback((data: any) => {
-    // onClose();
     let newData = data?.rows?.map((item) => item?.data);
     navigate(".", { state: newData });
     setRetrieveData(newData);
     setFilteredData(newData);
   }, []);
 
+  // Api calling fro retrieve data
   const mutation: any = useMutation(
     "getimpsCfmRetrieveData",
     getimpsCfmRetrieveData,
@@ -73,33 +65,19 @@ export const RetrieveCfmDataCustom = ({
           setFilterRetData(updateData);
         }
       },
-      onError: (error: any) => {},
     }
   );
 
-  const onSubmitHandler: SubmitFnType = async (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    actionFlag
-  ) => {
-    endSubmit(true);
+  useEffect(() => {
     mutation.mutate({
-      FROM_DT: format(new Date(data?.FROM_DT), "dd/MMM/yyyy"),
-      TO_DT: format(new Date(data?.TO_DT), "dd/MMM/yyyy"),
+      FROM_DT: authState?.workingDate,
+      TO_DT: authState?.workingDate,
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
     });
-  };
-  // useEffect(() => {
-  //   mutation.mutate({
-  //     FROM_DT: authState?.workingDate,
-  //     TO_DT: authState?.workingDate,
-  //     COMP_CD: authState.companyID,
-  //     BRANCH_CD: authState.user.branchCode,
-  //   });
-  // }, []);
+  }, []);
+
+  // for shortcut-key
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Enter") {
@@ -118,18 +96,26 @@ export const RetrieveCfmDataCustom = ({
       <>
         <Dialog
           open={true}
+          fullWidth={true}
           PaperProps={{
             style: {
-              overflow: "hidden",
+              maxWidth: "1245px",
             },
           }}
-          maxWidth="xl"
         >
           <FormWrapper
             key={`impscfm-retrieveForm`}
             metaData={retrieveFormMetaData as MetaDataType}
             initialValues={{}}
-            onSubmitHandler={onSubmitHandler}
+            onSubmitHandler={(data: any, displayData, endSubmit) => {
+              endSubmit(true);
+              mutation.mutate({
+                FROM_DT: format(new Date(data?.FROM_DT), "dd/MMM/yyyy"),
+                TO_DT: format(new Date(data?.TO_DT), "dd/MMM/yyyy"),
+                COMP_CD: authState.companyID,
+                BRANCH_CD: authState.user.branchCode,
+              });
+            }}
             formStyle={{
               background: "white",
             }}

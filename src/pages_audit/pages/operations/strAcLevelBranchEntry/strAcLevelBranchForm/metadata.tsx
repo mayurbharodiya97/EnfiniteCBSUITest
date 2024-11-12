@@ -120,6 +120,7 @@ export const strLevelBranchEditFormMetaData = {
         touchAndValidate: false,
       },
       runPostValidationHookAlways: true,
+      validationRun: "all",
       postValidationSetCrossFieldValues: async (
         field,
         formState,
