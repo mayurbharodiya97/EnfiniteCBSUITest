@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getPMISCData = async (...reqData) => {
@@ -35,17 +35,6 @@ export const getIfscBenDetail = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getIfscBankDetail = async (reqData) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETRTGSIFSCCODEACWISE", {
-      ...reqData,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
 export const getAccountTypeList = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETFDPAYMENTINSTRTOTYPEDDW", {
@@ -54,13 +43,15 @@ export const getAccountTypeList = async (reqData) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData?.map(({ DISPLAY_VALUE, DATA_VALUE, ...other }) => {
-        return {
-          ...other,
-          value: DATA_VALUE,
-          label: DISPLAY_VALUE,
-        };
-      });
+      responseData = responseData?.map(
+        ({ DISPLAY_VALUE, DATA_VALUE, ...other }) => {
+          return {
+            ...other,
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+          };
+        }
+      );
     }
     return responseData;
   } else {

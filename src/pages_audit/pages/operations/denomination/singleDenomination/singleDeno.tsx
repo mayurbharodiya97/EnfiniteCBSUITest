@@ -1,30 +1,37 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { denoTableMetadataTotal } from "../metadataTeller";
+import { denoTableMetadataTotal } from "./metadata";
 import { AuthContext } from "pages_audit/auth";
 import DailyTransTabs from "../../DailyTransaction/TRNHeaderTabs";
-import { usePopupContext } from "components/custom/popupContext";
 import { useCacheWithMutation } from "../../DailyTransaction/TRNHeaderTabs/cacheMutate";
-import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
-import { DialogActions, Fab, LinearProgress } from "@mui/material";
+import * as CommonApi from "../api";
+import { LinearProgress } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { extractMetaData } from "components/utils";
 import { useMutation } from "react-query";
-import { GradientButton } from "components/styledComponent/button";
-import DualTableCalc from "../dualTableCalc";
-import * as API from "../api";
-import TellerDenoTableCalc from "../tellerDenoTableCalc";
+import DualTableCalc from "../tellerTransaction/dualTypeTable/dualTableCalc";
+import * as API from "./api";
+import TellerDenoTableCalc from "../tellerTransaction/singleTypeTable/tellerDenoTableCalc";
 import { format, parse } from "date-fns";
-import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
-import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
-import getCurrencySymbol from "components/custom/getCurrencySymbol";
-export const SingleDeno = () => {
+import { formatCurrency } from "@acuteinfo/common-base";
+import {
+  usePopupContext,
+  FormWrapper,
+  MetaDataType,
+  getCurrencySymbol,
+  usePropertiesConfigContext,
+} from "@acuteinfo/common-base";
+import ReleaseMainGrid from "./release/releaseMainGrid";
+import OtherReceipt from "../otherReceipt/otherRec";
+
+////////////////////PENDING TO IMPLEMENT MULTI SROW SELECTION IN OTHER RECEIPT IN SINGLE DENOMINATION SCREEN/////////////////////////////
+
+export const SingleDeno = ({ screenFlag }) => {
   const myFormRef = useRef<any>(null);
   const prevCardReq = useRef<any>(null);
   const endSubmitRef = useRef<any>(null);
+  const cardDtlRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const { MessageBox, CloseMessageBox } = usePopupContext();
-  const customParameter = useContext(CustomPropertiesConfigurationContext);
+  const { MessageBox } = usePopupContext();
+  const customParameter = usePropertiesConfigContext();
   const [cardDetails, setCardDetails] = useState([]);
   const [cardTabsReq, setCardTabsReq] = useState({});
   const [openDenoTable, setOpenDenoTable] = useState(false);
@@ -33,13 +40,13 @@ export const SingleDeno = () => {
     singleDenoRow: [
       {
         BRANCH_CD: authState?.user?.branchCode,
-        ACCT_TYPE: "",
-        ACCT_CD: "",
       },
     ],
-    RECEIPT_TOTAL: "0",
   });
   const [arrFieldData, setArrFieldData] = useState<any>({});
+  const [openGrid, setOpenGrid] = useState<any>(false);
+  const [openOthRec, setOpenOthRec] = useState<any>(false);
+  const [count, setCount] = useState(0);
   const {
     clearCache: clearTabsCache,
     error: tabsErorr,
@@ -114,23 +121,30 @@ export const SingleDeno = () => {
   ) => {
     endSubmitRef.current = { endSubmit };
     if (Object?.keys(data)?.length > 0) {
-      if (Boolean(data?.FINAL_AMOUNT) && data?.FINAL_AMOUNT > 0) {
-        data.TRN = "1";
-      } else if (Boolean(data?.FINAL_AMOUNT) && data?.FINAL_AMOUNT < 0) {
-        data.TRN = "4";
+      if (
+        (Boolean(data?.FINAL_AMOUNT) &&
+          Boolean(Number(data?.FINAL_AMOUNT) > 0)) ||
+        (Boolean(data?.FINAL_AMOUNT) && Boolean(Number(data?.FINAL_AMOUNT) < 0))
+      ) {
+        setFormData(data);
+        const formattedDate = format(
+          parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+          "dd/MMM/yyyy"
+        ).toUpperCase();
+        getData?.mutate({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+          USER_NAME: authState?.user?.id,
+          TRAN_DT: formattedDate,
+          endSubmit: endSubmit,
+        });
+      } else {
+        endSubmitRef?.current?.endSubmit(true);
+        enqueueSnackbar(
+          "Final amount must be either greater than or less than zero.",
+          { variant: "error" }
+        );
       }
-      setFormData(data);
-      const formattedDate = format(
-        parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
-        "dd/MMM/yyyy"
-      ).toUpperCase();
-      getData?.mutate({
-        COMP_CD: authState?.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
-        USER_NAME: authState?.user?.id,
-        TRAN_DT: formattedDate,
-        endSubmit: endSubmit,
-      });
     }
   };
 
@@ -193,78 +207,152 @@ export const SingleDeno = () => {
     }
   }, [getData?.isLoading]);
 
+  const getCardColumnValue = () => {
+    const keys = [
+      "WITHDRAW_BAL",
+      "TRAN_BAL",
+      "LIEN_AMT",
+      "CONF_BAL",
+      "UNCL_BAL",
+      "DRAWING_POWER",
+      "LIMIT_AMOUNT",
+      "HOLD_BAL",
+      "AGAINST_CLEARING",
+      "MIN_BALANCE",
+      "OD_APPLICABLE",
+      "INST_NO",
+      "INST_RS",
+      "OP_DATE",
+      "PENDING_AMOUNT",
+      "STATUS",
+    ];
+
+    const cardValues = keys?.reduce((acc, key) => {
+      const item: any = cardDtlRef?.current?.find(
+        (entry: any) => entry?.COL_NAME === key
+      );
+      acc[key] = item?.COL_VALUE;
+      return acc;
+    }, {});
+    return cardValues;
+  };
+
+  useEffect(() => {
+    if (cardDetails?.length) {
+      cardDtlRef.current = cardDetails;
+    }
+  }, [cardDetails]);
+
   return (
     <>
-      <DailyTransTabs
-        heading="Single Denomination(TRN/042)"
-        cardsData={cardDetails}
-        reqData={cardTabsReq}
-        tabsData={tabsDetails}
-      />
-      {isTabsLoading || getCarousalCards?.isLoading || getData?.isLoading ? (
-        <LinearProgress
-          color="secondary"
-          sx={{ margin: "0px 10px 0px 10px" }}
+      {Boolean(openGrid) ? (
+        <ReleaseMainGrid setOpenGrid={setOpenGrid} />
+      ) : Boolean(openOthRec) ? (
+        <OtherReceipt
+          screenFlag={"SINGLERECOTHER"}
+          setCloseOthRec={setOpenOthRec}
         />
-      ) : null}
-      <FormWrapper
-        onSubmitHandler={handleSubmit}
-        initialValues={singleDenoRows ?? {}}
-        key={"single-deno"}
-        metaData={denoTableMetadataTotal as MetaDataType}
-        formStyle={{}}
-        hideHeader={true}
-        formState={{
-          MessageBox: MessageBox,
-          onArrayFieldRowClickHandle: onArrayFieldRowClickHandle,
-          setCardDetails,
-          docCD: "TRN/042",
-        }}
-        onFormButtonClickHandel={() => {
-          let event: any = { preventDefault: () => {} };
-          myFormRef?.current?.handleSubmit(event, "SAVE");
-        }}
-        setDataOnFieldChange={(action, payload) => {
-          if (action === "ACCT_CD") {
-            if (payload?.carousalCardData) {
-              setCardDetails(payload?.carousalCardData);
+      ) : (
+        <>
+          <DailyTransTabs
+            heading="Single Denomination(TRN/042)"
+            cardsData={cardDetails}
+            reqData={cardTabsReq}
+            tabsData={tabsDetails}
+          />
+          {isTabsLoading ||
+          getCarousalCards?.isLoading ||
+          getData?.isLoading ? (
+            <LinearProgress
+              color="secondary"
+              sx={{ margin: "0px 10px 0px 10px" }}
+            />
+          ) : null}
+
+          <FormWrapper
+            onSubmitHandler={handleSubmit}
+            initialValues={singleDenoRows ?? {}}
+            key={
+              "single-deno" + denoTableMetadataTotal + singleDenoRows + count
             }
-            if (payload) {
-              const { dependentFieldValues, accountCode } = payload;
-              setCardTabsReq({
-                COMP_CD: authState?.companyID,
-                ACCT_TYPE:
-                  dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]?.value,
-                ACCT_CD: accountCode,
-                PARENT_TYPE:
-                  dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]
-                    ?.optionData?.[0]?.PARENT_TYPE,
-                PARENT_CODE:
-                  dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]
-                    ?.optionData?.[0]?.PARENT_CODE,
-                BRANCH_CD:
-                  dependentFieldValues?.["singleDenoRow.BRANCH_CD"]?.value,
-                SCREEN_REF: "TRN/042",
-              });
-            }
-          } else if (action === "ACCT_TYPE") {
-            // console.log(action, payload, "polod");
-            if (Boolean(payload?.currentField?.value)) {
-              const tabApiReqPara = {
-                COMP_CD: authState?.companyID,
-                BRANCH_CD: payload?.branchCode,
-                ACCT_TYPE: payload?.currentField?.value,
-              };
-              fetchTabsData({
-                cacheId: tabApiReqPara,
-                reqData: tabApiReqPara,
-              });
-            }
-          } else if (action === "RECEIPT") {
-          }
-        }}
-        ref={myFormRef}
-      />
+            metaData={denoTableMetadataTotal as MetaDataType}
+            formStyle={{}}
+            hideHeader={true}
+            formState={{
+              MessageBox: MessageBox,
+              onArrayFieldRowClickHandle: onArrayFieldRowClickHandle,
+              setCardDetails,
+              docCD: "TRN/042",
+              getCardColumnValue,
+            }}
+            onFormButtonClickHandel={(buttonId) => {
+              if (buttonId === "DENOBTN") {
+                let event: any = { preventDefault: () => {} };
+                myFormRef?.current?.handleSubmit(event, "SAVE");
+              } else if (buttonId === "RELEASE") {
+                setOpenGrid(true);
+              } else if (buttonId === "OTHER_REC") {
+                setOpenOthRec(true);
+              }
+              // else if (id === "ADDNEWROW") {
+              //   //@ts-ignore
+              //   setSingleDenoRows((oldRow) => {
+              //     console.log(oldRow,'oldROW>>',oldRow?.singleDenoRow[0]);
+              //     return {
+              //       ...oldRow,
+              //       singleDenoRow: [
+              //         ...oldRow?.singleDenoRow,
+              //         {
+              //           ...oldRow?.singleDenoRow[0],
+              //           BRANCH_CD: authState?.user?.branchCode,
+              //         },
+              //       ],
+              //     };
+              //   });
+              // }
+            }}
+            setDataOnFieldChange={(action, payload) => {
+              if (action === "ACCT_CD") {
+                if (payload?.carousalCardData) {
+                  setCardDetails(payload?.carousalCardData);
+                }
+                if (payload) {
+                  const { dependentFieldValues, accountCode } = payload;
+                  setCardTabsReq({
+                    COMP_CD: authState?.companyID,
+                    ACCT_TYPE:
+                      dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]?.value,
+                    ACCT_CD: accountCode,
+                    PARENT_TYPE:
+                      dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]
+                        ?.optionData?.[0]?.PARENT_TYPE,
+                    PARENT_CODE:
+                      dependentFieldValues?.["singleDenoRow.ACCT_TYPE"]
+                        ?.optionData?.[0]?.PARENT_CODE,
+                    BRANCH_CD:
+                      dependentFieldValues?.["singleDenoRow.BRANCH_CD"]?.value,
+                    SCREEN_REF: "TRN/041",
+                  });
+                }
+              } else if (action === "ACCT_TYPE") {
+                // console.log(action, payload, "polod");
+                if (Boolean(payload?.currentField?.value)) {
+                  const tabApiReqPara = {
+                    COMP_CD: authState?.companyID,
+                    BRANCH_CD: payload?.branchCode,
+                    ACCT_TYPE: payload?.currentField?.value,
+                  };
+                  fetchTabsData({
+                    cacheId: tabApiReqPara,
+                    reqData: tabApiReqPara,
+                  });
+                }
+              }
+            }}
+            ref={myFormRef}
+          />
+        </>
+      )}
       {/* <DialogActions>
         {" "}
         <GradientButton
@@ -297,6 +385,12 @@ export const SingleDeno = () => {
           }
           isLoading={false}
           onCloseTable={() => setOpenDenoTable(false)}
+          // screenRef={"TRN/041"}
+          // entityType={"MULTIRECPAY"}
+          screenFlag={screenFlag}
+          typeCode={formData?.FINAL_AMOUNT > 0 ? "1" : "4"}
+          setCount={setCount}
+          setOpenDenoTable={setOpenDenoTable}
         />
       )}
       {openDenoTable && denoTableType === "single" && (
@@ -304,6 +398,7 @@ export const SingleDeno = () => {
           data={data ?? []}
           // displayTableDual={openDenoTable}
           displayTable={openDenoTable}
+          setOpenDenoTable={setOpenDenoTable}
           formData={formData}
           initRemainExcess={Math.abs(formData?.FINAL_AMOUNT ?? "0")}
           gridLable={
@@ -317,6 +412,11 @@ export const SingleDeno = () => {
           }
           isLoading={getData?.isLoading}
           onCloseTable={() => setOpenDenoTable(false)}
+          // screenRef={"TRN/041"}
+          // entityType={"MULTIRECPAY"}
+          screenFlag={screenFlag}
+          setCount={setCount}
+          typeCode={formData?.FINAL_AMOUNT > 0 ? "1" : "4"}
         />
       )}
     </>

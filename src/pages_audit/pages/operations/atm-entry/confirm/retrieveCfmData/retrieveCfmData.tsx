@@ -7,15 +7,18 @@ import {
   useState,
 } from "react";
 import { useMutation } from "react-query";
-import { ClearCacheProvider } from "cache";
 import { Dialog } from "@mui/material";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import GridWrapper from "components/dataTableStatic";
-import { GradientButton } from "components/styledComponent/button";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable";
+import {
+  Alert,
+  GridWrapper,
+  GradientButton,
+  ActionTypes,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+  ClearCacheProvider,
+} from "@acuteinfo/common-base";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import { RetrieveGridMetaData } from "./retrieveCfmGridMetadata";
@@ -36,7 +39,13 @@ const actions: ActionTypes[] = [
     rowDoubleClick: false,
   },
 ];
-export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
+export const RetrieveCfmDataCustom = ({
+  onClose,
+  navigate,
+  setRetrieveData,
+  setFormMode,
+  setFilteredData,
+}) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const { t } = useTranslation();
@@ -44,11 +53,13 @@ export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
   const [filterRetData, setFilterRetData] = useState<any>();
   const [flag, setFlag] = useState<any>("");
 
-  const setCurrentAction = useCallback((data) => {
-    console.log("<<<setcurr", data);
+  const setCurrentAction = useCallback((data: any) => {
     // onClose();
-    navigate(".", { state: data?.rows });
-    setRowsData(data?.rows);
+    let newData = data?.rows?.map((item) => item?.data);
+    setFormMode("view");
+    navigate(".", { state: newData });
+    setRetrieveData(newData);
+    setFilteredData(newData);
   }, []);
 
   const mutation: any = useMutation("cfmRetrieveData", getCfmRetrieveData, {
@@ -65,29 +76,14 @@ export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
     onError: (error: any) => {},
   });
 
-  const onSubmitHandler: SubmitFnType = async (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    actionFlag
-  ) => {
-    endSubmit(true);
+  useEffect(() => {
     mutation.mutate({
-      FROM_DT: format(new Date(data?.FROM_DT), "dd/MMM/yyyy"),
-      TO_DT: format(new Date(data?.TO_DT), "dd/MMM/yyyy"),
+      FROM_DT: authState?.workingDate,
+      TO_DT: authState?.workingDate,
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
     });
-  };
-  // useEffect(() => {
-  //   mutation.mutate({
-  //     FROM_DT: authState?.workingDate,
-  //     TO_DT: authState?.workingDate,
-  //     COMP_CD: authState.companyID,
-  //     BRANCH_CD: authState.user.branchCode,
-  //   });
-  // }, []);
+  }, []);
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Enter") {
@@ -114,16 +110,22 @@ export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
           maxWidth="xl"
         >
           <FormWrapper
-            key={`retrieveForm`}
+            key={`AtmCfmretrieveForm`}
             metaData={retrieveFormMetaData as MetaDataType}
             initialValues={{}}
-            onSubmitHandler={onSubmitHandler}
+            onSubmitHandler={(data: any, displayData, endSubmit) => {
+              endSubmit(true);
+              mutation.mutate({
+                FROM_DT: format(new Date(data?.FROM_DT), "dd/MMM/yyyy"),
+                TO_DT: format(new Date(data?.TO_DT), "dd/MMM/yyyy"),
+                COMP_CD: authState.companyID,
+                BRANCH_CD: authState.user.branchCode,
+              });
+            }}
             formStyle={{
               background: "white",
             }}
             onFormButtonClickHandel={(id) => {
-              console.log("<<<id", id);
-
               if (id === "RETRIEVE") {
                 let event: any = { preventDefault: () => {} };
                 formRef?.current?.handleSubmit(event, "RETRIEVE");
@@ -176,13 +178,21 @@ export const RetrieveCfmDataCustom = ({ onClose, navigate, setRowsData }) => {
   );
 };
 
-export const RetrieveCfmData = ({ onClose, navigate, setRowsData }) => {
+export const RetrieveCfmData = ({
+  onClose,
+  navigate,
+  setRetrieveData,
+  setFormMode,
+  setFilteredData,
+}) => {
   return (
     <ClearCacheProvider>
       <RetrieveCfmDataCustom
         onClose={onClose}
         navigate={navigate}
-        setRowsData={setRowsData}
+        setRetrieveData={setRetrieveData}
+        setFilteredData={setFilteredData}
+        setFormMode={setFormMode}
       />
     </ClearCacheProvider>
   );

@@ -1,10 +1,11 @@
-import { utilFunction } from "components/utils";
 import { format, isValid } from "date-fns";
 import { GeneralAPI } from "registry/fns/functions";
 import { getPMISCData, GetPositivePayImportDdwn } from "../api";
-import { GridColumnType } from "components/dataTableStatic";
-import { GridMetaDataType } from "components/dataTableStatic";
-
+import {
+  utilFunction,
+  GridColumnType,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 export const PositivePayEntryFormMetadata = {
   form: {
     name: "positivePayEntry",
@@ -52,32 +53,16 @@ export const PositivePayEntryFormMetadata = {
         ) => {
           return {
             ACCT_NM: { value: "" },
-            ACCT_TYPE: { value: "" },
+            ACCT_TYPE: { value: "", isFieldFocused: true },
             ACCT_CD: { value: "" },
             CHEQUE_NO: { value: "" },
           };
         },
-        GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
+        GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
       },
       accountTypeMetadata: {
-        runPostValidationHookAlways: true,
         dependentFields: ["BRANCH_CD"],
-        options: (dependentValue, formState, _, authState) => {
-          if (
-            Boolean(authState?.companyID) &&
-            Boolean(dependentValue?.BRANCH_CD?.value) &&
-            Boolean(authState?.user?.id)
-          ) {
-            return GeneralAPI.get_Account_Type({
-              COMP_CD: authState?.companyID ?? "",
-              BRANCH_CD: dependentValue?.BRANCH_CD?.value ?? "",
-              USER_NAME: authState?.user?.id ?? "",
-              DOC_CD: "MST/968",
-            });
-          } else {
-            return [];
-          }
-        },
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -86,6 +71,37 @@ export const PositivePayEntryFormMetadata = {
         ) => {
           if (currentField?.displayValue !== currentField?.value) {
             return {};
+          }
+          if (
+            currentField?.value &&
+            dependentFieldValues?.BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "EnterAccountBranch",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+                CHEQUE_NO: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+              };
+            }
           } else {
             return {
               ACCT_CD: { value: "" },
@@ -94,8 +110,7 @@ export const PositivePayEntryFormMetadata = {
             };
           }
         },
-        disableCaching: true,
-        GridProps: { xs: 12, sm: 6, md: 4, lg: 3, xl: 3 },
+        GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
       },
       accountCodeMetadata: {
         autoComplete: "off",
@@ -110,6 +125,30 @@ export const PositivePayEntryFormMetadata = {
           if (formState?.isSubmitting) return {};
           if (currentField?.displayValue === "") {
             return {};
+          } else if (
+            currentField.value &&
+            dependentFieldValues?.ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "EnterAccountType",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+            if (buttonName === "Ok") {
+              return {
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
           } else if (
             currentField?.value &&
             dependentFieldValues?.BRANCH_CD?.value &&
@@ -126,6 +165,7 @@ export const PositivePayEntryFormMetadata = {
                 ) ?? "",
               SCREEN_REF: "MST/968",
             };
+            formState?.handleButtonDisable(true);
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
             let btn99, returnVal;
             const getButtonName = async (obj) => {
@@ -134,24 +174,30 @@ export const PositivePayEntryFormMetadata = {
             };
             for (let i = 0; i < postData?.MSG?.length; i++) {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
+                formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
+                formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
+                formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -159,6 +205,7 @@ export const PositivePayEntryFormMetadata = {
                   returnVal = "";
                 }
               } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
+                formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
                   returnVal = postData;
                 } else {
@@ -192,15 +239,20 @@ export const PositivePayEntryFormMetadata = {
               CHEQUE_NO: { value: "" },
             };
           } else if (!currentField?.value) {
+            formState?.handleButtonDisable(false);
             return {
-              ACCT_NM: { value: "" },
-              CHEQUE_NO: { value: "" },
+              ACCT_NM: { value: "", isFieldFocused: false },
+              CHEQUE_NO: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
             };
           }
           return {};
         },
         fullWidth: true,
-        GridProps: { xs: 12, sm: 6, md: 4, lg: 2, xl: 2 },
+        GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
       },
     },
     {
@@ -210,7 +262,7 @@ export const PositivePayEntryFormMetadata = {
       name: "ACCT_NM",
       label: "AccountName",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 6, md: 4.5, lg: 4, xl: 4 },
+      GridProps: { xs: 12, sm: 6, md: 4.5, lg: 4.5, xl: 4.5 },
     },
     {
       render: {
@@ -229,11 +281,7 @@ export const PositivePayEntryFormMetadata = {
       type: "text",
       maxLength: 10,
       autoComplete: "off",
-      textFieldStyle: {
-        "& .MuiInputBase-input": {
-          textAlign: "right",
-        },
-      },
+      className: "textInputFromRight",
       FormatProps: {
         isAllowed: (values) => {
           if (values?.value.length > 10) {
@@ -247,7 +295,8 @@ export const PositivePayEntryFormMetadata = {
         type: "string",
         rules: [{ name: "required", params: ["ChequeNumberIsRequired"] }],
       },
-      dependentFields: ["TYPE_CD", "ACCT_TYPE", "ACCT_CD"],
+      dependentFields: ["TYPE_CD", "ACCT_TYPE", "ACCT_CD", "BRANCH_CD"],
+      runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -258,17 +307,97 @@ export const PositivePayEntryFormMetadata = {
         if (currentField?.displayValue === "") {
           return {};
         }
-
-        if (currentField?.value) {
-          let postData = await await GeneralAPI.getChequeNoValidation({
+        if (
+          Boolean(currentField.value) &&
+          dependentFieldValues?.BRANCH_CD?.value?.length === 0
+        ) {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: "Alert",
+            message: "EnterAccountNumber",
+            buttonNames: ["Ok"],
+            icon: "WARNING",
+          });
+          if (buttonName === "Ok") {
+            return {
+              BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+              CHEQUE_NO: {
+                value: "",
+                isFieldFocused: false,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        } else if (
+          Boolean(currentField.value) &&
+          dependentFieldValues?.ACCT_TYPE?.value?.length === 0
+        ) {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: "Alert",
+            message: "EnterAccountNumber",
+            buttonNames: ["Ok"],
+            icon: "WARNING",
+          });
+          if (buttonName === "Ok") {
+            return {
+              ACCT_TYPE: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+              CHEQUE_NO: {
+                value: "",
+                isFieldFocused: false,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        } else if (
+          Boolean(currentField.value) &&
+          dependentFieldValues?.ACCT_CD?.value?.length === 0
+        ) {
+          let buttonName = await formState?.MessageBox({
+            messageTitle: "Alert",
+            message: "EnterAccountNumber",
+            buttonNames: ["Ok"],
+            icon: "WARNING",
+          });
+          if (buttonName === "Ok") {
+            return {
+              ACCT_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+              CHEQUE_NO: {
+                value: "",
+                isFieldFocused: false,
+                ignoreUpdate: true,
+              },
+            };
+          }
+        } else if (
+          currentField?.value &&
+          dependentFieldValues?.ACCT_TYPE?.value &&
+          dependentFieldValues?.ACCT_CD?.value &&
+          dependentFieldValues?.BRANCH_CD?.value
+        ) {
+          const reqParameters = {
             COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: authState?.user?.branchCode ?? "",
+            BRANCH_CD: dependentFieldValues["BRANCH_CD"]?.value ?? "",
             ACCT_TYPE: dependentFieldValues["ACCT_TYPE"]?.value ?? "",
             ACCT_CD: dependentFieldValues["ACCT_CD"]?.value ?? "",
             CHEQUE_NO: currentField?.value,
             SCREEN_REF: "MST/968",
             TYPE_CD: dependentFieldValues["TYPE_CD"]?.value ?? "",
-          });
+          };
+          formState?.handleButtonDisable(true);
+          const postData = await GeneralAPI.getChequeNoValidation(
+            reqParameters
+          );
 
           let btn99, returnVal;
 
@@ -279,30 +408,37 @@ export const PositivePayEntryFormMetadata = {
 
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.ERR_CODE === "999") {
+              formState?.handleButtonDisable(false);
               const { btnName, obj } = await getButtonName({
                 messageTitle: "ValidationFailed",
                 message: postData[i]?.ERR_MSG,
+                icon: "ERROR",
               });
               returnVal = "";
             } else if (postData[i]?.ERR_CODE === "9") {
+              formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Alert",
                   message: postData[i]?.ERR_MSG,
+                  icon: "WARNING",
                 });
               }
               returnVal = postData;
             } else if (postData[i]?.ERR_CODE === "99") {
+              formState?.handleButtonDisable(false);
               const { btnName, obj } = await getButtonName({
                 messageTitle: "Confirmation",
                 message: postData[i]?.ERR_MSG,
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               btn99 = btnName;
               if (btnName === "No") {
                 returnVal = "";
               }
             } else if (postData[i]?.ERR_CODE === "0") {
+              formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
                 returnVal = postData;
               } else {
@@ -326,13 +462,14 @@ export const PositivePayEntryFormMetadata = {
                   },
           };
         } else if (!currentField?.value) {
+          formState?.handleButtonDisable(false);
           return {
             CHEQUE_NO: { value: "" },
           };
         }
         return {};
       },
-      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2, xl: 2 },
+      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 1.75, xl: 1.75 },
     },
     {
       render: {
@@ -376,7 +513,8 @@ export const PositivePayEntryFormMetadata = {
         type: "string",
         rules: [{ name: "required", params: ["AmountIsRequired"] }],
       },
-      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2, xl: 2 },
+      autoComplete: "off",
+      GridProps: { xs: 12, sm: 4, md: 2.5, lg: 2.25, xl: 2.25 },
     },
     {
       render: {
@@ -384,7 +522,7 @@ export const PositivePayEntryFormMetadata = {
       },
       name: "PAYEE_NM",
       label: "PayeeName",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       placeholder: "EnterPayeeName",
       type: "text",
       autoComplete: "off",
@@ -398,7 +536,7 @@ export const PositivePayEntryFormMetadata = {
       name: "REMARKS",
       label: "Remarks",
       placeholder: "EnterRemarks",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       type: "text",
       autoComplete: "off",
       maxLength: 200,
@@ -514,7 +652,7 @@ export const PositivePayEntryFormMetadata = {
           return false;
         }
       },
-      GridProps: { xs: 3, sm: 3, md: 2, lg: 1.5, xl: 1.5 },
+      GridProps: { xs: 3, sm: 3, md: 2, lg: 2, xl: 2 },
     },
     {
       render: {
@@ -655,24 +793,6 @@ export const ResponseParameterFormMetaData = {
             return true;
           }
         },
-        options: (dependentValue, formState, _, authState) => {
-          if (
-            Boolean(authState?.companyID) &&
-            Boolean(dependentValue?.BRANCH_CD?.value) &&
-            Boolean(authState?.user?.id)
-          ) {
-            return GeneralAPI.get_Account_Type({
-              COMP_CD: authState?.companyID ?? "",
-              BRANCH_CD: dependentValue?.BRANCH_CD?.value ?? "",
-              USER_NAME: authState?.user?.id ?? "",
-              DOC_CD: "MST/968",
-            });
-          } else {
-            return [];
-          }
-        },
-        disableCaching: true,
-        _optionsKey: "get_Account_Type",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -680,10 +800,37 @@ export const ResponseParameterFormMetaData = {
           authState,
           dependentFieldValues
         ) => {
-          return {
-            ACCT_CD: { value: "" },
-            ACCT_NM: { value: "" },
-          };
+          if (
+            currentField?.value &&
+            dependentFieldValues?.BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "EnterAccountBranch",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else {
+            return {
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+            };
+          }
         },
         GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
       },
@@ -705,6 +852,30 @@ export const ResponseParameterFormMetaData = {
           dependentFieldValues
         ) => {
           if (
+            currentField.value &&
+            dependentFieldValues?.ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "EnterAccountType",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+            if (buttonName === "Ok") {
+              return {
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
             dependentFieldValues?.BRANCH_CD?.value &&
             dependentFieldValues?.ACCT_TYPE?.value
@@ -732,6 +903,7 @@ export const ResponseParameterFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -740,6 +912,7 @@ export const ResponseParameterFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;
@@ -749,6 +922,7 @@ export const ResponseParameterFormMetaData = {
                   messageTitle: "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -890,6 +1064,7 @@ export const PositivePayImportMetaData: GridColumnType[] = [
   {
     columnName: "SelectCofiguration",
     componentType: "editableSelect",
+    required: true,
     accessor: "DESCRIPTION",
     options: GetPositivePayImportDdwn,
     _optionsKey: "GetPositivePayImportDdwn",
@@ -898,6 +1073,10 @@ export const PositivePayImportMetaData: GridColumnType[] = [
     width: 350,
     minWidth: 50,
     maxWidth: 600,
+    validation: (values) => {
+      if (!Boolean(values)) return "This field is requried";
+      return "";
+    },
   },
 ];
 
@@ -932,9 +1111,9 @@ export const ImportGridMetaData: GridMetaDataType = {
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 60,
+      width: 80,
       minWidth: 40,
-      maxWidth: 70,
+      maxWidth: 100,
       isAutoSequence: true,
     },
     {
@@ -943,9 +1122,9 @@ export const ImportGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 60,
+      width: 90,
       minWidth: 50,
-      maxWidth: 90,
+      maxWidth: 120,
     },
     {
       accessor: "ACCT_TYPE",
@@ -953,9 +1132,9 @@ export const ImportGridMetaData: GridMetaDataType = {
       sequence: 3,
       alignment: "left",
       componentType: "default",
-      width: 70,
+      width: 90,
       minWidth: 50,
-      maxWidth: 90,
+      maxWidth: 120,
     },
     {
       accessor: "ACCT_CD",
@@ -963,9 +1142,9 @@ export const ImportGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "left",
       componentType: "default",
-      width: 80,
+      width: 110,
       minWidth: 50,
-      maxWidth: 90,
+      maxWidth: 150,
     },
     {
       accessor: "CHEQUE_AMT",
@@ -1004,7 +1183,7 @@ export const ImportGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "left",
       componentType: "default",
-      width: 900,
+      width: 850,
       minWidth: 500,
       maxWidth: 950,
     },

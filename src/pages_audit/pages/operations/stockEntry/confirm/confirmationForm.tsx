@@ -1,17 +1,21 @@
-import { AppBar, Button, Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { stockconfirmFormMetaData } from "./confirmFormMetadata";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { usePopupContext } from "components/custom/popupContext";
-import { queryClient } from "cache";
 import { crudStockData, stockConfirm } from "../api";
 import { enqueueSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { useTranslation } from "react-i18next";
+import {
+  usePopupContext,
+  Alert,
+  RemarksAPIWrapper,
+  FormWrapper,
+  queryClient,
+  MetaDataType,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 export const StockConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
@@ -120,6 +124,7 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
           initialValues={rows?.[0]?.data ?? []}
           displayMode="view"
           hideDisplayModeInTitle={true}
+          onSubmitHandler={() => {}}
           formStyle={{
             background: "white",
             height: "calc(100vh - 543px)",
@@ -130,7 +135,7 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
+                <GradientButton
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
@@ -155,13 +160,16 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
                   }}
                 >
                   {t("Confirm")}
-                </Button>
-                <Button color="primary" onClick={() => setDeletePopup(true)}>
+                </GradientButton>
+                <GradientButton
+                  color="primary"
+                  onClick={() => setDeletePopup(true)}
+                >
                   {t("Reject")}
-                </Button>
-                <Button color="primary" onClick={() => closeDialog()}>
+                </GradientButton>
+                <GradientButton color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

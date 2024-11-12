@@ -1,4 +1,3 @@
-import { ClearCacheContext, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
 import {
   Fragment,
@@ -9,13 +8,22 @@ import {
   useState,
 } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { Alert } from "components/common/alert";
-import GridWrapper from "components/dataTableStatic";
-import { GridMetaDataType } from "components/dataTable/types";
-import { ActionTypes } from "components/dataTable";
 import * as API from "./api";
 import { DynFormGridMetaData } from "./gridMetadata";
 import { AuthContext } from "pages_audit/auth";
+
+import {
+  utilFunction,
+  GridWrapper,
+  GridMetaDataType,
+  queryClient,
+  ActionTypes,
+  GradientButton,
+  PopupRequestWrapper,
+  Alert,
+  LoaderPaperComponent,
+  ClearCacheContext,
+} from "@acuteinfo/common-base";
 import { DynamicFormMetadataWrapper } from "./dynFormMetadataConfigCrud/DynFormMetadataConfig";
 import {
   AppBar,
@@ -33,11 +41,7 @@ import {
   Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { GradientButton } from "components/styledComponent/button";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
-import { utilFunction } from "components/utils";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -94,6 +98,26 @@ export const DynFormMetadataConfig = () => {
       BRANCH_CD: authState?.user?.branchCode ?? "",
     })
   );
+  const getDynamicLabel = (path: string, data: any, setScreenCode: boolean) => {
+    const relativePath = path.replace("/cbsenfinity/", "");
+    let cleanedPath;
+
+    if (relativePath.includes("/")) {
+      cleanedPath = relativePath.split("/").slice(0, 2).join("/");
+    } else {
+      cleanedPath = relativePath;
+    }
+    let screenList = utilFunction.GetAllChieldMenuData(data, true);
+    const matchingPath = screenList.find((item) => item.href === cleanedPath);
+
+    if (matchingPath) {
+      return setScreenCode
+        ? `${matchingPath.label} (${matchingPath.user_code.trim()})`
+        : `${matchingPath.label}`;
+    }
+
+    return "";
+  };
 
   const dynMetadataGridData: any = useMutation(
     API.getDynMetadataGridConfigData,
@@ -102,7 +126,7 @@ export const DynFormMetadataConfig = () => {
         isDataChangedRef.current = true;
         refetch();
       },
-      onError: (error: any) => { },
+      onError: (error: any) => {},
     }
   );
 
@@ -113,12 +137,6 @@ export const DynFormMetadataConfig = () => {
   }, [isLoading, isFetching]);
   useEffect(() => {
     return () => {
-      let entries = getEntries() as any[];
-      if (Array.isArray(entries) && entries.length > 0) {
-        entries.forEach((one) => {
-          queryClient.removeQueries(one);
-        });
-      }
       queryClient.removeQueries(["getDynMetadataGridConfigData"]);
     };
   }, [getEntries]);
@@ -190,11 +208,7 @@ export const DynFormMetadataConfig = () => {
                 variant={"h6"}
                 component="div"
               >
-                {utilFunction.getDynamicLabel(
-                  currentPath,
-                  authState?.menulistdata,
-                  true
-                )}
+                {getDynamicLabel(currentPath, authState?.menulistdata, true)}
               </Typography>
             </Toolbar>
           </AppBar>
@@ -214,7 +228,7 @@ export const DynFormMetadataConfig = () => {
                   </InputAdornment>
                 ),
               }}
-            //@ts-ignore
+              //@ts-ignore
             />
             {isLoading || isFetching ? (
               <LoaderPaperComponent />
@@ -339,7 +353,7 @@ export const DynFormMetadataConfig = () => {
             })
           }
           ref={myGridRef}
-        // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
+          // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
         />
         <Routes>
           <Route

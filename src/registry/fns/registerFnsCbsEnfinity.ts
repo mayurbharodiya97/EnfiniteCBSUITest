@@ -1,4 +1,4 @@
-import { singletonFunctionRegisrationFactory } from "components/utils";
+import { singletonFunctionRegisrationFactory } from "@acuteinfo/common-base";
 import { GeneralAPI } from "./functions";
 const { registerFn } = singletonFunctionRegisrationFactory;
 
@@ -35,3 +35,4 @@ registerFn("getChequeNoValidation", GeneralAPI.getChequeNoValidation);
 registerFn("getPhotoSignHistory", GeneralAPI.getPhotoSignHistory);
 registerFn("getCustAccountLatestDtl", GeneralAPI.getCustAccountLatestDtl);
 registerFn("getCalGstAmountData", GeneralAPI.getCalGstAmountData);
+registerFn("getCalGstAmountData", GeneralAPI.getDateWithCurrentTime);

@@ -1,20 +1,23 @@
 import { useRef, useCallback, useContext, useEffect, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import GridWrapper from "components/dataTableStatic";
-import { GridMetaDataType, ActionTypes } from "components/dataTable/types";
-import { Alert } from "components/common/alert";
 import { enqueueSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { RecurringPaymentEntryGridMetaData } from "./recurringPmtEntryGridMetadata";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
 import RecurringPaymentStepperForm from "./recurringPaymentEntryForm/recurringPaymentStepperForm";
 import { RecurringContext } from "./context/recurringPaymentContext";
 import { useTranslation } from "react-i18next";
 import { RecurringPaymentEntryForm } from "./recurringPaymentEntryForm/recurringPaymentEntryForm";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
+import {
+  usePopupContext,
+  queryClient,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  Alert,
+  RemarksAPIWrapper,
+} from "@acuteinfo/common-base";
 import { Dialog } from "@mui/material";
 import { RecurringPaymentConfirmation } from "../recurringPaymentConfirmation/recurringPaymentConfirmation";
 
@@ -77,8 +80,8 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
     ["getRecurPaymentScreenPara", authState?.user?.branchCode],
     () =>
       API.getRecurPaymentScreenPara({
-        companyID: authState?.companyID,
-        branchCode: authState?.user?.branchCode,
+        companyID: authState?.companyID ?? "",
+        branchCode: authState?.user?.branchCode ?? "",
       })
   );
 
@@ -123,11 +126,12 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
       await MessageBox({
         messageTitle: "ValidationFailed",
         message: errorMsg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
     },
     onSuccess: async (data) => {
-      enqueueSnackbar(t("RecordsDeletedMsg"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -143,14 +147,16 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
     API.validateDeleteRecurData,
     {
       onSuccess: async (data) => {},
-      onError: (error: any) => {
+      onError: async (error: any) => {
         setDeleteMessageBox(false);
         let errorMsg = t("Unknownerroroccured");
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;
         }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+        await MessageBox({
+          messageTitle: "ValidationFailed",
+          message: errorMsg ?? "",
+          icon: "ERROR",
         });
         CloseMessageBox();
       },
@@ -238,7 +244,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetchData()}
-        ReportExportButton={true}
+        enableExport={true}
       />
 
       <Routes>
@@ -316,11 +322,13 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
                       await MessageBox({
                         messageTitle: "ValidationFailed",
                         message: response?.O_MESSAGE ?? "",
+                        icon: "ERROR",
                       });
                     } else if (response?.O_STATUS === "9") {
                       await MessageBox({
                         messageTitle: "Alert",
                         message: response?.O_MESSAGE ?? "",
+                        icon: "WARNING",
                       });
                     } else if (response?.O_STATUS === "99") {
                       const buttonName = await MessageBox({
@@ -328,6 +336,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
                         message: response?.O_MESSAGE ?? "",
                         buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
+                        icon: "CONFIRM",
                       });
                       if (buttonName === "No") {
                         break;
@@ -339,6 +348,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
                         buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (buttonName === "Yes") {
                         entryDeleteMutation.mutate({

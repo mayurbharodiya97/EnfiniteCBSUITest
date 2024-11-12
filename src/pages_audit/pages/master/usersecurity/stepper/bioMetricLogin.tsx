@@ -1,22 +1,35 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { Fragment, forwardRef, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { LoginBiometricForm } from "./metaData/metaDataForm";
-import { usePopupContext } from "components/custom/popupContext";
 import { SecurityContext } from "../context/SecuityForm";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api/api";
-import { ActionTypes } from "components/dataTable";
+import { ActionTypes, Alert } from "@acuteinfo/common-base";
 import { useNavigate } from "react-router-dom";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { loginBiometric } from "./metaData/metaDataGrid";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { Dialog } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
-import FingerprintIcon from '@mui/icons-material/Fingerprint';
+import FingerprintIcon from "@mui/icons-material/Fingerprint";
 import CryptoJS from "crypto-js";
-import { extractGridMetaData } from "components/utils";
+import {
+  InitialValuesType,
+  usePopupContext,
+  GradientButton,
+  extractGridMetaData,
+  SubmitFnType,
+  GridWrapper,
+  GridMetaDataType,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
+import { t } from "i18next";
+
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -32,12 +45,15 @@ const encryptString = (plainText) => {
     keySize: 48 / 4,
     iterations: 1000,
   });
-  const key = new CryptoJS.lib.WordArray.init(keyBytes.words.slice(0, 32 / 4), 32);
+  const key = new CryptoJS.lib.WordArray.init(
+    keyBytes.words.slice(0, 32 / 4),
+    32
+  );
   const iv = new CryptoJS.lib.WordArray.init(keyBytes.words.slice(32 / 4), 16);
   const encrypted = CryptoJS.AES.encrypt(plainText, key, { iv: iv });
   return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
 };
-const BiometricLogins = forwardRef<any, any>(({ defaultView,userId }, ref) => {
+const BiometricLogins = forwardRef<any, any>(({ defaultView, userId }, ref) => {
   const { MessageBox } = usePopupContext();
   const { userState, dispatchCommon } = useContext(SecurityContext);
   const navigate = useNavigate();
@@ -50,10 +66,17 @@ const BiometricLogins = forwardRef<any, any>(({ defaultView,userId }, ref) => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [captureError, setCaptureError] = useState<string>("");
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<any, any>(
-    ["getBiometric", userId], () => {
-      if (defaultView === "edit" || defaultView === "view"){
-        return API.getBiometric({ userid: userId })}}, {
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(
+    ["getBiometric", userId],
+    () => {
+      if (defaultView === "edit" || defaultView === "view") {
+        return API.getBiometric({ userid: userId });
+      }
+    },
+    {
       onSuccess(data) {
         if (Array.isArray(data) && data.length > 0) {
           let newData = data.map((row) => {
@@ -65,7 +88,7 @@ const BiometricLogins = forwardRef<any, any>(({ defaultView,userId }, ref) => {
         } else {
           setGridData([]);
         }
-      }
+      },
     }
   );
 
@@ -115,7 +138,9 @@ const BiometricLogins = forwardRef<any, any>(({ defaultView,userId }, ref) => {
       // Update existing row
       setGridData((old) => {
         const updatedData = old.map((row) =>
-          row.SR_CD === formData.SR_CD ? { ...row, ...data, FINGER_BIO: SubmitData?.current } : row
+          row.SR_CD === formData.SR_CD
+            ? { ...row, ...data, FINGER_BIO: SubmitData?.current }
+            : row
         );
         return updatedData;
       });
@@ -123,31 +148,34 @@ const BiometricLogins = forwardRef<any, any>(({ defaultView,userId }, ref) => {
       // Add new row
       setGridData((old) => {
         const srCd = Number.parseInt(old?.[old?.length - 1]?.SR_CD ?? "0") + 1;
-        return [...old, { ...data, SR_CD: srCd, FINGER_BIO: SubmitData?.current }];
+        return [
+          ...old,
+          { ...data, SR_CD: srCd, FINGER_BIO: SubmitData?.current },
+        ];
       });
     }
     setFormData(null);
   };
-useEffect(()=>{
-  if (userState?.grid5?.isNewRow?.length > 0){
-    const contextData = userState?.grid5?.isNewRow;
-    const combined = [...data, ...contextData];
-    setGridData(combined);
-  }else{
-    setGridData(data)
-  }
-},[userState?.grid1?.isNewRow,data])
+  useEffect(() => {
+    if (userState?.grid5?.isNewRow?.length > 0) {
+      const contextData = userState?.grid5?.isNewRow;
+      const combined = [...(data ?? ""), ...(contextData ?? "")];
+      setGridData(combined);
+    } else {
+      setGridData(data);
+    }
+  }, [userState?.grid1?.isNewRow, data]);
   const updateBiometric = {
     ...LoginBiometricForm,
-    fields: LoginBiometricForm.fields.map(field => {
+    fields: LoginBiometricForm.fields.map((field) => {
       if (field.name === "USER_NAME") {
         return {
           ...field,
-          defaultValue: userId
+          defaultValue: userId,
         };
       }
       return field;
-    })
+    }),
   };
 
   useEffect(() => {
@@ -158,9 +186,19 @@ useEffect(()=>{
 
   return (
     <Fragment>
+      {isError && (
+        <Alert
+          severity="error"
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
+          errorDetail={error?.error_detail}
+          color="error"
+        />
+      )}
       <GridWrapper
         key={"LoginBiometrics"}
-        finalMetaData={extractGridMetaData(loginBiometric, defaultView) as GridMetaDataType}
+        finalMetaData={
+          extractGridMetaData(loginBiometric, defaultView) as GridMetaDataType
+        }
         actions={defaultView === "edit" || defaultView === "new" ? actions : []}
         setAction={setCurrentAction}
         data={gridData ?? []}
@@ -176,7 +214,9 @@ useEffect(()=>{
             setGridData((old) => {
               return [...old, { ...data }];
             });
-            let newData = gridData.filter(row => row.SR_CD !== currentData?.SR_CD);
+            let newData = gridData.filter(
+              (row) => row.SR_CD !== currentData?.SR_CD
+            );
             setGridData(newData);
           }
         }}
@@ -185,15 +225,12 @@ useEffect(()=>{
           refetch();
         }}
       />
-      <Dialog
-        open={opens}
-        onClose={() => setOpens(false)}
-      >
+      <Dialog open={opens} onClose={() => setOpens(false)}>
         <>
           <FormWrapper
             key={"BiometricLogin"}
             metaData={updateBiometric as MetaDataType}
-            initialValues={formData ?? {} as InitialValuesType}
+            initialValues={formData ?? ({} as InitialValuesType)}
             onSubmitHandler={onSubmitHandler}
             formStyle={{ height: "180px" }}
             formState={{ MessageBox: MessageBox }}
@@ -230,24 +267,39 @@ useEffect(()=>{
               </>
             )}
           </FormWrapper>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px', marginBottom: "10px" }}>
-            <div style={{ border: '2px solid black', width: '300px', height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "300px",
+              marginBottom: "10px",
+            }}
+          >
+            <div
+              style={{
+                border: "2px solid black",
+                width: "300px",
+                height: "300px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               {isCapturing ? (
                 <p>Capturing...</p>
               ) : captureError ? (
                 <p>Error: {captureError}</p>
+              ) : fingerprintImage ? (
+                <img
+                  id="imgFinger"
+                  width="200px"
+                  height="200px"
+                  alt="Finger Image"
+                  src={`data:image/bmp;base64,${fingerprintImage}`}
+                />
               ) : (
-                fingerprintImage ? (
-                  <img
-                    id="imgFinger"
-                    width="200px"
-                    height="200px"
-                    alt="Finger Image"
-                    src={`data:image/bmp;base64,${fingerprintImage}`}
-                  />
-                ) : (
-                  <FingerprintIcon style={{ fontSize: '100px' }} />
-                )
+                <FingerprintIcon style={{ fontSize: "100px" }} />
               )}
             </div>
           </div>

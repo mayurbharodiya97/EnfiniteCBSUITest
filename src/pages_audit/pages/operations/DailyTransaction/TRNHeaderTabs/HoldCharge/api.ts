@@ -2,8 +2,9 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "components/utils";
+} from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
+import LoaderImg from "./Loader.gif";
 
 export const getHoldChargeList = async (reqData) => {
   const { data, status, message, messageDetails } =
@@ -14,12 +15,55 @@ export const getHoldChargeList = async (reqData) => {
       BRANCH_CD: reqData.BRANCH_CD,
     });
   if (status === "0") {
-    let responseData = data;
-    responseData.map((a, i) => {
-      a.index = i;
-      a.sr = i + 1;
-    });
+    let responseData = data.map((item, index) => ({
+      ...item,
+      index: index,
+      sr: index + 1,
+      PROCESS: LoaderImg,
+      FLAG: "N",
+    }));
     return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getHoldChargeDropDown = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETF1HOLDCHRGTYPEDDW", reqData);
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData?.map(
+        ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
+          return {
+            ...other,
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const validateHoldCharge = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEHOLDCHRGF1", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const proceedHoldCharges = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("HOLDCHARGEPROCESSBUTTON", reqData);
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

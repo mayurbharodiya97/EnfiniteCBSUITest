@@ -1,4 +1,8 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import {
+  extractMetaData,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -24,7 +28,7 @@ const MobileRegTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
@@ -165,8 +169,13 @@ const MobileRegTab = () => {
         onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"acct-mst-mobile-reg-form" + initialVal}
-        metaData={mobileReg_tab_metadata as MetaDataType}
+        key={"acct-mst-mobile-reg-tab-form" + initialVal}
+        metaData={
+          extractMetaData(
+            mobileReg_tab_metadata,
+            AcctMSTState?.formmodectx
+          ) as MetaDataType
+        }
         formStyle={{}}
         formState={{ GPARAM155: AcctMSTState?.gparam155 }}
         hideHeader={true}

@@ -1,4 +1,9 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import {
+  extractMetaData,
+  FormWrapper,
+  MetaDataType,
+  utilFunction,
+} from "@acuteinfo/common-base";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -111,7 +116,7 @@ const RelativeDtlTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
@@ -164,8 +169,13 @@ const RelativeDtlTab = () => {
         onSubmitHandler={onSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"pd-form-kyc" + initialVal}
-        metaData={relativeDtl_tab_metadata as MetaDataType}
+        key={"acct-mst-relative-dtl-tab-form" + initialVal}
+        metaData={
+          extractMetaData(
+            relativeDtl_tab_metadata,
+            AcctMSTState?.formmodectx
+          ) as MetaDataType
+        }
         formStyle={{}}
         formState={{ GPARAM155: AcctMSTState?.gparam155 }}
         hideHeader={true}

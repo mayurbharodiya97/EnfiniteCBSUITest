@@ -1,33 +1,37 @@
 import { CircularProgress, Dialog, useTheme } from "@mui/material";
-import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { usePopupContext } from "components/custom/popupContext";
-import { MetaDataType } from "components/dyanmicForm";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { useNavigate } from "react-router-dom";
 import * as API from "./api";
-import {
-  AccountInquiry,
-  PassbookStatement,
-  PassbookPrintingInq,
-} from "./metaData";
+import { AccountInquiry, PassbookStatement } from "./metaData";
 import { useTranslation } from "react-i18next";
-import { enqueueSnackbar } from "notistack";
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  InitialValuesType,
+  SubmitFnType,
+  MetaDataType,
+  queryClient,
+  FormWrapper,
+} from "@acuteinfo/common-base";
+import PassbookPrint from "pages_audit/pages/operations/passbookPrint";
 
-export const ViewStatement = ({ open, onClose, rowsData, screenFlag,close,}) => {
+export const ViewStatement = ({
+  open,
+  onClose,
+  rowsData,
+  screenFlag,
+  close,
+}) => {
   const [disableButton, setDisableButton] = useState(false);
+  const [passbookOpen, setPassbookOpen] = useState(false);
+  const [passbookData, setPassbookData] = useState([]);
   const formRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const parameterRef = useRef<any>();
-  const accountDetailsRef = useRef<any>();
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const acctInqData: any = useQuery<any, any, any>(
@@ -47,15 +51,9 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag,close,}) => 
     API.getPassbookStatement,
     {
       onSuccess: async (data) => {
-        navigate("/cbsenfinity/operation/passbook-printing", {
-          state: {
-            passbookDetail: data,
-            parameterRef: parameterRef.current,
-            accountDetailsRef: accountDetailsRef.current,
-            acctInqDataRef: acctInqData?.data?.[0],
-          },
-        });
-        close();
+        setPassbookOpen(true);
+        setPassbookData(data);
+        onClose();
       },
       onError: async (error: any) => {
         const btnName = await MessageBox({
@@ -75,7 +73,7 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag,close,}) => 
       onSuccess: async (data: any) => {
         if (data?.[0]?.O_STATUS === "999") {
           const btnName = await MessageBox({
-            messageTitle: "Validation Failed",
+            messageTitle: "ValidationFailed",
             message: data?.[0]?.O_MESSAGE,
             buttonNames: ["Ok"],
           });
@@ -168,35 +166,16 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag,close,}) => 
         ),
         SCREEN_REF: "",
       });
-    } else if (screenFlag === "ACCT_PASSBOOK") {
-      parameterRef.current = data;
-      passbookValidation.mutate({
-        COMP_CD: authState.companyID ?? "",
-        BRANCH_CD: parameterRef.current?.BRANCH_CD ?? "",
-        ACCT_TYPE: parameterRef.current?.ACCT_TYPE ?? "",
-        ACCT_CD: parameterRef.current?.ACCT_CD ?? "",
-        TRAN_CD: parameterRef.current?.TRAN_CD ?? "",
-        FLAG: "",
-        LINE_ID: "",
-        LINE_PER_PAGE: "",
-        FROM_DT: (parameterRef.current["PASS_BOOK_DT"] = format(
-          new Date(parameterRef.current["PASS_BOOK_DT"]),
-          "dd/MMM/yyyy"
-        )),
-        GD_DATE: (parameterRef.current["PASS_BOOK_TO_DT"] = format(
-          new Date(parameterRef.current["PASS_BOOK_TO_DT"]),
-          "dd/MMM/yyyy"
-        )),
-        SCREEN_REF: "",
-      });
+    } else {
+      const dataString = JSON.stringify(data);
+      sessionStorage.setItem("myData", dataString);
+      window.location.reload();
     }
   };
 
   let finalMetadata: any = null;
   if (screenFlag === "STATEMENT") {
     finalMetadata = PassbookStatement as MetaDataType;
-  } else if (screenFlag === "ACCT_PASSBOOK") {
-    finalMetadata = PassbookPrintingInq as MetaDataType;
   } else if (screenFlag === "ACCT_INQ") {
     finalMetadata = AccountInquiry as MetaDataType;
   }
@@ -221,17 +200,11 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag,close,}) => 
             initialValues={
               {
                 ...acctInqData?.data?.[0],
+                BRANCH_CD: authState?.user?.branchCode,
+                OP_DATE: rowsData?.[0]?.data?.OP_DATE,
               } as InitialValuesType
             }
             onSubmitHandler={onSubmitHandler}
-            loading={
-              acctInqData?.isLoading ||
-              acctInqData?.isFetching ||
-              passbookInqData?.isLoading ||
-              passbookInqData?.isFetching ||
-              passbookValidation?.isLoading ||
-              passbookValidation?.isFetching
-            }
             formStyle={{
               background: "white",
             }}
@@ -242,12 +215,7 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag,close,}) => 
               acctInqData: acctInqData?.data?.[0],
               handleButonDisable: handleButonDisable,
               MessageBox: MessageBox,
-              docCD: "RPT/430"
-            }}
-            setDataOnFieldChange={(action, payload) => {
-              if (action === "accountDetails") {
-                accountDetailsRef.current = payload;
-              }
+              docCD: "RPT/430",
             }}
           >
             {({ isSubmitting, handleSubmit }) => (
@@ -274,7 +242,7 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag,close,}) => 
                     passbookInqData?.isFetching ||
                     passbookValidation?.isLoading ||
                     passbookValidation?.isFetching
-                      ? null
+                      ? undefined
                       : "CheckCircleOutline"
                   }
                   rotateIcon="scale(1.4)"
@@ -300,6 +268,28 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag,close,}) => 
           </FormWrapper>
         )}
       </Dialog>
+
+      {passbookOpen && (
+        <Dialog
+          open={passbookOpen}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="lg"
+        >
+          <PassbookPrint
+            screenFlag="PASSBOOK_FROM_ACCT_INQ"
+            PassbookPrintingData={passbookData}
+            parameterFlagDate={parameterRef.current}
+            acctInqDetail={acctInqData?.data?.[0]}
+            handleClose={setPassbookOpen}
+          />
+          ;
+        </Dialog>
+      )}
     </>
   );
   return renderResult;

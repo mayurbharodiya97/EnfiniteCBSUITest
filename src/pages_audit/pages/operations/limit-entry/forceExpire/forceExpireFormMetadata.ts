@@ -274,7 +274,7 @@ export const forceExpireMetaData = {
         componentType: "textField",
       },
       name: "SECURITY",
-      label: "SecurityDescription",
+      label: "Description",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -291,12 +291,7 @@ export const forceExpireMetaData = {
       },
       name: "REMARKS",
       label: "Remarks",
-      placeholder: "EnterRemarks",
-
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 4,
@@ -330,13 +325,6 @@ export const forceExpireMetaData = {
       isWorkingDate: true,
       label: "ForcedExpiredDate",
       placeholder: "ForcedExpiredDate",
-
-      required: true,
-
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
       GridProps: {
         xs: 12,
         md: 2,

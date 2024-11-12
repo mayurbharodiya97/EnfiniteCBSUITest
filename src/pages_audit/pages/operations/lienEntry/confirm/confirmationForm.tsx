@@ -1,16 +1,20 @@
-import { AppBar, Button, Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { lienconfirmFormMetaData } from "./confirmFormMetadata";
 import { lienConfirmation } from "../api";
-import { usePopupContext } from "components/custom/popupContext";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
+import {
+  usePopupContext,
+  Alert,
+  RemarksAPIWrapper,
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 export const LienConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
@@ -18,7 +22,6 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const { t } = useTranslation();
-  console.log("<<<rrrr", rows);
 
   const lienConfirm: any = useMutation("lienConfirmation", lienConfirmation, {
     onError: () => {
@@ -78,6 +81,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
           key={"lien-confirmation-Form"}
           metaData={lienconfirmFormMetaData as MetaDataType}
           initialValues={rows?.[0]?.data ?? []}
+          onSubmitHandler={() => {}}
           displayMode="view"
           hideDisplayModeInTitle={true}
           formStyle={{
@@ -90,15 +94,16 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
+                <GradientButton
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
                       messageTitle: t("confirmation"),
                       message: t("AreYouSureToConfirm"),
-                      buttonNames: ["No", "Yes"],
+                      buttonNames: ["Yes", "No"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: ["Yes"],
+                      icon: "CONFIRM",
                     });
                     if (buttonName === "Yes") {
                       lienConfirm.mutate({
@@ -122,47 +127,18 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
                   }}
                 >
                   {t("Confirm")}
-                </Button>
-                <Button
+                </GradientButton>
+                <GradientButton
                   color="primary"
                   onClick={() => {
                     setIsDelete(true);
-                    // if (rows?.[0]?.data?.LIEN_STATUS === "A") {
-                    // } else if (rows?.[0]?.data?.LIEN_STATUS === "E") {
-                    //   let buttonName = await MessageBox({
-                    //     messageTitle: t("confirmation"),
-                    //     message: t("AreYouSureToConfirm"),
-                    //     buttonNames: ["No", "Yes"],
-                    //     defFocusBtnName: "Yes",
-                    //     loadingBtnName: ["Yes"],
-                    //   });
-                    //   if (buttonName === "Yes") {
-                    //     lienConfirm.mutate({
-                    //       IS_CONFIMED: false,
-                    //       COMP_CD: authState?.companyID,
-                    //       BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-                    //       ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
-                    //       ACCT_CD: rows?.[0]?.data?.ACCT_CD,
-                    //       LIEN_STATUS: rows?.[0]?.data?.LIEN_STATUS,
-                    //       ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
-                    //       SR_CD: rows?.[0]?.data?.SR_CD,
-                    //       REMOVAL_DT: rows?.[0]?.data?.REMOVAL_DT,
-                    //       CONFIRMED: rows?.[0]?.data?.CONFIRMED,
-                    //       USER_DEF_REMARKS:
-                    //         "WRONG ENTRY FROM LIEN CONFIRMATION  (TRN/665)",
-                    //       ACTIVITY_TYPE: "LIEN CONFIRMATION SCREEN",
-                    //       LIEN_AMOUNT: rows?.[0]?.data?.LIEN_AMOUNT,
-                    //       EFECTIVE_DT: rows?.[0]?.data?.EFECTIVE_DT,
-                    //     });
-                    //   }
-                    // }
                   }}
                 >
                   {t("Reject")}
-                </Button>
-                <Button color="primary" onClick={() => closeDialog()}>
+                </GradientButton>
+                <GradientButton color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}
@@ -171,7 +147,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
 
       {isDelete && (
         <RemarksAPIWrapper
-          TitleText={"RemovalRemarksChequebook"}
+          TitleText={"RemovalRemarksLien"}
           label={"RemovalRemarks"}
           onActionNo={() => setIsDelete(false)}
           onActionYes={(val, rows) => {

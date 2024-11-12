@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const IntPaidDtlGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -17,8 +17,8 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "55vh",
-      max: "55vh",
+      min: "45vh",
+      max: "45vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -32,10 +32,16 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 60,
-      minWidth: 40,
-      maxWidth: 70,
+      width: 70,
+      minWidth: 50,
+      maxWidth: 100,
       isAutoSequence: true,
+      isDisplayTotal: true,
+      footerIsMultivalue: true,
+      footerLabel: "Total :",
+      setFooterValue(total, rows) {
+        return "";
+      },
     },
     {
       accessor: "ACCT_CD",
@@ -106,10 +112,11 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "right",
       componentType: "currency",
-      width: 120,
-      minWidth: 110,
-      maxWidth: 150,
+      width: 150,
+      minWidth: 140,
+      maxWidth: 200,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "PAID_INT_AMT",
@@ -117,10 +124,11 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
       sequence: 9,
       alignment: "right",
       componentType: "currency",
-      width: 120,
-      minWidth: 110,
-      maxWidth: 150,
+      width: 150,
+      minWidth: 140,
+      maxWidth: 200,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "TDS_INT_AMT",
@@ -128,10 +136,11 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
       sequence: 10,
       alignment: "right",
       componentType: "currency",
-      width: 120,
-      minWidth: 110,
-      maxWidth: 150,
+      width: 150,
+      minWidth: 140,
+      maxWidth: 200,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "CR_AC_NO",

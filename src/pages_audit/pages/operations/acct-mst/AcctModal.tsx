@@ -8,9 +8,18 @@ import {
   Typography,
 } from "@mui/material";
 import ExtractedHeader from "../c-kyc/formModal/ExtractedHeader";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton, queryClient } from "@acuteinfo/common-base";
 import { t } from "i18next";
-import { Fragment, lazy, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Fragment,
+  lazy,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined"; // sidebar-open-icon
 import CancelIcon from "@mui/icons-material/Cancel"; // sidebar-close-icon
 import { CustomTabLabel, TabPanel } from "../c-kyc/formModal/formModal";
@@ -42,12 +51,13 @@ import ShareNominalTab from "./tabComponents/ShareNominalTab";
 import OtherAddTab from "./tabComponents/OtherAddTab";
 import Document from "./tabComponents/DocumentTab/Document";
 // import Document from "./tabComponents/DocumentTab2/Document";
-import AdvConfigTab from "./tabComponents/AdvConfigTab";
-import { PreventUpdateDialog } from "../c-kyc/formModal/dialog/PreventUpdateDialog";
-import { CloseFormDialog } from "../c-kyc/formModal/dialog/CloseFormDialog";
-import { useMutation } from "react-query";
-import { ConfirmUpdateDialog } from "../c-kyc/formModal/dialog/ConfirmUpdateDialog";
-import { Alert } from "components/common/alert";
+import { useMutation, useQuery } from "react-query";
+import {
+  Alert,
+  RemarksAPIWrapper,
+  usePopupContext,
+} from "@acuteinfo/common-base";
+import { enqueueSnackbar } from "notistack";
 
 const AcctModal = ({ onClose, formmode, from }) => {
   const {
@@ -60,94 +70,167 @@ const AcctModal = ({ onClose, formmode, from }) => {
     handleColTabChangectx,
     handleFormModalOpenctx,
     handleCurrFormctx,
+    onFinalUpdatectx,
     handleUpdatectx,
+    handleModifiedColsctx,
+    handleFormDataonSavectx,
+    handleFormLoading,
   } = useContext(AcctMSTContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
   const location: any = useLocation();
   const classes = useDialogStyles();
-  const [updateDialog, setUpdateDialog] = useState(false)
-  const [cancelDialog, setCancelDialog] = useState(false);
-  const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
-  const onCloseUpdateDialog = () => {
-    setUpdateDialog(false)
-  }
-  const onCloseCancelDialog = () => {
-    setCancelDialog(false)
-  }
-  const onClosePreventUpdateDialog = () => {
-    setAlertOnUpdate(false)
-  }
+  const [isOpen, setIsOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<any>(null);
+  const reqCD =
+    formmode === "new"
+      ? ""
+      : !isNaN(parseInt(location?.state?.[0]?.data?.REQUEST_ID))
+      ? parseInt(location?.state?.[0]?.data?.REQUEST_ID)
+      : "";
+  const acctType =
+    formmode === "new" ? "" : location?.state?.[0].data?.ACCT_TYPE;
+  const acctCD =
+    formmode === "new" ? "" : location?.state?.[0].data?.ACCT_CD ?? "";
 
-  // get account form details  
-  const mutation: any = useMutation(API.getAccountDetails, {
+  // get account form details
+  const {
+    data: accountDetails,
+    isLoading,
+    isError: isAcctDtlError,
+    error: AcctDtlError,
+    refetch,
+  } = useQuery<any, any>(
+    ["getAccountDetails", acctType],
+    () =>
+      API.getAccountDetails({
+        ACCT_TYPE: acctType,
+        ACCT_CD: acctCD,
+        REQUEST_CD: reqCD,
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        SCREEN_REF: "MST/002",
+      }),
+    { enabled: false }
+  );
+
+  useEffect(() => {
+    if (isLoading) {
+      handleFormLoading(true);
+    } else {
+      handleFormLoading(false);
+    }
+    if (!isLoading && accountDetails) {
+      handleFormDataonRetrievectx(accountDetails[0]);
+      handleColTabChangectx(0);
+      handleFormLoading(false);
+    }
+  }, [accountDetails, isLoading]);
+
+  // validate new account entry
+  const validateAcctMutation: any = useMutation(API.validateNewAcct, {
     onSuccess: (data) => {
-      handleFormDataonRetrievectx(data[0])
-      onClosePreventUpdateDialog()
+      enqueueSnackbar("Validated Successfully", { variant: "success" });
     },
     onError: (error: any) => {},
-  });  
+  });
 
-  // save new account entry  
+  // save new account entry
   const saveAcctMutation: any = useMutation(API.accountSave, {
-    onSuccess: (data) => {},
+    onSuccess: (data) => {
+      enqueueSnackbar("Saved Successfully", { variant: "success" });
+      closeForm();
+    },
     onError: (error: any) => {},
-  });  
+  });
+
+  // modify new account entry
+  const modifyAcctMutation: any = useMutation(API.accountModify, {
+    onSuccess: (data) => {
+      CloseMessageBox();
+      handleCurrFormctx({
+        currentFormSubmitted: null,
+        isLoading: false,
+      });
+      handleModifiedColsctx({});
+      handleFormDataonSavectx({});
+      enqueueSnackbar("Updated Successfully", { variant: "success" });
+      refetch();
+      handleFormLoading(true);
+    },
+    onError: (error: any) => {
+      CloseMessageBox();
+      handleCurrFormctx({
+        currentFormSubmitted: null,
+        isLoading: false,
+      });
+      handleModifiedColsctx({});
+      handleFormDataonSavectx({});
+    },
+  });
+
+  // confirm acount entry
+  const confirmMutation: any = useMutation(API.confirmAccount, {
+    onSuccess: async (data) => {
+      setIsOpen(false);
+      enqueueSnackbar("Confirmed successfully", { variant: "success" });
+      closeForm();
+    },
+    onError: async (error: any) => {
+      // console.log("data o n error", error)
+      // setIsUpdated(true)
+      setIsOpen(false);
+      setConfirmAction(null);
+      // console.log("onerrorrr", error)
+      // let buttonName = await MessageBox({
+      //   messageTitle: "ERROR",
+      //   message: "",
+      //   buttonNames: ["Ok"],
+      // });
+    },
+  });
 
   useEffect(() => {
     handleFromFormModectx({ formmode, from });
-  }, []);
-
-  useEffect(() => {
-    if(Boolean(location.state)) {
-      if(AcctMSTState?.formmodectx === "new") {
-        handleFormModalOpenctx()
-      } else {
-        handleColTabChangectx(0)
-        handleFormModalOpenOnEditctx(location?.state)
-  
-        if(Array.isArray(location.state) && location.state.length>0) {
-          const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-          const acctType = location.state?.[0]?.data.ACCT_TYPE ?? "";
-          const acctCD = location.state?.[0]?.data.ACCT_CD ?? "";
-          let payload: {
-            COMP_CD?: string, 
-            CUSTOMER_ID?:string,
-            BRANCH_CD: string, 
-            REQUEST_CD:string, 
-            ACCT_TYPE: string, 
-            ACCT_CD: string,
-            SCREEN_REF: string,
-          } = {
-            BRANCH_CD: authState?.user?.branchCode ?? "",
-            REQUEST_CD: reqCD,  
-            ACCT_TYPE: acctType,  
-            ACCT_CD: acctCD,
-            SCREEN_REF: "MST/002",
-            COMP_CD: authState?.companyID ?? "",
-          }
-          if(Object.keys(payload)?.length > 1) {
-            mutation.mutate(payload)
-          }
-        }
+    if (Boolean(location.state)) {
+      if (formmode === "new") {
+        handleColTabChangectx(0);
+        handleFormModalOpenctx();
+      } else if (Array.isArray(location.state) && location.state.length > 0) {
+        handleFormModalOpenOnEditctx(location?.state);
+        refetch();
       }
     } else {
-      handleFormModalClosectx()
-      onClose()
-    }    
-  }, [AcctMSTState?.formmodectx])
+      handleFormModalClosectx();
+      onClose();
+    }
+
+    return () => {
+      handleFormModalClosectx();
+      queryClient.removeQueries(["getAccountDetails", acctType]);
+    };
+  }, []);
 
   const closeForm = () => {
     handleFormModalClosectx();
     onClose();
   };
-  const onCancelForm = () => {
+  const onCancelForm = async () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
-    if (AcctMSTState?.formmodectx !== "view") {
-      if (
-        Array.isArray(AcctMSTState?.formDatactx) &&
-        Object.keys(AcctMSTState?.formDatactx).length > 0
-      ) {
-        setCancelDialog(true);
+    if (
+      Boolean(AcctMSTState?.formmodectx) &&
+      AcctMSTState?.formmodectx !== "view"
+    ) {
+      if (Object.keys(AcctMSTState?.formDatactx).length > 0) {
+        let buttonName = await MessageBox({
+          messageTitle: "Alert",
+          message: "Your changes will be Lost. Are you Sure?",
+          buttonNames: ["Yes", "No"],
+          icon: "WARNING",
+        });
+        if (buttonName === "Yes") {
+          closeForm();
+        }
       } else {
         closeForm();
       }
@@ -156,99 +239,219 @@ const AcctModal = ({ onClose, formmode, from }) => {
     }
   };
 
-  const dialogsMemo = useMemo(() => {
-    // console.log("stepperere qiwuhqweqweqsq", updateDialog, actionDialog, cancelDialog, alertOnUpdate)
-    return <Fragment>
-        {/* confirms before updating */}
-        {updateDialog && <ConfirmUpdateDialog 
-            open={updateDialog} 
-            onClose={onCloseUpdateDialog} 
-            mutationFormDTL={mutation}
-            setAlertOnUpdate={setAlertOnUpdate}
-        />}
+  const onUpdateForm = useCallback(
+    (e) => {
+      onFinalUpdatectx(true);
+      // console.log(state?.modifiedFormCols, "wqeudyfgqwudye", displayMode)
+      // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
+      const refs = AcctMSTState?.currentFormctx.currentFormRefctx;
+      if (Array.isArray(refs) && refs.length > 0) {
+        handleCurrFormctx({
+          isLoading: true,
+        });
+        Promise.all(
+          refs.map((ref) => {
+            return typeof ref === "function"
+              ? ref()
+              : ref.current &&
+                  ref.current.handleSubmit &&
+                  ref.current.handleSubmit(e, "save", false);
+          })
+        );
+      }
+    },
+    [
+      AcctMSTState?.currentFormctx.currentFormRefctx,
+      AcctMSTState?.modifiedFormCols,
+      formmode,
+      AcctMSTState?.formmodectx,
+    ]
+  );
 
-        {/* confirming action-remark dialog */}
-        {/* {actionDialog && <ActionDialog 
-            open={actionDialog} 
-            setOpen={setActionDialog} 
-            closeForm = {onClose}
-            action= {confirmAction}
-        />} */}
-
-        {/* data lost alert on closing form */}
-        {cancelDialog && <CloseFormDialog 
-            open={cancelDialog} 
-            onClose={onCloseCancelDialog} 
-            closeForm = {onClose}
-        />}
-
-        {/* no change found to update dialog */}
-        {alertOnUpdate && <PreventUpdateDialog 
-            open={alertOnUpdate} 
-            onClose={onClosePreventUpdateDialog} 
-        />}
-    </Fragment>
+  const ActionBTNs = useMemo(() => {
+    // console.log(AcctMSTState?.formmodectx, "wieuhfiwhefwef", AcctMSTState?.fromctx)
+    return AcctMSTState?.formmodectx == "view"
+      ? AcctMSTState?.fromctx &&
+          AcctMSTState?.fromctx === "confirmation-entry" && (
+            <Fragment>
+              <GradientButton
+                onClick={() => openActionDialog("Y")}
+                color="primary"
+                // disabled={mutation.isLoading}
+              >
+                {t("Confirm")}
+              </GradientButton>
+              <GradientButton
+                onClick={() => openActionDialog("R")}
+                color="primary"
+                // disabled={mutation.isLoading}
+              >
+                {t("Reject")}
+              </GradientButton>
+            </Fragment>
+          )
+      : AcctMSTState?.formmodectx == "edit" &&
+          AcctMSTState?.fromctx !== "new-draft" && (
+            <GradientButton onClick={onUpdateForm} color="primary">
+              {t("Update")}
+            </GradientButton>
+          );
   }, [
-    // updateDialog, actionDialog, 
-    cancelDialog, alertOnUpdate])
+    AcctMSTState?.currentFormctx.currentFormRefctx,
+    formmode,
+    AcctMSTState?.formmodectx,
+    from,
+    AcctMSTState?.fromctx,
+    AcctMSTState?.modifiedFormCols,
+  ]);
 
   useEffect(() => {
-    if(Boolean(AcctMSTState?.currentFormctx.currentFormSubmitted)) {
-      const steps = AcctMSTState?.tabNameList.filter(tab => tab.isVisible) 
-      const totalTab:any = Array.isArray(steps) && steps.length;
-      // console.log(AcctMSTState?.currentFormctx, "wkeuhjfiowehfiweuifh", AcctMSTState?.currentFormctx.currentFormSubmitted, "---- ", steps, totalTab)
-      if((totalTab - 1) > AcctMSTState?.colTabValuectx) {
+    if (AcctMSTState?.currentFormctx?.currentFormSubmitted) {
+      const steps = AcctMSTState?.tabNameList.filter((tab) => tab.isVisible);
+      const totalTab: any = Array.isArray(steps) && steps.length;
+      const isLastTab: boolean =
+        AcctMSTState?.isFreshEntryctx &&
+        totalTab - 1 === AcctMSTState?.colTabValuectx;
+      if (formmode === "new") {
+        if (isLastTab) {
+          const reqPara = {
+            IsNewRow: true,
+            REQ_CD: AcctMSTState?.req_cd_ctx,
+            REQ_FLAG: "F",
+            SAVE_FLAG: "F",
+            CUSTOMER_ID: AcctMSTState?.customerIDctx,
+            ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+            ACCT_CD: AcctMSTState?.acctNumberctx,
+            COMP_CD: authState?.companyID ?? "",
+            formData: AcctMSTState?.formDatactx,
+            OP_DATE: authState?.workingDate,
+          };
+          // validateAcctMutation.mutate(reqPara);
+          saveAcctMutation.mutate(reqPara);
+        }
+      } else if (formmode === "edit") {
+        if (isLastTab || AcctMSTState?.isFinalUpdatectx) {
+          const getUpdatedTabs = async () => {
+            const { updated_tab_format, update_type } = await handleUpdatectx({
+              COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: authState?.user?.branchCode ?? "",
+            });
+            if (typeof updated_tab_format === "object") {
+              // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
+              if (Object.keys(updated_tab_format)?.length === 0) {
+                let buttonName = await MessageBox({
+                  messageTitle: "Alert",
+                  message: "You have not made any changes yet.",
+                  buttonNames: ["Ok"],
+                  icon: "WARNING",
+                });
+              } else if (Object.keys(updated_tab_format)?.length > 0) {
+                let buttonName = await MessageBox({
+                  messageTitle: "Alert",
+                  message:
+                    "Are you sure you want to apply changes and update ?",
+                  buttonNames: ["Yes", "No"],
+                  loadingBtnName: ["Yes"],
+                  icon: "WARNING",
+                });
+                if (buttonName === "Yes") {
+                  const reqPara = {
+                    IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
+                    REQ_CD: AcctMSTState?.req_cd_ctx,
+                    // REQ_FLAG: "F",
+                    REQ_FLAG: AcctMSTState?.acctNumberctx ? "E" : "F",
+                    SAVE_FLAG: "F",
+                    CUSTOMER_ID: AcctMSTState?.customerIDctx,
+                    ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+                    ACCT_CD: AcctMSTState?.acctNumberctx,
+                    COMP_CD: authState?.companyID ?? "",
+                    BRANCH_CD: authState?.user?.branchCode ?? "",
+                    IS_FROM_MAIN: "N",
+                    formData: AcctMSTState?.formDatactx,
+                    OP_DATE: authState?.workingDate,
+                    updated_tab_format: updated_tab_format,
+                    update_type: update_type,
+                  };
+                  modifyAcctMutation.mutate(reqPara);
+                }
+              }
+            }
+          };
+          getUpdatedTabs().catch((err) =>
+            console.log("update error", err.message)
+          );
+        }
+      }
+      if (Boolean(!isLastTab && !AcctMSTState?.isFinalUpdatectx)) {
         handleCurrFormctx({
           colTabValuectx: AcctMSTState?.colTabValuectx + 1,
-        })
-        handleColTabChangectx(AcctMSTState?.colTabValuectx + 1); 
-      } else if(Boolean(AcctMSTState?.isFreshEntryctx && (totalTab - 1) === AcctMSTState?.colTabValuectx)) {
-        const reqPara = {
-          IsNewRow: true,
-          REQ_CD: AcctMSTState?.req_cd_ctx,
-          REQ_FLAG: "F",
-          SAVE_FLAG: "F",
-          CUSTOMER_ID: AcctMSTState?.customerIDctx,
-          ACCT_TYPE: AcctMSTState?.accTypeValuectx,
-          ACCT_CD: AcctMSTState?.acctNumberctx,
-          COMP_CD: authState?.companyID ?? "",
-          formData: AcctMSTState?.formDatactx,
-        }
-        // console.log("oifjwoiejfowiejf", reqPara)
-        saveAcctMutation.mutate(reqPara)
+        });
+        handleColTabChangectx(AcctMSTState?.colTabValuectx + 1);
       }
-
-      // if(Boolean(AcctMSTState?.isFinalUpdatectx)) {
-      //   const getUpdatedTabs = async () => {
-      //     const {updated_tab_format, update_type} = await handleUpdatectx({
-      //       COMP_CD: authState?.companyID ?? ""
-      //     })
-      //     if(typeof updated_tab_format === "object") {
-      //       // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
-      //       if (Object.keys(updated_tab_format)?.length === 0) {
-      //           setAlertOnUpdate(true)
-      //       } else if(Object.keys(updated_tab_format)?.length>0) {
-      //         setUpdateDialog(true)
-      //       }
-      //     }
-      //   }
-      //   getUpdatedTabs().catch(err => console.log("update error", err.message))
-      //   // if(Object.keys(AcctMSTState?.modifiedFormCols).length >0) {
-      //   //   setUpdateDialog(true)
-      //   //   // setCancelDialog(true)
-      //   // } else {
-      //   //   setAlertOnUpdate(true)
-      //   // }
-      // } else {
-      //   if((totalTab - 1) > AcctMSTState?.colTabValuectx) {
-      //     handleCurrFormctx({
-      //       colTabValuectx: AcctMSTState?.colTabValuectx + 1,
-      //     })
-      //     handleColTabChangectx(AcctMSTState?.colTabValuectx + 1); 
-      //   }
-      // }      
     }
-  }, [AcctMSTState?.currentFormctx.currentFormSubmitted, AcctMSTState?.tabNameList, AcctMSTState?.isFinalUpdatectx])
+  }, [
+    AcctMSTState?.currentFormctx.currentFormSubmitted,
+    AcctMSTState?.isFinalUpdatectx,
+  ]);
+
+  // useEffect(() => {
+  //   if(Boolean(AcctMSTState?.currentFormctx.currentFormSubmitted)) {
+  //     const steps = AcctMSTState?.tabNameList.filter(tab => tab.isVisible)
+  //     const totalTab:any = Array.isArray(steps) && steps.length;
+  //     // console.log(AcctMSTState?.currentFormctx, "wkeuhjfiowehfiweuifh", AcctMSTState?.currentFormctx.currentFormSubmitted, "---- ", steps, totalTab)
+  //     if((totalTab - 1) > AcctMSTState?.colTabValuectx) {
+  //       handleCurrFormctx({
+  //         colTabValuectx: AcctMSTState?.colTabValuectx + 1,
+  //       })
+  //       handleColTabChangectx(AcctMSTState?.colTabValuectx + 1);
+  //     } else if(Boolean(AcctMSTState?.isFreshEntryctx && (totalTab - 1) === AcctMSTState?.colTabValuectx)) {
+  //       const reqPara = {
+  //         IsNewRow: true,
+  //         REQ_CD: AcctMSTState?.req_cd_ctx,
+  //         REQ_FLAG: "F",
+  //         SAVE_FLAG: "F",
+  //         CUSTOMER_ID: AcctMSTState?.customerIDctx,
+  //         ACCT_TYPE: AcctMSTState?.accTypeValuectx,
+  //         ACCT_CD: AcctMSTState?.acctNumberctx,
+  //         COMP_CD: authState?.companyID ?? "",
+  //         formData: AcctMSTState?.formDatactx,
+  //         OP_DATE: authState?.workingDate,
+  //       }
+  //       // console.log("oifjwoiejfowiejf", reqPara)
+  //       saveAcctMutation.mutate(reqPara)
+  //     }
+
+  //     // if(Boolean(AcctMSTState?.isFinalUpdatectx)) {
+  //     //   const getUpdatedTabs = async () => {
+  //     //     const {updated_tab_format, update_type} = await handleUpdatectx({
+  //     //       COMP_CD: authState?.companyID ?? ""
+  //     //     })
+  //     //     if(typeof updated_tab_format === "object") {
+  //     //       // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
+  //     //       if (Object.keys(updated_tab_format)?.length === 0) {
+  //     //           setAlertOnUpdate(true)
+  //     //       } else if(Object.keys(updated_tab_format)?.length>0) {
+  //     //         setUpdateDialog(true)
+  //     //       }
+  //     //     }
+  //     //   }
+  //     //   getUpdatedTabs().catch(err => console.log("update error", err.message))
+  //     //   // if(Object.keys(AcctMSTState?.modifiedFormCols).length >0) {
+  //     //   //   setUpdateDialog(true)
+  //     //   //   // setCancelDialog(true)
+  //     //   // } else {
+  //     //   //   setAlertOnUpdate(true)
+  //     //   // }
+  //     // } else {
+  //     //   if((totalTab - 1) > AcctMSTState?.colTabValuectx) {
+  //     //     handleCurrFormctx({
+  //     //       colTabValuectx: AcctMSTState?.colTabValuectx + 1,
+  //     //     })
+  //     //     handleColTabChangectx(AcctMSTState?.colTabValuectx + 1);
+  //     //   }
+  //     // }
+  //   }
+  // }, [AcctMSTState?.currentFormctx.currentFormSubmitted, AcctMSTState?.tabNameList, AcctMSTState?.isFinalUpdatectx])
 
   const steps: any = AcctMSTState?.tabsApiResctx.filter((tab) => tab.isVisible);
 
@@ -257,30 +460,28 @@ const AcctModal = ({ onClose, formmode, from }) => {
       case "Main":
         return <MainTab />;
       case "Term Loan":
-        return <TermLoanTab />;  
+        return <TermLoanTab />;
       case "Savings Deposit":
-        return <SavingsDepositTab />  
+        return <SavingsDepositTab />;
       case "Hypothication":
-        return <HypothicationTab />  
+        return <HypothicationTab />;
       case "Current":
-        return <CurrentTab />  
+        return <CurrentTab />;
       case "Share/Nominal":
-        return <ShareNominalTab />  
+        return <ShareNominalTab />;
       case "Cummulative Fix Deposit":
       case "Fix Deposit":
-        return <FixDepositTab />  
+        return <FixDepositTab />;
       case "Locker":
-        return <LockerTab />
+        return <LockerTab />;
       case "Mobile Registration":
-        return <MobileRegTab />
+        return <MobileRegTab />;
       case "Relative Details":
-        return <RelativeDtlTab />
+        return <RelativeDtlTab />;
       case "Other Address":
-        return <OtherAddTab />
+        return <OtherAddTab />;
       case "Documents":
-        return <Document />
-      case "Advance Configuration":
-        return <AdvConfigTab />
+        return <Document />;
       case "Joint Holder":
         return <JointTab />;
       case "Nominee":
@@ -300,6 +501,11 @@ const AcctModal = ({ onClose, formmode, from }) => {
     }
   };
 
+  const openActionDialog = (state: string) => {
+    setIsOpen(true);
+    setConfirmAction(state);
+  };
+
   return (
     <Dialog fullScreen={true} open={true}>
       <ExtractedHeader />
@@ -316,10 +522,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
               mx: "10px",
               height: "30px",
               minWidth: "30px !important",
-              display:
-                AcctMSTState?.isFreshEntryctx
-                  ? "none"
-                  : "flex",
+              display: AcctMSTState?.isFreshEntryctx ? "none" : "flex",
               alignItems: "center",
               justifyContent: "center",
               borderRadius: "5px",
@@ -372,7 +575,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
           {/* {HeaderContent} */}
 
           {/* for checker, view-only */}
-          {/* {ActionBTNs} */}
+          {ActionBTNs}
           <GradientButton onClick={onCancelForm} color={"primary"}>
             {t("Close")}
           </GradientButton>
@@ -389,10 +592,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
           item
           xs="auto"
           sx={{
-            display:
-              AcctMSTState?.isFreshEntryctx
-                ? "none"
-                : "flex",
+            display: AcctMSTState?.isFreshEntryctx ? "none" : "flex",
             flexDirection: "column",
             alignItems: "center",
             position: "sticky",
@@ -461,20 +661,44 @@ const AcctModal = ({ onClose, formmode, from }) => {
           {AcctMSTState?.tabsApiResctx &&
             AcctMSTState?.tabsApiResctx.length > 0 &&
             AcctMSTState?.isFreshEntryctx && <TabStepper />}
-          {mutation.isError ? (
+          {isAcctDtlError ? (
             <Alert
-              severity={mutation.error?.severity ?? "error"}
-              errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
-              errorDetail={mutation.error?.error_detail}
+              severity={AcctDtlError?.severity ?? "error"}
+              errorMsg={AcctDtlError?.error_msg ?? "Something went to wrong.."}
+              errorDetail={AcctDtlError?.error_detail}
               color="error"
             />
-          ) : saveAcctMutation.isError && (
+          ) : saveAcctMutation.isError ? (
             <Alert
               severity={saveAcctMutation.error?.severity ?? "error"}
-              errorMsg={saveAcctMutation.error?.error_msg ?? "Something went to wrong.."}
+              errorMsg={
+                saveAcctMutation.error?.error_msg ?? "Something went to wrong.."
+              }
               errorDetail={saveAcctMutation.error?.error_detail}
               color="error"
             />
+          ) : modifyAcctMutation.isError ? (
+            <Alert
+              severity={modifyAcctMutation.error?.severity ?? "error"}
+              errorMsg={
+                modifyAcctMutation.error?.error_msg ??
+                "Something went to wrong.."
+              }
+              errorDetail={modifyAcctMutation.error?.error_detail}
+              color="error"
+            />
+          ) : (
+            confirmMutation.isError && (
+              <Alert
+                severity={confirmMutation.error?.severity ?? "error"}
+                errorMsg={
+                  confirmMutation.error?.error_msg ??
+                  "Something went to wrong.."
+                }
+                errorDetail={confirmMutation.error?.error_detail}
+                color="error"
+              />
+            )
           )}
           {steps &&
             steps.length > 0 &&
@@ -492,7 +716,30 @@ const AcctModal = ({ onClose, formmode, from }) => {
             })}
         </Grid>
       </Grid>
-      {dialogsMemo}
+
+      <RemarksAPIWrapper
+        TitleText={"Confirmation"}
+        onActionNo={() => {
+          setIsOpen(false);
+          setConfirmAction(null);
+        }}
+        onActionYes={(val, rows) => {
+          // console.log(val, "weiuifuhiwuefefgwef", rows)
+          confirmMutation.mutate({
+            REQUEST_CD: AcctMSTState?.req_cd_ctx ?? "",
+            REMARKS: val ?? "",
+            CONFIRMED: confirmAction,
+          });
+        }}
+        isLoading={confirmMutation.isLoading || confirmMutation.isFetching}
+        isEntertoSubmit={true}
+        AcceptbuttonLabelText="Ok"
+        CanceltbuttonLabelText="Cancel"
+        open={isOpen}
+        rows={{}}
+        isRequired={confirmAction === "Y" ? false : true}
+        // isRequired={false}
+      />
     </Dialog>
   );
 };

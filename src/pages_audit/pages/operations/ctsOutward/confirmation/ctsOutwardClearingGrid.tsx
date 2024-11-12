@@ -6,9 +6,6 @@ import {
   useState,
   useEffect,
 } from "react";
-import GridWrapper from "components/dataTableStatic";
-import { Alert } from "components/common/alert";
-import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
@@ -18,17 +15,23 @@ import {
   RetrieveFormConfigMetaData,
 } from "./ConfirmationMetadata";
 import { AuthContext } from "pages_audit/auth";
-import { SubmitFnType } from "packages/form";
 import { format } from "date-fns";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { AppBar } from "@mui/material";
-import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
 import { t } from "i18next";
-import { utilFunction } from "components/utils";
-
-
-
+import {
+  utilFunction,
+  ClearCacheContext,
+  ClearCacheProvider,
+  queryClient,
+  LoaderPaperComponent,
+  MetaDataType,
+  FormWrapper,
+  SubmitFnType,
+  ActionTypes,
+  Alert,
+  GridWrapper,
+} from "@acuteinfo/common-base";
+import getDynamicLabel from "components/common/custom/getDynamicLabel";
 
 const actions: ActionTypes[] = [
   {
@@ -42,37 +45,41 @@ const actions: ActionTypes[] = [
 const CtsOutwardClearingGrid = ({ zoneTranType }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
-  const indexRef = useRef(0);
+  const indexRef = useRef(1);
   const navigate = useNavigate();
   const isDataChangedRef = useRef(false);
-  const [formData, setFormData] = useState<any>();
   const { getEntries } = useContext(ClearCacheContext);
   let currentPath = useLocation().pathname;
-
+  const [formData, setFormData] = useState<any>({});
   const { data, isLoading, isError, error } = useQuery<any, any>(
     ["getBussinessDate"],
     () => API.getBussinessDate(),
     {
       onSuccess: (data) => {
         mutation.mutate({
-          FROM_TRAN_DT: zoneTranType === "S" ? (format(new Date(data[0]?.TRAN_DATE), "dd/MMM/yyyy")) : format(new Date(authState.workingDate), "dd/MMM/yyyy"),
-          TO_TRAN_DT: zoneTranType === "S" ? format(
-            new Date(data?.[0]?.TRAN_DATE),
-            "dd/MMM/yyyy"
-          ) : format(
-            new Date(authState?.workingDate),
-            "dd/MMM/yyyy"
-          ),
+          FROM_TRAN_DT:
+            zoneTranType === "S"
+              ? format(new Date(data[0]?.TRAN_DATE), "dd/MMM/yyyy")
+              : format(new Date(authState.workingDate), "dd/MMM/yyyy"),
+          TO_TRAN_DT:
+            zoneTranType === "S"
+              ? format(new Date(data?.[0]?.TRAN_DATE), "dd/MMM/yyyy")
+              : format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
           COMP_CD: authState.companyID,
           BRANCH_CD: authState.user.branchCode,
           TRAN_TYPE: zoneTranType,
           CONFIRMED: "0",
           BANK_CD: "",
-          ZONE: zoneTranType === "S" ? "0   " : zoneTranType === "R" ? "10  " : "18  ",
+          ZONE:
+            zoneTranType === "S"
+              ? "0   "
+              : zoneTranType === "R"
+              ? "10  "
+              : "18  ",
           SLIP_CD: "",
           CHEQUE_NO: "",
-          CHEQUE_AMOUNT: ""
-        })
+          CHEQUE_AMOUNT: "",
+        });
       },
     }
   );
@@ -80,8 +87,8 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
     "getRetrievalClearingData",
     API.getRetrievalClearingData,
     {
-      onSuccess: (data) => { },
-      onError: (error: any) => { },
+      onSuccess: (data) => {},
+      onError: (error: any) => {},
     }
   );
   useEffect(() => {
@@ -137,57 +144,67 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
       CONFIRMED: actionFlag === "RETRIEVE" ? "N" : "0",
     };
     mutation.mutate(data);
-    endSubmit(true)
     setFormData(data);
+    endSubmit(true);
   };
 
   const handleDialogClose = () => {
-    if (isDataChangedRef.current === true) {
-      isDataChangedRef.current = true;
-      mutation.mutate({
-        ...formData,
-      });
+    if (isDataChangedRef.current) {
+      const defaultData = {
+        FROM_TRAN_DT:
+          zoneTranType === "S"
+            ? format(new Date(data[0]?.TRAN_DATE), "dd/MMM/yyyy")
+            : format(new Date(authState.workingDate), "dd/MMM/yyyy"),
+        TO_TRAN_DT:
+          zoneTranType === "S"
+            ? format(new Date(data?.[0]?.TRAN_DATE), "dd/MMM/yyyy")
+            : format(new Date(authState?.workingDate), "dd/MMM/yyyy"),
+        COMP_CD: authState.companyID,
+        BRANCH_CD: authState.user.branchCode,
+        TRAN_TYPE: zoneTranType,
+        CONFIRMED: "0",
+        BANK_CD: "",
+        ZONE: zoneTranType === "S" ? "0" : zoneTranType === "R" ? "10" : "18",
+        SLIP_CD: "",
+        CHEQUE_NO: "",
+        CHEQUE_AMOUNT: "",
+      };
+      mutation.mutate(
+        formData && Object.keys(formData).length > 0
+          ? { ...formData }
+          : defaultData
+      );
       isDataChangedRef.current = false;
     }
     navigate(".");
   };
+
   const handlePrev = useCallback(() => {
-    navigate(".");
-    const index = (indexRef.current -= 1);
-    console.log("index prev", index);
-    setTimeout(() => {
-      setCurrentAction({
-        name: "view-detail",
-        rows: [
-          {
-            data: mutation?.data[index - 1],
-            id: String(index - 1),
-          },
-        ],
-      });
-      console.log("mutation?.data[index]", mutation?.data[index - 1]);
-    }, 0);
-  }, [mutation?.data]);
+    if (indexRef.current > 1) {
+      indexRef.current -= 1;
+      const index = indexRef.current;
+      setTimeout(() => {
+        setCurrentAction({
+          name: "view-detail",
+          rows: [{ data: mutation?.data[index - 1], id: String(index) }],
+        });
+      }, 0);
+    }
+  }, [mutation?.data, indexRef.current]);
+
   const handleNext = useCallback(() => {
-    navigate(".");
     const index = indexRef.current++;
-    console.log("index next", index);
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
-        rows: [
-          {
-            data: mutation?.data[index + 1],
-            id: String(index + 1),
-          },
-        ],
+        rows: [{ data: mutation?.data[index], id: String(index + 1) }],
       });
     }, 0);
-  }, [mutation?.data]);
+  }, [mutation?.data, indexRef.current]);
 
   const typeDefaults = {
     R: { defaultValue: "10  ", label: "Inward Return Retrieve Information" },
-    S: { defaultValue: "0   ", label: "CTS O/W Retrieve Information" },
+    S: { defaultValue: "0   ", label: "Clearing Retrieve Information" },
     W: { defaultValue: "18  ", label: "Outward Return Retrieve Information" },
   };
 
@@ -250,7 +267,7 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
               background: "white",
             }}
             onFormButtonClickHandel={(id) => {
-              let event: any = { preventDefault: () => { } };
+              let event: any = { preventDefault: () => {} };
               // if (mutation?.isLoading) {
               if (id === "RETRIEVE") {
                 formRef?.current?.handleSubmit(event, "RETRIEVE");
@@ -304,13 +321,11 @@ const CtsOutwardClearingGrid = ({ zoneTranType }) => {
               currentIndexRef={indexRef}
               totalData={mutation?.data?.length ?? 0}
               isDataChangedRef={isDataChangedRef}
-              formLabel={
-                utilFunction.getDynamicLabel(
-                  currentPath,
-                  authState?.menulistdata,
-                  true
-                )
-              }
+              formLabel={utilFunction.getDynamicLabel(
+                currentPath,
+                authState?.menulistdata,
+                true
+              )}
             />
           }
         />

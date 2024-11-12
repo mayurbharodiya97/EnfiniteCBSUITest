@@ -1,9 +1,9 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const tempODConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "TempODAgainstConfirmation",
+    gridLabel: "",
     rowIdColumn: "ENTERED_DATE",
     defaultColumnConfig: {
       width: 150,
@@ -18,14 +18,15 @@ export const tempODConfirmGridMetaData: GridMetaDataType = {
     pageSizes: [20, 30, 50],
     defaultPageSize: 14,
     containerHeight: {
-      min: "73vh",
-      max: "73vh",
+      min: "67vh",
+      max: "67vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
     searchPlaceholder: "Records of Temporary OD Against Confirmation",
+    footerNote: "FooterNoteMsgCfmRej",
   },
   filters: [],
   columns: [
@@ -62,7 +63,7 @@ export const tempODConfirmGridMetaData: GridMetaDataType = {
       maxWidth: 290,
     },
     {
-      accessor: "CODE_DISPLAY",
+      accessor: "CODE_DESC",
       columnName: "Parameters",
       sequence: 4,
       alignment: "left",

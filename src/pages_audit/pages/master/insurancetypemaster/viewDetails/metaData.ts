@@ -44,7 +44,7 @@ export const InsuTypeMasterFormMetadata = {
       maxLength: 4,
       placeholder: "EnterCode",
       txtTransform: "uppercase",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       __EDIT__: { isReadOnly: true },
       __NEW__: { isFieldFocused: true },
       validate: (columnValue, ...rest) => {
@@ -95,7 +95,7 @@ export const InsuTypeMasterFormMetadata = {
       required: true,
       maxLength: 75,
       placeholder: "EnterDescription",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       __EDIT__: { isFieldFocused: true },
       validate: (columnValue, ...rest) => {
         // Duplication validation

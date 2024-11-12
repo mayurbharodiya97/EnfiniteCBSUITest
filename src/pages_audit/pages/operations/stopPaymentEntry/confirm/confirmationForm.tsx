@@ -1,18 +1,22 @@
-import { AppBar, Button, Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { stopPayconfirmFormMetaData } from "./confirmFormMetadata";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { usePopupContext } from "components/custom/popupContext";
-import { queryClient } from "cache";
 import { crudStopPayment, stopPaymentConfirm } from "../api";
 import { enqueueSnackbar } from "notistack";
-import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
+import {
+  usePopupContext,
+  Alert,
+  RemarksAPIWrapper,
+  FormWrapper,
+  queryClient,
+  MetaDataType,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 export const StopPayConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
@@ -81,6 +85,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
     }
   }, [rows?.[0]?.data]);
 
+  console.log("<<<rows ", rows);
   return (
     <Dialog
       open={true}
@@ -107,6 +112,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
           metaData={stopPayconfirmFormMetaData as MetaDataType}
           initialValues={rows?.[0]?.data ?? {}}
           displayMode="view"
+          onSubmitHandler={() => {}}
           hideDisplayModeInTitle={true}
           formStyle={{
             background: "white",
@@ -118,7 +124,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
+                <GradientButton
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
@@ -135,14 +141,14 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                         FLAG: "Y",
                         BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
                         TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-                        ENTERED_BY: rows?.[0]?.data?.ENTERED_BY,
+                        LAST_ENTERED_BY: rows?.[0]?.data?.LAST_ENTERED_BY,
                       });
                     }
                   }}
                 >
                   {t("Confirm")}
-                </Button>
-                <Button
+                </GradientButton>
+                <GradientButton
                   color="primary"
                   onClick={async () => {
                     if (rows?.[0]?.data?.RELEASE_DATE === "") {
@@ -151,7 +157,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                       let buttonName = await MessageBox({
                         messageTitle: "confirmation",
                         message: "AreYouSureToConfirm",
-                        buttonNames: ["No", "Yes"],
+                        buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
                         loadingBtnName: ["Yes"],
                       });
@@ -169,10 +175,10 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                   }}
                 >
                   {t("Reject")}
-                </Button>
-                <Button color="primary" onClick={() => closeDialog()}>
+                </GradientButton>
+                <GradientButton color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

@@ -1,19 +1,15 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { TRN001_TableMetaData } from "./gridMetadata";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "../api";
 import * as CommonApi from "../../TRNCommon/api";
 import { useSnackbar } from "notistack";
 import {
   Box,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   Paper,
   TextField,
   Typography,
@@ -23,27 +19,25 @@ import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
 
 import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 
 import { useLocation } from "react-router-dom";
-import { GradientButton } from "components/styledComponent/button";
 import { DynFormHelperText, PaperComponent } from "../components";
-import { Alert } from "components/common/alert";
-import { queryClient } from "cache";
-
+import {
+  GridWrapper,
+  GradientButton,
+  Alert,
+  ActionTypes,
+  queryClient,
+  GridMetaDataType,
+  RemarksAPIWrapper,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
-  // {
-  //   actionName: "view-detail",
-  //   actionLabel: "",
-  //   multiple: false,
-  //   rowDoubleClick: true,
-  // },
   {
     actionName: "Delete",
     actionLabel: "Remove",
     multiple: false,
     rowDoubleClick: false,
-    // alwaysAvailable: true,
   },
 ];
 
@@ -66,8 +60,8 @@ export const TRN001_Table = ({
     scrollErr: "",
     remarkErr: "",
   });
-  const [isConfirmed, setIsConfirmed] = useState<any>(false);
   const { enqueueSnackbar } = useSnackbar();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const controllerRef = useRef<AbortController>();
@@ -102,7 +96,7 @@ export const TRN001_Table = ({
       }
     },
     onError: (error: any) => {
-      if (Boolean(error?.error_msg)) {
+      if (!Boolean(error?.error_msg?.toLowerCase()?.includes("timeout"))) {
         enqueueSnackbar(error?.error_msg, {
           variant: "error",
         });
@@ -138,9 +132,9 @@ export const TRN001_Table = ({
           variant: "success",
         });
       }
-      setScrollDialog(false);
       setScrollNo("");
       refetch();
+      CloseMessageBox();
     },
     onError: (error: any) => {
       if (Boolean(error?.error_msg)) {
@@ -148,8 +142,8 @@ export const TRN001_Table = ({
           variant: "error",
         });
       }
-      setScrollDialog(false);
       setScrollNo("");
+      CloseMessageBox();
     },
   });
 
@@ -192,12 +186,14 @@ export const TRN001_Table = ({
   const handleFilterByScroll = (scroll?: any) => {
     if (!Boolean(scroll)) {
       setGridData(originalData);
-    } else if (gridData?.length > 0) {
-      const result = gridData?.filter((item: any) =>
-        item?.SCROLL1?.includes(scroll)
+    } else {
+      const result = gridData?.filter(
+        (item: any) =>
+          item?.SCROLL1 &&
+          typeof item?.SCROLL1 === "string" &&
+          item?.SCROLL1?.toString()?.includes(scroll?.toString())
       );
-
-      setGridData(result?.length > 0 ? result : originalData);
+      setGridData(result?.length > 0 ? result : []);
     }
   };
 
@@ -216,10 +212,11 @@ export const TRN001_Table = ({
         ACCT_TYPE: dataRow?.ACCT_TYPE ?? "",
         ACCT_CD: dataRow?.ACCT_CD ?? "",
         TRAN_AMOUNT: dataRow?.AMOUNT ?? "",
-        ACTIVITY_TYPE: "DAILY TRANSACTION" ?? "",
+        ACTIVITY_TYPE: "DAILY TRANSACTION",
         TRAN_DT: dataRow?.TRAN_DT ?? "",
         CONFIRMED: dataRow?.CONFIRMED ?? "",
         USER_DEF_REMARKS: input ?? "",
+        ENTERED_BY: dataRow?.ENTERED_BY ?? "",
       };
       deleteScrollByVoucher?.mutate(obj);
     }
@@ -231,59 +228,74 @@ export const TRN001_Table = ({
     handleFilterByScroll(value);
   };
 
-  const handleDeletByScroll = () => {
-    let hasError = false;
+  const handleDeletByScroll = async () => {
+    setScrollDialog(false);
+    if (gridData?.length > 0) {
+      const msgBoxRes = await MessageBox({
+        messageTitle: "Confirmation",
+        message: `Are you sure you want to remove ${
+          gridData?.length ?? ""
+        } records?`,
+        defFocusBtnName: "Yes",
+        icon: "CONFIRM",
+        buttonNames: ["Yes", "No"],
+        loadingBtnName: ["Yes"],
+      });
+      if (msgBoxRes === "Yes") {
+        let hasError = false;
 
-    if (!Boolean(scrollNo)) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        scrollErr: "Scroll Is Required",
-      }));
-      hasError = true;
+        if (!Boolean(scrollNo)) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            scrollErr: "Scroll Is Required",
+          }));
+          hasError = true;
+        } else {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            scrollErr: "",
+          }));
+        }
+
+        if (Boolean(remarks?.length < 5)) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            remarkErr: "Remarks should be greater than 5 characters",
+          }));
+          hasError = true;
+        } else {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            remarkErr: "",
+          }));
+        }
+        if (!hasError) {
+          let reqPara = {
+            COMP_CD: authState.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            SCROLL_NO: gridData[0]?.SCROLL1,
+            USER_DEF_REMARKS: remarks,
+            ACCT_TYPE: gridData[0]?.ACCT_TYPE,
+            ACCT_CD: gridData[0]?.ACCT_CD,
+            TRAN_AMOUNT: gridData[0]?.AMOUNT,
+            ENTERED_COMP_CD: gridData[0]?.COMP_CD,
+            ENTERED_BRANCH_CD: gridData[0]?.BRANCH_CD,
+            ACTIVITY_TYPE: "DAILY TRANSACTION",
+            TRAN_DT: gridData[0]?.TRAN_DT,
+            CONFIRM_FLAG: gridData[0]?.CONFIRMED,
+            CONFIRMED: gridData[0]?.CONFIRMED,
+          };
+          deleteByScrollNo?.mutate(reqPara);
+        }
+      } else if (msgBoxRes === "No") {
+        CloseMessageBox();
+        setScrollNo("");
+      }
     } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        scrollErr: "",
-      }));
-    }
-
-    if (Boolean(remarks?.length < 5)) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        remarkErr: "Remarks should be greater than 5 characters",
-      }));
-      hasError = true;
-    } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        remarkErr: "",
-      }));
-    }
-
-    if (!Boolean(gridData?.length > 0)) {
-      enqueueSnackbar("No records found", {
+      enqueueSnackbar("No Records Found", {
         variant: "error",
       });
-      hasError = true;
-    }
-
-    if (!hasError) {
-      let reqPara = {
-        COMP_CD: authState.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
-        SCROLL_NO: gridData[0]?.SCROLL1,
-        USER_DEF_REMARKS: remarks,
-        ACCT_TYPE: gridData[0]?.ACCT_TYPE,
-        ACCT_CD: gridData[0]?.ACCT_CD,
-        TRAN_AMOUNT: gridData[0]?.AMOUNT,
-        ENTERED_COMP_CD: gridData[0]?.COMP_CD,
-        ENTERED_BRANCH_CD: gridData[0]?.BRANCH_CD,
-        ACTIVITY_TYPE: "DAILY TRANSACTION",
-        TRAN_DT: gridData[0]?.TRAN_DT,
-        CONFIRM_FLAG: gridData[0]?.CONFIRMED,
-        CONFIRMED: gridData[0]?.CONFIRMED,
-      };
-      deleteByScrollNo?.mutate(reqPara);
+      setScrollNo("");
     }
   };
 
@@ -291,14 +303,7 @@ export const TRN001_Table = ({
     refetch();
   }, [setViewOnly]);
 
-  useEffect(() => {
-    if (gridData?.length > 0) {
-      const confirRec = gridData?.some((record) => {
-        return record?.CONFIRMED === "Y";
-      });
-      setIsConfirmed(confirRec);
-    }
-  }, [gridData]);
+  TRN001_TableMetaData.gridConfig.gridLabel = `Today's Transactions By ${authState?.user?.name}`;
 
   return (
     <>
@@ -315,7 +320,7 @@ export const TRN001_Table = ({
           </Fragment>
         ) : null}
         <GridWrapper
-          key={`TRN001_TableMetaData${trnGridData}`}
+          key={`TRN001_TableMetaData${gridData}`}
           finalMetaData={TRN001_TableMetaData as GridMetaDataType}
           data={gridData ?? []}
           setData={() => null}
@@ -328,52 +333,36 @@ export const TRN001_Table = ({
           ref={myGridRef}
           actions={actions}
           setAction={setCurrentAction}
-          onlySingleSelectionAllow={true}
-          isNewRowStyle={true}
+          disableMultipleRowSelect={true}
+          variant={"outlined"}
           defaultSelectedRowId={
             trnGridData?.[0]?.TRAN_CD ? trnGridData?.[0]?.TRAN_CD : ""
           }
         />
-
-        {/* <Grid
-          item
-          xs={12}
-          sm={12}
-          sx={{
-            right: "30px",
-            float: "right",
-            position: "relative",
-            top: "-2.67rem",
-            display: "flex",
-            gap: "4rem",
-            alignItems: "center",
-          }}
-        >
-          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            Total Records : {trnGridData?.length ?? 0}
-          </Typography>
-          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            Debit : ₹ {debit ?? 0}
-          </Typography>
-          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            Credit : ₹ {credit ?? 0}
-          </Typography>
-        </Grid> */}
       </Paper>
       <Box padding={"8px"}>
-        <GradientButton onClick={() => window.open("Calculator:///")}>
+        <GradientButton
+          onClick={() => window.open("Calculator:///")}
+          sx={{ margin: "5px" }}
+        >
           Calculator
         </GradientButton>
-        <GradientButton onClick={() => setViewOnly(false)}>
+        <GradientButton
+          onClick={() => setViewOnly(false)}
+          sx={{ margin: "5px" }}
+        >
           Go Back
         </GradientButton>
-        <GradientButton onClick={() => setScrollDialog(true)}>
+        <GradientButton
+          onClick={() => setScrollDialog(true)}
+          sx={{ margin: "5px" }}
+        >
           Scroll Remove
         </GradientButton>
       </Box>
       {Boolean(deleteDialog) ? (
         <RemarksAPIWrapper
-          TitleText={`Do you want to Delete the transaction - VoucherNo. ${dataRow?.TRAN_CD} ?`}
+          TitleText={`Do you want to remove the transaction - VoucherNo. ${dataRow?.TRAN_CD} ?`}
           onActionYes={(input) => handleDelete(input)}
           onActionNo={() => {
             setDeleteDialog(false);
@@ -430,12 +419,6 @@ export const TRN001_Table = ({
               color="secondary"
             />
             <DynFormHelperText msg={errors?.scrollErr} />
-            {/* {Boolean(isConfirmed) && Boolean(scrollNo) && (
-              <Typography variant="body2" sx={{color"red"}}>
-                Scroll No. {scrollNo} has been confirmed. Are you sure you want
-                to delete this record?
-              </Typography>
-            )} */}
             <TextField
               style={{ minWidth: "400px", marginTop: "20px" }}
               fullWidth={true}
@@ -449,14 +432,7 @@ export const TRN001_Table = ({
             <DynFormHelperText msg={errors?.remarkErr} />
           </DialogContent>
           <DialogActions className="dialogFooter">
-            <GradientButton
-              onClick={() => handleDeletByScroll()}
-              endIcon={
-                Boolean(deleteByScrollNo?.isLoading) && (
-                  <CircularProgress size={22} />
-                )
-              }
-            >
+            <GradientButton onClick={() => handleDeletByScroll()}>
               Remove
             </GradientButton>
             <GradientButton

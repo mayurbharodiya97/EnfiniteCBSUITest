@@ -1,10 +1,10 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const lienConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "LienConfirmation",
-    rowIdColumn: "SR_CD",
+    gridLabel: "",
+    rowIdColumn: "UNIQUE_NUM",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -18,14 +18,15 @@ export const lienConfirmGridMetaData: GridMetaDataType = {
     pageSizes: [15, 25, 50],
     defaultPageSize: 15,
     containerHeight: {
-      min: "73vh",
-      max: "73vh",
+      min: "67vh",
+      max: "67vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
     searchPlaceholder: "Records of Lien Confirmation",
+    footerNote: "FooterNoteMsgCfmRej",
   },
   filters: [],
   columns: [
@@ -43,7 +44,7 @@ export const lienConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "FULL_ACCT_NO",
-      columnName: "AccountNumber",
+      columnName: "AccountNum",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -53,7 +54,7 @@ export const lienConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "AccountName",
+      columnName: "AccountHolder",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -65,7 +66,7 @@ export const lienConfirmGridMetaData: GridMetaDataType = {
       accessor: "LIEN_CD",
       columnName: "LienCode",
       sequence: 4,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
       width: 100,
       minWidth: 80,
@@ -78,7 +79,7 @@ export const lienConfirmGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "left",
       componentType: "default",
-      width: 132,
+      width: 145,
       minWidth: 70,
       maxWidth: 250,
     },
@@ -86,7 +87,7 @@ export const lienConfirmGridMetaData: GridMetaDataType = {
       accessor: "LIEN_STATUS_DISPLAY",
       columnName: "LienStatus",
       sequence: 4,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
       width: 112,
       minWidth: 70,
@@ -116,8 +117,8 @@ export const lienConfirmGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "ENTERED_DATE",
-      columnName: "EnteredDate",
+      accessor: "REMOVAL_DT",
+      columnName: "RemovalDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
@@ -125,6 +126,26 @@ export const lienConfirmGridMetaData: GridMetaDataType = {
       width: 141,
       minWidth: 70,
       maxWidth: 150,
+    },
+    {
+      accessor: "LIEN_AMOUNT",
+      columnName: "LienAmount",
+      sequence: 4,
+      alignment: "right",
+      componentType: "currency",
+      width: 140,
+      minWidth: 100,
+      maxWidth: 200,
+    },
+    {
+      accessor: "ENTERED_BY",
+      columnName: "EnteredBy",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 100,
+      maxWidth: 200,
     },
     {
       accessor: "LIEN_REASON_NM",

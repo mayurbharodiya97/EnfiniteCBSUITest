@@ -6,17 +6,19 @@ import {
   useEffect,
   useState,
 } from "react";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api/api";
 import { applicationAccess } from "./metaData/metaDataGrid";
-import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { SecurityContext } from "../context/SecuityForm";
-import { extractGridMetaData } from "components/utils";
 import { Alert } from "reactstrap";
 
+import {
+  extractGridMetaData,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "populate",
@@ -31,10 +33,7 @@ const NewApplicationAccess = forwardRef<any, any>(
     const Username = username?.USER_NAME;
     const [gridData, setGridData] = useState<any>([]);
     const [populateDataset, setpopulateDataset] = useState<any>([]);
-    const {
-      userState,
-      dispatchCommon,
-    } = useContext(SecurityContext);
+    const { userState, dispatchCommon } = useContext(SecurityContext);
     const navigate = useNavigate();
 
     // Get API for New User.
@@ -75,18 +74,18 @@ const NewApplicationAccess = forwardRef<any, any>(
         }
       },
       onSuccess: (data) => {
-        const updatedGrid1Data = data.map((gridItem) => ({
+        const updatedGrid1Data = data?.map((gridItem) => ({
           ...gridItem,
-          APP_TRAN_CD: gridItem.TRAN_CD,
-          LOGIN_ACCESS: gridItem.LOGIN_ACCESS === "Y" ? true : false,
+          APP_TRAN_CD: gridItem?.TRAN_CD,
+          LOGIN_ACCESS: gridItem?.LOGIN_ACCESS === "Y" ? true : false,
         }));
-        let filteredGrid1Data = updatedGrid1Data.filter(
+        let filteredGrid1Data = updatedGrid1Data?.filter(
           (gridItem) =>
-            !applicationData.some(
+            !applicationData?.some(
               (dataItem) => dataItem.APP_NM === gridItem.APP_NM
             )
         );
-        const last = filteredGrid1Data.map((row) => ({
+        const last = filteredGrid1Data?.map((row) => ({
           ...row,
           _isNewRow: true,
         }));

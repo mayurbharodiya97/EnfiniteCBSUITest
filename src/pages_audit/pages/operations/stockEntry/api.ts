@@ -1,8 +1,8 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { endOfMonth, format, isValid } from "date-fns";
 import { t } from "i18next";
 import { AuthSDK } from "registry/fns/auth";
-import { geaterThanDate, lessThanDate } from "registry/rulesEngine";
+import { greaterThanDate, lessThanDate } from "@acuteinfo/common-base";
 
 export const securityListDD = async (ApiReq) => {
   const { data, status, message, messageDetails } =
@@ -96,7 +96,7 @@ export const securityFieldDTL = async (apiReqPara) => {
                   //   return t("Mustbeavaliddate");
                   // }
                   if (
-                    geaterThanDate(currentField?.value, currentField?._maxDt, {
+                    greaterThanDate(currentField?.value, currentField?._maxDt, {
                       ignoreTime: true,
                     })
                   ) {

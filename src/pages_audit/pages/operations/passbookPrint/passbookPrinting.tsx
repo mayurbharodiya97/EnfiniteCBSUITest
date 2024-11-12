@@ -1,7 +1,10 @@
 import {
+  AppBar,
   Box,
+  CircularProgress,
   Dialog,
   Grid,
+  Toolbar,
   Tooltip,
   Typography,
   useMediaQuery,
@@ -10,32 +13,48 @@ import {
 import { useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import RetrieveIcon from "assets/icons/retrieveIcon";
-import { queryClient } from "cache";
-import { usePopupContext } from "components/custom/popupContext";
-import { GradientButton } from "components/styledComponent/button";
-import { utilFunction } from "components/utils";
 import { format } from "date-fns";
-import { enqueueSnackbar } from "notistack";
-import { ViewStatement } from "pages_audit/acct_Inquiry/viewStatement";
 import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import * as API from "./api";
+import {
+  Transition,
+  usePopupContext,
+  GradientButton,
+  queryClient,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+  SubmitFnType,
+  InitialValuesType,
+  Alert,
+} from "@acuteinfo/common-base";
+import { PassbookPrintingInq } from "./passbookMetadata";
 
-export const PassbookPrint = () => {
-  const location = useLocation();
-  const { passbookDetail } = location.state || { passbookDetail: [] };
-  const { parameterRef } = location.state || { parameterRef: [] };
-  const { accountDetailsRef } = location.state || { accountDetailsRef: [] };
-  const { acctInqDataRef } = location.state || { acctInqDataRef: [] };
+type PassbookPrintingCustomProps = {
+  screenFlag?: any;
+  PassbookPrintingData?: any;
+  parameterFlagDate?: any;
+  acctInqDetail?: any;
+  handleClose?: any;
+};
+
+export const PassbookPrint: React.FC<PassbookPrintingCustomProps> = ({
+  screenFlag,
+  PassbookPrintingData,
+  parameterFlagDate,
+  acctInqDetail,
+  handleClose,
+}) => {
+  const [passbookDetail, setPassbookDetail] = useState<any>([]);
+  const parameterRef = useRef<any>(null);
+  const accountFromDateRef = useRef<any>();
   const printRef = useRef<any>(null);
-  const [findAccount, setFindAccount] = useState(
-    !passbookDetail || passbookDetail.length === 0
-  );
-
+  const [findAccount, setFindAccount] = useState(true);
   const [isPrinting, setIsPrinting] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
   const themes = useTheme();
   const fullScreen = useMediaQuery(themes.breakpoints.down("xs"));
   const [entriesToPrint, setEntriesToPrint] = useState([]);
@@ -47,32 +66,85 @@ export const PassbookPrint = () => {
   const { t } = useTranslation();
   let currentPath = useLocation().pathname;
 
+  // Sett screenFlag data
+  useEffect(() => {
+    if (screenFlag) {
+      setPassbookDetail(PassbookPrintingData);
+      accountFromDateRef.current = acctInqDetail ?? "";
+      parameterRef.current = parameterFlagDate ?? "";
+    }
+  }, [screenFlag]);
+  // Found maximum Page number
   const maxPage = Math.max(
-    ...passbookDetail.map((entry: any) => parseInt(entry.PAGE_NO))
+    ...passbookDetail?.map((entry: any) => parseInt(entry?.PAGE_NO))
+  );
+
+  // Get passbook details
+  const passbookInqData: any = useMutation(
+    "getPassbookStatement",
+    API.getPassbookStatement,
+    {
+      onSuccess: async (data) => {
+        setPassbookDetail(data);
+        setFindAccount(false);
+      },
+      onError: async (error: any) => {
+        CloseMessageBox();
+      },
+    }
+  );
+
+  // Validate passbook account details
+  const passbookValidation: any = useMutation(
+    "passbookPrintingValidation",
+    API.passbookPrintingValidation,
+    {
+      onSuccess: async (data: any) => {
+        if (data?.[0]?.O_STATUS === "999") {
+          const btnName = await MessageBox({
+            messageTitle: "ValidationFailed",
+            message: data?.[0]?.O_MESSAGE,
+            buttonNames: ["Ok"],
+            icon: "ERROR",
+          });
+        } else if (data?.[0]?.O_STATUS === "0") {
+          passbookInqData?.mutate({
+            COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: parameterRef?.current?.BRANCH_CD ?? "",
+            ACCT_TYPE: parameterRef?.current?.ACCT_TYPE ?? "",
+            ACCT_CD: parameterRef?.current?.ACCT_CD ?? "",
+            ENTERED_BRANCH_CD: parameterRef?.current?.BRANCH_CD ?? "",
+            FROM_DT: parameterRef?.current?.PASS_BOOK_DT ?? "",
+            TO_DT: parameterRef?.current?.PASS_BOOK_TO_DT ?? "",
+            PRINT_PAGE: parameterRef?.current?.PID_DESCRIPION ?? "",
+            TEMPL_TRAN_CD: parameterRef?.current?.TRAN_CD ?? "",
+            LAST_LINE_NO: parameterRef?.current?.PASS_BOOK_LINE ?? "",
+            REPRINT: parameterRef?.current?.REPRINT_VALUE ?? "",
+          });
+        }
+      },
+      onError: async (error: any) => {
+        CloseMessageBox();
+      },
+    }
   );
 
   // Change date format
-  const acctInqDate = {
-    PASS_BOOK_DT:
-      acctInqDataRef?.PASS_BOOK_DT &&
-      acctInqDataRef?.PASS_BOOK_DT.endsWith(".0")
-        ? format(
-            new Date(acctInqDataRef?.PASS_BOOK_DT.slice(0, -2)),
-            "dd-MM-yyyy"
-          )
-        : "",
-  };
   const parameterDate = {
-    PASS_BOOK_DT: parameterRef?.PASS_BOOK_DT
-      ? format(new Date(parameterRef?.PASS_BOOK_DT), "dd-MM-yyyy")
+    PASS_BOOK_DT: parameterRef?.current?.PASS_BOOK_DT
+      ? format(new Date(parameterRef?.current?.PASS_BOOK_DT), "dd-MM-yyyy")
       : "",
   };
   const accountDetailsDate = {
-    PASS_BOOK_DT: accountDetailsRef?.PASS_BOOK_DT
-      ? format(new Date(accountDetailsRef?.PASS_BOOK_DT), "dd-MM-yyyy")
+    PASS_BOOK_DT: accountFromDateRef?.current?.PASS_BOOK_DT
+      ? format(
+          new Date(accountFromDateRef?.current?.PASS_BOOK_DT),
+          "dd-MM-yyyy"
+        )
       : "",
   };
 
+  // Api for passbook printing completed
   const passbookPrintingCompleted: any = useMutation(
     "passbookPrintingCompleted",
     API.passbookPrintingCompleted,
@@ -89,6 +161,37 @@ export const PassbookPrint = () => {
     }
   );
 
+  const onSubmitHandler: SubmitFnType = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag
+  ) => {
+    endSubmit(true);
+    parameterRef.current = data;
+    passbookValidation?.mutate({
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: parameterRef?.current?.BRANCH_CD ?? "",
+      ACCT_TYPE: parameterRef?.current?.ACCT_TYPE ?? "",
+      ACCT_CD: parameterRef?.current?.ACCT_CD ?? "",
+      TRAN_CD: parameterRef?.current?.TRAN_CD ?? "",
+      FLAG: "",
+      LINE_ID: "",
+      LINE_PER_PAGE: "",
+      FROM_DT: (parameterRef.current["PASS_BOOK_DT"] = format(
+        new Date(parameterRef?.current["PASS_BOOK_DT"]),
+        "dd/MMM/yyyy"
+      )),
+      GD_DATE: (parameterRef.current["PASS_BOOK_TO_DT"] = format(
+        new Date(parameterRef?.current["PASS_BOOK_TO_DT"]),
+        "dd/MMM/yyyy"
+      )),
+      SCREEN_REF: "RPT/430",
+    });
+  };
+
+  // Print the passbook details
   const handlePrintPage = useReactToPrint({
     content: () => printRef.current,
 
@@ -97,9 +200,10 @@ export const PassbookPrint = () => {
       setIsPrinting(true);
       if (currentPage !== maxPage) {
         const btnName = await MessageBox({
-          messageTitle: "Alert",
+          messageTitle: "Confirmation",
           message: "NextPageAlert",
           buttonNames: ["Yes", "No"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           setCurrentPage(currentPage + 1);
@@ -113,48 +217,48 @@ export const PassbookPrint = () => {
         setEntriesToPrint([]);
         setIsPrinting(false);
         setCurrentPage(1);
-        if (parameterRef?.PID_DESCRIPION === "D") {
-          if (
-            (accountDetailsDate?.PASS_BOOK_DT || acctInqDate?.PASS_BOOK_DT) >
-            parameterDate?.PASS_BOOK_DT
-          ) {
-            const account = `${authState.companyID.trim()}-${parameterRef?.BRANCH_CD.trim()}-${parameterRef?.ACCT_TYPE.trim()}-${parameterRef?.ACCT_CD.trim()}`;
+        if (parameterRef?.current?.PID_DESCRIPION === "D") {
+          if (accountDetailsDate?.PASS_BOOK_DT > parameterDate?.PASS_BOOK_DT) {
+            const account = `${authState?.companyID?.trim()}-${parameterRef?.current?.BRANCH_CD?.trim()}-${parameterRef?.current?.ACCT_TYPE?.trim()}-${parameterRef?.current?.ACCT_CD?.trim()}`;
             const btnName = await MessageBox({
               messageTitle: "Alert",
               message: `${t(`PassbookUpdateMessage`, {
                 account: account,
-                date:
-                  accountDetailsDate?.PASS_BOOK_DT || acctInqDate?.PASS_BOOK_DT,
+                date: accountDetailsDate?.PASS_BOOK_DT,
               })}`,
               buttonNames: ["Yes", "No"],
+              loadingBtnName: ["Yes", "No"],
+              icon: "CONFIRM",
             });
 
             if (btnName === "Yes") {
-              passbookPrintingCompleted.mutate({
+              passbookPrintingCompleted?.mutate({
                 _isNewRow: true,
                 _isDeleteRow: false,
-                COMP_CD: authState.companyID,
-                BRANCH_CD: parameterRef?.BRANCH_CD,
-                ACCT_TYPE: parameterRef?.ACCT_TYPE,
-                ACCT_CD: parameterRef?.ACCT_CD,
-                STATEMENT_FROM_DT: parameterRef?.PASS_BOOK_DT,
-                STATEMENT_TO_DT: parameterRef?.PASS_BOOK_TO_DT,
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: parameterRef?.current?.BRANCH_CD ?? "",
+                ACCT_TYPE: parameterRef?.current?.ACCT_TYPE ?? "",
+                ACCT_CD: parameterRef?.current?.ACCT_CD ?? "",
+                STATEMENT_FROM_DT: parameterRef?.current?.PASS_BOOK_DT ?? "",
+                STATEMENT_TO_DT: parameterRef?.current?.PASS_BOOK_TO_DT ?? "",
                 DUP_FLAG: "Y",
-                LINE_ID: passbookDetail[passbookDetail.length - 1]?.LINE_ID,
+                LINE_ID:
+                  passbookDetail[passbookDetail?.length - 1]?.LINE_ID ?? "",
               });
             }
             if (btnName === "No") {
-              passbookPrintingCompleted.mutate({
+              passbookPrintingCompleted?.mutate({
                 _isNewRow: true,
                 _isDeleteRow: false,
-                COMP_CD: authState.companyID,
-                BRANCH_CD: parameterRef?.BRANCH_CD,
-                ACCT_TYPE: parameterRef?.ACCT_TYPE,
-                ACCT_CD: parameterRef?.ACCT_CD,
-                STATEMENT_FROM_DT: parameterRef?.PASS_BOOK_DT,
-                STATEMENT_TO_DT: parameterRef?.PASS_BOOK_TO_DT,
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: parameterRef?.current?.BRANCH_CD ?? "",
+                ACCT_TYPE: parameterRef?.current?.ACCT_TYPE ?? "",
+                ACCT_CD: parameterRef?.current?.ACCT_CD ?? "",
+                STATEMENT_FROM_DT: parameterRef?.current?.PASS_BOOK_DT ?? "",
+                STATEMENT_TO_DT: parameterRef?.current?.PASS_BOOK_TO_DT ?? "",
                 DUP_FLAG: "N",
-                LINE_ID: passbookDetail[passbookDetail.length - 1]?.LINE_ID,
+                LINE_ID:
+                  passbookDetail[passbookDetail?.length - 1]?.LINE_ID ?? "",
               });
             }
           } else {
@@ -162,20 +266,22 @@ export const PassbookPrint = () => {
               messageTitle: "Confirmation",
               message: "Passbook Print successfully.?",
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
 
             if (btnName === "Yes") {
-              passbookPrintingCompleted.mutate({
+              passbookPrintingCompleted?.mutate({
                 _isNewRow: true,
                 _isDeleteRow: false,
-                COMP_CD: authState.companyID,
-                BRANCH_CD: parameterRef?.BRANCH_CD,
-                ACCT_TYPE: parameterRef?.ACCT_TYPE,
-                ACCT_CD: parameterRef?.ACCT_CD,
-                STATEMENT_FROM_DT: parameterRef?.PASS_BOOK_DT,
-                STATEMENT_TO_DT: parameterRef?.PASS_BOOK_TO_DT,
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: parameterRef?.current?.BRANCH_CD ?? "",
+                ACCT_TYPE: parameterRef?.current?.ACCT_TYPE ?? "",
+                ACCT_CD: parameterRef?.current?.ACCT_CD ?? "",
+                STATEMENT_FROM_DT: parameterRef?.current?.PASS_BOOK_DT ?? "",
+                STATEMENT_TO_DT: parameterRef?.current?.PASS_BOOK_TO_DT ?? "",
                 DUP_FLAG: "N",
-                LINE_ID: passbookDetail[passbookDetail.length - 1]?.LINE_ID,
+                LINE_ID:
+                  passbookDetail[passbookDetail?.length - 1]?.LINE_ID ?? "",
               });
             }
           }
@@ -184,13 +290,15 @@ export const PassbookPrint = () => {
     },
   });
 
+  // Update the printing data page by page
   const updateEntriesToPrint = (page) => {
-    const filteredEntries = passbookDetail.filter(
-      (entry: any) => entry.PAGE_NO === page.toString()
+    const filteredEntries = passbookDetail?.filter(
+      (entry: any) => entry?.PAGE_NO === page?.toString()
     );
     setEntriesToPrint(filteredEntries);
   };
 
+  // Upadte passbook priniting page number
   useEffect(() => {
     if (currentPage !== lastPage) {
       updateEntriesToPrint(currentPage);
@@ -198,6 +306,7 @@ export const PassbookPrint = () => {
     }
   }, [currentPage, passbookDetail, lastPage, MessageBox]);
 
+  // Clear cache
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getPassbookStatement"]);
@@ -206,11 +315,13 @@ export const PassbookPrint = () => {
       queryClient.removeQueries(["passbookPrintingValidation"]);
     };
   }, []);
+
+  // Logic for Front/First page details
   useEffect(() => {
     if (
       (passbookDetail?.[0]?.LINE_ID !== "0" ||
         passbookDetail?.[0]?.PAGE_NO !== "0") &&
-      passbookDetail.length > 0
+      passbookDetail?.length > 0
     ) {
       setIsPrinting(true);
       setCurrentPage(1);
@@ -220,94 +331,191 @@ export const PassbookPrint = () => {
 
   const handleRetrieve = () => {
     setFindAccount(true);
+    setPassbookDetail([]);
   };
   const handlePrint = () => {
     setIsPrinting(true);
     setCurrentPage(1);
     updateEntriesToPrint(1);
   };
+  const handleButonDisable = (disable) => {
+    setDisableButton(disable);
+  };
 
   return (
     <>
-      <Box>
-        <Grid
-          container
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={12}
-          xl={12}
+      <AppBar
+        position="static"
+        sx={{
+          background: "var(--theme-color5)",
+          margin: "2px",
+          width: "auto",
+          marginBottom: "10px",
+        }}
+      >
+        <Toolbar
           sx={{
-            fontWeight: "bold",
-            fontFamily: "Roboto, sans-serif",
-            backgroundColor: "var(--theme-color3)",
-            padding: "10px",
-            textAlign: "center",
-            marginBottom: "20px",
-            color: "var(--theme-color2)",
-            borderRadius: "10px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "relative",
+            paddingLeft: "24px",
+            paddingRight: "24px",
+            minHeight: "48px !important",
           }}
         >
-          <Grid>
-            <Typography variant="h6">
-              {utilFunction.getDynamicLabel(
-                currentPath,
-                authState?.menulistdata,
-                true
-              )}
-            </Typography>
-          </Grid>
-          <Grid
+          <Typography
+            style={{ flexGrow: 1 }}
             sx={{
-              position: "absolute",
-              zIndex: "1",
-              right: "0px",
-              paddingRight: "10px",
+              color: "var(--theme-color2)",
+              fontSize: "1.25rem",
+              fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+              fontWeight: 500,
+              lineHeight: "1.6px",
+              letterSpacing: "0.0075em",
             }}
-            xs={12}
           >
-            {" "}
-            {(passbookDetail?.[0]?.LINE_ID !== "0" ||
-              passbookDetail?.[0]?.PAGE_NO !== "0") &&
-            passbookDetail.length > 0 ? (
-              <Tooltip title={t("Print")}>
-                <GradientButton
-                  onClick={handlePrint}
-                  color={"primary"}
-                  endicon="Print"
-                  rotateIcon="scale(1.4) rotateY(360deg)"
-                >
-                  {t("Print")}
-                </GradientButton>
-              </Tooltip>
-            ) : null}
+            {utilFunction.getDynamicLabel(
+              currentPath,
+              authState?.menulistdata,
+              true
+            )}
+          </Typography>
+          {(passbookDetail?.[0]?.LINE_ID !== "0" ||
+            passbookDetail?.[0]?.PAGE_NO !== "0") &&
+          passbookDetail?.length > 0 ? (
+            <Tooltip title={t("Print")}>
+              <GradientButton
+                onClick={handlePrint}
+                color={"primary"}
+                endicon="Print"
+                rotateIcon="scale(1.4) rotateY(360deg)"
+              >
+                {t("Print")}
+              </GradientButton>
+            </Tooltip>
+          ) : null}
+          {Boolean(screenFlag) ? (
+            <Tooltip title={t("Close")}>
+              <GradientButton
+                onClick={() => handleClose(false)}
+                color={"primary"}
+                endicon="CancelOutlined"
+                rotateIcon="scale(1.4) rotateY(360deg)"
+              >
+                {t("Close")}
+              </GradientButton>
+            </Tooltip>
+          ) : null}
+          {!Boolean(screenFlag) ? (
             <Tooltip title={t("Retrieve")}>
               <GradientButton onClick={handleRetrieve} color={"primary"}>
                 {t("Retrieve")}
                 <RetrieveIcon />
               </GradientButton>
             </Tooltip>
-          </Grid>
-        </Grid>
-      </Box>
-      {findAccount && (
-        <ViewStatement
+          ) : null}
+        </Toolbar>
+      </AppBar>
+
+      {/* Find passbook details */}
+      {findAccount && !Boolean(screenFlag) && (
+        <Dialog
           open={findAccount}
-          onClose={() => setFindAccount(false)}
-          rowsData={null}
-          screenFlag={"ACCT_PASSBOOK"}
-          close={() => {}}
-        />
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="sm"
+        >
+          {(passbookValidation?.error || passbookInqData?.error) && (
+            <Alert
+              severity="error"
+              errorMsg={
+                passbookValidation?.error?.error_msg ||
+                passbookInqData?.error?.error_msg ||
+                t("Somethingwenttowrong")
+              }
+              errorDetail={
+                passbookValidation?.error?.error_detail ||
+                passbookInqData?.error?.error_detail ||
+                ""
+              }
+              color="error"
+            />
+          )}
+          <FormWrapper
+            key={`PassbookPrintingInqForm`}
+            metaData={PassbookPrintingInq as MetaDataType}
+            initialValues={
+              {
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+              } as InitialValuesType
+            }
+            onSubmitHandler={onSubmitHandler}
+            formStyle={{
+              background: "white",
+            }}
+            controlsAtBottom={true}
+            formState={{
+              handleButonDisable: handleButonDisable,
+              MessageBox: MessageBox,
+              docCD: "RPT/430",
+            }}
+            setDataOnFieldChange={(action, payload) => {
+              if (action === "accountFromDate") {
+                accountFromDateRef.current = payload;
+              }
+            }}
+          >
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                <GradientButton
+                  style={{ marginRight: "5px" }}
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
+                  color={"primary"}
+                  disabled={
+                    passbookInqData?.isLoading ||
+                    passbookInqData?.isFetching ||
+                    passbookValidation?.isLoading ||
+                    passbookValidation?.isFetching ||
+                    disableButton
+                  }
+                  endicon={
+                    passbookInqData?.isLoading ||
+                    passbookInqData?.isFetching ||
+                    passbookValidation?.isLoading ||
+                    passbookValidation?.isFetching
+                      ? undefined
+                      : "CheckCircleOutline"
+                  }
+                  rotateIcon="scale(1.4)"
+                >
+                  {passbookValidation?.isLoading ||
+                  passbookInqData?.isLoading ? (
+                    <CircularProgress size={25} thickness={4.6} />
+                  ) : (
+                    t("Ok")
+                  )}
+                </GradientButton>
+                <GradientButton
+                  onClick={() => setFindAccount(false)}
+                  color={"primary"}
+                  endicon="CancelOutlined"
+                  rotateIcon="scale(1.4) rotateY(360deg)"
+                >
+                  {t("Close")}
+                </GradientButton>
+              </>
+            )}
+          </FormWrapper>
+        </Dialog>
       )}
 
+      {/* Display/View passbook details */}
       {passbookDetail &&
       Array.isArray(passbookDetail) &&
-      passbookDetail.length > 0 ? (
+      passbookDetail?.length > 0 ? (
         <>
           <div
             style={{
@@ -325,8 +533,8 @@ export const PassbookPrint = () => {
             >
               {passbookDetail.map((item, index) => (
                 <Grid item>
-                  {item.PASSBOOK_TEXT !== "" ? (
-                    <pre key={index}>{item.PASSBOOK_TEXT}</pre>
+                  {item?.PASSBOOK_TEXT !== "" ? (
+                    <pre key={index}>{item?.PASSBOOK_TEXT}</pre>
                   ) : (
                     <br key={index} />
                   )}
@@ -347,8 +555,8 @@ export const PassbookPrint = () => {
           {t("NoDataFound")}
         </div>
       )}
-      {/* Printing statement */}
 
+      {/* Print Passbook details */}
       {isPrinting ? (
         <Dialog
           open={isPrinting}
@@ -371,10 +579,10 @@ export const PassbookPrint = () => {
               width: "100%",
             }}
           >
-            {entriesToPrint.map((entry: any, index) => (
+            {entriesToPrint?.map((entry: any, index) => (
               <div key={index}>
-                {entry.PASSBOOK_TEXT !== "" ? (
-                  <pre key={index}>{entry.PASSBOOK_TEXT}</pre>
+                {entry?.PASSBOOK_TEXT !== "" ? (
+                  <pre key={index}>{entry?.PASSBOOK_TEXT}</pre>
                 ) : (
                   <br key={index} />
                 )}
@@ -385,7 +593,7 @@ export const PassbookPrint = () => {
           {printConfirmed &&
             currentPage <=
               Math.max(
-                ...passbookDetail.map((entry: any) => parseInt(entry.PAGE_NO))
+                ...passbookDetail?.map((entry: any) => parseInt(entry?.PAGE_NO))
               ) && (
               <Box
                 sx={{

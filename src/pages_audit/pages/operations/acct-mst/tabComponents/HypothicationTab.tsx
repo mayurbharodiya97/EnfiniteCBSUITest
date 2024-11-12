@@ -1,4 +1,4 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -38,9 +38,9 @@ const HypothicationTab = () => {
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
         IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
-        COMP_CD: "",
+        // COMP_CD: "",
         // BRANCH_CD: "",
-        REQ_FLAG: "",
+        // REQ_FLAG: "",
         // REQ_CD: "",
         // SR_CD: "",
       };
@@ -65,7 +65,7 @@ const HypothicationTab = () => {
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
       setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmit(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -83,7 +83,7 @@ const HypothicationTab = () => {
     handleCurrFormctx({
       isLoading: true,
     });
-    const refs = [formRef.current.handleSubmitError(e, "save", false)];
+    const refs = [formRef.current.handleSubmit(e, "save", false)];
     handleSavectx(e, refs);
   };
 
@@ -152,7 +152,7 @@ const HypothicationTab = () => {
         onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"acct-tab-hypothication-form" + initialVal}
+        key={"acct-mst-hypothication-tab-form" + initialVal}
         metaData={hypothication_metadata as MetaDataType}
         formStyle={{}}
         formState={{ GPARAM155: AcctMSTState?.gparam155 }}

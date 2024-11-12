@@ -1,4 +1,4 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getConfirmationGridData = async (apiReqPara) => {
@@ -21,13 +21,13 @@ export const getConfirmationGridData = async (apiReqPara) => {
     APIURL = "GETLIENCNFDATADISP";
   } else if (apiReqPara?.screenFlag === "tempOdCFM") {
     APIURL = "GETTEMPODAGCNFDATAGRID";
-  }else if (apiReqPara?.screenFlag === "insuranceCFM") {
-    APIURL ="GETINSURANCECNFDATADISP"
+  } else if (apiReqPara?.screenFlag === "insuranceCFM") {
+    APIURL = "GETINSURANCECNFDATADISP";
     parameters = {
       ENT_COMP_CD: apiReqPara?.COMP_CD,
       ENT_BRANCH_CD: apiReqPara?.BRANCH_CD,
-      GD_DATE:apiReqPara?.workingDate
-    }
+      GD_DATE: apiReqPara?.workingDate,
+    };
   }
 
   const { data, status, message, messageDetails } =
@@ -48,6 +48,7 @@ export const getConfirmationGridData = async (apiReqPara) => {
       item.SERVICE_TAX = item.SERVICE_TAX
         ? parseFloat(item.SERVICE_TAX).toFixed(2)
         : "0.00";
+      item.AMOUNT = item.AMOUNT ? parseFloat(item.AMOUNT).toFixed(2) : "0.00";
       item.FULL_ACCT_NO =
         item.BRANCH_CD + " " + item.ACCT_TYPE + " " + item.ACCT_CD;
 
@@ -109,15 +110,9 @@ export const getConfirmationGridData = async (apiReqPara) => {
           : item.LIEN_STATUS === "E"
           ? "Expired"
           : null;
+      item.UNIQUE_NUM = Math.floor(Math.random() * 100000) + item?.SR_CD;
 
       // temporary OD against
-
-      item.CODE_DISPLAY =
-        item.CODE === "ODA "
-          ? "O.D. Applicable"
-          : item.CODE === "AGC "
-          ? "Agaist Clearing Applicable"
-          : null;
 
       return item;
     });

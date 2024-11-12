@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 import { getSourceListData } from "../api";
 import { GeneralAPI } from "registry/fns/functions";
 import { getProMiscData } from "../../dynamicGridConfig/api";
@@ -1198,7 +1198,6 @@ export const PropsComponentFormMetaData: any = {
           dependentFields: ["PROPS_ID"],
           options: "getDependentFieldList",
           _optionsKey: "getDependentFieldList",
-          requestProps: "DOC_CD",
           disableCaching: true,
         },
         {
@@ -1259,7 +1258,6 @@ export const PropsComponentFormMetaData: any = {
           dependentFields: ["PROPS_ID"],
           options: "getDependentFieldList",
           _optionsKey: "getDependentFieldList",
-          requestProps: "DOC_CD",
           disableCaching: true,
         },
         {

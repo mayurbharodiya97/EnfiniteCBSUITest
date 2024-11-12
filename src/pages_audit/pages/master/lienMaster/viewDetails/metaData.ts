@@ -83,7 +83,6 @@ export const metaData = {
       autoComplete: "on",
       isFieldFocused: false,
       __EDIT__: { isReadOnly: true },
-  
     },
     {
       render: {
@@ -92,7 +91,7 @@ export const metaData = {
       name: "LEAN_NM",
       label: "Description",
       placeholder: "Description",
-      maxLength: 40,
+      maxLength: 50,
       type: "text",
       required: true,
       txtTransform: "uppercase",
@@ -101,7 +100,7 @@ export const metaData = {
         rules: [{ name: "required", params: ["DescriptionisRequired"] }],
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
@@ -125,6 +124,5 @@ export const metaData = {
         return "";
       },
     },
-
   ],
 };

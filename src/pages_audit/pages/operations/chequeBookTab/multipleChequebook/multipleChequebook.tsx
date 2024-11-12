@@ -1,12 +1,13 @@
 import { Dialog } from "@mui/material";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import React, { useCallback, useEffect, useState } from "react";
 import { multipleChequebookGridData } from "./multipleChequebookMetadata";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { ActionTypes } from "components/dataTable";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
-
+import {
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 export const MultipleChequebook = ({ navigate, validateInsertData }) => {
   const ChequeBKPopUpAction: ActionTypes[] = [
     {

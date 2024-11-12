@@ -1,9 +1,9 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const DocumentGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Document",
-    rowIdColumn: "index",
+    rowIdColumn: "SR_CD",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -23,18 +23,21 @@ export const DocumentGridMetaData: GridMetaDataType = {
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
+    searchPlaceholder: "Documents",
     isCusrsorFocused: true,
+    footerNote: "*Double click on records for detailed view",
   },
   filters: [],
   columns: [
     {
-      columnName: "Sr",
+      columnName: "Sr No.",
       accessor: "SR_CD",
       sequence: 1,
       componentType: "default",
-      width: 60,
-      maxWidth: 100,
-      minWidth: 50,
+      alignment: "left",
+      width: 80,
+      minWidth: 100,
+      maxWidth: 200,
     },
     {
       columnName: "Document",
@@ -47,8 +50,11 @@ export const DocumentGridMetaData: GridMetaDataType = {
       columnName: "Submitted",
       accessor: "SUBMIT",
       sequence: 3,
-      componentType: "default",
+      componentType: "editableCheckbox",
+      isReadOnly: true,
       width: 120,
+      minWidth: 100,
+      maxWidth: 140,
     },
     {
       columnName: "Valid Upto",

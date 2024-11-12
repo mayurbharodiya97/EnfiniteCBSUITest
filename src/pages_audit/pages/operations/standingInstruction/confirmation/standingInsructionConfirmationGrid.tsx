@@ -1,21 +1,27 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { ActionTypes } from "components/dataTable";
-import { standingConfirmationViewGridMetaData, standingInsructionGridMetaData } from "./metaData";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import {
+  standingConfirmationViewGridMetaData,
+  standingInsructionGridMetaData,
+} from "./metaData";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
-import { Alert } from "components/common/alert";
-import { usePopupContext } from "components/custom/popupContext";
-import { ClearCacheProvider, queryClient } from "cache";
 import SearchGrid from "../searchGrid";
 import { t } from "i18next";
 import { enqueueSnackbar } from "notistack";
 import SiExecuteDetailView from "../siExecuteDetailView";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
-
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
+import {
+  usePopupContext,
+  GridWrapper,
+  Alert,
+  ActionTypes,
+  GridMetaDataType,
+  ClearCacheProvider,
+  queryClient,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -28,9 +34,8 @@ const actions: ActionTypes[] = [
     actionLabel: "Search",
     multiple: undefined,
     rowDoubleClick: false,
-    alwaysAvailable: true
+    alwaysAvailable: true,
   },
-
 ];
 
 const StandingInstructionGrid = () => {
@@ -64,19 +69,27 @@ const StandingInstructionGrid = () => {
     [navigate, MessageBox]
   );
 
-  const { data: mainData, isLoading, isFetching, isError, error, refetch: mainRefetch } = useQuery<
-    any,
-    any
-  >(["getStandingInstructionConfirmMainData"], () =>
+  const {
+    data: mainData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch: mainRefetch,
+  } = useQuery<any, any>(["getStandingInstructionConfirmMainData"], () =>
     API.getStandingInstructionConfirmMainData({
       companyID: authState?.companyID,
       branchCode: authState?.user?.branchCode,
     })
   );
-  const { data, isLoading: confirmisLoading, isFetching: confirmisFetching, isError: confirmisError, error: confirmError, refetch: siRefetch } = useQuery<
-    any,
-    any
-  >(["getStandingInstructionConfInnerData", tran_Cd], () =>
+  const {
+    data,
+    isLoading: confirmisLoading,
+    isFetching: confirmisFetching,
+    isError: confirmisError,
+    error: confirmError,
+    refetch: siRefetch,
+  } = useQuery<any, any>(["getStandingInstructionConfInnerData", tran_Cd], () =>
     API.getStandingInstructionConfInnerData({
       companyID: authState?.companyID,
       branchCode: authState?.user?.branchCode,
@@ -84,32 +97,29 @@ const StandingInstructionGrid = () => {
     })
   );
 
-  const ConfirmMutation = useMutation(API.getSIConfirmation,
-    {
-      onError: (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        siRefetch();
-        CloseMessageBox();
-        mainRefetch();
-      },
-    }
-  );
+  const ConfirmMutation = useMutation(API.getSIConfirmation, {
+    onError: (error: any) => {
+      let errorMsg = t("Unknownerroroccured");
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+    onSuccess: (data) => {
+      siRefetch();
+      CloseMessageBox();
+      mainRefetch();
+    },
+  });
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getStandingInstructionConfirmMainData"]);
       queryClient.removeQueries(["getStandingInstructionConfInnerData"]);
     };
   }, []);
-
 
   return (
     <Fragment>
@@ -131,11 +141,13 @@ const StandingInstructionGrid = () => {
         setAction={setCurrentAction}
         refetchData={() => mainRefetch}
       />
-      {isViewDetailOpen &&
+      {isViewDetailOpen && (
         <>
           <GridWrapper
             key={"standingInsructionViewGridMetaData"}
-            finalMetaData={standingConfirmationViewGridMetaData as GridMetaDataType}
+            finalMetaData={
+              standingConfirmationViewGridMetaData as GridMetaDataType
+            }
             loading={confirmisLoading || confirmisFetching}
             data={data || []}
             setData={() => null}
@@ -148,7 +160,15 @@ const StandingInstructionGrid = () => {
                 setOpens(true);
               }
               if (id === "confirm") {
-                const { ENT_COMP_CD, ENT_BRANCH_CD, LINE_ID, SR_CD, TRAN_CD, ENTERED_BY, VERIFIED_BY } = currentData;
+                const {
+                  ENT_COMP_CD,
+                  ENT_BRANCH_CD,
+                  LINE_ID,
+                  SR_CD,
+                  TRAN_CD,
+                  ENTERED_BY,
+                  VERIFIED_BY,
+                } = currentData;
                 const confirmData = async () => {
                   if (VERIFIED_BY === authState?.user?.id) {
                     await MessageBox({
@@ -156,8 +176,7 @@ const StandingInstructionGrid = () => {
                       message: t("SInotConfirmByYou."),
                       buttonNames: ["Ok"],
                     });
-                  }
-                  else {
+                  } else {
                     const btnName = await MessageBox({
                       message: t("confirmSI"),
                       messageTitle: t("Confirmation"),
@@ -166,57 +185,68 @@ const StandingInstructionGrid = () => {
                     });
 
                     if (btnName === "Yes") {
-                      ConfirmMutation.mutate(
-                        {
-                          ENT_COMP_CD: ENT_COMP_CD,
-                          ENT_BRANCH_CD: ENT_BRANCH_CD,
-                          TRAN_CD: TRAN_CD,
-                          SR_CD: SR_CD,
-                          LINE_ID: LINE_ID,
-                          ENTERED_BY: ENTERED_BY,
-                        }
-                      );
+                      ConfirmMutation.mutate({
+                        ENT_COMP_CD: ENT_COMP_CD,
+                        ENT_BRANCH_CD: ENT_BRANCH_CD,
+                        TRAN_CD: TRAN_CD,
+                        SR_CD: SR_CD,
+                        LINE_ID: LINE_ID,
+                        ENTERED_BY: ENTERED_BY,
+                      });
                     }
                   }
-
-                }
+                };
                 confirmData();
               }
               if (id === "credit") {
-                const { COMP_CD, BRANCH_CD, CR_ACCT_TYPE, CR_ACCT_CD, SI_AMOUNT, CR_ACCT_NM } = currentData
+                const {
+                  COMP_CD,
+                  BRANCH_CD,
+                  CR_ACCT_TYPE,
+                  CR_ACCT_CD,
+                  SI_AMOUNT,
+                  CR_ACCT_NM,
+                } = currentData;
                 const payload = {
                   COMP_CD: COMP_CD,
                   BRANCH_CD: BRANCH_CD,
                   ACCT_TYPE: CR_ACCT_TYPE,
                   ACCT_CD: CR_ACCT_CD,
                   AMOUNT: SI_AMOUNT,
-                  ACCT_NM: CR_ACCT_NM
-                }
-                setIsPhotoSign(true)
+                  ACCT_NM: CR_ACCT_NM,
+                };
+                setIsPhotoSign(true);
                 SetAcctData(payload);
               }
               if (id === "debit") {
-                const { COMP_CD, BRANCH_CD, DR_ACCT_TYPE, DR_ACCT_CD, SI_AMOUNT, DR_ACCT_NM } = currentData
+                const {
+                  COMP_CD,
+                  BRANCH_CD,
+                  DR_ACCT_TYPE,
+                  DR_ACCT_CD,
+                  SI_AMOUNT,
+                  DR_ACCT_NM,
+                } = currentData;
                 const payload = {
                   COMP_CD: COMP_CD,
                   BRANCH_CD: BRANCH_CD,
                   ACCT_TYPE: DR_ACCT_TYPE,
                   ACCT_CD: DR_ACCT_CD,
                   AMOUNT: SI_AMOUNT,
-                  ACCT_NM: DR_ACCT_NM
-                }
-                setIsPhotoSign(true)
+                  ACCT_NM: DR_ACCT_NM,
+                };
+                setIsPhotoSign(true);
                 SetAcctData(payload);
-
               }
             }}
           />
           {isPhotoSign ? (
             <>
               <div style={{ paddingTop: 10 }}>
-                <PhotoSignWithHistory data={Acctdata}
+                <PhotoSignWithHistory
+                  data={Acctdata}
                   onClose={() => {
-                    setIsPhotoSign(false)
+                    setIsPhotoSign(false);
                   }}
                   screenRef={"TRN/394"}
                 />
@@ -232,11 +262,17 @@ const StandingInstructionGrid = () => {
             tran_cd={tran_Cd}
           />
         </>
-      }
+      )}
       <Routes>
         <Route
           path="search"
-          element={<SearchGrid open={opens} onClose={() => setOpens(false)} mainRefetch={""} />}
+          element={
+            <SearchGrid
+              open={opens}
+              onClose={() => setOpens(false)}
+              mainRefetch={""}
+            />
+          }
         />
       </Routes>
     </Fragment>

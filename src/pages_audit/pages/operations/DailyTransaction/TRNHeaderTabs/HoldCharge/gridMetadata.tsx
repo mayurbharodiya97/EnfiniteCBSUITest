@@ -1,4 +1,5 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
+import { getHoldChargeDropDown } from "./api";
 export const HoldChargeGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -105,13 +106,34 @@ export const HoldChargeGridMetaData: GridMetaDataType = {
       columnName: "Paid/Wave",
       accessor: "PAID",
       sequence: 11,
-      componentType: "default",
+      componentType: "editableSelect",
+      options: getHoldChargeDropDown,
+      _optionsKey: "HoldChargeDropDown",
       width: 100,
+    },
+    {
+      accessor: "PROCESS",
+      columnName: "",
+      componentType: "icondefault",
+      buttonLabel: "Open",
+      sequence: 12,
+      alignment: "center",
+      width: 80,
+      minWidth: 70,
+      maxWidth: 100,
+      isImageURL: true,
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (original?.FLAG === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
     {
       columnName: "Ent.Br.",
       accessor: "ENTERED_BRANCH_CD",
-      sequence: 12,
+      sequence: 13,
       componentType: "default",
       width: 120,
     },

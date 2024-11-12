@@ -1,4 +1,4 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
@@ -90,10 +90,10 @@ const LockerTab = () => {
       let newData = AcctMSTState?.formDatactx;
       const commonData = {
         IsNewRow: !AcctMSTState?.req_cd_ctx ? true : false,
-        COMP_CD: "",
-        BRANCH_CD: "",
-        REQ_FLAG: "",
-        REQ_CD: "",
+        // COMP_CD: "",
+        // BRANCH_CD: "",
+        // REQ_FLAG: "",
+        // REQ_CD: "",
         // SR_CD: "",
       };
       newData["MAIN_DETAIL"] = {
@@ -117,7 +117,7 @@ const LockerTab = () => {
       // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
       setFormStatus((old) => [...old, true]);
       // if(state?.isFreshEntry) {
-      // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // PODFormRef.current.handleSubmit(NextBtnRef.current, "save");
       // }
       // setIsNextLoading(false)
     } else {
@@ -153,7 +153,7 @@ const LockerTab = () => {
         onSubmitHandler={onFormSubmitHandler}
         // initialValues={AcctMSTState?.formDatactx["PERSONAL_DETAIL"] ?? {}}
         initialValues={initialVal}
-        key={"acct-tab-locker-form" + initialVal}
+        key={"acct-mst-locker-tab-form" + initialVal}
         metaData={locker_tab_metadata as MetaDataType}
         formStyle={{}}
         formState={{ GPARAM155: AcctMSTState?.gparam155 }}

@@ -1,12 +1,16 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject } from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getDynamicBoxData = async (apiName, { COMP_CD, BRANCH_CD }) => {
+export const getDynamicBoxData = async (
+  apiName,
+  { COMP_CD, BRANCH_CD, USER_ID }
+) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`/enfinityCommonServiceAPI/${apiName}`, {
       COMP_CD: COMP_CD,
       BRANCH_CD: BRANCH_CD,
+      USER_ID: USER_ID,
     });
   if (status === "0") {
     return data;

@@ -1,17 +1,23 @@
-import { Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useLocation } from "react-router-dom";
 import { AuditorMstFormMetaData } from "./metaData";
-import { utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
+import {
+  InitialValuesType,
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+  Alert,
+} from "@acuteinfo/common-base";
 
 export const AuditorMstForm = ({
   isDataChangedRef,
@@ -26,24 +32,8 @@ export const AuditorMstForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.auditorMstDataDML, {
-    onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      CloseMessageBox();
-    },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
-      isDataChangedRef.current = true;
-      CloseMessageBox();
-      closeDialog();
-    },
+    onError: (error: any) => {},
+    onSuccess: (data, variables) => {},
   });
 
   const onSubmitHandler: SubmitFnType = async (
@@ -54,7 +44,6 @@ export const AuditorMstForm = ({
     actionFlag
   ) => {
     //@ts-ignore
-    endSubmit(true);
     let newData = {
       ...data,
     };
@@ -82,17 +71,54 @@ export const AuditorMstForm = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
-        mutation.mutate({
-          ...isErrorFuncRef.current?.data,
-        });
+        mutation.mutate(
+          {
+            ...isErrorFuncRef.current?.data,
+          },
+          {
+            onError: (error: any) => {
+              CloseMessageBox();
+            },
+            onSuccess: (data, variables) => {
+              enqueueSnackbar(
+                Boolean(variables?._isNewRow)
+                  ? t("RecordInsertedMsg")
+                  : t("RecordUpdatedMsg"),
+                {
+                  variant: "success",
+                }
+              );
+              isDataChangedRef.current = true;
+              CloseMessageBox();
+              closeDialog();
+            },
+          }
+        );
+      } else if (btnName === "No") {
+        endSubmit(false);
       }
     }
   };
 
   return (
     <>
+      {mutation?.isError && (
+        <>
+          <AppBar position="relative" color="primary">
+            <Alert
+              severity={mutation?.error?.severity ?? "error"}
+              errorMsg={
+                mutation?.error?.error_msg ?? "Something went to wrong.."
+              }
+              errorDetail={mutation?.error?.error_detail}
+              color="error"
+            />
+          </AppBar>
+        </>
+      )}
       <FormWrapper
         key={"auditorMstForm" + formMode}
         metaData={AuditorMstFormMetaData as MetaDataType}
@@ -121,7 +147,6 @@ export const AuditorMstForm = ({
                     setFormMode("view");
                   }}
                   color={"primary"}
-                  disabled={isSubmitting}
                 >
                   {t("Cancel")}
                 </GradientButton>

@@ -1,25 +1,40 @@
-import { Alert } from "components/common/alert";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { usePopupContext } from "components/custom/popupContext";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { InitialValuesType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { forwardRef, useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { AddNewBeneficiaryDetail } from "../../rtgsEntry/addNewBeneficiaryAcDetail";
 import * as API from "./api";
-import { queryClient } from "cache";
-import { extractMetaData } from "components/utils";
 import { BeneficiaryAcctDetailsFormMetaData } from "./metaData/beneficiaryAcctDetailsMetada";
 import { useTranslation } from "react-i18next";
 
+import {
+  LoaderPaperComponent,
+  extractMetaData,
+  queryClient,
+  InitialValuesType,
+  FormWrapper,
+  MetaDataType,
+  usePopupContext,
+  Alert,
+  GradientButton,
+} from "@acuteinfo/common-base";
+import { CircularProgress } from "@mui/material";
 export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
-  ({ accountDetailsForBen, onSubmitHandler, defaultView }, ref: any) => {
+  (
+    {
+      accountDetailsForBen,
+      onSubmitHandler,
+      defaultView,
+      handleDialogClose,
+      hideHeader,
+    },
+    ref: any
+  ) => {
     const { MessageBox } = usePopupContext();
     const { authState } = useContext(AuthContext);
     const [openAuditTrail, setOpenAuditTrail] = useState(false);
     const [isBenAuditTrailData, setIsBenAuditTrailData] = useState({});
     const { t } = useTranslation();
+    const [formMode, setFormMode] = useState(defaultView);
 
     const {
       data: NEFTFlagsData,
@@ -30,8 +45,8 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
       refetch,
     } = useQuery<any, any>(["getNEFTFlags", authState?.user?.branchCode], () =>
       API.getNEFTFlags({
-        COMP_CD: authState?.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
       })
     );
 
@@ -43,9 +58,18 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
       return () => {
         queryClient.removeQueries([
           "getNEFTFlags",
-          authState?.user?.branchCode,
+          authState?.user?.branchCode ?? "",
         ]);
       };
+    }, []);
+
+    //Form Header title
+    useEffect(() => {
+      BeneficiaryAcctDetailsFormMetaData.form.label = `${
+        accountDetailsForBen?.SCREEN_NAME
+      } for A/C No.:\u00A0${accountDetailsForBen?.BRANCH_CD?.trim() ?? ""}-${
+        accountDetailsForBen?.ACCT_TYPE.trim() ?? ""
+      }-${accountDetailsForBen?.ACCT_CD.trim() ?? ""} `;
     }, []);
 
     return (
@@ -69,7 +93,7 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
                   defaultView
                 ) as MetaDataType
               }
-              hideHeader={true}
+              hideHeader={hideHeader ?? true}
               initialValues={
                 {
                   ...accountDetailsForBen,
@@ -96,7 +120,75 @@ export const BeneficiaryAcctDetailsForm = forwardRef<any, any>(
               formStyle={{
                 background: "white",
               }}
-            />
+            >
+              {({ isSubmitting, handleSubmit }) => (
+                <>
+                  {formMode === "edit" ? (
+                    <>
+                      <GradientButton
+                        onClick={(event) => {
+                          handleSubmit(event, "Save");
+                        }}
+                        disabled={isSubmitting}
+                        endIcon={
+                          isSubmitting ? <CircularProgress size={20} /> : null
+                        }
+                        color={"primary"}
+                      >
+                        {t("Save")}
+                      </GradientButton>
+                      <GradientButton
+                        onClick={() => {
+                          setFormMode("view");
+                        }}
+                        color={"primary"}
+                      >
+                        {t("Cancel")}
+                      </GradientButton>
+                    </>
+                  ) : formMode === "new" ? (
+                    <>
+                      <GradientButton
+                        onClick={(event) => {
+                          handleSubmit(event, "Save");
+                        }}
+                        disabled={isSubmitting}
+                        endIcon={
+                          isSubmitting ? <CircularProgress size={20} /> : null
+                        }
+                        color={"primary"}
+                      >
+                        {t("Save")}
+                      </GradientButton>
+
+                      <GradientButton
+                        onClick={handleDialogClose}
+                        color={"primary"}
+                      >
+                        {t("Close")}
+                      </GradientButton>
+                    </>
+                  ) : (
+                    <>
+                      <GradientButton
+                        onClick={() => {
+                          setFormMode("edit");
+                        }}
+                        color={"primary"}
+                      >
+                        {t("Edit")}
+                      </GradientButton>
+                      <GradientButton
+                        onClick={handleDialogClose}
+                        color={"primary"}
+                      >
+                        {t("Close")}
+                      </GradientButton>
+                    </>
+                  )}
+                </>
+              )}
+            </FormWrapper>
           </>
         )}
 

@@ -1,12 +1,6 @@
-import { CircularProgress, Dialog } from "@mui/material";
-import { usePopupContext } from "components/custom/popupContext";
-import { ActionTypes } from "components/dataTable";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { cloneDeep } from "lodash";
-import { SubmitFnType } from "packages/form";
+import { Box, Chip, CircularProgress, Dialog, Grid } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
+import { Alert, Transition } from "@acuteinfo/common-base";
 import {
   Fragment,
   useCallback,
@@ -15,6 +9,18 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
+
+import {
+  FormWrapper,
+  MetaDataType,
+  SubmitFnType,
+  GradientButton,
+  ActionTypes,
+  usePopupContext,
+  GridWrapper,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import * as API from "./api";
@@ -24,7 +30,8 @@ import {
   PaidFDGridMetaData,
 } from "./FdInterestPaymentGridMetaData";
 import { FdInterestPaymentDetail } from "./viewDetails";
-import { useTranslation } from "react-i18next";
+import { cloneDeep } from "lodash";
+import { enqueueSnackbar } from "notistack";
 const baseActions: ActionTypes[] = [
   {
     actionName: "retrieve",
@@ -88,43 +95,42 @@ export const FdInterestPaymentGrid = () => {
             icon: "ERROR",
           });
         } else {
-          const updatedData = data.map((item) => ({
+          const updatedData = data?.map((item) => ({
             ...item,
             FULL_ACCOUNT:
-              item.BRANCH_CD.trim() +
+              (item?.BRANCH_CD?.trim() ?? "") +
               "-" +
-              item.ACCT_TYPE.trim() +
+              (item?.ACCT_TYPE?.trim() ?? "") +
               "-" +
-              item.ACCT_CD.trim(),
+              (item?.ACCT_CD?.trim() ?? ""),
             CR_COMP_CD: authState?.companyID ?? "",
             CREDIT_DTL:
-              item.PAYMENT_MODE === "BANKACCT"
-                ? item.CR_BRANCH_CD.trim() +
+              item?.PAYMENT_MODE === "BANKACCT"
+                ? (item?.CR_BRANCH_CD?.trim() ?? "") +
                   "-" +
-                  item.CR_ACCT_TYPE.trim() +
+                  (item?.CR_ACCT_TYPE?.trim() ?? "") +
                   "-" +
-                  item.CR_ACCT_CD.trim()
-                : item.PAYMENT_MODE === "NEFT"
-                ? "NEFT :" + " " + item.TO_IFSCCODE + "-" + item.TO_ACCT_TYPE
+                  (item?.CR_ACCT_CD?.trim() ?? "")
+                : item?.PAYMENT_MODE === "NEFT"
+                ? "NEFT :" +
+                  " " +
+                  (item?.TO_IFSCCODE.trim() ?? "") +
+                  "-" +
+                  (item?.TO_ACCT_TYPE.trim() ?? "")
                 : "-",
-            _rowColor: Boolean(item.PAYMENT_MODE)
-              ? "rgb(255, 0, 0)"
+            _rowColor: Boolean(item?.PAYMENT_MODE)
+              ? "rgb(130, 224, 170)"
               : undefined,
           }));
 
           setFdPaymentInstructions(updatedData);
+          //@ts-ignore
           formDataRef.current = cloneDeep(updatedData);
           setFormOpen(false);
           CloseMessageBox();
         }
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
-
         CloseMessageBox();
       },
     }
@@ -134,13 +140,9 @@ export const FdInterestPaymentGrid = () => {
     API.updateFDInterestPayment,
     {
       onSuccess: async (data) => {
-        const btnName = await MessageBox({
-          messageTitle: "Success",
-          message: "RecordSave",
-          buttonNames: ["Ok"],
-          icon: "SUCCESS",
+        enqueueSnackbar(t("RecordSave"), {
+          variant: "success",
         });
-
         setFormOpen(true);
         setFdPaymentInstructions([]);
         formDataRef.current = [];
@@ -149,12 +151,6 @@ export const FdInterestPaymentGrid = () => {
         CloseMessageBox();
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
-
         CloseMessageBox();
       },
     }
@@ -174,23 +170,18 @@ export const FdInterestPaymentGrid = () => {
             setPaidFDOpen(false);
           }
         } else {
-          const updatedData = data.map((item) => ({
+          const updatedData = data?.map((item) => ({
             ...item,
-            INT_RATE: parseFloat(item.INT_RATE).toFixed(2),
-            TOT_TDS_RECO_INT_AMT: parseFloat(item.TOT_TDS_RECO_INT_AMT).toFixed(
-              2
-            ),
+            INT_RATE: parseFloat(item?.INT_RATE ?? 0).toFixed(2),
+            TOT_TDS_RECO_INT_AMT: parseFloat(
+              item?.TOT_TDS_RECO_INT_AMT ?? 0
+            ).toFixed(2),
           }));
           setPaidFDdata(updatedData);
           CloseMessageBox();
         }
       },
       onError: async (error: any) => {
-        const btnName = await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: error?.error_msg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -205,7 +196,7 @@ export const FdInterestPaymentGrid = () => {
 
         // Check if the row is already in deletedRowsRef
         const isAlreadyDeleted = deletedRowsRef.current.some(
-          (item) => item.FD_NO === rowToDelete.FD_NO
+          (item) => item?.FD_NO === rowToDelete?.FD_NO
         );
 
         if (!isAlreadyDeleted) {
@@ -216,17 +207,17 @@ export const FdInterestPaymentGrid = () => {
           });
 
           if (btnName === "Yes") {
-            const deletedRow = rowToDelete.data;
-            const updatedData = formDataRef.current.filter(
-              (item) => item.FD_NO !== deletedRow.FD_NO
+            const deletedRow = rowToDelete?.data;
+            const updatedData = formDataRef?.current?.filter(
+              (item) => item?.FD_NO !== deletedRow?.FD_NO
             );
             formDataRef.current = updatedData;
-            delete deletedRow.isNewRow;
+            delete deletedRow?.isNewRow;
             deletedRow.isDeleteRow = true;
-            updatedRowsRef.current = updatedRowsRef.current.filter(
-              (item) => item.FD_NO !== deletedRow.FD_NO
+            updatedRowsRef.current = updatedRowsRef?.current?.filter(
+              (item) => item?.FD_NO !== deletedRow?.FD_NO
             );
-            deletedRowsRef.current = [...deletedRowsRef.current, deletedRow];
+            deletedRowsRef.current = [...deletedRowsRef?.current, deletedRow];
             CloseMessageBox();
           }
         } else {
@@ -234,8 +225,8 @@ export const FdInterestPaymentGrid = () => {
         }
       } else if (data?.name === "retrieve") {
         if (
-          Array.isArray(formDataRef.current) &&
-          formDataRef.current.length > 0
+          Array.isArray(formDataRef?.current) &&
+          formDataRef?.current?.length > 0
         ) {
           let btnName = await MessageBox({
             messageTitle: "Confirmation",
@@ -257,24 +248,24 @@ export const FdInterestPaymentGrid = () => {
         setFDDetailOpen(true);
       } else if (data?.name === "paid-fd") {
         fetchPaidFDDetails.mutate({
-          COMP_CD: parameterRef.current?.COMP_CD ?? "",
-          BRANCH_CD: parameterRef.current?.BRANCH_CD ?? "",
-          ACCT_TYPE: parameterRef.current?.ACCT_TYPE ?? "",
-          ACCT_CD: parameterRef.current?.ACCT_CD ?? "",
+          COMP_CD: parameterRef?.current?.COMP_CD ?? "",
+          BRANCH_CD: parameterRef?.current?.BRANCH_CD ?? "",
+          ACCT_TYPE: parameterRef?.current?.ACCT_TYPE ?? "",
+          ACCT_CD: parameterRef?.current?.ACCT_CD ?? "",
         });
         setPaidFDOpen(true);
       } else if (data?.name === "save") {
         let allValid = true;
 
-        for (let i = 0; i < formDataRef.current.length; i++) {
+        for (let i = 0; i < formDataRef?.current?.length; i++) {
           if (
-            !formDataRef.current[i].PAYMENT_MODE ||
-            formDataRef.current[i].PAYMENT_MODE.trim() === ""
+            !formDataRef?.current[i]?.PAYMENT_MODE ||
+            formDataRef?.current[i]?.PAYMENT_MODE?.trim() === ""
           ) {
             let btnName = await MessageBox({
               messageTitle: "ValidationFailed",
               message: `${t(`SelectPaymentMode`, {
-                FD_NO: formDataRef.current[i].FD_NO,
+                FD_NO: formDataRef?.current[i]?.FD_NO,
               })}`,
               buttonNames: ["Ok"],
               icon: "ERROR",
@@ -288,10 +279,10 @@ export const FdInterestPaymentGrid = () => {
 
         if (
           allValid &&
-          (deletedRowsRef?.current.length > 0 ||
-            updatedRowsRef?.current.length > 0 ||
-            formDataRef?.current.filter((item) => item.isNewRow === true)
-              .length > 0)
+          (deletedRowsRef?.current?.length > 0 ||
+            updatedRowsRef?.current?.length > 0 ||
+            formDataRef?.current?.filter((item) => item?.isNewRow === true)
+              ?.length > 0)
         ) {
           const btnName = await MessageBox({
             messageTitle: "Confirmation",
@@ -302,11 +293,12 @@ export const FdInterestPaymentGrid = () => {
           if (btnName === "Yes") {
             updateFDPayment.mutate({
               DETAILS_DATA: {
-                isDeleteRow: deletedRowsRef.current,
-                isUpdatedRow: updatedRowsRef.current,
-                isNewRow: formDataRef.current.filter(
-                  (item) => item.isNewRow === true
-                ),
+                isDeleteRow: deletedRowsRef?.current ?? [],
+                isUpdatedRow: updatedRowsRef?.current ?? [],
+                isNewRow:
+                  formDataRef?.current?.filter(
+                    (item) => item?.isNewRow === true
+                  ) ?? [],
               },
             });
           }
@@ -333,7 +325,7 @@ export const FdInterestPaymentGrid = () => {
   useEffect(() => {
     setActions(
       // @ts-ignore
-      fdPaymentInstructions.length > 0
+      fdPaymentInstructions?.length > 0
         ? [
             ...baseActions,
             {
@@ -345,7 +337,7 @@ export const FdInterestPaymentGrid = () => {
           ]
         : baseActions
     );
-  }, [fdPaymentInstructions.length]);
+  }, [fdPaymentInstructions?.length]);
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -353,14 +345,14 @@ export const FdInterestPaymentGrid = () => {
     endSubmit,
     setFieldError
   ) => {
-    formDataRef.current = formDataRef.current.map((item) => ({
+    formDataRef.current = formDataRef?.current?.map((item) => ({
       ...item,
       COMP_CD: authState?.companyID ?? "",
     }));
 
-    fetchFDPaymentInstructions.mutate(parameterRef.current, {
+    fetchFDPaymentInstructions.mutate(parameterRef?.current, {
       onSettled: () => {
-        if (!fetchFDPaymentInstructions.isLoading) {
+        if (!fetchFDPaymentInstructions?.isLoading) {
           endSubmit(true);
         }
       },
@@ -377,36 +369,40 @@ export const FdInterestPaymentGrid = () => {
   };
 
   const updateGrid = (formData) => {
-    const index = formDataRef.current.findIndex(
-      (item) => item.FD_NO === formData.FD_NO
+    const index = formDataRef?.current?.findIndex(
+      (item) => item?.FD_NO === formData?.FD_NO
     );
     if (index !== -1) {
       formDataRef.current[index] = {
-        ...formDataRef.current[index],
+        ...formDataRef?.current[index],
         ...formData,
       };
     } else {
-      formDataRef.current.push(formData);
+      formDataRef?.current?.push(formData);
     }
-    formDataRef.current = formDataRef.current.map((item) => ({
+    formDataRef.current = formDataRef?.current?.map((item) => ({
       ...item,
       FULL_ACCOUNT:
-        item.BRANCH_CD.trim() +
+        (item?.BRANCH_CD?.trim() ?? "") +
         "-" +
-        item.ACCT_TYPE.trim() +
+        (item?.ACCT_TYPE?.trim() ?? "") +
         "-" +
-        item.ACCT_CD.trim(),
+        (item?.ACCT_CD?.trim() ?? ""),
       CREDIT_DTL:
-        item.PAYMENT_MODE === "BANKACCT"
-          ? item.CR_BRANCH_CD.trim() +
+        item?.PAYMENT_MODE === "BANKACCT"
+          ? (item?.CR_BRANCH_CD?.trim() ?? "") +
             "-" +
-            item.CR_ACCT_TYPE.trim() +
+            (item?.CR_ACCT_TYPE?.trim() ?? "") +
             "-" +
-            item.CR_ACCT_CD.trim()
-          : item.PAYMENT_MODE === "NEFT"
-          ? "NEFT :" + " " + item.TO_IFSCCODE + "-" + item.TO_ACCT_TYPE
+            (item?.CR_ACCT_CD?.trim() ?? "")
+          : item?.PAYMENT_MODE === "NEFT"
+          ? "NEFT :" +
+            " " +
+            (item?.TO_IFSCCODE.trim() ?? "") +
+            "-" +
+            (item?.TO_ACCT_TYPE.trim() ?? "")
           : "-",
-      _rowColor: Boolean(item.PAYMENT_MODE) ? "rgb(255, 0, 0)" : undefined,
+      _rowColor: Boolean(item?.PAYMENT_MODE) ? "rgb(130, 224, 170)" : undefined,
     }));
   };
 
@@ -414,7 +410,7 @@ export const FdInterestPaymentGrid = () => {
     const fdNo = rowsData?.FD_NO;
 
     if (rowsData?.isNewRow === false) {
-      const index = updatedRowsRef.current.findIndex(
+      const index = updatedRowsRef?.current?.findIndex(
         (row) => row?.FD_NO === fdNo
       );
 
@@ -423,24 +419,56 @@ export const FdInterestPaymentGrid = () => {
         updatedRowsRef.current[index] = rowsData;
       } else {
         // Add a new entry
-        updatedRowsRef?.current.push(rowsData);
+        updatedRowsRef?.current?.push(rowsData);
       }
     } else {
       return;
     }
   };
 
+  useEffect(() => {
+    const keysToRemove = [
+      "getFDPaymentInstrudtl",
+      "updateFDInterestPayment",
+      "fetchPaidFDDetails",
+      "getPMISCData",
+      "getAccountTypeList",
+    ].map((key) => [key, authState?.user?.branchCode]);
+    return () => {
+      keysToRemove?.forEach((key) => queryClient?.removeQueries(key));
+    };
+  }, []);
+
   return (
     <Fragment>
       <Dialog
         open={isFormOpen}
+        // @ts-ignore
+        TransitionComponent={Transition}
         PaperProps={{
           style: {
-            minWidth: "30%",
-            maxWidth: "50%",
+            width: "100%",
+            overflow: "auto",
           },
         }}
+        maxWidth="sm"
       >
+        {(fetchFDPaymentInstructions?.error || updateFDPayment?.error) && (
+          <Alert
+            severity="error"
+            errorMsg={
+              fetchFDPaymentInstructions?.error?.error_msg ||
+              updateFDPayment?.error?.error_msg ||
+              t("Somethingwenttowrong")
+            }
+            errorDetail={
+              fetchFDPaymentInstructions?.error?.error_detail ||
+              updateFDPayment?.error?.error_detail ||
+              ""
+            }
+            color="error"
+          />
+        )}
         <FormWrapper
           key={"accountFindmetaData"}
           metaData={accountFindmetaData as MetaDataType}
@@ -468,11 +496,11 @@ export const FdInterestPaymentGrid = () => {
                 }}
                 disabled={
                   isSubmitting ||
-                  fetchFDPaymentInstructions.isLoading ||
+                  fetchFDPaymentInstructions?.isLoading ||
                   isButtonDisabled
                 }
                 endIcon={
-                  isSubmitting || fetchFDPaymentInstructions.isLoading ? (
+                  isSubmitting || fetchFDPaymentInstructions?.isLoading ? (
                     <CircularProgress size={20} />
                   ) : null
                 }
@@ -486,7 +514,7 @@ export const FdInterestPaymentGrid = () => {
                 color={"primary"}
                 disabled={
                   isSubmitting ||
-                  fetchFDPaymentInstructions.isLoading ||
+                  fetchFDPaymentInstructions?.isLoading ||
                   isButtonDisabled
                 }
               >
@@ -496,26 +524,71 @@ export const FdInterestPaymentGrid = () => {
           )}
         </FormWrapper>
       </Dialog>
-
+      {updateFDPayment?.error && (
+        <Alert
+          severity="error"
+          errorMsg={
+            updateFDPayment?.error?.error_msg || t("Somethingwenttowrong")
+          }
+          errorDetail={updateFDPayment?.error?.error_detail || ""}
+          color="error"
+        />
+      )}
       <GridWrapper
-        key={"FDinterestPaymentGrid" + actions.length}
+        key={"FDinterestPaymentGrid" + actions?.length}
         finalMetaData={FdInterestPaymentGridMetaData}
-        data={formDataRef.current ?? []}
+        data={formDataRef?.current ?? []}
         setData={() => null}
-        ReportExportButton={true}
+        enableExport={true}
         actions={actions}
         setAction={setCurrentAction}
       />
+      <Box
+        sx={{
+          height: "23px",
+          width: "60%",
+          float: "right",
+          position: "relative",
+          top: "-2.67rem",
+          display: "flex",
+          gap: "4rem",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          paddingRight: "1rem",
+        }}
+      >
+        <Chip
+          sx={{
+            backgroundColor: "rgb(130, 224, 170)",
+            color: "black",
+          }}
+          size="medium"
+          label={`Success`}
+        />
+      </Box>
 
       <Dialog
         open={isPaidFDOpen}
+        // @ts-ignore
+        TransitionComponent={Transition}
         PaperProps={{
           style: {
-            minWidth: "95%",
-            maxWidth: "95%",
+            width: "100%",
+            overflow: "auto",
           },
         }}
+        maxWidth="lg"
       >
+        {fetchPaidFDDetails?.error && (
+          <Alert
+            severity="error"
+            errorMsg={
+              fetchPaidFDDetails?.error?.error_msg || t("Somethingwenttowrong")
+            }
+            errorDetail={fetchPaidFDDetails?.error?.error_detail || ""}
+            color="error"
+          />
+        )}
         <GridWrapper
           key={"PaidFD"}
           finalMetaData={PaidFDGridMetaData}
@@ -524,28 +597,31 @@ export const FdInterestPaymentGrid = () => {
           actions={paidFDactions}
           setAction={setPaidFDAction}
           loading={
-            fetchPaidFDDetails.isLoading || fetchPaidFDDetails.isFetching
+            fetchPaidFDDetails?.isLoading || fetchPaidFDDetails?.isFetching
           }
         />
       </Dialog>
       <Dialog
         open={isFDDetailOpen}
+        // @ts-ignore
+        TransitionComponent={Transition}
         PaperProps={{
           style: {
-            minWidth: "95%",
-            maxWidth: "95%",
+            width: "100%",
+            overflow: "auto",
           },
         }}
+        maxWidth="lg"
       >
         <FdInterestPaymentDetail
           closeDialog={handleFDDetailClose}
-          gridData={formDataRef.current}
+          gridData={formDataRef?.current}
           rows={rowsData}
           updateGrid={updateGrid}
           updateRow={updateRow}
           fdDetails={fdPaymentInstructions}
           defaultView={
-            Boolean(rowsData?.[0]?.data?.PAYMENT_MODE) ? "view" : "new"
+            Boolean(rowsData?.[0]?.data?.PAYMENT_MODE) ? "edit" : "new"
           }
         />
       </Dialog>

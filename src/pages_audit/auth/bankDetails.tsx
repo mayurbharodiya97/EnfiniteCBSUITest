@@ -1,16 +1,21 @@
-import { useReducer, useContext, useEffect, useState, useRef } from "react";
+import {
+  useReducer,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import loginImg from "../../assets/images/login.png";
 import { useStyles } from "./style";
 import { AuthContext } from "./authContext";
 import { Grid } from "@mui/material";
 import { Container } from "@mui/material";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 
 export const BankDetails = ({ imageData }: any) => {
-  const { isLoggedIn, login } = useContext(AuthContext);
-  const [loginImageURL, setLoginImageURL] = useState<any | null>(null);
-  const urlObj = useRef<any>(null);
+  const { isLoggedIn } = useContext(AuthContext);
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -22,15 +27,15 @@ export const BankDetails = ({ imageData }: any) => {
       navigate("/cbsenfinity", { replace: true });
     }
   }, [navigate, isLoggedIn]);
-  useEffect(() => {
-    if (Boolean(imageData?.[0]?.BANK_LOGO)) {
-      let blob = utilFunction.base64toBlob(imageData?.[0]?.BANK_LOGO);
-      urlObj.current =
-        typeof blob === "object" && Boolean(blob)
-          ? URL.createObjectURL(blob)
-          : "";
-      setLoginImageURL(urlObj.current);
+  const bankAppLogo = useMemo(() => {
+    const bankAppLogo = imageData?.[0]?.BANK_LOGO;
+    if (bankAppLogo) {
+      const blob = utilFunction.base64toBlob(bankAppLogo);
+      if (blob) {
+        return URL.createObjectURL(blob);
+      }
     }
+    return "";
   }, [imageData]);
   return (
     <>
@@ -45,7 +50,7 @@ export const BankDetails = ({ imageData }: any) => {
               objectFit: "cover",
               objectPosition: "center",
             }}
-            src={Boolean(loginImageURL) ? loginImageURL : ""}
+            src={bankAppLogo}
           />
         </Grid>
         <Grid

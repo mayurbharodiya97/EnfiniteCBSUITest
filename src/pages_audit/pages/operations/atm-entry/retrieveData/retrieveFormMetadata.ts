@@ -1,11 +1,11 @@
 import { isValid } from "date-fns";
 import * as API from "../api";
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 
 export const retrieveFormMetaData = {
   form: {
-    name: "retrieve-metadata",
+    name: "atm-retrieve-metadata",
     label: "Retrieve Information",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -245,8 +245,6 @@ export const retrieveFormMetaData = {
 
             let postData = await API.validateAcctAndCustId(apiRequest);
 
-            console.log("<<<postdat", postData);
-
             let apiRespMSGdata = postData?.[0]?.MSG;
             let isReturn;
             const messagebox = async (msgTitle, msg, buttonNames, status) => {
@@ -271,7 +269,6 @@ export const retrieveFormMetaData = {
                     apiRespMSGdata[i]?.O_STATUS
                   );
 
-                  console.log("<<<buttnnama", btnName);
                   if (btnName.buttonName === "No" || btnName.status === "999") {
                     return {
                       ACCT_CD: { value: "", isFieldFocused: true },

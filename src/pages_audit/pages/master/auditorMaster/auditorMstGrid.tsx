@@ -1,18 +1,21 @@
 import { useCallback, useContext, useEffect, useRef } from "react";
-import GridWrapper from "components/dataTableStatic";
 import { AuditorMstGridMetaData } from "./gridMetadata";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
-import { ClearCacheContext, queryClient } from "cache";
 import { AuditorMstFormWrapper } from "./form";
 import { enqueueSnackbar } from "notistack";
 import { useMutation, useQuery } from "react-query";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
-
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+  ClearCacheContext,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -53,6 +56,7 @@ export const AuditorMstGrid = () => {
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
@@ -145,6 +149,7 @@ export const AuditorMstGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
+        enableExport={true}
       />
 
       <Routes>

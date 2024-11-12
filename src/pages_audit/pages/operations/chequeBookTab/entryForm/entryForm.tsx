@@ -1,20 +1,24 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import React, { useContext, useEffect } from "react";
 import { ChequeBookEntryMetaData } from "./chequebookEntryMetadata";
 import { AppBar, Button, Dialog, LinearProgress } from "@mui/material";
 import { t } from "i18next";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { chequeBookCfm, validateCheqbkCfm, validateInsert } from "../api";
 import { useMutation } from "react-query";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { MultipleChequebook } from "../multipleChequebook/multipleChequebook";
 import { IssuedChequebook } from "../issuedChequebook/issuedChequebook";
-import { usePopupContext } from "components/custom/popupContext";
-import { Alert } from "components/common/alert";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { enqueueSnackbar } from "notistack";
-import { queryClient } from "cache";
+import {
+  Alert,
+  FormWrapper,
+  MetaDataType,
+  queryClient,
+  SubmitFnType,
+  usePopupContext,
+  utilFunction,
+} from "@acuteinfo/common-base";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 
 export const EntryForm = (props) => {
   const { authState } = useContext(AuthContext);
@@ -200,8 +204,8 @@ export const EntryForm = (props) => {
     };
   }, []);
 
+  // common function for calling the API of confirmation
   const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
-    console.log("<<<dadadad", data);
     // @ts-ignore
     endSubmit(true);
     let reqPara = {
@@ -238,8 +242,6 @@ export const EntryForm = (props) => {
     }
   };
 
-  console.log("<<<entry ", props);
-
   const handelChange = async (isConfirm) => {
     chequeBkValidateCfm.mutate(
       {
@@ -250,16 +252,24 @@ export const EntryForm = (props) => {
       },
       {
         onSuccess: async (data) => {
-          console.log("<<<dara", data);
-          const messagebox = async (msgTitle, msg, buttonNames) => {
+          const messagebox = async (msgTitle, msg, buttonNames, icon) => {
             let buttonName = await MessageBox({
               messageTitle: msgTitle,
               message: msg,
               buttonNames: buttonNames,
+              icon: icon,
             });
             return buttonName;
           };
-
+          let apiReq = {
+            IS_CONFIMED: isConfirm === "C" ? true : false,
+            FLAG: confirmData?.REQ_FLAG,
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: confirmData?.BRANCH_CD,
+            TRAN_CD: confirmData?.TRAN_CD,
+            AUTO_CHQBK_PRINT_FLAG: confirmData?.AUTO_CHQBK_PRINT_FLAG,
+            LAST_ENTERED_BY: confirmData?.LAST_ENTERED_BY,
+          };
           if (data?.length) {
             for (let i = 0; i < data?.length; i++) {
               let btnName = await messagebox(
@@ -268,38 +278,39 @@ export const EntryForm = (props) => {
                   : data[i]?.O_STATUS === "0"
                   ? "confirmation"
                   : "ALert message",
-                data[i]?.O_STATUS === "0"
-                  ? "Are you sure to proceed"
+                data[i]?.O_STATUS === "0" && isConfirm === "C"
+                  ? t("AreYouSureToConfirm")
+                  : data[i]?.O_STATUS === "0" && isConfirm === "R"
+                  ? t("AreYouSureToReject")
                   : data[i]?.O_MESSAGE,
                 data[i]?.O_STATUS === "99" || data[i]?.O_STATUS === "0"
                   ? ["Yes", "No"]
-                  : ["Ok"]
+                  : ["Ok"],
+                data[i]?.O_STATUS === "0"
+                  ? "CONFIRM"
+                  : data[i]?.O_STATUS === "999"
+                  ? "ERROR"
+                  : "WARNING"
               );
               if (btnName === "No") {
                 break;
-              } else if (btnName === "Ok" && data[i]?.O_STATUS === "0") {
-                let apiReq = {
-                  IS_CONFIMED: isConfirm === "C" ? true : false,
-                  FLAG: confirmData?.REQ_FLAG,
-                  COMP_CD: authState?.companyID,
-                  BRANCH_CD: confirmData?.BRANCH_CD,
-                  TRAN_CD: confirmData?.TRAN_CD,
-                  AUTO_CHQBK_PRINT_FLAG: confirmData?.AUTO_CHQBK_PRINT_FLAG,
-                  LAST_ENTERED_BY: confirmData?.LAST_ENTERED_BY,
-                };
+              } else if (btnName === "Yes" && data[i]?.O_STATUS === "99") {
                 let res = await MessageBox({
                   messageTitle: t("confirmation"),
                   message:
                     isConfirm === "C"
                       ? t("AreYouSureToConfirm")
                       : t("AreYouSureToReject"),
-                  buttonNames: ["No", "Yes"],
+                  buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                   loadingBtnName: ["Yes"],
+                  icon: "WARNING",
                 });
                 if (res === "Yes") {
                   chequeBkCfm.mutate(apiReq);
                 }
+              } else if (btnName === "Yes" && data[i]?.O_STATUS === "0") {
+                chequeBkCfm.mutate(apiReq);
               }
             }
           }
@@ -308,6 +319,11 @@ export const EntryForm = (props) => {
     );
   };
 
+  ChequeBookEntryMetaData.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
   return (
     <>
       {validateInsertData?.isLoading || chequeBkValidateCfm.isLoading ? (
@@ -339,7 +355,7 @@ export const EntryForm = (props) => {
       <FormWrapper
         key={"chequebooksEntry"}
         metaData={ChequeBookEntryMetaData as MetaDataType}
-        initialValues={confirmData?.FLAG === "C" ? confirmData : {} ?? {}}
+        initialValues={confirmData?.FLAG === "C" ? confirmData : {}}
         displayMode={confirmData?.FLAG === "C" ? "view" : null}
         formStyle={{
           height: "calc(100vh - 336px)",
@@ -348,7 +364,10 @@ export const EntryForm = (props) => {
         }}
         onSubmitHandler={onSubmitHandler}
         ref={myMasterRef}
-        formState={{ MessageBox: MessageBox }}
+        formState={{
+          MessageBox: MessageBox,
+          workingDate: authState?.workingDate,
+        }}
         setDataOnFieldChange={(action, payload) => {
           if (action === "DTL_TAB") {
             setIsData((old) => ({ ...old, isVisible: payload.DTL_TAB }));

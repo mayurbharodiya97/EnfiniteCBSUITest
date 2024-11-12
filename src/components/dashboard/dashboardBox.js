@@ -14,7 +14,7 @@ import {
   Tooltip,
   Divider,
 } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import "pages_audit/sideBar/icons";
 import { lazy, useContext, useState } from "react";
 import { useQuery } from "react-query";
@@ -43,6 +43,7 @@ export const DashboardBox = ({
     API.getDynamicBoxData(apiName, {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
+      USER_ID: authState?.user?.id ?? "",
     })
   );
 

@@ -5,19 +5,20 @@ import React, {
   useRef,
   useState,
 } from "react";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import { getApiGridMetaData } from "./getApiGridMetadata";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { ClearCacheContext, queryClient } from "cache";
 import { GetApiForm } from "./getApiFormData/getApiForm";
-import { enqueueSnackbar } from "notistack";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { GetApiViewDetail } from "./getApiFormData/getApiViewDetail";
-
+import {
+  ClearCacheContext,
+  queryClient,
+  GridWrapper,
+  ActionTypes,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "add",

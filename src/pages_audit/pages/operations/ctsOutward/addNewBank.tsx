@@ -1,17 +1,19 @@
 import { FC, useEffect, useRef, useState, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import { queryClient, ClearCacheContext } from "cache";
+import { queryClient, ClearCacheContext, Alert } from "@acuteinfo/common-base";
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@mui/styles";
-import { Theme, Dialog, Button, CircularProgress } from "@mui/material";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
+import { Theme, Dialog, Button, CircularProgress, AppBar } from "@mui/material";
+
+import {
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+} from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
 import { AddNewBankMasterFormMetadata } from "./metaData";
 import { useTranslation } from "react-i18next";
-
 
 export const useDialogStyles = makeStyles((theme: Theme) => ({
   topScrollPaper: {
@@ -48,9 +50,8 @@ export const AddNewBankMasterForm: FC<{
       // enqueueSnackbar(errorMsg, { variant: "error" });
     },
     onSuccess: (data) => {
-      console.log("data", data);
       enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
-      onClose();
+      onClose("save", data);
     },
   });
 
@@ -98,6 +99,21 @@ export const AddNewBankMasterForm: FC<{
           },
         }}
       >
+        {mutation?.isError ? (
+          <>
+            <AppBar position="relative" color="primary">
+              <Alert
+                severity={mutation?.error?.severity ?? "error"}
+                errorMsg={
+                  mutation?.error?.error_msg ?? "Something went to wrong.."
+                }
+                errorDetail={mutation?.error?.error_detail}
+                color="error"
+              />
+            </AppBar>
+          </>
+        ) : null}
+
         <FormWrapper
           key={"ClearingBankMasterForm"}
           metaData={AddNewBankMasterFormMetadata as MetaDataType}
@@ -125,7 +141,9 @@ export const AddNewBankMasterForm: FC<{
               </Button>
 
               <Button
-                onClick={onClose}
+                onClick={() => {
+                  onClose();
+                }}
                 //disabled={isSubmitting}
                 color={"primary"}
               >

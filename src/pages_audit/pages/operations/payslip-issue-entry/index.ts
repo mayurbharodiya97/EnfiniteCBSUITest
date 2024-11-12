@@ -1,1 +1,1 @@
-export { PaySlipIssueEntry as default } from "./paySlipIssueEntryGrid";
+export { PayslipDDTransactionsEntry as default } from "./PayslipDDTransactionsEntry";

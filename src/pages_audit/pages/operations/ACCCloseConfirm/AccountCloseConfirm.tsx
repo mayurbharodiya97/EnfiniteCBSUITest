@@ -1,13 +1,6 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { queryClient } from "cache";
-import { Alert } from "components/common/alert";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import PhotoSignWithHistory from "components/custom/photoSignWithHistory/photoSignWithHistory";
-import { usePopupContext } from "components/custom/popupContext";
-import { ActionTypes } from "components/dataTable";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GradientButton } from "components/styledComponent/button";
+import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 import { format } from "date-fns";
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
@@ -16,8 +9,17 @@ import { useMutation, useQuery } from "react-query";
 import DailyTransTabs from "../DailyTransaction/TRNHeaderTabs";
 import * as API from "./api";
 import { AccountClosedConfirm, ClosedAccountDetailsMetaData } from "./metaData";
-import { utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
+import {
+  LoaderPaperComponent,
+  GridWrapper,
+  GradientButton,
+  ActionTypes,
+  utilFunction,
+  usePopupContext,
+  Alert,
+  queryClient,
+} from "@acuteinfo/common-base";
 
 const confirmationActions: ActionTypes[] = [
   {
@@ -93,28 +95,29 @@ export const AccountCloseConfirm = () => {
       onSuccess: async (data) => {
         let ConfirmMSG = data;
         for (let i = 0; i < ConfirmMSG.length; i++) {
-          if (ConfirmMSG[i]?.O_STATUS === "999") {
+          if (ConfirmMSG?.[i]?.O_STATUS === "999") {
             const btnName = await MessageBox({
               messageTitle: "ValidationFailed",
-              message: ConfirmMSG[i]?.O_MESSAGE,
+              message: ConfirmMSG?.[i]?.O_MESSAGE,
               icon: "ERROR",
             });
-          } else if (ConfirmMSG[i]?.O_STATUS === "99") {
+          } else if (ConfirmMSG?.[i]?.O_STATUS === "99") {
             const { btnName, obj } = await MessageBox({
               messageTitle: "Confirmation",
-              message: ConfirmMSG[i]?.O_MESSAGE,
+              message: ConfirmMSG?.[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
-          } else if (ConfirmMSG[i]?.O_STATUS === "9") {
+          } else if (ConfirmMSG?.[i]?.O_STATUS === "9") {
             const { btnName, obj } = await MessageBox({
               messageTitle: "Alert",
-              message: ConfirmMSG[i]?.O_MESSAGE,
+              message: ConfirmMSG?.[i]?.O_MESSAGE,
               icon: "WARNING",
             });
-          } else if (ConfirmMSG[i]?.O_STATUS === "0") {
+          } else if (ConfirmMSG?.[i]?.O_STATUS === "0") {
             const { btnName, obj } = await MessageBox({
               messageTitle: "Success",
-              message: ConfirmMSG[i]?.O_MESSAGE,
+              message: ConfirmMSG?.[i]?.O_MESSAGE,
               icon: "SUCCESS",
               buttonNames: ["Ok"],
             });
@@ -207,7 +210,7 @@ export const AccountCloseConfirm = () => {
     };
   }, []);
   useEffect(() => {
-    if (confirmationData.length === 0) {
+    if (confirmationData?.length === 0) {
       setAccountDetails([]);
       setVoucherDetails([]);
     }
@@ -228,13 +231,8 @@ export const AccountCloseConfirm = () => {
         zIndex: "-1",
       }}
     >
-      <h2>
-        {utilFunction.getDynamicLabel(
-          currentPath,
-          authState?.menulistdata,
-          true
-        ) + ":"}
-      </h2>
+      {utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, true)}
+
       <GradientButton onClick={handleRetrieve} color={"primary"}>
         {t("Retrieve")}
       </GradientButton>
@@ -245,12 +243,12 @@ export const AccountCloseConfirm = () => {
       {isError && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Something went to wrong.."}
+          errorMsg={error?.error_msg || t("Somethingwenttowrong")}
           errorDetail={error?.error_detail ?? ""}
           color="error"
         />
       )}
-      {fetchAccountDetails.isLoading ? <LoaderPaperComponent /> : null}
+      {fetchAccountDetails?.isLoading ? <LoaderPaperComponent /> : null}
       <DailyTransTabs
         //@ts-ignore
         heading={headingWithButton}
@@ -260,12 +258,12 @@ export const AccountCloseConfirm = () => {
         hideCust360Btn={true}
       />
       <GridWrapper
-        key={"ClosedAccountDetails" + voucherDetails.length}
+        key={"ClosedAccountDetails" + voucherDetails?.length}
         finalMetaData={ClosedAccountDetailsMetaData}
         data={voucherDetails ?? []}
         setData={() => null}
         loading={
-          fetchVoucherDetails.isLoading || fetchVoucherDetails.isFetching
+          fetchVoucherDetails?.isLoading || fetchVoucherDetails?.isFetching
         }
         actions={detailActions}
         setAction={DetailsetCurrentAction}
@@ -293,6 +291,7 @@ export const AccountCloseConfirm = () => {
                   message: "AcCloseConfMsg",
                   buttonNames: ["Yes", "No", "Cancel"],
                   loadingBtnName: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 if (btnName === "Yes") {
                   handleAccountCloseConfirmation.mutate({
@@ -335,6 +334,7 @@ export const AccountCloseConfirm = () => {
                 message: "ReOpenConfMsg",
                 buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
+                icon: "CONFIRM",
               });
               if (btnName === "Yes") {
                 handleAccountCloseConfirmation.mutate({

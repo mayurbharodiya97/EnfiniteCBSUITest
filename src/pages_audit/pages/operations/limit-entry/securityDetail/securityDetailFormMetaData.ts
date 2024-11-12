@@ -1,3 +1,5 @@
+import { getSecurityListData } from "../api";
+
 export const securityDetailMetaData = {
   form: {
     name: "security-detail-form",
@@ -47,13 +49,28 @@ export const securityDetailMetaData = {
   fields: [
     {
       render: {
-        componentType: "textField",
+        componentType: "autocomplete",
       },
-      name: "SECURITY_TYPE_DISPLAY",
+      name: "SECURITY_TYPE",
       label: "SecurityType",
-      required: true,
       fullWidth: true,
-      isReadOnly: true,
+      dependentFields: ["PARENT_TYPE", "BRANCH_CD"],
+      options: (dependentValue, formState, _, authState) => {
+        if (
+          dependentValue?.PARENT_TYPE?.value &&
+          dependentValue?.BRANCH_CD?.value
+        ) {
+          let apiReq = {
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+            A_PARENT_TYPE: dependentValue?.PARENT_TYPE?.value,
+          };
+          return getSecurityListData(apiReq);
+        }
+        return [];
+      },
+      disableCaching: true,
+      _optionsKey: "getSecurityListData",
       GridProps: {
         xs: 12,
         md: 3.5,
@@ -70,7 +87,6 @@ export const securityDetailMetaData = {
       name: "FD_ACCT_CD",
       label: "CertificateNumber",
       isReadOnly: true,
-      placeholder: "CertificateNumber",
       fullWidth: true,
       GridProps: {
         xs: 12,
@@ -180,8 +196,10 @@ export const securityDetailMetaData = {
       placeholder: "PeriodNumber",
       required: true,
       FormatProps: {
+        allowNegative: false,
+        decimalScale: 0,
         isAllowed: (values) => {
-          if (values.floatValue === 0) {
+          if (values?.value?.length > 5 || values.floatValue === 0) {
             return false;
           }
           return true;
@@ -246,10 +264,6 @@ export const securityDetailMetaData = {
       label: "ExpiryDate",
       isReadOnly: true,
       fullWidth: true,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
       GridProps: {
         xs: 12,
         md: 2,
@@ -320,7 +334,7 @@ export const securityDetailMetaData = {
         componentType: "textField",
       },
       name: "ISSUE_COMPANY",
-      label: "IssueCompany",
+      label: "IssuedBy",
       fullWidth: true,
       placeholder: "IssueCompany",
       GridProps: {
@@ -363,6 +377,18 @@ export const securityDetailMetaData = {
         lg: 6,
         xl: 6,
       },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PARENT_TYPE",
     },
   ],
 };

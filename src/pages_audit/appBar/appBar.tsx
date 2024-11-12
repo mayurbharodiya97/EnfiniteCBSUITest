@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { AuthContext } from "../auth";
@@ -27,7 +27,6 @@ import {
   Tooltip,
   Typography,
   tooltipClasses,
-  Theme,
 } from "@mui/material";
 import { Notification_App } from "./notification";
 import { Quick_View } from "./quickView";
@@ -36,14 +35,10 @@ import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
 import { useTranslation } from "react-i18next";
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
-import { GradientButton } from "components/styledComponent/button";
 import SearchScreen from "./searchScreen";
-import useLogoPics from "components/common/logoPics/logoPics";
+import useLogoPics from "components/logoPics/logoPics";
 import { format } from "date-fns";
-import { useIdleTimer } from "react-idle-timer";
-import { makeStyles } from "@mui/styles";
-import { enqueueSnackbar } from "notistack";
-
+import { GradientButton } from "@acuteinfo/common-base";
 export const MyAppBar = ({
   handleDrawerOpen,
   handleDrawerClose,
@@ -54,7 +49,6 @@ export const MyAppBar = ({
   hideSidebarIcon = false,
   offProfileNavigate = false,
   isNewStyle = false,
-  idleTimer,
 }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
@@ -63,8 +57,6 @@ export const MyAppBar = ({
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState<any>(false);
   const [acctInquiry, setAcctInquiry] = useState(false);
-  const [countdownMessage, setCountdownMessage] = useState("");
-
   // const [pictureURL, setPictureURL] = useState<any | null>({
   //   bank: "",
   //   profile: "",
@@ -93,23 +85,6 @@ export const MyAppBar = ({
       fontSize: 13,
     },
   }));
-
-  useEffect(() => {
-    const updateCountdown = () => {
-      const remainingTime = idleTimer.getRemainingTime();
-      const remainingSeconds = Math.floor(remainingTime / 1000); // Convert to seconds
-      if (remainingSeconds <= 30 && remainingSeconds > 0) {
-        setCountdownMessage(
-          `Your session will time out in ${remainingSeconds} seconds`
-        );
-      } else {
-        setCountdownMessage(""); // Clear the message if more than 30 seconds
-      }
-    };
-    const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   // const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
   //   ["getBankimgAndProfileimg"],
   //   () =>
@@ -192,7 +167,7 @@ export const MyAppBar = ({
             display: "flex",
             justifyContent: "space-evenly",
             alignItems: "center",
-            height: "80px",
+            height: isNewStyle ? "auto" : "80px",
             width: "227px",
           }}
         >
@@ -309,13 +284,6 @@ export const MyAppBar = ({
               justifyContent={"flex-end"}
               alignItems={"center"}
             >
-              <Typography
-                className={classes.blinkHard}
-                fontSize={"17px"}
-                color={"#1C1C1C"}
-              >
-                {countdownMessage}
-              </Typography>
               <Typography fontSize={"17px"} color={"#1C1C1C"}>
                 {Greetings()} {authController.authState.user.id}
               </Typography>

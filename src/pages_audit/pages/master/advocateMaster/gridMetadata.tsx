@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const AdvocateMstGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -18,11 +18,11 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
     pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
-      min: "77vh",
-      max: "77vh",
+      min: "70vh",
+      max: "70vh",
     },
-    allowColumnHiding: true,
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
   columns: [
     {
@@ -31,8 +31,8 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 100,
-      minWidth: 80,
+      width: 80,
+      minWidth: 60,
       maxWidth: 120,
       isAutoSequence: true,
     },
@@ -42,8 +42,8 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 100,
-      minWidth: 80,
+      width: 80,
+      minWidth: 60,
       maxWidth: 120,
     },
     {
@@ -63,9 +63,9 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "left",
       componentType: "default",
-      width: 180,
-      minWidth: 160,
-      maxWidth: 200,
+      width: 120,
+      minWidth: 100,
+      maxWidth: 150,
     },
     {
       accessor: "ADD1",
@@ -88,6 +88,28 @@ export const AdvocateMstGridMetaData: GridMetaDataType = {
       minWidth: 260,
       maxWidth: 350,
       showTooltip: true,
+    },
+    {
+      accessor: "STATUS",
+      columnName: "Inactive",
+      sequence: 7,
+      alignment: "left",
+      componentType: "editableCheckbox",
+      width: 80,
+      minWidth: 70,
+      maxWidth: 100,
+      isReadOnly: true,
+    },
+    {
+      accessor: "INACTIVE_DATE",
+      columnName: "Inactive Date",
+      sequence: 8,
+      alignment: "center",
+      componentType: "date",
+      dateFormat: "dd/MM/yyyy",
+      width: 150,
+      minWidth: 100,
+      maxWidth: 200,
     },
   ],
 };

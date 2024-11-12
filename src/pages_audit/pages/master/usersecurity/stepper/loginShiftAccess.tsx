@@ -1,4 +1,3 @@
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   Fragment,
   forwardRef,
@@ -8,14 +7,23 @@ import {
   useState,
 } from "react";
 import { editloginShift, loginShift } from "./metaData/metaDataForm";
-import { usePopupContext } from "components/custom/popupContext";
 import { SecurityContext } from "../context/SecuityForm";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useQuery } from "react-query";
 import * as API from "./api/api";
-import { extractMetaData, utilFunction } from "components/utils";
 import { LinearProgress } from "@mui/material";
+import {
+  LoaderPaperComponent,
+  usePopupContext,
+  GradientButton,
+  SubmitFnType,
+  extractMetaData,
+  utilFunction,
+  FormWrapper,
+  MetaDataType,
+  Alert,
+} from "@acuteinfo/common-base";
+import { t } from "i18next";
 
 const LoginShift = forwardRef<any, any>(
   ({ defaultView, username, userId }, ref) => {
@@ -97,7 +105,7 @@ const LoginShift = forwardRef<any, any>(
           ["SR_CD"]
         );
         dispatchCommon("commonType", {
-          grid4: upd,
+          grid4: { DETAILS_DATA: upd },
         });
         dispatchCommon("commonType", {
           oldData4: upd,
@@ -118,6 +126,14 @@ const LoginShift = forwardRef<any, any>(
     return (
       <Fragment>
         {isLoading && <LinearProgress color="secondary" />}
+        {isError && (
+          <Alert
+            severity="error"
+            errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
+            errorDetail={error?.error_detail}
+            color="error"
+          />
+        )}
         <FormWrapper
           key={"LoginShift" + combinedData + MainData}
           metaData={extractMetaData(metaData, defaultView) as MetaDataType}

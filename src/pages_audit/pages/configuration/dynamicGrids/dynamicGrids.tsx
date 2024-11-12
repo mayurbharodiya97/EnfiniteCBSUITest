@@ -1,16 +1,19 @@
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQueries, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { Route, Routes, useNavigate, useParams } from "react-router-dom";
-import { queryClient } from "cache";
-import { Alert } from "reactstrap";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { ActionTypes } from "components/dataTable";
-import { DynamicFormWrapper } from "../dynamicFormWrapper/dynamicFormwrapper";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
+import {
+  PopupMessageAPIWrapper,
+  ActionTypes,
+  LoaderPaperComponent,
+  Alert,
+  queryClient,
+  GridWrapper,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
+import { DynamicFormWrapper } from "../dynamicFormWrapper/dynamicFormwrapper";
 
 interface updateAUTHDetailDataType {
   DOC_CD: any;

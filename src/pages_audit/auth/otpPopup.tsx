@@ -1,5 +1,5 @@
 import { FormHelperText } from "@mui/material";
-import { GradientButton } from "components/styledComponent/button";
+import { GradientButton } from "@acuteinfo/common-base";
 import { Fragment, useState, useRef, useEffect } from "react";
 import OTPInput, { ResendOTP } from "otp-input-react";
 import Visibility from "@mui/icons-material/Visibility";
@@ -22,10 +22,10 @@ export const OTPModel = ({
   OTPError,
   setOTPError,
   previousStep,
-  setNewRequestID = (id) => { },
+  setNewRequestID = (id) => {},
   otpresendCount = 0,
   resendFlag,
-  marginCondition
+  marginCondition,
 }) => {
   const [OTP, setOTP] = useState("");
   const [showPasswordTime, setShowPasswordTime] = useState(0);
@@ -102,7 +102,7 @@ export const OTPModel = ({
       loginState?.contactUser,
       resendFlag,
       loginState?.otpValidFor,
-      loginState?.username,
+      loginState?.username
     );
     setResendotpLoading(false);
     if (status === "0") {
@@ -131,14 +131,14 @@ export const OTPModel = ({
       </span>
     );
   };
- 
+
   useEffect(() => {
     if (loginState?.otpmodelClose ?? false) {
       handleCloseEvent();
-    }else if (Boolean(OTPError)){
+    } else if (Boolean(OTPError)) {
       setOTP("");
     }
-  }, [loginState.otpmodelClose,OTPError]);
+  }, [loginState.otpmodelClose, OTPError]);
   return (
     <Fragment>
       <Container maxWidth="sm">
@@ -183,8 +183,8 @@ export const OTPModel = ({
                 lineHeight: "33px",
               }}
             >
-              {loginState?.authType === "OTP"
-                ? t("otp.EnterOTPsentToMobile")
+              {loginState?.authType === "OTP" || resendFlag === "RN_HO_CONF"
+                ? loginState?.otpSentText ?? ""
                 : loginState?.authType === "TOTP"
                 ? t("otp.PleaseEnterOTP")
                 : null}
@@ -206,19 +206,19 @@ export const OTPModel = ({
               {t("otp.Hello")}{" "}
               {loginState?.username
                 ? loginState.username.charAt(0).toUpperCase() +
-                loginState.username.slice(1)
+                  loginState.username.slice(1)
                 : null}
-              {loginState?.authType === "OTP" && (
-                <ResendOTP
-                  // onResendClick={() => setbtnshow(false)}
-                  onResendClick={handleResendClick}
-                  // onTimerComplete={() => setbtnshow(true)}
-                  renderButton={renderButton}
-                  renderTime={renderTime}
-                  maxTime={loginState?.otpValidFor ?? 60}
-                  className={classes.resendOTPalign}
-                />
-              )}
+              {/* {loginState?.authType === "OTP" && ( */}
+              <ResendOTP
+                // onResendClick={() => setbtnshow(false)}
+                onResendClick={handleResendClick}
+                // onTimerComplete={() => setbtnshow(true)}
+                renderButton={renderButton}
+                renderTime={renderTime}
+                maxTime={loginState?.otpValidFor ?? 60}
+                className={classes.resendOTPalign}
+              />
+              {/* )} */}
             </div>
             <div
               className={classes.divflex}
@@ -271,12 +271,19 @@ export const OTPModel = ({
               <></>
             )}
             <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                margin: "42px 0 0 42px",
-                width: "60%",
-              }}
+              className={
+                resendFlag === "RN_HO_CONF"
+                  ? classes.rtgsHoClass
+                  : classes.otpNormalClass
+              }
+              // style={{
+              //   display:"flex",
+              //   gap:  resendFlag==="RN_HO_CONF" ? "0" : "10px",
+              //   marginTop: resendFlag==="RN_HO_CONF" ? "5px !important" :"42px",
+              //   width: resendFlag==="RN_HO_CONF" ?"80%":"60%",
+              //   marginRight :resendFlag==="RN_HO_CONF" ? "0" : "42px",
+              //   margin : resendFlag==="RN_HO_CONF" ?"0 auto" :""
+              // }}
             >
               <GradientButton
                 // fullWidth
@@ -285,15 +292,15 @@ export const OTPModel = ({
                   previousStep(false, "");
                 }}
                 className={classes.otpButtons}
-                color={"var(--theme-color3) "}
+                textColor={"var(--theme-color3) "}
                 style={{
                   border: "var(--theme-color3)1px solid",
                   minWidth: "50%",
                   background: "var(--theme-color2)",
                   borderRadius: "10px",
-                  hover: {
-                    background: "var(--theme-color2) !important",
-                  },
+                  // hover: {
+                  //   background: "var(--theme-color2) !important",
+                  // },
                 }}
                 // customstyle = {{color : "var(--theme-color3) !important"}}
                 starticon={"West"}
@@ -313,7 +320,7 @@ export const OTPModel = ({
                 onClick={ClickEventHandler}
                 ref={inputButtonRef}
                 className={classes.otpButtons}
-                endicon={loginState.loading ? null : "TaskAlt"}
+                endicon={loginState.loading ? undefined : "TaskAlt"}
                 rotateIcon="scale(1.4)"
               >
                 {loginState.loading ? (
@@ -338,7 +345,7 @@ export const OTPModelForm = ({
   OTPError,
   setOTPError,
   resendFlag,
-  setNewRequestID = (id) => { },
+  setNewRequestID = (id) => {},
   otpresendCount = 0,
 }) => {
   const [OTP, setOTP] = useState("");
@@ -354,8 +361,6 @@ export const OTPModelForm = ({
   const inputButtonRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
-
-
 
   const renderButton = (buttonProps) => {
     let { remainingTime, ...other } = buttonProps;
@@ -404,7 +409,7 @@ export const OTPModelForm = ({
       loginState?.contactUser,
       resendFlag,
       loginState?.otpValidFor,
-      loginState?.username,
+      loginState?.username
     );
     setResendotpLoading(false);
     if (status === "0") {
@@ -435,8 +440,10 @@ export const OTPModelForm = ({
   useEffect(() => {
     if (loginState?.otpmodelClose ?? false) {
       handleCloseEvent();
+    } else if (Boolean(OTPError)) {
+      setOTP("");
     }
-  }, [loginState.otpmodelClose]);
+  }, [loginState.otpmodelClose, OTPError]);
 
   return (
     <Fragment>
@@ -467,15 +474,27 @@ export const OTPModelForm = ({
           >
             {t("otp.GenerateNewOTP")}
           </div> */}
+          <div
+            style={{
+              color: "#949597",
+              fontSize: "16px",
+              fontWeight: "400",
+              alignItems: "center",
+              fontStyle: "normal",
+              lineHeight: "33px",
+            }}
+          >
+            {loginState?.forgotOtpSentText ?? ""}
+          </div>
           <div className={classes.OTPalignName}>
             {t("otp.Hello")}{" "}
             {loginState?.username
               ? loginState.username.charAt(0).toUpperCase() +
-              loginState.username.slice(1)
+                loginState.username.slice(1)
               : null}
             {loginState.otploading ||
-              otpresendCount >= 3 ||
-              loginState?.auth_type === "TOTP" ? null : (
+            otpresendCount >= 3 ||
+            loginState?.auth_type === "TOTP" ? null : (
               <ResendOTP
                 onResendClick={handleResendClick}
                 // onTimerComplete={() => setbtnshow(true)}
@@ -558,7 +577,7 @@ export const OTPModelForm = ({
               onClick={handleCloseEvent}
               className={classes.otpButtons}
               starticon={"West"}
-              color={"var(--theme-color2) !important"}
+              textColor={"var(--theme-color2) !important"}
               rotateIcon="scale(1.4) rotateX(360deg)"
               style={{
                 border: "var(--theme-color3)1px solid",

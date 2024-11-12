@@ -1,9 +1,7 @@
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions/general";
 import * as API from "./api";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { getDailyTransactionImportData } from "./api";
-
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const DailyTransactionImportMetadata = {
   form: {
@@ -52,15 +50,14 @@ export const DailyTransactionImportMetadata = {
     },
   },
   fields: [
-    {
-      render: {
-        componentType: "divider",
-      },
-      // dividerText: "IFSC Bank Detail",
-      name: "AccountDetail",
-      label: "Please Enter Details",
-      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-    },
+    // {
+    //   render: {
+    //     componentType: "divider",
+    //   },
+    //   name: "AccountDetail",
+    //   label: "Please Enter Details",
+    //   GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    // },
     {
       render: {
         componentType: "_accountNumber",
@@ -96,13 +93,11 @@ export const DailyTransactionImportMetadata = {
           auth,
           dependentFieldsValues
         ) => {
-          // if (!field?.value) {
-          //   formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
-          //   return {
-          //     ACCT_CD: { value: "", ignoreUpdate: true },
-          //     ACCT_NM: { value: "" },
-          //   };
-          // }
+          formState.setDataOnFieldChange("GRID_DETAIL", []);
+          return {
+            FROM_ACCT_CD: { value: "", ignoreUpdate: true },
+            ACCT_NM: { value: "" },
+          };
         },
       },
       accountCodeMetadata: {
@@ -141,9 +136,7 @@ export const DailyTransactionImportMetadata = {
               BRANCH_CD: dependentFieldsValues?.["FROM_BRANCH_CD"]?.value,
               SCREEN_REF: "MST/454",
             };
-            console.log("Apireq", Apireq);
             let postData = await GeneralAPI.getAccNoValidation(Apireq);
-
             let btn99, returnVal;
             const getButtonName = async (obj) => {
               let btnName = await formState.MessageBox(obj);
@@ -158,7 +151,6 @@ export const DailyTransactionImportMetadata = {
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
-                formState.setDataOnFieldChange("GRID_DETAIL", []);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
@@ -183,23 +175,7 @@ export const DailyTransactionImportMetadata = {
                 } else {
                   returnVal = "";
                 }
-                let gridDetail = await getDailyTransactionImportData({
-                  COMP_CD: auth?.companyID,
-                  BRANCH_CD: dependentFieldsValues?.["FROM_BRANCH_CD"]?.value,
-                  ACCT_CD: utilFunction.getPadAccountNumber(
-                    field?.value,
-                    dependentFieldsValues?.["FROM_ACCT_TYPE"]?.optionData
-                  ),
-                  ACCT_TYPE: dependentFieldsValues?.["FROM_ACCT_TYPE"]?.value,
-                  FLAG: "R",
-                  CHEQUE_NO: "",
-                  OPP_ENT: "",
-                  REMARKS: "",
-                  TABLE_NM: "",
-                  IGNR_INSUF: "",
-                });
-                console.log("gridDetail", gridDetail);
-                formState.setDataOnFieldChange("GRID_DETAIL", gridDetail);
+                formState.setDataOnFieldChange("API_REQ", Apireq);
               }
             }
             btn99 = 0;
@@ -228,14 +204,10 @@ export const DailyTransactionImportMetadata = {
               TYPE_CD: {
                 value: returnVal?.TYPE_CD ?? "",
               },
-              DESCRIPTION: {
-                isFieldFocused: true,
-              },
             };
           } else {
             formState.setDataOnFieldChange("GRID_DETAIL", []);
             return {
-              FROM_ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
               TRAN_BAL: { value: "" },
             };
@@ -293,7 +265,7 @@ export const DailyTransactionImportMetadata = {
         rules: [
           {
             name: "required",
-            params: ["Please Enter Configuration"],
+            params: ["PleaseEnterConfiguration"],
           },
         ],
       },
@@ -304,7 +276,6 @@ export const DailyTransactionImportMetadata = {
         dependentFieldValues
       ) => {
         if (field.value) {
-          console.log("field", field);
           return {
             TABLE_NM: {
               value: field?.optionData?.[0]?.TABLE_NM,
@@ -312,15 +283,25 @@ export const DailyTransactionImportMetadata = {
             TRAN_CD: {
               value: field?.optionData?.[0]?.TRAN_CD,
             },
+            FILE_FORMAT: {
+              value: field?.optionData?.[0]?.FILE_FORMAT,
+            },
           };
         } else {
           return {
             TABLE_NM: { value: "" },
             TRAN_CD: { value: "" },
+            FILE_FORMAT: { value: "" },
           };
         }
       },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "FILE_FORMAT",
     },
     {
       render: {
@@ -343,7 +324,6 @@ export const DailyTransactionImportMetadata = {
       placeholder: "Cheque No.",
       type: "text",
       autoComplete: "off",
-
       FormatProps: {
         allowNegative: false,
         allowLeadingZeros: true,
@@ -381,7 +361,7 @@ export const DailyTransactionImportMetadata = {
         ) {
           let buttonName = await formState?.MessageBox({
             messageTitle: "Information",
-            message: "Enter Account Information",
+            message: "EnterAccountInformation",
             buttonNames: ["Ok"],
           });
 
@@ -500,7 +480,7 @@ export const DailyTransactionImportMetadata = {
         componentType: "checkbox",
       },
       name: "OPP_ENT",
-      label: "Generate Opposite Entry",
+      label: "GenerateOppositeEntry",
       defaultValue: true,
       GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
     },
@@ -509,7 +489,7 @@ export const DailyTransactionImportMetadata = {
         componentType: "checkbox",
       },
       name: "IGNR_INSUF",
-      label: "Ignore Insufficient Balance",
+      label: "IgnoreInsufficientBalance",
       GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
     },
     {
@@ -521,8 +501,6 @@ export const DailyTransactionImportMetadata = {
       rotateIcon: "scale(1.5)",
       placeholder: "",
       type: "text",
-
-      // GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
       GridProps: {
         xs: 12,
         md: 1,
@@ -535,7 +513,7 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Debit From Account",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -550,8 +528,8 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "40vh",
-      max: "40vh",
+      min: "30vh",
+      max: "30vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -573,44 +551,57 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CREDIT_AC",
-      columnName: "Credit to Account",
+      columnName: "CreditToAccount",
       sequence: 2,
       alignment: "left",
       componentType: "default",
       width: 220,
       minWidth: 150,
       maxWidth: 290,
+      isDisplayTotal: true,
+      footerLabel: "Total Entries",
+      setFooterValue(total, rows) {
+        return [rows.length ?? 0];
+      },
     },
     {
       accessor: "SDC",
       columnName: "SDC",
       sequence: 3,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
-      width: 100,
-      minWidth: 130,
-      maxWidth: 200,
+      width: 80,
+      minWidth: 50,
+      maxWidth: 120,
+      isDisplayTotal: true,
+      footerLabel: "Total Errors",
+      setFooterValue(total, rows) {
+        const proccessedCount = rows?.filter(
+          ({ original }) => !(original.STATUS === "Y")
+        ).length;
+        return [proccessedCount ?? 0];
+      },
     },
     {
       accessor: "TYPE_CD",
-      columnName: "Trx.",
+      columnName: "Trx",
       sequence: 4,
-      alignment: "center",
+      alignment: "right",
       componentType: "default",
-      width: 100,
-      minWidth: 130,
-      maxWidth: 200,
+      width: 80,
+      minWidth: 50,
+      maxWidth: 120,
     },
 
     {
       accessor: "CHEQUE_NO",
-      columnName: "Cheque No",
+      columnName: "ChequeNo",
       sequence: 5,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
-      width: 150,
-      minWidth: 150,
-      maxWidth: 180,
+      width: 100,
+      minWidth: 100,
+      maxWidth: 130,
     },
 
     {
@@ -622,6 +613,21 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       width: 150,
       minWidth: 150,
       maxWidth: 180,
+      isDisplayTotal: true,
+      footerLabel: "Total Credit",
+      setFooterValue(total, rows) {
+        // Filter rows where TYPE_CD is 1, 2, or 3
+        const filteredRows = rows?.filter(({ original }) =>
+          [1, 2, 3].includes(Number(original.TYPE_CD))
+        );
+        const sum =
+          filteredRows?.reduce(
+            (acc, { original }) => acc + Number(original.AMOUNT),
+            0
+          ) ?? 0;
+        const formattedSum = sum.toFixed(2);
+        return [formattedSum];
+      },
     },
 
     {
@@ -633,16 +639,34 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       width: 220,
       minWidth: 150,
       maxWidth: 290,
+      isDisplayTotal: true,
+      footerLabel: "Total Debit",
+      setFooterValue(total, rows) {
+        const filteredRows = rows?.filter(({ original }) =>
+          [4, 5, 6].includes(Number(original.TYPE_CD))
+        );
+        const sum =
+          filteredRows?.reduce(
+            (acc, { original }) => acc + Number(original.AMOUNT),
+            0
+          ) ?? 0;
+        const formattedSum = sum.toFixed(2);
+        return [formattedSum];
+      },
     },
     {
       accessor: "STATUS",
       columnName: "Status",
       sequence: 8,
-      alignment: "center",
-      componentType: "default",
-      width: 100,
-      minWidth: 150,
-      maxWidth: 190,
+      alignment: "left",
+      width: 250,
+      minWidth: 250,
+      maxWidth: 300,
+      componentType: "editableAutocomplete",
+      options: (_, auth) => {
+        return API.getDailyTranStatus();
+      },
+      _optionsKey: "getDailyTranStatus",
     },
   ],
 };

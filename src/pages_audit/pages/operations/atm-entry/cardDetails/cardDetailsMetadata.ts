@@ -1,4 +1,3 @@
-import { utilFunction } from "components/utils";
 import * as API from "../api";
 export const CardDetailsMetaData = {
   form: {
@@ -69,27 +68,34 @@ export const CardDetailsMetaData = {
         }
       },
       options: () => API.cardStatusList(),
-      dependentFields: ["STATUS_EDIT_FLAG", "TRAN_CD"],
+      dependentFields: ["STATUS_EDIT_FLAG", "SR_CD"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
         authState,
         dependentValue
       ) => {
+        if (formState?.isSubmitting) return {};
         if (field?.value) {
-          let statusData: any = [];
-          formState?.setIsData((old) => {
-            if (old?.gridData?.length) {
-              old?.gridData?.map((item) => {
-                if (item?.STATUS) {
-                  statusData.push(item?.STATUS);
+          let statusData: any[] = [];
+
+          formState?.myRef.current?.setGridData((old) => {
+            if (old?.length) {
+              old.forEach((item) => {
+                if (
+                  !dependentValue?.SR_CD?.value ||
+                  dependentValue?.SR_CD?.value !== item?.SR_CD
+                ) {
+                  if (item?.STATUS) {
+                    statusData.push(item.STATUS);
+                  }
                 }
               });
             }
             return old;
           });
           let apiReq = {
-            ENTRY_TYPE: dependentValue?.TRAN_CD?.value ? "M" : "F",
+            ENTRY_TYPE: dependentValue?.SR_CD?.value ? "M" : "F",
             OLD_STATUS: formState?.reqData?.OLD_STATUS ?? "",
             NEW_STATUS: field?.value,
             EXISTING_ROWS: statusData.join(","),
@@ -100,6 +106,7 @@ export const CardDetailsMetaData = {
             ISSUE_DT: formState?.reqData?.ISSUE_DT ?? "",
             CONFIRMED: formState?.reqData?.CONFIRMED ?? "",
             PARA_320: formState?.reqData?.PARA_320,
+            PARA_604: formState?.reqData?.PARA_604,
             SCREEN_REF: "MST/846",
           };
           let { resp, status } = await API.validateCardStatus(apiReq);
@@ -118,6 +125,7 @@ export const CardDetailsMetaData = {
                   DEACTIVE_DT_DISABLE: { value: "" },
                   CITIZEN_ID_VISIBLE: { value: "" },
                   M_CARD_NO_VISIBLE: { value: "" },
+                  CARD_NO_VISIBLE: { value: "" },
                   DEACTIVE_DT: { value: "" },
                   DEACTIVE_DT_VISIBLE: { value: "" },
                   ISSUE_DT: { value: "" },
@@ -132,6 +140,7 @@ export const CardDetailsMetaData = {
                 DEACTIVE_DT_DISABLE: { value: resp?.DEACTIVE_DT_DISABLE },
                 CITIZEN_ID_VISIBLE: { value: resp?.CITIZEN_ID_VISIBLE },
                 M_CARD_NO_VISIBLE: { value: resp?.M_CARD_NO_VISIBLE },
+                CARD_NO_VISIBLE: { value: resp?.CARD_NO_VISIBLE },
                 DEACTIVE_DT: { value: resp?.DEACTIVE_DT },
                 DEACTIVE_DT_VISIBLE: { value: resp?.DEACTIVE_DT_VISIBLE },
                 REMARKS_DISABLE: { value: resp?.REMARKS_DISABLE },
@@ -153,6 +162,7 @@ export const CardDetailsMetaData = {
             DEACTIVE_DT_DISABLE: { value: "" },
             CITIZEN_ID_VISIBLE: { value: "" },
             M_CARD_NO_VISIBLE: { value: "" },
+            CARD_NO_VISIBLE: { value: "" },
             DEACTIVE_DT: { value: "" },
             DEACTIVE_DT_VISIBLE: { value: "" },
             ISSUE_DT: { value: "" },
@@ -299,20 +309,20 @@ export const CardDetailsMetaData = {
       },
     },
 
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CUSTOMER_NM",
-      label: "CustomerName",
-      GridProps: {
-        xs: 12,
-        md: 3.5,
-        sm: 3.5,
-        lg: 3.5,
-        xl: 3.5,
-      },
-    },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "CUSTOMER_NM",
+    //   label: "CustomerName",
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 3.5,
+    //     sm: 3.5,
+    //     lg: 3.5,
+    //     xl: 3.5,
+    //   },
+    // },
 
     {
       render: {
@@ -447,7 +457,7 @@ export const CardDetailsMetaData = {
         lg: 4,
         xl: 4,
       },
-      dependentFields: ["STATUS", "M_CARD_NO_VISIBLE"],
+      dependentFields: ["STATUS", "M_CARD_NO_VISIBLE", "CARD_NO"],
       shouldExclude(fieldData, dependentFields) {
         if (
           dependentFields?.STATUS?.value === "P" ||
@@ -458,7 +468,57 @@ export const CardDetailsMetaData = {
           return false;
         }
       },
+      validate: (columnValue) => {
+        if (!columnValue.value) {
+          return "Please Enter Card Number";
+        } else if (columnValue.value?.length != 16) {
+          return "Card number should be 16 digits";
+        }
+        return "";
+      },
+      // setValueOnDependentFieldsChange: (dependentFields) => {
+      //   let value = dependentFields?.CARD_NO?.value;
+      //   return value;
+      // },
     },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "CARD_NO",
+      // maxLength: 16,
+      placeholder: "Enter Card No.",
+      label: "CardNo",
+      GridProps: {
+        xs: 12,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
+      },
+      dependentFields: ["CARD_NO_VISIBLE", "M_CARD_NO"],
+      shouldExclude(fieldData, dependentFields) {
+        if (dependentFields?.CARD_NO_VISIBLE?.value === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+
+      validate: (columnValue) => {
+        if (!columnValue.value) {
+          return "Please Enter Card Number";
+        } else if (columnValue.value?.length != 16) {
+          return "Card number should be 16 digits";
+        }
+        return "";
+      },
+      // setValueOnDependentFieldsChange: (dependentFields) => {
+      //   let value = dependentFields?.M_CARD_NO?.value;
+      //   return value;
+      // },
+    },
+
     {
       render: {
         componentType: "autocomplete",
@@ -614,6 +674,12 @@ export const CardDetailsMetaData = {
       render: {
         componentType: "hidden",
       },
+      name: "CARD_NO_VISIBLE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
       name: "EXPIRY_DT_DISABLE",
     },
     {
@@ -638,7 +704,19 @@ export const CardDetailsMetaData = {
       render: {
         componentType: "hidden",
       },
-      name: "CARD_NO",
+      name: "TRAN_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SR_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "REASON",
     },
     {
       render: {

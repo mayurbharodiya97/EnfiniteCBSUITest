@@ -2,7 +2,6 @@ import { AuthContext } from "pages_audit/auth";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   AppBar,
   Avatar,
@@ -15,7 +14,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { utilFunction } from "components/utils/utilFunctions";
 import { ChangePassword } from "./changePassword";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import "./style.css";
@@ -31,14 +29,19 @@ import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 import About from "./about";
 import TotpEnbaledDisabled from "./totp/totp-enabled-disable";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
-import { GradientButton } from "components/styledComponent/button";
 import { useTranslation } from "react-i18next";
 import { PersonalizeDash } from "./personalizeDash";
 import { AllowedAccess } from "./allowedAccess";
 import { UserDetail } from "./userDetail";
 import DynamicTheme from "app/audit/dynamictheme";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { Alert } from "components/common/alert";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
+import {
+  Alert,
+  utilFunction,
+  MetaDataType,
+  FormWrapper,
+  GradientButton,
+} from "@acuteinfo/common-base";
 import { UserProfileMetaData } from "./Metadata/userProfile";
 
 export const Profile = () => {
@@ -321,14 +324,14 @@ export const Profile = () => {
                           />
                           <Tab
                             value="tab2"
-                            label={t("profile.AllowedAccess")}
-                            icon={<HowToRegOutlinedIcon />}
+                            label={t("profile.ActivityDetail")}
+                            icon={<ArticleOutlinedIcon />}
                             iconPosition="start"
                           />
                           <Tab
                             value="tab3"
-                            label={t("profile.ActivityDetail")}
-                            icon={<ArticleOutlinedIcon />}
+                            label={t("profile.AllowedAccess")}
+                            icon={<HowToRegOutlinedIcon />}
                             iconPosition="start"
                           />
 

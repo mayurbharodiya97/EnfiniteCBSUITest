@@ -1,15 +1,18 @@
-import { FileUploadControl } from "components/fileUpload";
 import { useCallback, useState } from "react";
 import { useMutation } from "react-query";
 import { enqueueSnackbar, useSnackbar } from "notistack";
 import { Dialog } from "@mui/material";
-import { usePopupContext } from "components/custom/popupContext";
 import { ImportGridMetaData, PositivePayImportMetaData } from "./metadata";
 import { importFileData } from "../api";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
+import {
+  usePopupContext,
+  GridWrapper,
+  ActionTypes,
+  FileUploadControl,
+  GridMetaDataType,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {
@@ -57,6 +60,7 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
               messageTitle: "ValidationFailed",
               message: data[i]?.O_MESSAGE,
               buttonNames: ["Ok"],
+              icon: "ERROR",
             });
             if (btnName === "Ok") {
               setOpenGrid(true);
@@ -74,13 +78,15 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
           } else if (data[i]?.O_STATUS === "9") {
             const btnName = await MessageBox({
               messageTitle: "Alert",
-              message: data?.[0]?.O_MESSAGE,
+              message: data[i]?.O_MESSAGE,
+              icon: "WARNING",
             });
           } else if (data[i]?.O_STATUS === "99") {
             const btnName = await MessageBox({
               messageTitle: "Confirmation",
-              message: data?.[0]?.O_MESSAGE,
+              message: data[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
             if (btnName === "No") {
               setOpenGrid(true);
@@ -131,10 +137,11 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
               result
             ) => {
               const btnName = await MessageBox({
-                message: "AreYouSureToInsertTheFileData",
+                message: t("AreYouSureToInsertTheFileData"),
                 messageTitle: "Confirmation",
                 buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
+                icon: "CONFIRM",
               });
 
               if (btnName === "Yes") {

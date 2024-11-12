@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "components/utils";
+} from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 import { format } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 
@@ -11,20 +11,7 @@ export const getSnapShotList = async (reqData) => {
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETSANPSHOTDTL", {
-      COMP_CD: reqData.COMP_CD,
-      BRANCH_CD: reqData.BRANCH_CD,
-      ACCT_TYPE: reqData.ACCT_TYPE,
-
-      FROM_ACCT: reqData.ACCT_CD,
-      TO_ACCT: reqData.ACCT_CD,
-      FROM_DATE: reqData?.FROM_DATE
-        ? reqData?.FROM_DATE
-        : format(oneMonthAgo, "dd-MMM-yyyy"),
-      TO_DATE: reqData?.TO_DATE
-        ? reqData?.TO_DATE
-        : format(new Date(), "dd-MMM-yyyy"),
-    });
+    await AuthSDK.internalFetcher("GETSNAPSHOTDTLF1", { ...reqData });
   if (status === "0") {
     let responseData = data;
     responseData.map((a, i) => {

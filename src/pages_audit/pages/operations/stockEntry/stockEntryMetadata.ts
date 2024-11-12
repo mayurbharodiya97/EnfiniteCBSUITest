@@ -1,6 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
 
 export const StockEntryMetaData = {
@@ -45,6 +45,7 @@ export const StockEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        validationRun: "onChange",
         isReadOnly: true,
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
@@ -78,6 +79,7 @@ export const StockEntryMetaData = {
         },
       },
       accountTypeMetadata: {
+        validationRun: "onChange",
         isFieldFocused: true,
         options: (depen, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
@@ -113,6 +115,7 @@ export const StockEntryMetaData = {
         render: {
           componentType: "textField",
         },
+
         validate: (columnValue) => {
           let regex = /^[^!&]*$/;
           if (!regex.test(columnValue.value)) {

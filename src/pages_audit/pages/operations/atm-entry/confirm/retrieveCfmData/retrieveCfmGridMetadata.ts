@@ -1,9 +1,9 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const RetrieveGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "ATM Confirmation Retrieve Data",
+    gridLabel: "ATMConfirmationRetrieveData",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,

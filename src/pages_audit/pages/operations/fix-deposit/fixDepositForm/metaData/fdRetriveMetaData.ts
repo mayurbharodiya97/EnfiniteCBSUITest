@@ -1,5 +1,5 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import * as API from "../../api";
 
 export const FDRetriveMetadata = {
@@ -73,6 +73,7 @@ export const FDRetriveMetadata = {
         runPostValidationHookAlways: true,
         validationRun: "onChange",
         dependentFields: ["BRANCH_CD"],
+        isFieldFocused: true,
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -80,7 +81,36 @@ export const FDRetriveMetadata = {
           dependentFieldsValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (currentField?.value && dependentFieldsValues?.BRANCH_CD?.value) {
+
+          if (
+            currentField?.value &&
+            dependentFieldsValues?.BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
+            currentField?.value &&
+            dependentFieldsValues?.BRANCH_CD?.value
+          ) {
             const reqParameters = {
               COMP_CD: authState?.companyID ?? "",
               BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value ?? "",
@@ -88,11 +118,33 @@ export const FDRetriveMetadata = {
               SCREEN_REF: "RPT/401",
             };
             const postData = await API.getFDParaDetail(reqParameters);
-            if (postData?.length) {
+            if (postData?.status === "999") {
+              let btnName = await formState.MessageBox({
+                messageTitle: "ValidationFailed",
+                message: postData?.messageDetails ?? "Somethingwenttowrong",
+                icon: "ERROR",
+              });
+              if (btnName === "Ok") {
+                return {
+                  ACCT_TYPE: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                  ACCT_CD: { value: "" },
+                  ACCT_NM: { value: "" },
+                };
+              }
+            } else if (postData?.length) {
               formState.setDataOnFieldChange("GET_PARA_DATA", postData?.[0]);
               return {
                 DOUBLE_FAC: { value: postData?.[0]?.DOUBLE_FAC ?? "" },
                 TRAN_CD: { value: postData?.[0]?.DOUBLE_TRAN ?? "" },
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
               };
             }
           }
@@ -106,7 +158,7 @@ export const FDRetriveMetadata = {
       accountCodeMetadata: {
         name: "ACCT_CD",
         autoComplete: "off",
-        dependentFields: ["ACCT_TYPE", "BRANCH_CD", "DOUBLE_FAC"],
+        dependentFields: ["ACCT_TYPE", "BRANCH_CD", "DOUBLE_FAC", "TRAN_CD"],
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -116,6 +168,31 @@ export const FDRetriveMetadata = {
         ) => {
           if (formState?.isSubmitting) return {};
           if (
+            currentField.value &&
+            dependentFieldsValues?.ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
             dependentFieldsValues?.BRANCH_CD?.value &&
             dependentFieldsValues?.ACCT_TYPE?.value
@@ -130,11 +207,12 @@ export const FDRetriveMetadata = {
                   dependentFieldsValues?.ACCT_TYPE?.optionData
                 ) ?? "",
               SCREEN_REF: "RPT/401",
-              TRAN_CD: "0",
+              TRAN_CD: dependentFieldsValues?.TRAN_CD?.value ?? "",
               DOUBLE_FAC: dependentFieldsValues?.DOUBLE_FAC?.value ?? "",
             };
             formState?.handleDisableButton(true);
             const postData = await API.validateAcctDtl(reqParameters);
+
             let btn99, returnVal;
             const getButtonName = async (obj) => {
               let btnName = await formState.MessageBox(obj);
@@ -150,7 +228,8 @@ export const FDRetriveMetadata = {
                 formState?.handleDisableButton(false);
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
-                  message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                  message: postData?.[0]?.MSG?.[i]?.O_MESSAGE ?? "",
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "9") {
@@ -158,7 +237,8 @@ export const FDRetriveMetadata = {
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
-                    message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                    message: postData?.[0]?.MSG?.[i]?.O_MESSAGE ?? "",
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData?.[0];
@@ -166,7 +246,7 @@ export const FDRetriveMetadata = {
                 formState?.handleDisableButton(false);
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "Confirmation",
-                  message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
+                  message: postData?.[0]?.MSG?.[i]?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                 });
 
@@ -204,19 +284,25 @@ export const FDRetriveMetadata = {
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
               },
+              TRAN_BAL: {
+                value: returnVal?.TRAN_BAL ?? "",
+              },
             };
           } else if (!currentField?.value) {
             formState?.handleDisableButton(false);
             return {
               ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
             };
           }
+          formState?.handleDisableButton(false);
           return {};
         },
         fullWidth: true,
         GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
       },
     },
+
     {
       render: {
         componentType: "textField",
@@ -225,8 +311,25 @@ export const FDRetriveMetadata = {
       label: "AccountName",
       type: "text",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      GridProps: { xs: 12, sm: 8, md: 8, lg: 8, xl: 8 },
     },
+
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TRAN_BAL",
+      label: "Balance",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        sm: 4,
+        md: 4,
+        lg: 4,
+        xl: 4,
+      },
+    },
+
     {
       render: {
         componentType: "hidden",

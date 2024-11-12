@@ -6,7 +6,6 @@ import {
   useState,
 } from "react";
 import { useNavigate, useLocation } from "react-router";
-import { queryClient } from "cache";
 import {
   AuthContextType,
   AuthStateType,
@@ -16,7 +15,11 @@ import {
 import * as API from "./api";
 import { AuthSDK } from "registry/fns/auth";
 import { RefreshTokenData } from "./api";
-import { utilFunction } from "components/utils/utilFunctions";
+import {
+  utilFunction,
+  queryClient,
+  usePopupContext,
+} from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions";
 import CRC32C from "crc-32";
 import { LinearProgress } from "@mui/material";
@@ -34,6 +37,7 @@ const inititalState: AuthStateType = {
   groupName: "",
   access: {},
   menulistdata: [],
+  uniqueAppId: "",
   user: {
     branch: "",
     branchCode: "",
@@ -99,6 +103,7 @@ export const AccDetailContext = createContext<any>({
 });
 
 export const AuthProvider = ({ children }) => {
+  const { CloseMessageBox } = usePopupContext();
   const [state, dispatch] = useReducer(authReducer, inititalState);
   const [tempStore, setTempStore]: any = useState({});
   const [cardStore, setCardStore]: any = useState({});
@@ -113,6 +118,7 @@ export const AuthProvider = ({ children }) => {
       setProfileImagestate(imgData);
     }
   };
+
   /*eslint-disable react-hooks/exhaustive-deps*/
   const login = useCallback(
     (payload: AuthStateType, stopNavigation?: boolean) => {
@@ -186,44 +192,38 @@ export const AuthProvider = ({ children }) => {
     },
     [dispatch, navigate, comingFromRoute]
   );
-  const logout = useCallback(
-    (reqFlag = "N") => {
-      let result = localStorage.getItem("authDetails");
-      if (result !== null) {
-        let localStorageAuthState: any = JSON.parse(result);
-        if (
-          Boolean(localStorageAuthState?.isLoggedIn) &&
-          Boolean(localStorageAuthState?.user?.id)
-        ) {
-          API.LogoutAPI({
-            USER_ID: localStorageAuthState?.user?.id,
-            APP_TRAN_CD: "51",
-            REQ_FLAG: reqFlag,
-          });
-        }
+  const logout = useCallback(() => {
+    let result = localStorage.getItem("authDetails");
+    if (result !== null && Boolean(result)) {
+      let localStorageAuthState: any = JSON.parse(result);
+      if (
+        Boolean(localStorageAuthState?.isLoggedIn) &&
+        Boolean(localStorageAuthState?.user?.id)
+      ) {
+        API.LogoutAPI({ userID: localStorageAuthState?.user?.id });
       }
-      localStorage.removeItem("authDetails");
-      localStorage.removeItem("tokenchecksum");
-      localStorage.removeItem("token_status");
-      localStorage.removeItem("charchecksum");
-      localStorage.removeItem("specialChar");
-      dispatch({
-        type: "logout",
-        payload: {},
-      });
-      if (Boolean(timeoutID)) {
-        clearTimeout(timeoutID);
-      }
-      queryClient.clear();
-      if (window.location.pathname === "/cbsenfinity/forgotpassword") {
-      } else if (window.location.pathname === "/cbsenfinity/forgot-totp") {
-      } else {
-        setComingFromRoute("/cbsenfinity");
-        navigate("/cbsenfinity/login");
-      }
-    },
-    [dispatch, navigate]
-  );
+    }
+    localStorage.removeItem("authDetails");
+    localStorage.removeItem("tokenchecksum");
+    localStorage.removeItem("token_status");
+    localStorage.removeItem("charchecksum");
+    localStorage.removeItem("specialChar");
+    CloseMessageBox();
+    dispatch({
+      type: "logout",
+      payload: {},
+    });
+    if (Boolean(timeoutID)) {
+      clearTimeout(timeoutID);
+    }
+    queryClient.clear();
+    if (window.location.pathname === "/cbsenfinity/forgotpassword") {
+    } else if (window.location.pathname === "/cbsenfinity/forgot-totp") {
+    } else {
+      setComingFromRoute("/cbsenfinity");
+      navigate("/cbsenfinity/login");
+    }
+  }, [dispatch, navigate]);
 
   const isLoggedIn = () => {
     return state.isLoggedIn;
@@ -243,12 +243,12 @@ export const AuthProvider = ({ children }) => {
     localStorageKeys.forEach(async (keyNm) => {
       let result = localStorage.getItem(keyNm);
       if (result === null) {
-        //logout();
+        logout();
       } else {
         let checksumdata: any;
         if (keyNm === "specialChar") {
           checksumdata = localStorage.getItem("charchecksum");
-        } else {
+        } else if (keyNm === "authDetails") {
           // localStorage.getItem("tokenchecksum");
           checksumdata = localStorage.getItem("tokenchecksum");
         }
@@ -260,9 +260,9 @@ export const AuthProvider = ({ children }) => {
             clearTimeout(timeoutLogout);
           }
           timeoutLogout = setTimeout(() => {
+            console.log("logout-due-to localStorage change");
             logout();
-          }, 500);
-          return;
+          }, 1500);
         }
       }
     });
@@ -301,6 +301,7 @@ export const AuthProvider = ({ children }) => {
       //   setAuthenticating(false);
       // }
     } else {
+      console.log("logout-due-to localStorage-authDetails not found");
       logout();
       setAuthenticating(false);
     }

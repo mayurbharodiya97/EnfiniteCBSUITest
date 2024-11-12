@@ -7,24 +7,29 @@ import {
   Fragment,
   useMemo,
 } from "react";
+import {
+  ClearCacheContext,
+  queryClient,
+  InitialValuesType,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+  Alert,
+  PopupMessageAPIWrapper,
+  extractMetaData,
+  utilFunction,
+  LoaderPaperComponent,
+  GradientButton,
+  Transition,
+  useDialogStyles,
+} from "@acuteinfo/common-base";
 import { useMutation, useQuery } from "react-query";
-import { ClearCacheContext, queryClient } from "cache";
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useSnackbar } from "notistack";
 import { useLocation } from "react-router-dom";
-import { useDialogStyles } from "pages_audit/common/dialogStyles";
-import { Transition } from "pages_audit/common/transition";
 import * as API from "./api";
 import { format } from "date-fns";
-import { Alert } from "components/common/alert";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { extractMetaData, utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { Button, Dialog } from "@mui/material";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { GradientButton } from "components/styledComponent/button";
-
 interface updateAUTHDetailDataType {
   data: any;
   endSubmit?: any;
@@ -68,15 +73,21 @@ const DynamicForm: FC<{
     isError,
     error,
     refetch,
-  } = useQuery<any, any>(["getDynamicFormMetaData"], () =>
-    API.getDynamicFormMetaData({
-      DOC_CD: item?.DOC_CD ?? "",
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      SR_CD: item?.FORM_METADATA_SR_CD,
-    })
+  } = useQuery<any, any>(
+    ["getDynamicFormMetaData"],
+    () =>
+      API.getDynamicFormMetaData({
+        DOC_CD: item?.DOC_CD ?? "",
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        SR_CD: item?.FORM_METADATA_SR_CD,
+      }),
+    {
+      enabled: Boolean(
+        item?.FORM_METADATA_SR_CD && item.FORM_METADATA_SR_CD.length > 0
+      ),
+    }
   );
-
   const mutation = useMutation(
     updateAUTHDetailDataWrapperFn(API.getDynamicFormData(docID)),
     {
@@ -110,7 +121,6 @@ const DynamicForm: FC<{
   const onPopupYes = (rows) => {
     mutation.mutate({ data: rows });
   };
-  console.log("existingData", existingData);
   const onSubmitHandler: SubmitFnType = (
     data,
     displayData,

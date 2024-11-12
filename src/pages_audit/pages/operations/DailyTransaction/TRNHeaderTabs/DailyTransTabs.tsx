@@ -7,12 +7,11 @@ import {
   DialogTitle,
   Grid,
   LinearProgress,
+  Toolbar,
   // Tab,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import StyledTabs from "components/styledComponent/tabs/tabs";
-import CloseIcon from "@mui/icons-material/Close";
 // import { Button, Tabs } from "@mui/material";
 
 //logic
@@ -58,25 +57,27 @@ import Temp from "./OtherTrx/Temp";
 import LienDetail from "./OtherTrx/Lien_Detail";
 import SIDetail from "./OtherTrx/SI_Detail";
 import { makeStyles } from "@mui/styles";
-import { Tabs } from "components/styledComponent/tabs";
-import { Tab } from "components/styledComponent/tab";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic/types";
 import { AccountDetailsGridMetadata } from "./TodayTransaction/gridMetadata";
 import * as API from "./TodayTransaction/api";
 import { useMutation, useQuery } from "react-query";
-import { ActionTypes } from "components/dataTable";
 import { enqueueSnackbar } from "notistack";
 import * as CommonApi from "../TRNCommon/api";
-import { GradientButton } from "components/styledComponent/button";
 import FormModal from "../../c-kyc/formModal/formModal";
 import CkycProvider from "../../c-kyc/CkycContext";
 import { useCacheWithMutation } from "./cacheMutate";
 import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
-import { queryClient } from "cache";
 import { MyAppBar } from "pages_audit/appBar/appBar";
-import DialogWithAppbar from "components/custom/dialogWithAppbar";
+import {
+  GradientButton,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { t } from "i18next";
+import DialogWithAppbar from "components/common/dialogWithAppbar";
+import { Tabs } from "components/tabs";
+import { Tab } from "components/tab";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -115,6 +116,7 @@ export const DailyTransTabs = ({
 }: DailyTransTabsProps) => {
   const [tabValue, setTabValue] = React.useState(0);
   const navArray = tabsData ? tabsData : [];
+  const [detail, setDetail] = useState<any>({});
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -123,10 +125,82 @@ export const DailyTransTabs = ({
   useEffect(() => {
     setTabValue(0);
   }, [navArray]);
+  const getCardColumnValue = () => {
+    const keys = [
+      "WITHDRAW_BAL",
+      "TRAN_BAL",
+      "LIEN_AMT",
+      "CONF_BAL",
+      "UNCL_BAL",
+      "DRAWING_POWER",
+      "LIMIT_AMOUNT",
+      "HOLD_BAL",
+      "AGAINST_CLEARING",
+      "MIN_BALANCE",
+      "OD_APPLICABLE",
+      "INST_NO",
+      "INST_RS",
+      "OP_DATE",
+      "PENDING_AMOUNT",
+      "ACCT_NM",
+      "STATUS",
+    ];
+
+    const cardValues = keys?.reduce((acc, key) => {
+      const item: any = cardsData?.find(
+        (entry: any) => entry?.COL_NAME === key
+      );
+      acc[key] = item?.COL_VALUE;
+      return acc;
+    }, {});
+    setDetail(cardValues);
+    return cardValues;
+  };
+  useEffect(() => {
+    if (reqData) {
+      getCardColumnValue();
+    }
+  }, [reqData]);
 
   return (
     <div style={{ padding: "8px 8px 0px 8px" }}>
-      {Boolean(heading) && <h2> {heading}</h2>}
+      {Boolean(heading) && (
+        <AppBar
+          position="static"
+          sx={{
+            background: "var(--theme-color5)",
+            margin: "2px",
+            width: "auto",
+            marginBottom: "10px",
+          }}
+        >
+          <Toolbar
+            sx={{
+              paddingLeft: "24px",
+              paddingRight: "24px",
+              minHeight: "48px !important",
+            }}
+          >
+            <Typography
+              style={{ flexGrow: 1 }}
+              sx={{
+                color: "var(--theme-color2)",
+                fontSize: "1.25rem",
+                fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+                fontWeight: 500,
+                lineHeight: "1.6px",
+                letterSpacing: "0.0075em",
+              }}
+            >
+              {heading}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      )}
+
+      {/* <AppBar component={} sx={{ background: "var(--theme-color5)" }}>
+        {Boolean(heading) && <h4> {heading}</h4>}
+      </AppBar> */}
       <>
         <Grid item xs="auto" id="dailyTabs">
           <Tabs
@@ -198,19 +272,29 @@ export const DailyTransTabs = ({
                   />
                 )}
                 {a.TAB_NAME.includes("JOINT") && (
-                  <JointDetailsForm reqData={reqData} />
+                  <JointDetailsForm
+                    reqData={{ ...reqData, ACCT_NM: detail?.ACCT_NM }}
+                  />
                 )}
                 {a.TAB_NAME.includes("TODAYS") && (
                   <TodayTransactionForm reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("CHQ") && <CheckBook reqData={reqData} />}
+                {a.TAB_NAME.includes("CHQ") && (
+                  <CheckBook
+                    reqData={{ ...reqData, ACCT_NM: detail?.ACCT_NM }}
+                  />
+                )}
                 {a.TAB_NAME.includes("SNAPSHOT") && (
                   <Snapshot reqData={reqData} />
                 )}
                 {a.TAB_NAME.includes("HOLDCHRG") && (
-                  <HoldCharge reqData={reqData} />
+                  <HoldCharge
+                    reqData={{ ...reqData, STATUS: detail?.STATUS }}
+                  />
                 )}
-                {a.TAB_NAME.includes("DOCS") && <Document reqData={reqData} />}
+                {a.TAB_NAME.includes("DOCS") && (
+                  <Document reqData={reqData} isDisplayClose={false} />
+                )}
                 {a.TAB_NAME.includes("STOP") && <StopPay reqData={reqData} />}
                 {a.TAB_NAME.includes("INSU") && <Insurance reqData={reqData} />}
                 {a.TAB_NAME.includes("DISBDTL") && (
@@ -220,7 +304,9 @@ export const DailyTransTabs = ({
                   <Subsidyy reqData={reqData} />
                 )}
                 {/* {a.TAB_NAME.includes("Search") && <Search reqData={reqData} />} */}
-                {a.TAB_NAME.includes("LIMIT") && <Limit reqData={reqData} />}
+                {a.TAB_NAME.includes("LIMIT") && (
+                  <Limit reqData={{ ...reqData, ACCT_NM: detail?.ACCT_NM }} />
+                )}
                 {a.TAB_NAME.includes("STOCK") && <Stock reqData={reqData} />}
               </>
             </TabPanel>
@@ -256,7 +342,6 @@ export const DailyTransTabsWithDialog = ({
   rowsData,
   setRowsData,
 }) => {
-  console.log("sjicfbsjbdcjsc", "avcuivhbadavbjbasjdksvbdj");
   const [cardData, setCardsData] = useState<any>([]);
   const [updatedMtdata, setUpdatedMtdata] = useState<any>({});
   const navigate = useNavigate();
@@ -339,9 +424,6 @@ export const DailyTransTabsWithDialog = ({
       setCardsData([]);
     },
   });
-  useEffect(() => {
-    console.log(updatedMtdata, "updatedMtdataupdatedMtdataupdatedMtdata");
-  }, [updatedMtdata]);
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "_rowChanged") {
@@ -464,14 +546,14 @@ export const DailyTransTabsWithDialog = ({
             finalMetaData={updatedMetadata as GridMetaDataType}
             data={data ?? []}
             setData={() => null}
-            ReportExportButton={true}
+            enableExport={true}
             actions={[]}
             setAction={setCurrentAction}
             loading={isLoading || isFetching}
-            onlySingleSelectionAllow={true}
-            isNewRowStyle={true}
+            disableMultipleRowSelect={true}
+            variant={"standard"}
             defaultSelectedRowId={data?.length > 0 ? data?.[0]?.SR_NO : ""}
-            hideActionBar={true}
+            hideFooter={true}
           />
           {/* <Routes>
             <Route
@@ -572,7 +654,7 @@ export const DailyTransTabsWithDialog = ({
       //       finalMetaData={AccountDetailsGridMetadata as GridMetaDataType}
       //       data={data ?? []}
       //       setData={() => null}
-      //       ReportExportButton={true}
+      //       enableExport={true}
       //       actions={[]}
       //       setAction={setCurrentAction}
       //       loading={isLoading || isFetching}

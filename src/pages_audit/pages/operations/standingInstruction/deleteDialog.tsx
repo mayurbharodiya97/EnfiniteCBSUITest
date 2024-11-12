@@ -1,16 +1,18 @@
 import { useContext, useRef } from "react";
-import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
-import { usePopupContext } from "components/custom/popupContext";
 import { t } from "i18next";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { RemarksAPIWrapper, usePopupContext } from "@acuteinfo/common-base";
 
-
-
-export const DeleteDialog = ({ open, onClose, rowData, siRefetch, mainRefetch }) => {
+export const DeleteDialog = ({
+  open,
+  onClose,
+  rowData,
+  siRefetch,
+  mainRefetch,
+}) => {
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const deleteMutation: any = useMutation(API.addStandingInstructionTemplate, {
@@ -23,7 +25,7 @@ export const DeleteDialog = ({ open, onClose, rowData, siRefetch, mainRefetch })
         variant: "error",
       });
       CloseMessageBox();
-      onClose()
+      onClose();
     },
     onSuccess: (data) => {
       enqueueSnackbar(t("deleteSuccessfully"), {
@@ -37,19 +39,17 @@ export const DeleteDialog = ({ open, onClose, rowData, siRefetch, mainRefetch })
     },
   });
 
-
   return (
     <>
       <RemarksAPIWrapper
-        TitleText={
-          t("EnterRemovalRemarksForSI")
-        }
+        TitleText={t("EnterRemovalRemarksForSI")}
         onActionNo={onClose}
+        customRequiredMessage="RemovalRemarkRequire"
         onActionYes={async (val, rows) => {
           const buttonName = await MessageBox({
             messageTitle: t("Confirmation"),
             message: t("DoYouWantDeleteRow"),
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             defFocusBtnName: "Yes",
             loadingBtnName: ["Yes"],
           });
@@ -71,12 +71,9 @@ export const DeleteDialog = ({ open, onClose, rowData, siRefetch, mainRefetch })
               CR_ACCT_CD: rows?.CR_ACCT_CD,
               TRAN_DT: authState.workingDate,
               ENTERED_BY: rows?.ENTERED_BY,
-              USER_DEF_REMARKS: val
-                ? val
-                : "WRONG ENTRY FROM RTGS BRANCH CONFIRMATION (MST/553)",
+              USER_DEF_REMARKS: val,
               ACTIVITY_TYPE: "SI_ENTRY",
-            }
-            );
+            });
           }
         }}
         isEntertoSubmit={true}
@@ -89,4 +86,3 @@ export const DeleteDialog = ({ open, onClose, rowData, siRefetch, mainRefetch })
     </>
   );
 };
-

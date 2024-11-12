@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "components/utils";
+} from "@acuteinfo/common-base";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getJointDetailsList = async (reqData?) => {
@@ -15,9 +15,12 @@ export const getJointDetailsList = async (reqData?) => {
     });
   if (status === "0") {
     let responseData = data;
-    responseData.map((a, i) => {
-      a.index = i;
-      a.phone1 = a.MOBILE_NO || a.PHONE;
+    responseData.map((item, index) => {
+      item.index = index;
+      item.MOBILE_NO = item.MOBILE_NO + "," + item.PHONE;
+      item.MEM_ACCT_CD =
+        (Boolean(item.MEM_ACCT_TYPE) && Boolean(item.MEM_ACCT_CD)) ??
+        item.MEM_ACCT_TYPE.trim() + " - " + item.MEM_ACCT_CD.trim();
     });
     return responseData;
   } else {

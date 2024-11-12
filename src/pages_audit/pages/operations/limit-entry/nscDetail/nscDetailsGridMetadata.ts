@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const nscDetailGridData: GridMetaDataType = {
   gridConfig: {
@@ -64,7 +64,7 @@ export const nscDetailGridData: GridMetaDataType = {
       sequence: 4,
       alignment: "right",
       componentType: "currency",
-      width: 124,
+      width: 135,
       minWidth: 100,
       maxWidth: 150,
     },
@@ -75,7 +75,7 @@ export const nscDetailGridData: GridMetaDataType = {
       sequence: 5,
       alignment: "right",
       componentType: "default",
-      width: 115,
+      width: 135,
       minWidth: 100,
       maxWidth: 150,
     },
@@ -104,7 +104,7 @@ export const nscDetailGridData: GridMetaDataType = {
     },
     {
       accessor: "ISSUE_COMPANY",
-      columnName: "IssueCompany",
+      columnName: "IssueBy",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -154,6 +154,16 @@ export const nscDetailGridData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
+      accessor: "DISPLAY_PERIOD_CD",
+      columnName: "PeriodType",
+      sequence: 13,
+      alignment: "left",
+      componentType: "default",
+      width: 105,
+      minWidth: 70,
+      maxWidth: 130,
+    },
+    {
       accessor: "PERIOD_NO",
       columnName: "PeriodNumber",
       sequence: 13,
@@ -169,7 +179,7 @@ export const nscDetailGridData: GridMetaDataType = {
       sequence: 14,
       alignment: "left",
       componentType: "default",
-      width: 115,
+      width: 125,
       minWidth: 100,
       maxWidth: 150,
     },

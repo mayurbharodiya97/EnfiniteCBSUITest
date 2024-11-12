@@ -1,4 +1,4 @@
-export const FdInterestPaymentConfmMetaData = {
+export const FdInterestPaymentConfmGridMetaData = {
   gridConfig: {
     dense: true,
     gridLabel: "",
@@ -38,9 +38,9 @@ export const FdInterestPaymentConfmMetaData = {
     },
     {
       accessor: "COMP_CD",
-      columnName: "CompanyID",
+      columnName: "CompanyCode",
       sequence: 2,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 700,
@@ -50,7 +50,7 @@ export const FdInterestPaymentConfmMetaData = {
       accessor: "BRANCH_CD",
       columnName: "branchCode",
       sequence: 3,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 700,
@@ -60,7 +60,7 @@ export const FdInterestPaymentConfmMetaData = {
       accessor: "ACCT_TYPE",
       columnName: "accountType",
       sequence: 4,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 700,
@@ -70,7 +70,7 @@ export const FdInterestPaymentConfmMetaData = {
       accessor: "ACCT_CD",
       columnName: "accountCode",
       sequence: 5,
-      alignment: "left",
+      alignment: "right",
       componentType: "default",
       width: 120,
       minWidth: 700,
@@ -140,16 +140,43 @@ export const FdInterestPaymentconfFormMetaData = {
   fields: [
     {
       render: {
-        componentType: "spacer",
+        componentType: "textField",
       },
-      name: "SPACER",
-      GridProps: {
-        xs: 12,
-        sm: 3,
-        md: 7.2,
-        lg: 8.2,
-        xl: 8.8,
+      name: "BRANCH_CD",
+      label: "branchCode",
+      type: "text",
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 1, lg: 1, xl: 1 },
+    },
+    {
+      render: {
+        componentType: "textField",
       },
+      name: "ACCT_TYPE",
+      label: "AccountType",
+      type: "text",
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 1, lg: 1, xl: 1 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_CD",
+      label: "AccountNo",
+      type: "text",
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 1, lg: 1, xl: 1 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NM",
+      label: "AccountName",
+      type: "text",
+      fullWidth: true,
+      GridProps: { xs: 12, sm: 6, md: 5, lg: 5, xl: 5 },
     },
     {
       render: {
@@ -173,8 +200,15 @@ export const FdInterestPaymentconfFormMetaData = {
           },
         },
       },
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (formState?.fdDetails?.length <= 0) {
+          return true;
+        } else {
+          return false;
+        }
+      },
 
-      GridProps: { xs: 6, sm: 4.4, md: 2.4, lg: 1.9, xl: 1.6 },
+      GridProps: { xs: 6, sm: 6, md: 2, lg: 2, xl: 2 },
     },
 
     {
@@ -199,7 +233,14 @@ export const FdInterestPaymentconfFormMetaData = {
           },
         },
       },
-      GridProps: { xs: 6, sm: 4.4, md: 2.4, lg: 1.9, xl: 1.6 },
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (formState?.fdDetails?.length <= 0) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      GridProps: { xs: 6, sm: 6, md: 2, lg: 2, xl: 2 },
     },
     {
       render: {
@@ -209,6 +250,13 @@ export const FdInterestPaymentconfFormMetaData = {
       isScreenStyle: true,
       fixedRows: true,
       displayCountName: "",
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (formState?.fdDetails?.length <= 0) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
@@ -235,7 +283,7 @@ export const FdInterestPaymentconfFormMetaData = {
           name: "TRAN_DT",
           label: "DepositDate",
           type: "text",
-   
+
           format: "dd/MM/yyyy",
           fullWidth: true,
           GridProps: { xs: 12, sm: 4, md: 2, lg: 1.6, xl: 1.6 },
@@ -257,7 +305,7 @@ export const FdInterestPaymentconfFormMetaData = {
           },
           name: "MATURITY_DT",
           label: "MaturityDate",
-          format: "dd/MM/yyyy",  
+          format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
           GridProps: { xs: 12, sm: 4, md: 2, lg: 1.6, xl: 1.6 },
@@ -286,9 +334,19 @@ export const FdInterestPaymentconfFormMetaData = {
         },
         {
           render: {
-            componentType: "textField",
+            componentType: "hidden",
           },
           name: "PAYMENT_MODE",
+          label: "PaymentMode",
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 12, sm: 4, md: 1.5, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "PAYMENT_MODE_DIS",
           label: "PaymentMode",
           type: "text",
           fullWidth: true,

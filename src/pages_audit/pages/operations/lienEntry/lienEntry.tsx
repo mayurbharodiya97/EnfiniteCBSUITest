@@ -1,7 +1,6 @@
 import {
   AppBar,
   Box,
-  Button,
   Container,
   Grid,
   LinearProgress,
@@ -15,24 +14,31 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { usePopupContext } from "components/custom/popupContext";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { GridMetaDataType } from "components/dataTableStatic";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { LienGridMetaData } from "./lienEntryGridMetaData";
 import { LienEntryMetadata } from "./lienEntryMetadata";
-import { ActionTypes } from "components/dataTable";
-import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
-import { SubmitFnType } from "packages/form";
 import { enqueueSnackbar } from "notistack";
 import { ExpireLien } from "./expireLien/expireLien";
 import { useMutation } from "react-query";
-import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { useTranslation } from "react-i18next";
+
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+  ClearCacheProvider,
+  SubmitFnType,
+  FormWrapper,
+  MetaDataType,
+  utilFunction,
+  GradientButton,
+} from "@acuteinfo/common-base";
 
 const LienEntryCustom = () => {
   const actions: ActionTypes[] = [
@@ -112,19 +118,19 @@ const LienEntryCustom = () => {
               btnName(
                 ["Ok"],
                 concatenatedMessages["9"],
-                "ValidationAlert",
+                "ValidationFailed",
                 "Yes"
               );
             } else if (buttonName === "Yes") {
               crudLienData.mutate(apiReq);
             }
           } else if (status["9"]) {
-            btnName(["Ok"], concatenatedMessages["9"], "ValidationAlert", "");
+            btnName(["Ok"], concatenatedMessages["9"], "ValidationFailed", "");
           } else if (status["0"]) {
             let buttonName = await btnName(
               ["Yes", "No"],
               "AreYouSureToProceed",
-              "ValidationSuccessfull",
+              "confirmation",
               "Yes"
             );
             if (buttonName === "Yes") {
@@ -173,10 +179,16 @@ const LienEntryCustom = () => {
     displayData,
     endSubmit
   ) => {
-    validateInsertData.mutate(data);
-
-    //@ts-ignore
-    endSubmit(true);
+    validateInsertData.mutate(data, {
+      onSuccess: () => {
+        //@ts-ignore
+        endSubmit(true);
+      },
+      onError: () => {
+        //@ts-ignore
+        endSubmit(true);
+      },
+    });
   };
 
   const setCurrentAction = useCallback(
@@ -207,6 +219,11 @@ const LienEntryCustom = () => {
     [navigate]
   );
 
+  LienEntryMetadata.form.label = utilFunction.getDynamicLabel(
+    useLocation().pathname,
+    authState?.menulistdata,
+    true
+  );
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -311,7 +328,7 @@ const LienEntryCustom = () => {
             >
               {({ isSubmitting, handleSubmit }) => (
                 <>
-                  <Button
+                  <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
@@ -320,7 +337,7 @@ const LienEntryCustom = () => {
                     color={"primary"}
                   >
                     {t("Save")}
-                  </Button>
+                  </GradientButton>
                 </>
               )}
             </FormWrapper>

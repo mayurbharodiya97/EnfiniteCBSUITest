@@ -7,16 +7,18 @@ import {
   useState,
 } from "react";
 import { productaccess } from "./metaData/metaDataGrid";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import * as API from "./api/api";
 import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
-import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import { SecurityContext } from "../context/SecuityForm";
-import { extractGridMetaData } from "components/utils";
 import { Alert } from "reactstrap";
+import {
+  extractGridMetaData,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+} from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
   {
@@ -32,7 +34,8 @@ export const ProductAccess = forwardRef<any, any>(
   ({ defaultView, username }, ref) => {
     const Username = username?.USER_NAME;
     const { authState } = useContext(AuthContext);
-    const { userState, dispatchCommon } = useContext(SecurityContext);
+    const { userState, dispatchCommon, updateoldData2 } =
+      useContext(SecurityContext);
     const [gridData, setGridData] = useState<any>([]);
     const [populateDataset, setpopulateDataset] = useState<any>([]);
     const [grid1Data, setGrid1Data] = useState<any>([]);
@@ -78,18 +81,18 @@ export const ProductAccess = forwardRef<any, any>(
         }
       },
       onSuccess: (data) => {
-        const updatedGrid1Data = data.map((gridItem) => ({
+        const updatedGrid1Data = data?.map((gridItem) => ({
           ...gridItem,
-          ACCT_TYPE: gridItem.ACCT_TYPE,
-          ACCESS: gridItem.ACCESS === "Y" ? true : false,
+          ACCT_TYPE: gridItem?.ACCT_TYPE,
+          ACCESS: gridItem?.ACCESS === "Y" ? true : false,
         }));
-        let filteredGrid1Data = updatedGrid1Data.filter(
+        let filteredGrid1Data = updatedGrid1Data?.filter(
           (gridItem) =>
-            !productData.some(
-              (dataItem) => dataItem.TYPE_NM === gridItem.TYPE_NM
+            !productData?.some(
+              (dataItem) => dataItem.TYPE_NM === gridItem?.TYPE_NM
             )
         );
-        const last = filteredGrid1Data.map((row) => ({
+        const last = filteredGrid1Data?.map((row) => ({
           ...row,
           _isNewRow: true,
         }));
@@ -133,8 +136,8 @@ export const ProductAccess = forwardRef<any, any>(
         if (data.name === "populate") {
           setRowsData(data?.rows);
           mutation.mutate({
-            base_branch_cd: authState?.user?.baseBranchCode,
-            base_comp_cd: authState?.baseCompanyID,
+            base_branch_cd: authState?.user?.baseBranchCode ?? "",
+            base_comp_cd: authState?.baseCompanyID ?? "",
           });
         } else {
           navigate(data?.name, {

@@ -1,18 +1,21 @@
 import { useCallback, useContext, useEffect, useRef } from "react";
-import GridWrapper from "components/dataTableStatic";
 import { AdvocateMstGridMetaData } from "./gridMetadata";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
 import { useMutation, useQuery } from "react-query";
-import { ClearCacheContext, queryClient } from "cache";
 import { AdvocateMstFormWrapper } from "./form";
 import { enqueueSnackbar } from "notistack";
-import { usePopupContext } from "components/custom/popupContext";
 import { useTranslation } from "react-i18next";
-
+import {
+  usePopupContext,
+  Alert,
+  GridWrapper,
+  GridMetaDataType,
+  ActionTypes,
+  queryClient,
+  ClearCacheContext,
+} from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -26,6 +29,15 @@ const actions: ActionTypes[] = [
     actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
+    shouldExclude: (data, authDetails) => {
+      if (Array.isArray(data) && data.length > 0) {
+        if (Boolean(data[0]?.data?.STATUS)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
   },
   {
     actionName: "delete",
@@ -53,10 +65,12 @@ export const AdvocateMstGrid = () => {
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
             ...isDeleteDataRef.current?.data,
+            STATUS: Boolean(isDeleteDataRef.current?.data?.STATUS) ? "I" : "A",
             _isDeleteRow: true,
           });
         }
@@ -145,6 +159,7 @@ export const AdvocateMstGrid = () => {
         actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
+        enableExport={true}
       />
       <Routes>
         <Route

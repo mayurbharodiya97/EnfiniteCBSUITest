@@ -1,37 +1,45 @@
 import { Dialog, Paper } from "@mui/material";
 import { useContext, useEffect } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { InitialValuesType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
-import { FDContext } from "../context/fdContext";
 import { ViewMasterMetadata } from "./metaData/viewMasterMetaData";
-import { queryClient } from "cache";
 import { useQuery } from "react-query";
 import * as API from "../api";
-import { Alert } from "components/common/alert";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import Draggable from "react-draggable";
-import { useLocation } from "react-router-dom";
+import {
+  LoaderPaperComponent,
+  Alert,
+  GradientButton,
+  queryClient,
+  InitialValuesType,
+  FormWrapper,
+  MetaDataType,
+  extractMetaData,
+} from "@acuteinfo/common-base";
 
-export const ViewMasterForm = ({ closeDialog }) => {
+interface ViewMasterFormProps {
+  handleDialogClose: any;
+  requestData?: any;
+}
+export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
+  handleDialogClose,
+  requestData,
+}) => {
   const { authState } = useContext(AuthContext);
-  const { FDState } = useContext(FDContext);
   const { t } = useTranslation();
 
-  //Api for get View detail form data
+  //Api for get View master detail form data
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
   >(["getFDViewMasterDtl", authState?.user?.branchCode], () =>
     API.getFDViewMasterDtl({
       COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
-      ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-      ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
+      BRANCH_CD: requestData.BRANCH_CD ?? "",
+      ACCT_TYPE: requestData?.ACCT_TYPE ?? "",
+      ACCT_CD: requestData?.ACCT_CD ?? "",
       A_ASON_DT: authState?.workingDate ?? "",
-      TDS_METHOD: FDState?.fdParaDetailData?.TDS_METHOD ?? "",
+      TDS_METHOD: requestData?.TDS_METHOD ?? "",
     })
   );
 
@@ -44,14 +52,12 @@ export const ViewMasterForm = ({ closeDialog }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const label2 = `View Master of A/c No.: ${
-      FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
-    }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
-      FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
-    } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
-    ViewMasterMetadata.form.label = label2;
-  }, []);
+  //Form Header title
+  ViewMasterMetadata.form.label = `View Master of A/c No.: ${
+    requestData?.BRANCH_CD?.trim() ?? ""
+  }-${requestData?.ACCT_TYPE?.trim() ?? ""}-${
+    requestData?.ACCT_CD?.trim() ?? ""
+  } ${requestData?.ACCT_NM?.trim() ?? ""}`;
 
   return (
     <Dialog
@@ -81,13 +87,14 @@ export const ViewMasterForm = ({ closeDialog }) => {
             color="error"
           />
         )}
-
         {isLoading ? (
           <LoaderPaperComponent />
         ) : (
           <FormWrapper
             key={"ViewMasterForm"}
-            metaData={ViewMasterMetadata as MetaDataType}
+            metaData={
+              extractMetaData(ViewMasterMetadata, "view") as MetaDataType
+            }
             initialValues={
               {
                 ...data?.[0],
@@ -99,16 +106,21 @@ export const ViewMasterForm = ({ closeDialog }) => {
                     : data?.[0]?.FORM_60 === "N"
                     ? "N"
                     : "",
-                BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
-                ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-                ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
+                CATEGORY_VAL: `${data?.[0]?.CATEG_CD?.trim()} - ${data?.[0]?.CATEG_NM?.trim()}`,
+                MODE_VAL: `${data?.[0]?.ACCT_MODE?.trim()} - ${data?.[0]?.MODE_NM?.trim()}`,
+                BRANCH_VAL: `${data?.[0]?.BRANCH_CD?.trim()} - ${data?.[0]?.BRANCH_NM?.trim()}`,
+                ACCT_TYPE_VAL: `${data?.[0]?.ACCT_TYPE?.trim()} - ${data?.[0]?.TYPE_NM?.trim()}`,
               } as InitialValuesType
             }
+            onSubmitHandler={() => {}}
+            displayMode={"view"}
             formStyle={{
               background: "white",
             }}
           >
-            <GradientButton onClick={() => closeDialog()}>Close</GradientButton>
+            <GradientButton onClick={() => handleDialogClose()}>
+              Close
+            </GradientButton>
           </FormWrapper>
         )}
       </div>

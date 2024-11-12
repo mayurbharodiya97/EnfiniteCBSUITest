@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const ParametersGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -22,8 +22,9 @@ export const ParametersGridMetaData: GridMetaDataType = {
     },
     allowFilter: true,
     allowColumnHiding: false,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
+    footerNote: "Parameters In Red Colour Indicates Pending For Confirmation",
   },
   filters: [
     {
@@ -70,15 +71,15 @@ export const ParametersGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr No",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      isAutoSequence:true,
+      isAutoSequence: true,
       width: 80,
       minWidth: 60,
       maxWidth: 120,
-  },
+    },
     {
       accessor: "PARA_CD",
       columnName: "Code",
@@ -88,7 +89,6 @@ export const ParametersGridMetaData: GridMetaDataType = {
       width: 70,
       minWidth: 50,
       maxWidth: 150,
-      //isAutoSequence: true,
     },
     {
       accessor: "PARA_NM",
@@ -143,7 +143,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONFIRMED_STATUS",
-      columnName: "Confirm Status",
+      columnName: "ConfirmStatus",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -171,7 +171,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LAST_MODIFIED_DATE",
-      columnName: "Modified Date",
+      columnName: "ModifiedDateTime",
       sequence: 9,
       alignment: "center",
       componentType: "date",
@@ -200,7 +200,7 @@ export const AuditMetadata: GridMetaDataType = {
       max: "67vh",
     },
     allowColumnHiding: false,
-    allowRowSelection:false,
+    allowRowSelection: false,
     isCusrsorFocused: true,
   },
   columns: [
@@ -239,7 +239,7 @@ export const AuditMetadata: GridMetaDataType = {
       columnName: "Modified Date",
       sequence: 4,
       alignment: "left",
-      dateFormat:"dd/MM/yyyy hh:mm:ss",
+      dateFormat: "dd/MM/yyyy hh:mm:ss",
       componentType: "dateTime",
       width: 100,
       minWidth: 80,
@@ -247,7 +247,7 @@ export const AuditMetadata: GridMetaDataType = {
     },
     {
       accessor: "MACHINE_NM",
-      columnName: "Modified Machine",
+      columnName: "ModifiedMachineName",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -270,7 +270,7 @@ export const AuditMetadata: GridMetaDataType = {
       columnName: "Verified Date",
       sequence: 5,
       alignment: "left",
-      dateFormat:"dd/MM/yyyy hh:mm:ss",
+      dateFormat: "dd/MM/yyyy hh:mm:ss",
       componentType: "default",
       width: 150,
       minWidth: 80,
@@ -278,7 +278,7 @@ export const AuditMetadata: GridMetaDataType = {
     },
     {
       accessor: "VERIFIED_MACHINE_NM",
-      columnName: "Verified Machine",
+      columnName: "VerifiedMachineName",
       sequence: 5,
       alignment: "left",
       componentType: "default",

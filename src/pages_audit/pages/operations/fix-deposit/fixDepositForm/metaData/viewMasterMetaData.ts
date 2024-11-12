@@ -1,6 +1,3 @@
-import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
-
 export const ViewMasterMetadata = {
   form: {
     name: "viewmaster",
@@ -53,28 +50,25 @@ export const ViewMasterMetadata = {
       name: "CUSTOMER_ID",
       label: "Customer ID",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3, md: 2, lg: 1.5, xl: 1.5 },
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
     },
     {
       render: {
         componentType: "textField",
       },
-      name: "BRANCH_CD",
+      name: "BRANCH_VAL",
       label: "BranchCode",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 2, md: 1.3, lg: 1.3, xl: 1.3 },
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
     },
     {
       render: {
         componentType: "textField",
       },
-      name: "ACCT_TYPE",
+      name: "ACCT_TYPE_VAL",
       label: "AccountType",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 2, md: 1.4, lg: 1.5, xl: 1.5 },
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
     },
     {
       render: {
@@ -83,8 +77,7 @@ export const ViewMasterMetadata = {
       name: "ACCT_CD",
       label: "accountCode",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 2.8, md: 1.6, lg: 1.5, xl: 1.5 },
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
     },
 
     {
@@ -94,8 +87,7 @@ export const ViewMasterMetadata = {
       name: "ACCT_NM",
       label: "AccountName",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 5.2, md: 3.4, lg: 3, xl: 3 },
+      GridProps: { xs: 12, sm: 6, md: 4, lg: 4, xl: 4 },
     },
 
     {
@@ -107,8 +99,7 @@ export const ViewMasterMetadata = {
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3.2, md: 2.1, lg: 1.6, xl: 1.6 },
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
     },
 
     {
@@ -119,7 +110,6 @@ export const ViewMasterMetadata = {
       label: "PAN",
       type: "text",
       required: false,
-      isReadOnly: true,
       schemaValidation: {},
       dependentFields: ["FORM_60"],
       shouldExclude: (currentField, dependentFieldsValues, __) => {
@@ -132,7 +122,13 @@ export const ViewMasterMetadata = {
           return true;
         }
       },
-      GridProps: { xs: 12, sm: 2.9, md: 2.2, lg: 1.5, xl: 1.5 },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          color: "rgb(255, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
+        },
+      },
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
     },
 
     {
@@ -141,7 +137,6 @@ export const ViewMasterMetadata = {
       },
       name: "FORM_60",
       fullWidth: true,
-      isReadOnly: true,
       label: "",
       shouldExclude: (currentField, dependentFieldsValues, __) => {
         if (
@@ -153,7 +148,13 @@ export const ViewMasterMetadata = {
           return false;
         }
       },
-      GridProps: { xs: 12, sm: 2.9, md: 2.2, lg: 1.5, xl: 1.5 },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          color: "rgb(255, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
+        },
+      },
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
     },
 
     {
@@ -165,8 +166,27 @@ export const ViewMasterMetadata = {
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3.2, md: 2.1, lg: 1.6, xl: 1.6 },
+      GridProps: { xs: 12, sm: 4, md: 2, lg: 2, xl: 2 },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "MODE_VAL",
+      label: "Mode",
+      type: "text",
+      GridProps: { xs: 12, sm: 4, md: 2, lg: 2, xl: 2 },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CATEGORY_VAL",
+      label: "Category",
+      type: "text",
+      GridProps: { xs: 12, sm: 4, md: 2, lg: 2, xl: 2 },
     },
 
     {
@@ -175,13 +195,12 @@ export const ViewMasterMetadata = {
       },
       name: "TRAN_BAL",
       label: "Shadow Balance",
-      isReadOnly: true,
       GridProps: {
         xs: 12,
-        sm: 2.7,
-        md: 2.2,
-        lg: 1.9,
-        xl: 1.9,
+        sm: 3,
+        md: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -189,53 +208,97 @@ export const ViewMasterMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "MODE_NM",
-      label: "Mode",
+      name: "ADD1",
+      label: "Address 1",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 2.7, lg: 2.4, xl: 2.4 },
+      GridProps: { xs: 12, sm: 4.5, md: 3, lg: 3, xl: 3 },
     },
 
     {
       render: {
         componentType: "textField",
       },
-      name: "CATEG_NM",
-      label: "Category",
+      name: "ADD2",
+      label: "Address 2",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 5, md: 2.8, lg: 2.4, xl: 2.4 },
+      GridProps: { xs: 12, sm: 4.5, md: 3, lg: 3, xl: 3 },
     },
 
     {
       render: {
-        componentType: "amountField",
+        componentType: "textField",
       },
-      name: "CONF_BAL",
-      label: "Cur. Balance",
-      isReadOnly: true,
+      name: "AREA_NM",
+      label: "Area",
+      type: "text",
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CITY_NM",
+      label: "City",
+      type: "text",
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
+    },
+
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER1",
       GridProps: {
-        xs: 12,
-        sm: 3,
-        md: 2.2,
-        lg: 1.9,
-        xl: 1.9,
+        xs: 0,
+        sm: 0,
+        md: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
     {
       render: {
-        componentType: "amountField",
+        componentType: "textField",
       },
-      name: "FIN_INT_AMT",
-      label: "FinancialInterestAmount",
-      isReadOnly: true,
+      name: "PIN_CODE",
+      label: "Pin Code",
+      type: "text",
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "MASKING_CONTACT1",
+      label: "Phone",
+      type: "text",
+      GridProps: { xs: 12, sm: 2.4, md: 2, lg: 2, xl: 2 },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "MASKING_CONTACT2",
+      label: "Mobile No.",
+      type: "text",
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
+    },
+
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER2",
       GridProps: {
-        xs: 12,
-        sm: 3,
-        md: 2.2,
-        lg: 1.9,
-        xl: 1.9,
+        xs: 0,
+        sm: 0,
+        md: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -246,85 +309,43 @@ export const ViewMasterMetadata = {
       name: "TDS_DEDUCT_FLAG",
       label: "ExplicitDeductTDS",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3, md: 1.8, lg: 1.5, xl: 1.5 },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          color: "rgb(168, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(168, 0, 0) !important",
+        },
+      },
+      GridProps: { xs: 12, sm: 2.8, md: 2, lg: 2, xl: 2 },
     },
 
     {
       render: {
-        componentType: "textField",
+        componentType: "amountField",
       },
-      name: "ADD1",
-      label: "Address 1",
-      type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
+      name: "CONF_BAL",
+      label: "Cur. Balance",
+      GridProps: {
+        xs: 12,
+        sm: 2.8,
+        md: 2,
+        lg: 2,
+        xl: 2,
+      },
     },
 
     {
       render: {
-        componentType: "textField",
+        componentType: "amountField",
       },
-      name: "ADD2",
-      label: "Address 2",
-      type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
-    },
-
-    {
-      render: {
-        componentType: "textField",
+      name: "FIN_INT_AMT",
+      label: "FinancialInterestAmount",
+      GridProps: {
+        xs: 12,
+        sm: 3,
+        md: 2,
+        lg: 2,
+        xl: 2,
       },
-      name: "AREA_NM",
-      label: "Area",
-      type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3, md: 2.4, lg: 2, xl: 2 },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CITY_NM",
-      label: "City",
-      type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3, md: 2.4, lg: 1.5, xl: 1.5 },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "PIN_CODE",
-      label: "Pin Code",
-      type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1, xl: 1 },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "MASKING_CONTACT1",
-      label: "Phone",
-      type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.6, xl: 1.6 },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "MASKING_CONTACT2",
-      label: "Mobile No.",
-      type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.6, xl: 1.6 },
     },
 
     {
@@ -334,8 +355,7 @@ export const ViewMasterMetadata = {
       name: "FIN_TDS",
       label: "TDS Deducted In Current Financial Year",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3.8, md: 3.5, lg: 2.8, xl: 2.8 },
+      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
     },
 
     {
@@ -345,8 +365,13 @@ export const ViewMasterMetadata = {
       name: "LIABLE",
       label: "TDS Liable(Taxable)",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 2.6, md: 3, lg: 1.6, xl: 1.6 },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          color: "rgb(168, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(168, 0, 0) !important",
+        },
+      },
+      GridProps: { xs: 12, sm: 3, md: 2, lg: 2, xl: 2 },
     },
 
     {
@@ -356,8 +381,13 @@ export const ViewMasterMetadata = {
       name: "REMARKS",
       label: "Remark",
       type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 5.6, md: 5.5, lg: 4.4, xl: 4.4 },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          color: "rgb(168, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(168, 0, 0) !important",
+        },
+      },
+      GridProps: { xs: 12, sm: 6, md: 5, lg: 5, xl: 5 },
     },
 
     {
@@ -376,7 +406,6 @@ export const ViewMasterMetadata = {
       name: "FORM_NM",
       label: "Form Name",
       type: "text",
-      isReadOnly: true,
       GridProps: { xs: 12, sm: 3.5, md: 3, lg: 3, xl: 3 },
     },
 
@@ -389,8 +418,7 @@ export const ViewMasterMetadata = {
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3.5, md: 2.1, lg: 1.7, xl: 1.7 },
+      GridProps: { xs: 12, sm: 3.5, md: 2, lg: 1.7, xl: 1.7 },
     },
   ],
 };

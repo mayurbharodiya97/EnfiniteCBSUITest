@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const AuditorMstGridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -10,6 +10,7 @@ export const AuditorMstGridMetaData: GridMetaDataType = {
       minWidth: 300,
       maxWidth: 400,
     },
+
     allowColumnReordering: true,
     disableSorting: false,
     hideHeader: false,
@@ -18,11 +19,11 @@ export const AuditorMstGridMetaData: GridMetaDataType = {
     pageSizes: [20, 40, 60],
     defaultPageSize: 20,
     containerHeight: {
-      min: "77vh",
-      max: "77vh",
+      min: "72vh",
+      max: "72vh",
     },
-    allowColumnHiding: true,
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
   columns: [
     {

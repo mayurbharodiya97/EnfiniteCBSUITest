@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 export const DynFormGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -41,17 +41,18 @@ export const DynFormGridMetaData: GridMetaDataType = {
 
     {
       accessor: "SR_CD",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 100,
-      minWidth: 200,
-      maxWidth: 500,
+      width: 70,
+      minWidth: 70,
+      maxWidth: 200,
+      isAutoSequence: true,
     },
     {
       accessor: "DOC_CD",
-      columnName: "Document CD",
+      columnName: "Document Code",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -75,9 +76,9 @@ export const DynFormGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 130,
-      minWidth: 100,
-      maxWidth: 200,
+      width: 250,
+      minWidth: 200,
+      maxWidth: 400,
     },
     {
       accessor: "FORM_LABEL",
@@ -85,9 +86,9 @@ export const DynFormGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 130,
-      minWidth: 100,
-      maxWidth: 150,
+      width: 250,
+      minWidth: 200,
+      maxWidth: 400,
     },
     {
       accessor: "VALIDATIONRUN",

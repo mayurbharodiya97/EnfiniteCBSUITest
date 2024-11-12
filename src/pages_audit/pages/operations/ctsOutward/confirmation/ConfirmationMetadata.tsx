@@ -1,4 +1,4 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 import { isValid } from "date-fns";
 export const RetrieveFormConfigMetaData = {
   form: {
@@ -106,7 +106,6 @@ export const RetrieveFormConfigMetaData = {
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
-      requestProps: "ZONE_TRAN_TYPE",
     },
     {
       render: {
@@ -233,9 +232,9 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       alignment: "left",
       componentType: "default",
       placeholder: "",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 150,
+      width: 80,
+      minWidth: 70,
+      maxWidth: 100,
     },
     {
       accessor: "CHQ_CNT",
@@ -244,7 +243,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       alignment: "right",
       componentType: "default",
       placeholder: "",
-      width: 100,
+      width: 120,
       minWidth: 100,
       maxWidth: 150,
     },
@@ -255,36 +254,59 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       alignment: "right",
       componentType: "default",
       placeholder: "",
-      width: 100,
+      width: 120,
       minWidth: 100,
       maxWidth: 150,
+      isDisplayTotal: true,
+      footerLabel: "Total Cheque List",
+      setFooterValue(total, rows) {
+        return [rows.length ?? 0];
+      },
     },
     {
       accessor: "CHQ_AMT_LIST",
-      columnName: "ChequeAmountList",
+      columnName: "ChequeAmount",
       sequence: 5,
       alignment: "right",
       componentType: "default",
       placeholder: "",
       width: 200,
       minWidth: 150,
-      maxWidth: 250,
+      maxWidth: 500,
+      isDisplayTotal: true,
+      footerLabel: "Total Cheque Amount",
+      setFooterValue(total, rows) {
+        const filteredRows = rows?.filter(
+          ({ original }) => original.CHQ_AMT_LIST
+        );
+        const sum =
+          filteredRows?.reduce((acc, { original }) => {
+            // Split the CHQ_AMT_LIST by commas, convert each to a number, and sum them
+            const chqAmtListSum = original.CHQ_AMT_LIST.split(",")
+              .map(Number) // Convert to numbers
+              .reduce((a, b) => a + b, 0); // Sum the numbers in this row
+            return acc + chqAmtListSum; // Add to the accumulator
+          }, 0) ?? 0;
+        const formattedSum = sum.toFixed(2);
+
+        return [formattedSum];
+      },
     },
     {
       accessor: "TRAN_DT",
       columnName: "CLGDate",
       sequence: 6,
-      alignment: "left",
+      alignment: "center",
       componentType: "date",
       placeholder: "",
-      width: 200,
-      minWidth: 150,
-      maxWidth: 250,
+      width: 110,
+      minWidth: 100,
+      maxWidth: 180,
     },
 
     {
-      accessor: "CONFIRMED",
-      columnName: "ConfirmStatus",
+      accessor: "CONFIRMED_FLAG",
+      columnName: "Status",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -320,7 +342,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       accessor: "ENTERED_DATE",
       columnName: "EnteredDate",
       sequence: 10,
-      alignment: "left",
+      alignment: "center",
       componentType: "date",
       placeholder: "",
       width: 150,
@@ -343,7 +365,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       accessor: "VERIFIED_DATE",
       columnName: "VerifiedDate",
       sequence: 12,
-      alignment: "left",
+      alignment: "center",
       componentType: "date",
       placeholder: "",
       width: 150,
@@ -406,7 +428,7 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ENTERED_BY",
-      columnName: "EnterBy",
+      columnName: "User",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -420,11 +442,11 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
       columnName: "Date",
       sequence: 4,
       alignment: "left",
-      componentType: "date",
+      componentType: "datetimePicker",
       placeholder: "",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 150,
+      width: 150,
+      minWidth: 180,
+      maxWidth: 200,
     },
     {
       accessor: "MACHINE_NM",
@@ -660,7 +682,7 @@ export const CTSOutwardClearingConfirmMetaData = {
       format: "dd/MM/yyyy HH:mm:ss",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
     },
 
     {
@@ -668,7 +690,7 @@ export const CTSOutwardClearingConfirmMetaData = {
         componentType: "textField",
       },
       name: "CONFIRMED",
-      label: "ConfirmStatus",
+      label: "status",
       placeholder: "",
       type: "text",
       fullWidth: true,
@@ -1018,7 +1040,7 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
           render: {
             componentType: "textField",
           },
-          name: "REASON_DESCRIPTION",
+          name: "REASON_CODE_DESCRIPTION",
           label: "Reason",
           GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
         },

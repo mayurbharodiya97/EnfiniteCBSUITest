@@ -1,7 +1,5 @@
-import { ContentCutOutlined } from "@mui/icons-material";
-import { constructInitialValuesForArrayFields } from "components/dyanmicForm/utils/constructINITValues";
-import { DefaultErrorObject, utilFunction } from "components/utils";
-import { isEqual, isValid } from "date-fns";
+import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
+import { isValid } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getSecurityListData = async (apiReq) => {
@@ -40,7 +38,6 @@ export const getLimitEntryData = async (apiReqPara) => {
 };
 
 export const LimitSecurityData = async (apiReqPara) => {
-  console.log("<<<apireq", apiReqPara);
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITSECFIELDDISP", {
       // ...apiReqPara,
@@ -136,7 +133,9 @@ export const LimitSecurityData = async (apiReqPara) => {
               "FD_BRANCH_CD",
               "PANEL_FLAG",
             ];
-
+            item.inputProps = {
+              maxLength: 20,
+            };
             item.postValidationSetCrossFieldValues = async (
               field,
               formState,
@@ -151,8 +150,16 @@ export const LimitSecurityData = async (apiReqPara) => {
                     dependentValue?.FD_TYPE?.value)
                 ) {
                   let ApiReq = {
-                    FD_COMP_CD: authState?.companyID,
-                    FD_BRANCH_CD: dependentValue?.FD_BRANCH_CD?.value ?? "",
+                    FD_COMP_CD:
+                      apiReqPara?.SECURITY_TYPE !== "BFD" &&
+                      apiReqPara?.SECURITY_TYPE !== "BRD"
+                        ? ""
+                        : authState?.companyID,
+                    FD_BRANCH_CD:
+                      apiReqPara?.SECURITY_TYPE !== "BFD" &&
+                      apiReqPara?.SECURITY_TYPE !== "BRD"
+                        ? ""
+                        : dependentValue?.FD_BRANCH_CD?.value ?? "",
                     FD_ACCT_TYPE: dependentValue?.FD_TYPE?.value ?? "",
                     FD_ACCT_CD:
                       apiReqPara?.SECURITY_TYPE !== "BFD" &&
@@ -296,6 +303,15 @@ export const LimitSecurityData = async (apiReqPara) => {
                 return true;
               }
             };
+            item.inputProps = {
+              maxLength: 10,
+              onInput: (event) => {
+                event.target.value = event.target.value.replace(
+                  /[^0-9\s]/g,
+                  ""
+                );
+              },
+            };
             item.dependentFields = [
               "FD_BRANCH_CD",
               "FD_ACCT_CD",
@@ -332,25 +348,26 @@ export const LimitSecurityData = async (apiReqPara) => {
 
                 let postData = await getFDdetailBFD(ApiReq);
                 let responseData: any = [];
-                const messagebox = async (msgTitle, msg, buttonNames) => {
-                  let buttonName = await formState.MessageBox({
-                    messageTitle: msgTitle,
-                    message: msg,
-                    buttonNames: buttonNames,
-                  });
-                  return buttonName;
-                };
+
                 if (postData?.length) {
                   for (let i = 0; i < postData?.length; i++) {
                     if (postData[i]?.O_STATUS !== "0") {
-                      let btnName = await messagebox(
-                        postData[i]?.O_STATUS === "999"
-                          ? "validation fail"
-                          : "ALert message",
-                        postData[i]?.O_MESSAGE,
-                        postData[i]?.O_STATUS === "99" ? ["Yes", "No"] : ["Ok"]
-                      );
+                      let btnName = await formState?.MessageBox({
+                        messageTitle: postData[i]?.O_MSG_TITLE
+                          ? postData[i]?.O_MSG_TITLE
+                          : postData[i]?.O_STATUS === "999"
+                          ? "ValidationFailed"
+                          : postData[i]?.O_STATUS === "99"
+                          ? "confirmation"
+                          : "ALert",
+                        message: postData[i]?.O_MESSAGE,
+                        buttonNames:
+                          postData[i]?.O_STATUS === "99"
+                            ? ["Yes", "No"]
+                            : ["Ok"],
+                      });
                       if (btnName === "No" || postData[i]?.O_STATUS === "999") {
+                        responseData.push([]);
                         return {
                           SECURITY_VALUE: {
                             value: "",
@@ -421,12 +438,12 @@ export const LimitSecurityData = async (apiReqPara) => {
                 { name: "required", params: ["This Field is required."] },
               ],
             };
-            // item.validate = (value) => {
-            //   if (Boolean(value?.value) && !isValid(value?.value)) {
-            //     return "This Field is required.";
-            //   }
-            //   return "";
-            // };
+            item.validate = (value) => {
+              if (Boolean(value?.value) && !isValid(value?.value)) {
+                return "PleaseEnterValidDate";
+              }
+              return "";
+            };
             item.postValidationSetCrossFieldValues = async (
               field,
               formState,
@@ -480,13 +497,15 @@ export const LimitSecurityData = async (apiReqPara) => {
             //   }
             //   return "";
             // };
-            item.dependentFields = ["FD_NO"];
-            item.isReadOnly = (fieldData, dependentFieldsValues) => {
-              if (fieldData?.value && dependentFieldsValues?.FD_NO?.value) {
+            item.dependentFields = ["FD_NO", "LIMIT_TYPE"];
+            item.isReadOnly = (fieldData, dependent) => {
+              if (fieldData?.value && dependent?.FD_NO?.value) {
                 return true;
               } else if (
-                apiReqPara?.SECURITY_TYPE === "OTH" ||
-                apiReqPara?.SECURITY_TYPE === "PRT"
+                (apiReqPara?.SECURITY_TYPE === "OTH" &&
+                  dependent?.LIMIT_TYPE?.value === "Normal") ||
+                (apiReqPara?.SECURITY_TYPE === "PRT" &&
+                  dependent?.LIMIT_TYPE?.value === "Normal")
               ) {
                 return true;
               } else {
@@ -666,8 +685,6 @@ export const LimitSecurityData = async (apiReqPara) => {
               authState,
               dependentFields
             ) => {
-              console.log("<<<LIMIT_AMOUNT", field, dependentFields);
-
               if (
                 typeof field?.value === "string" &&
                 dependentFields?.PENAL_INT_RATE?.value === "Y" &&
@@ -732,7 +749,7 @@ export const LimitSecurityData = async (apiReqPara) => {
                           ) ?? ""
                         : (parseInt(field?.value) *
                             parseInt(apiReqPara?.HDN_TAX_RATE)) /
-                            100 ?? "",
+                          100,
                   },
                 };
               }
@@ -753,7 +770,7 @@ export const LimitSecurityData = async (apiReqPara) => {
               return "";
             };
           } else if (item.name === "SECURITY") {
-            item.maxLength = 22;
+            item.maxLength = 50;
             item.validate = (columnValue) => {
               let regex = /^[^!&]*$/;
               if (!regex.test(columnValue.value)) {
@@ -771,11 +788,19 @@ export const LimitSecurityData = async (apiReqPara) => {
               return "";
             };
           } else if (item.name === "RESOLUTION_NO") {
-            item.maxLength = 16;
+            item.maxLength = 15;
             item.validate = (columnValue) => {
               let regex = /^[^!&]*$/;
               if (!regex.test(columnValue.value)) {
                 return "Special Characters not Allowed in Resolution No.";
+              }
+              return "";
+            };
+          } else if (item.name === "INT_RATE") {
+            item.required = true;
+            item.validate = (columnValue) => {
+              if (Number(columnValue.value) <= 0) {
+                return "Interest rate should  be greater than zero.";
               }
               return "";
             };
@@ -878,6 +903,14 @@ export const getLimitNSCdetail = async (apiReqPara) => {
     const dataStatus = data;
     dataStatus.map((item) => {
       item.COLLATERAL_RATE = parseFloat(item.COLLATERAL_RATE).toFixed(2);
+      item.DISPLAY_PERIOD_CD =
+        item?.PERIOD_CD === "D"
+          ? "DAY(S)"
+          : item?.PERIOD_CD === "M"
+          ? "MONTH(S)"
+          : item?.PERIOD_CD === "Y"
+          ? "YEAR(S)"
+          : item?.PERIOD_CD;
       return item;
     });
     return dataStatus;

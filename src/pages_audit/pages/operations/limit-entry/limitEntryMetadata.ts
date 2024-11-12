@@ -1,6 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 
 export const limitEntryMetaData = {
   form: {
@@ -60,6 +60,8 @@ export const limitEntryMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        validationRun: "onChange",
+        isReadOnly: true,
         postValidationSetCrossFieldValues: async (field, formState) => {
           if (field?.value) {
             return {
@@ -89,17 +91,24 @@ export const limitEntryMetaData = {
         },
       },
       accountTypeMetadata: {
+        validationRun: "all",
         isFieldFocused: true,
+        disableCaching: true,
+        dependentFields: ["BRANCH_CD"],
         options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
-            USER_NAME: authState?.user?.id,
-            DOC_CD: "TRN/046",
-          });
+          if (dependentValue?.BRANCH_CD?.value) {
+            return GeneralAPI.get_Account_Type({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              USER_NAME: authState?.user?.id,
+              DOC_CD: "TRN/046",
+            });
+          }
+          return [];
         },
         // _optionsKey: "get_Account_Type",
         postValidationSetCrossFieldValues: async (field, formState) => {
+          console.log("<<<parent ", field);
           formState.setDataOnFieldChange("NSC_FD_BTN", { NSC_FD_BTN: false });
           return {
             PARENT_TYPE: field?.optionData?.[0]?.PARENT_TYPE.trim(),
@@ -167,7 +176,7 @@ export const limitEntryMetaData = {
                   let btnName = await messagebox(
                     postData[i]?.O_STATUS === "999"
                       ? "validation fail"
-                      : "ALert message",
+                      : "Alert message",
                     postData[i]?.O_MESSAGE,
                     postData[i]?.O_STATUS === "99" ? ["Yes", "No"] : ["Ok"]
                   );
@@ -288,8 +297,9 @@ export const limitEntryMetaData = {
         componentType: "autocomplete",
       },
       name: "SECURITY_CD",
-      label: "SecurityCode",
-      placeholder: "SecurityCode",
+      label: "Security",
+      required: true,
+      placeholder: "Security",
       dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
       options: (dependentValue, formState, _, authState) => {
         if (
@@ -308,15 +318,24 @@ export const limitEntryMetaData = {
       },
       disableCaching: true,
       _optionsKey: "getSecurityListData",
-      postValidationSetCrossFieldValues: async (field, formState) => {
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        __,
+        dependentValue
+      ) => {
         if (field?.optionData?.[0]?.SECURITY_TYPE && field?.value) {
           formState.setDataOnFieldChange("SECURITY_CODE", {
             SECURITY_CD: field?.value,
             SECURITY_TYPE: field?.optionData?.[0]?.SECURITY_TYPE.trim(),
           });
           return {
-            SECURITY_TYPE_DISPLAY: {
-              value: field?.optionData?.[0]?.DISPLAY_NM,
+            SECURITY_TYPE: {
+              value: field?.value,
+            },
+            PARENT_TYPE: {
+              value:
+                dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim(),
             },
           };
         }
@@ -341,6 +360,7 @@ export const limitEntryMetaData = {
       label: "LimitType",
       placeholder: "LimitType",
       defaultValue: "Normal",
+      required: true,
       options: () => {
         return [
           { value: "Normal", label: "Normal Limit" },
@@ -348,6 +368,10 @@ export const limitEntryMetaData = {
         ];
       },
       _optionsKey: "limitTypeList",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
       GridProps: {
         xs: 12,
         md: 1.6,
@@ -403,7 +427,7 @@ export const limitEntryMetaData = {
       render: {
         componentType: "hidden",
       },
-      name: "SECURITY_TYPE_DISPLAY",
+      name: "SECURITY_TYPE",
     },
     {
       render: {

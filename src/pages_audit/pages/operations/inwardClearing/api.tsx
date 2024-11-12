@@ -2,7 +2,7 @@ import {
   AddIDinResponseData,
   DefaultErrorObject,
   utilFunction,
-} from "components/utils";
+} from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
@@ -136,7 +136,7 @@ export const validateConfirm = async (apiReq) => {
 };
 export const getInwardZoneTypeList = async (ApiReq) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETINWZONEDDW", {
+    await AuthSDK.internalFetcher("GETCLGZONELIST", {
       ...ApiReq,
     });
   if (status === "0") {

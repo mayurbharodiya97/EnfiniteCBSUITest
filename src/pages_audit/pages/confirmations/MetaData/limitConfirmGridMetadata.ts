@@ -1,9 +1,9 @@
-import { GridMetaDataType } from "components/dataTableStatic";
+import { GridMetaDataType } from "@acuteinfo/common-base";
 
 export const limitConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "LimitConfirmation",
+    gridLabel: "",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -18,14 +18,15 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
     pageSizes: [15, 25, 50],
     defaultPageSize: 15,
     containerHeight: {
-      min: "73vh",
-      max: "73vh",
+      min: "67vh",
+      max: "67vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
     searchPlaceholder: "Records of Limit Confirmation",
+    footerNote: "FooterNoteMsgCfmRej",
   },
   filters: [],
   columns: [
@@ -55,7 +56,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
 
     {
       accessor: "FULL_ACCT_NO",
-      columnName: "AccountNumber",
+      columnName: "AccountNum",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -65,7 +66,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_NM",
-      columnName: "AccountName",
+      columnName: "AccountHolder",
       sequence: 4,
       alignment: "left",
       componentType: "default",

@@ -1,9 +1,8 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { utilFunction } from "components/utils";
 import * as API from "../api";
 import { t } from "i18next";
 import { isValid } from "date-fns";
-import { geaterThanDate } from "registry/rulesEngine";
+import { greaterThanDate, utilFunction } from "@acuteinfo/common-base";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -59,7 +58,7 @@ export const ChequeBookEntryMetaData = {
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field.value) {
             return {
-              ACCT_TYPE: { value: "" },
+              ACCT_TYPE: { value: "", isFieldFocused: true },
               ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
               ACCT_BAL: { value: "" },
@@ -106,15 +105,19 @@ export const ChequeBookEntryMetaData = {
         },
 
         isFieldFocused: true,
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
-            USER_NAME: authState?.user?.id,
-            DOC_CD: "TRN/045",
-          });
+        disableCaching: true,
+        dependentFields: ["BRANCH_CD"],
+        options: (dependent, formState, _, authState) => {
+          if (dependent?.BRANCH_CD?.value) {
+            return GeneralAPI.get_Account_Type({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: dependent?.BRANCH_CD?.value,
+              USER_NAME: authState?.user?.id,
+              DOC_CD: "TRN/045",
+            });
+          }
         },
-        _optionsKey: "securityDropDownListType",
+        _optionsKey: "get_Account_Type",
         postValidationSetCrossFieldValues: (field, formState) => {
           formState.setDataOnFieldChange("DTL_TAB", { DTL_TAB: false });
 
@@ -155,10 +158,6 @@ export const ChequeBookEntryMetaData = {
           }
           return "";
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -181,9 +180,6 @@ export const ChequeBookEntryMetaData = {
             };
 
             let postData = await API.getChequebookData({ otherAPIRequestPara });
-            postData = postData.sort(
-              (a, b) => parseInt(b.O_STATUS) - parseInt(a.O_STATUS)
-            );
             formState.setDataOnFieldChange("DTL_TAB", {
               DTL_TAB:
                 postData.some((item) => item["O_STATUS"] === "0") ?? false,
@@ -199,14 +195,18 @@ export const ChequeBookEntryMetaData = {
             for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: postData[i]?.O_MSG_TITLE
+                    ? postData[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: postData[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "RiskCategoryAlert",
+                  messageTitle: postData[i]?.O_MSG_TITLE
+                    ? postData[i]?.O_MSG_TITLE
+                    : "confirmation",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "INFO",
@@ -218,7 +218,9 @@ export const ChequeBookEntryMetaData = {
               } else if (postData[i]?.O_STATUS === "9") {
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "HNIAlert",
+                    messageTitle: postData[i]?.O_MSG_TITLE
+                      ? postData[i]?.O_MSG_TITLE
+                      : "Alert",
                     message: postData[i]?.O_MESSAGE,
                     icon: "INFO",
                   });
@@ -488,8 +490,8 @@ export const ChequeBookEntryMetaData = {
             CHEQUE_TO: {
               value:
                 parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
-                  parseInt(field?.value) -
-                  1 ?? "",
+                parseInt(field?.value) -
+                1,
             },
           };
         }
@@ -570,8 +572,8 @@ export const ChequeBookEntryMetaData = {
             CHEQUE_TO: {
               value:
                 parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
-                  parseInt(field?.value) -
-                  1 ?? "",
+                parseInt(field?.value) -
+                1,
             },
           };
         }
@@ -668,7 +670,7 @@ export const ChequeBookEntryMetaData = {
                     ) ?? ""
                   : (parseInt(field?.value) *
                       parseInt(dependentFields?.GST?.value)) /
-                      100 ?? "",
+                    100,
             },
           };
         } else if (!field.value) {
@@ -818,7 +820,7 @@ export const ChequeBookEntryMetaData = {
         if (Boolean(value?.value) && !isValid(value?.value)) {
           return "ThisFieldisrequired";
         } else if (
-          geaterThanDate(value?.value, value?._maxDt, {
+          greaterThanDate(value?.value, value?._maxDt, {
             ignoreTime: true,
           })
         ) {

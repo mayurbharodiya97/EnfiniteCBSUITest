@@ -1,19 +1,21 @@
-import { Dialog } from "@mui/material";
-import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { usePopupContext } from "components/custom/popupContext";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GradientButton } from "components/styledComponent/button";
-import { SubmitFnType } from "packages/form";
+import { Box, Dialog } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
-import { Transition } from "pages_audit/common";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { updateFDInterestPayment } from "../FDInterestPayment/api";
 import * as API from "./api";
 import { FdInterestPaymentconfFormMetaData } from "./FdInterestPaymentConfmMetaData";
-
+import {
+  LoaderPaperComponent,
+  FormWrapper,
+  MetaDataType,
+  SubmitFnType,
+  GradientButton,
+  Transition,
+  usePopupContext,
+  queryClient,
+} from "@acuteinfo/common-base";
 const FdInterestPaymentconfForm = ({
   closeDialog,
   fdDetails,
@@ -35,7 +37,10 @@ const FdInterestPaymentconfForm = ({
           buttonNames: ["Ok"],
           icon: "SUCCESS",
         });
-        queryClient.invalidateQueries(["getFDPaymentInstruConfAcctDtl"]);
+        queryClient.invalidateQueries([
+          "getFDPaymentInstruConfAcctDtl",
+          authState?.user?.branchCode ?? "",
+        ]);
         CloseMessageBox();
         closeDialog();
       },
@@ -56,10 +61,14 @@ const FdInterestPaymentconfForm = ({
       onSuccess: async (data) => {
         const btnName = await MessageBox({
           messageTitle: "Success",
-          message: "RecordSave",
+          message: "confirmMsg",
           buttonNames: ["Ok"],
           icon: "SUCCESS",
         });
+        queryClient.invalidateQueries([
+          "getFDPaymentInstruConfAcctDtl",
+          authState?.user?.branchCode ?? "",
+        ]);
         CloseMessageBox();
         closeDialog();
       },
@@ -94,10 +103,11 @@ const FdInterestPaymentconfForm = ({
           message: "ConfirmMsg",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
-          doFDPaymentInstruEntryConfm.mutate({
-            DETAILS_DATA: {
+          doFDPaymentInstruEntryConfm?.mutate({
+            DETAIL_DATA: {
               isNewRow: [],
               isDeleteRow: [],
               isUpdateRow: fdDetails,
@@ -111,9 +121,10 @@ const FdInterestPaymentconfForm = ({
         message: "ConfirmReject",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
-        deleteFDInterestPaymentEntry.mutate({
+        deleteFDInterestPaymentEntry?.mutate({
           DETAILS_DATA: {
             isDeleteRow: fdDetails,
             isUpdatedRow: [],
@@ -122,29 +133,33 @@ const FdInterestPaymentconfForm = ({
         });
       }
     }
-    endSubmit(true);
   };
 
   return (
     <>
       {loader ? (
         <LoaderPaperComponent />
-      ) : Array.isArray(fdDetails) && fdDetails.length > 0 ? (
+      ) : (
         <FormWrapper
-          key={"FdInterestPaymentConfmMetaData"}
+          key={"FdInterestPaymentConfmMetaData" + fdDetails?.length}
           metaData={FdInterestPaymentconfFormMetaData as MetaDataType}
           onSubmitHandler={onSubmitHandler}
           initialValues={{
             FDINTPAYDTL: fdDetails,
-            TOTAL_DEPOSIT_AMOUNT: fdDetails.reduce(
-              (acc, item) => acc + (Number(item.TOT_AMT) || 0),
+            BRANCH_CD: rowsData?.[0]?.data?.BRANCH_CD ?? "",
+            ACCT_TYPE: rowsData?.[0]?.data?.ACCT_TYPE ?? "",
+            ACCT_CD: rowsData?.[0]?.data?.ACCT_CD ?? "",
+            ACCT_NM: rowsData?.[0]?.data?.ACCT_NM ?? "",
+            TOTAL_DEPOSIT_AMOUNT: fdDetails?.reduce(
+              (acc, item) => acc + (Number(item?.TOT_AMT) || 0),
               0
             ),
-            TOTAL_MATURITY_AMOUNT: fdDetails.reduce(
-              (acc, item) => acc + (Number(item.MATURITY_AMT) || 0),
+            TOTAL_MATURITY_AMOUNT: fdDetails?.reduce(
+              (acc, item) => acc + (Number(item?.MATURITY_AMT) || 0),
               0
             ),
           }}
+          formState={{ fdDetails: fdDetails }}
           displayMode={"view"}
           formStyle={{
             background: "white",
@@ -176,7 +191,7 @@ const FdInterestPaymentconfForm = ({
             </>
           )}
         </FormWrapper>
-      ) : null}
+      )}
     </>
   );
 };
@@ -188,18 +203,7 @@ export const FdInterestPaymentConfDetail = ({
   rowsData,
 }) => {
   return (
-    <Dialog
-      open={true}
-      // @ts-ignore
-      TransitionComponent={Transition}
-      PaperProps={{
-        style: {
-          width: "100%",
-          overflow: "auto",
-        },
-      }}
-      maxWidth="lg"
-    >
+    <>
       {fdDetails ? (
         <FdInterestPaymentconfForm
           closeDialog={closeDialog}
@@ -210,6 +214,6 @@ export const FdInterestPaymentConfDetail = ({
       ) : (
         <LoaderPaperComponent />
       )}
-    </Dialog>
+    </>
   );
 };

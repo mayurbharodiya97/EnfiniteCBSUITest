@@ -4,7 +4,7 @@ import {
   getAgentMstConfigDDW,
   getAgentMstConfigPigmyDDW,
 } from "../api";
-import { utilFunction } from "components/utils";
+import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
 
 export const AgentMasterFormMetaData = {
@@ -59,7 +59,7 @@ export const AgentMasterFormMetaData = {
       isFieldFocused: true,
       autoComplete: "off",
       required: true,
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CodeisRequired"] }],
@@ -102,7 +102,7 @@ export const AgentMasterFormMetaData = {
       required: true,
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialCharInput: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CategoryNameisrequired"] }],
@@ -154,17 +154,7 @@ export const AgentMasterFormMetaData = {
         name: "AGENT_TYPE_CD",
         runPostValidationHookAlways: true,
         validationRun: "onChange",
-        disableCaching: true,
         dependentFields: ["AGENT_BRANCH_CD"],
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: dependentValue?.AGENT_BRANCH_CD?.value,
-            DOC_CD: "MST/041",
-            USER_NAME: authState?.user?.id,
-          });
-        },
-        _optionsKey: "getAccountType",
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -172,6 +162,32 @@ export const AgentMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          if (
+            currentField?.value &&
+            dependentFieldValues?.AGENT_BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                AGENT_TYPE_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                AGENT_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
           return {
             AGENT_ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },
@@ -184,6 +200,10 @@ export const AgentMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["AGENT_TYPE_CD", "AGENT_BRANCH_CD"],
         runPostValidationHookAlways: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: true,
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -191,14 +211,50 @@ export const AgentMasterFormMetaData = {
           dependentFieldsValues
         ) => {
           if (formState?.isSubmitting) return {};
+
           if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
+          if (
+            currentField.value &&
+            dependentFieldsValues?.AGENT_TYPE_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                AGENT_ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                AGENT_TYPE_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
             dependentFieldsValues?.AGENT_BRANCH_CD?.value &&
             dependentFieldsValues?.AGENT_TYPE_CD?.value
           ) {
             const reqParameters = {
               BRANCH_CD: dependentFieldsValues?.AGENT_BRANCH_CD?.value,
-              COMP_CD: authState?.companyID,
+              COMP_CD: authState?.companyID ?? "",
               ACCT_TYPE: dependentFieldsValues?.AGENT_TYPE_CD?.value,
               ACCT_CD: utilFunction.getPadAccountNumber(
                 currentField?.value,
@@ -220,6 +276,7 @@ export const AgentMasterFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -228,6 +285,7 @@ export const AgentMasterFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;
@@ -383,17 +441,7 @@ export const AgentMasterFormMetaData = {
         name: "SECURITY_TYPE_CD",
         required: false,
         schemaValidation: {},
-        disableCaching: true,
         dependentFields: ["SECURITY_BRANCH"],
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: dependentValue?.SECURITY_BRANCH?.value,
-            DOC_CD: "MST/041",
-            USER_NAME: authState?.user?.id,
-          });
-        },
-        _optionsKey: "getAccountType",
         runPostValidationHookAlways: true,
         validationRun: "onChange",
         postValidationSetCrossFieldValues: async (
@@ -403,6 +451,32 @@ export const AgentMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          if (
+            currentField?.value &&
+            dependentFieldValues?.SECURITY_BRANCH?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                SECURITY_TYPE_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                SECURITY_BRANCH: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
           return {
             SECURITY_ACCT_CD: { value: "" },
             SECURITY_ACCT_NM: { value: "" },
@@ -418,6 +492,10 @@ export const AgentMasterFormMetaData = {
         schemaValidation: {},
         dependentFields: ["SECURITY_TYPE_CD", "SECURITY_BRANCH"],
         runPostValidationHookAlways: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: true,
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -425,14 +503,50 @@ export const AgentMasterFormMetaData = {
           dependentFieldsValues
         ) => {
           if (formState?.isSubmitting) return {};
+
           if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              SECURITY_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
+          if (
+            currentField.value &&
+            dependentFieldsValues?.SECURITY_TYPE_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                SECURITY_ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                SECURITY_TYPE_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
             dependentFieldsValues?.SECURITY_BRANCH?.value &&
             dependentFieldsValues?.SECURITY_TYPE_CD?.value
           ) {
             const reqParameters = {
               BRANCH_CD: dependentFieldsValues?.SECURITY_BRANCH?.value,
-              COMP_CD: authState?.companyID,
+              COMP_CD: authState?.companyID ?? "",
               ACCT_TYPE: dependentFieldsValues?.SECURITY_TYPE_CD?.value,
               ACCT_CD: utilFunction.getPadAccountNumber(
                 currentField?.value,
@@ -454,6 +568,7 @@ export const AgentMasterFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -462,6 +577,7 @@ export const AgentMasterFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;
@@ -574,7 +690,6 @@ export const AgentMasterFormMetaData = {
       label: "Security%",
       defaultValue: "0.00",
       autoComplete: "off",
-      maxLength: 14,
       runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
         currentField,
@@ -700,17 +815,7 @@ export const AgentMasterFormMetaData = {
         required: false,
         schemaValidation: {},
         validationRun: "onChange",
-        disableCaching: true,
         dependentFields: ["OTH_BRANCH_CD"],
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: dependentValue?.OTH_BRANCH_CD?.value,
-            DOC_CD: "MST/041",
-            USER_NAME: authState?.user?.id,
-          });
-        },
-        _optionsKey: "getAccountType",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -719,6 +824,33 @@ export const AgentMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+
+          if (
+            currentField?.value &&
+            dependentFieldValues?.OTH_BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                OTH_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                OTH_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
           return {
             OTH_ACCT_CD: { value: "" },
             OTHER_ACCT_NM: { value: "" },
@@ -733,6 +865,10 @@ export const AgentMasterFormMetaData = {
         required: false,
         schemaValidation: {},
         runPostValidationHookAlways: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: true,
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -740,14 +876,50 @@ export const AgentMasterFormMetaData = {
           dependentFieldsValues
         ) => {
           if (formState?.isSubmitting) return {};
+
           if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              OTHER_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
+          if (
+            currentField.value &&
+            dependentFieldsValues?.OTH_ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                OTH_ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                OTH_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
             dependentFieldsValues?.OTH_BRANCH_CD?.value &&
             dependentFieldsValues?.OTH_ACCT_TYPE?.value
           ) {
             const reqParameters = {
               BRANCH_CD: dependentFieldsValues?.OTH_BRANCH_CD?.value,
-              COMP_CD: authState?.companyID,
+              COMP_CD: authState?.companyID ?? "",
               ACCT_TYPE: dependentFieldsValues?.OTH_ACCT_TYPE?.value,
               ACCT_CD: utilFunction.getPadAccountNumber(
                 currentField?.value,
@@ -769,6 +941,7 @@ export const AgentMasterFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -777,6 +950,7 @@ export const AgentMasterFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;
@@ -933,17 +1107,7 @@ export const AgentMasterFormMetaData = {
         name: "PTAX_ACCT_TYPE",
         required: false,
         schemaValidation: {},
-        disableCaching: true,
         dependentFields: ["PTAX_BRANCH_CD"],
-        options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: dependentValue?.PTAX_BRANCH_CD?.value,
-            DOC_CD: "MST/041",
-            USER_NAME: authState?.user?.id,
-          });
-        },
-        _optionsKey: "getAccountType",
         validationRun: "onChange",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
@@ -953,6 +1117,33 @@ export const AgentMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+
+          if (
+            currentField?.value &&
+            dependentFieldValues?.PTAX_BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Branch.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                PTAX_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                PTAX_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
           return {
             PTAX_ACCT_CD: { value: "" },
             PTAX_ACCT_NM: { value: "" },
@@ -967,6 +1158,10 @@ export const AgentMasterFormMetaData = {
         schemaValidation: {},
         dependentFields: ["PTAX_ACCT_TYPE", "PTAX_BRANCH_CD"],
         runPostValidationHookAlways: true,
+        AlwaysRunPostValidationSetCrossFieldValues: {
+          alwaysRun: true,
+          touchAndValidate: true,
+        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -974,14 +1169,50 @@ export const AgentMasterFormMetaData = {
           dependentFieldsValues
         ) => {
           if (formState?.isSubmitting) return {};
+
           if (
+            !Boolean(currentField?.displayValue) &&
+            !Boolean(currentField?.value)
+          ) {
+            return {
+              PTAX_ACCT_NM: { value: "" },
+            };
+          } else if (!Boolean(currentField?.displayValue)) {
+            return {};
+          }
+          if (
+            currentField.value &&
+            dependentFieldsValues?.PTAX_ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "Enter Account Type.",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                PTAX_ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                PTAX_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
             dependentFieldsValues?.PTAX_BRANCH_CD?.value &&
             dependentFieldsValues?.PTAX_ACCT_TYPE?.value
           ) {
             const reqParameters = {
               BRANCH_CD: dependentFieldsValues?.PTAX_BRANCH_CD?.value,
-              COMP_CD: authState?.companyID,
+              COMP_CD: authState?.companyID ?? "",
               ACCT_TYPE: dependentFieldsValues?.PTAX_ACCT_TYPE?.value,
               ACCT_CD: utilFunction.getPadAccountNumber(
                 currentField?.value,
@@ -1003,6 +1234,7 @@ export const AgentMasterFormMetaData = {
                 const { btnName, obj } = await getButtonName({
                   messageTitle: "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
@@ -1011,6 +1243,7 @@ export const AgentMasterFormMetaData = {
                   const { btnName, obj } = await getButtonName({
                     messageTitle: "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
+                    icon: "WARNING",
                   });
                 }
                 returnVal = postData;

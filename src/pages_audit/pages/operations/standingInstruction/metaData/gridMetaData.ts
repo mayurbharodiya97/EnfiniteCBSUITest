@@ -1,7 +1,5 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { utilFunction } from "components/utils";
-import * as API from '../api'
+import { GridMetaDataType } from "@acuteinfo/common-base";
+
 import { GeneralAPI } from "registry/fns/functions";
 
 export const standingInsructionGridMetaData: GridMetaDataType = {
@@ -26,7 +24,7 @@ export const standingInsructionGridMetaData: GridMetaDataType = {
       max: "65vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
@@ -84,7 +82,6 @@ export const standingInsructionGridMetaData: GridMetaDataType = {
   ],
 };
 
-
 export const standingInsructionViewGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -107,7 +104,7 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       max: "30vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
@@ -141,7 +138,8 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-    }, {
+    },
+    {
       columnName: "",
       componentType: "buttonRowCell",
       buttonLabel: "CreditPhotoSign",
@@ -150,7 +148,8 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "center",
       isVisible: true,
-    }, {
+    },
+    {
       accessor: "START_DT",
       columnName: "StartDate",
       sequence: 5,
@@ -159,7 +158,8 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-    }, {
+    },
+    {
       accessor: "EXECUTE_DAY",
       columnName: "ExecuteOnDay",
       sequence: 6,
@@ -168,7 +168,8 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-    }, {
+    },
+    {
       accessor: "FEQ_TYPE",
       columnName: "FrequncyType",
       sequence: 7,
@@ -177,7 +178,8 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-    }, {
+    },
+    {
       accessor: "FEQ_VALUE",
       columnName: "FrequencyValue",
       sequence: 8,
@@ -215,8 +217,8 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 100,
       minWidth: 50,
-      maxWidth: 150
-    }, 
+      maxWidth: 150,
+    },
     {
       columnName: "",
       componentType: "buttonRowCell",
@@ -226,27 +228,29 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       sequence: 12,
       alignment: "center",
       isVisible: true,
-    },{
+    },
+    {
       accessor: "SI_AMOUNT",
       columnName: "SIAmount",
       sequence: 13,
       componentType: "currency",
-      alignment:"right",
-      width: 150,
-      minWidth: 50,
-      maxWidth: 170,
-      isDisplayTotal:true
-
-    }, {
+      alignment: "right",
+      width: 180,
+      minWidth: 150,
+      maxWidth: 200,
+      isDisplayTotal: true,
+    },
+    {
       accessor: "SI_CHARGE",
       columnName: "SICharge",
       sequence: 14,
-      alignment:"right",
+      alignment: "right",
       componentType: "currency",
       width: 100,
       minWidth: 50,
-      maxWidth: 150
-    }, {
+      maxWidth: 150,
+    },
+    {
       accessor: "REMARKS",
       columnName: "Remark",
       sequence: 15,
@@ -254,8 +258,9 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 200,
       minWidth: 150,
-      maxWidth: 350
-    }, {
+      maxWidth: 350,
+    },
+    {
       accessor: "VALID_UPTO",
       columnName: "ValidUpTo",
       sequence: 16,
@@ -263,7 +268,7 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       componentType: "date",
       width: 100,
       minWidth: 50,
-      maxWidth: 150
+      maxWidth: 150,
     },
     {
       accessor: "SI_COUNT",
@@ -276,7 +281,6 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-
     },
     {
       accessor: "DOC_STATUS",
@@ -288,12 +292,11 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       minWidth: 50,
       maxWidth: 150,
       isVisible: true,
-      isReadOnly:true,
+      isReadOnly: true,
       shouldExclude: (initialValue, original, prevRows, nextRows) => {
         if (original?.SI_COUNT > 0) {
           return false;
-        }
-        else {
+        } else {
           return true;
         }
       },
@@ -306,7 +309,7 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 100,
       minWidth: 50,
-      maxWidth: 150
+      maxWidth: 150,
     },
     {
       accessor: "CR_ACCT_NM",
@@ -316,7 +319,7 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 300,
       minWidth: 50,
-      maxWidth: 350
+      maxWidth: 350,
     },
     {
       accessor: "DR_ACCT_NM",
@@ -326,9 +329,9 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 300,
       minWidth: 50,
-      maxWidth: 350
+      maxWidth: 350,
     },
- 
+
     {
       columnName: "",
       componentType: "buttonRowCell",
@@ -349,20 +352,15 @@ export const standingInsructionViewGridMetaData: GridMetaDataType = {
       alignment: "center",
       isVisible: true,
       shouldExclude: (initialValue, original, prevRows, nextRows) => {
-
         if (original?.SI_COUNT <= 0) {
           return false;
-        }
-        else {
+        } else {
           return true;
         }
       },
     },
-    
   ],
 };
-
-
 
 export const siasExecutedGridMetadata: GridMetaDataType = {
   gridConfig: {
@@ -383,11 +381,11 @@ export const siasExecutedGridMetadata: GridMetaDataType = {
     pageSizes: [20, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
-      min: "47vh",
-      max: "47vh",
+      min: "40vh",
+      max: "40vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: true,
     isCusrsorFocused: true,
   },
@@ -436,12 +434,13 @@ export const siasExecutedGridMetadata: GridMetaDataType = {
       accessor: "SI_AMOUNT",
       columnName: "Amount",
       sequence: 3,
-      alignment:"right",
+      alignment: "right",
       componentType: "currency",
       width: 150,
       minWidth: 50,
       maxWidth: 170,
-    }, {
+    },
+    {
       accessor: "SI_EXECUTE_FLG",
       columnName: "Processed",
       sequence: 4,
@@ -449,7 +448,7 @@ export const siasExecutedGridMetadata: GridMetaDataType = {
       componentType: "editableSelect",
       options: () => [
         { label: "Consider As Executed", value: "C" },
-        { label: "N", value: "N" }
+        { label: "N", value: "N" },
       ],
       _optionsKey: "considerAsExecuted",
       defaultOptionLabel: "",
@@ -467,8 +466,8 @@ export const siasExecutedGridMetadata: GridMetaDataType = {
       width: 200,
       minWidth: 150,
       maxWidth: 250,
-    }
-     ],
+    },
+  ],
 };
 
 export const searchButttonGridMetaData: GridMetaDataType = {
@@ -493,13 +492,12 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       max: "67vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
+    allowColumnHiding: false,
     allowRowSelection: true,
     isCusrsorFocused: true,
-  footerNote: "ColorandSi"
+    footerNote: "ColorandSi",
   },
   columns: [
-
     {
       accessor: "DEBIT_ACCOUNT",
       columnName: "Debit From A/C",
@@ -518,8 +516,9 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 300,
       minWidth: 50,
-      maxWidth: 350
-    }, {
+      maxWidth: 350,
+    },
+    {
       accessor: "START_DT",
       columnName: "StartDate",
       sequence: 3,
@@ -528,7 +527,8 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-    }, {
+    },
+    {
       accessor: "EXECUTE_DAY",
       columnName: "ExecuteOnDay",
       sequence: 4,
@@ -537,7 +537,8 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-    }, {
+    },
+    {
       accessor: "FEQ_TYPE",
       columnName: "FrequncyType",
       sequence: 5,
@@ -546,7 +547,8 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-    }, {
+    },
+    {
       accessor: "FEQ_VALUE",
       columnName: "FrequencyValue",
       sequence: 6,
@@ -558,7 +560,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CREDIT_ACCOUNT",
-      columnName: "CreditFromAcct",
+      columnName: "CreditToAccount",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -574,26 +576,29 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 300,
       minWidth: 50,
-      maxWidth: 350
-    }, {
+      maxWidth: 350,
+    },
+    {
       accessor: "SI_AMOUNT",
       columnName: "SIAmount",
       sequence: 9,
-      alignment:"right",
+      alignment: "right",
       componentType: "currency",
       width: 150,
       minWidth: 50,
       maxWidth: 170,
-    }, {
+    },
+    {
       accessor: "SI_CHARGE",
       columnName: "SICharge",
       sequence: 10,
-      alignment:"right",
+      alignment: "right",
       componentType: "currency",
       width: 100,
       minWidth: 50,
-      maxWidth: 150
-    }, {
+      maxWidth: 150,
+    },
+    {
       accessor: "REMARKS",
       columnName: "Remark",
       sequence: 11,
@@ -601,16 +606,17 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 200,
       minWidth: 150,
-      maxWidth: 350
-    }, {
+      maxWidth: 350,
+    },
+    {
       accessor: "VALID_UPTO",
-      columnName: "ValidUpTo",
+      columnName: "ValidUpto",
       sequence: 12,
       alignment: "left",
       componentType: "date",
       width: 100,
       minWidth: 50,
-      maxWidth: 150
+      maxWidth: 150,
     },
     {
       accessor: "DOC_STATUS",
@@ -621,12 +627,11 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-      isReadOnly:true,
+      isReadOnly: true,
       shouldExclude: (initialValue, original, prevRows, nextRows) => {
         if (original?.SI_COUNT > 0) {
           return false;
-        }
-        else {
+        } else {
           return true;
         }
       },
@@ -644,8 +649,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       shouldExclude: (initialValue, original, prevRows, nextRows) => {
         if (original?.SI_COUNT <= 0) {
           return false;
-        }
-        else {
+        } else {
           return true;
         }
       },
@@ -666,7 +670,7 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
     allowColumnReordering: true,
     disableSorting: false,
     hideHeader: false,
-    footerNote:"DeletetheTransaction",
+    footerNote: "DeletetheTransaction",
     disableGroupBy: true,
     enablePagination: true,
     pageSizes: [20, 30, 50],
@@ -676,12 +680,11 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       max: "70vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
-    allowRowSelection: true,
+    allowColumnHiding: false,
+    allowRowSelection: false,
     isCusrsorFocused: true,
   },
   columns: [
-
     {
       accessor: "Sr No.",
       columnName: "SrNo",
@@ -689,8 +692,8 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       alignment: "left",
       componentType: "default",
       isAutoSequence: true,
-      width: 50,
-      minWidth: 40,
+      width: 80,
+      minWidth: 50,
       maxWidth: 100,
     },
     {
@@ -699,20 +702,37 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "date",
-      width: 100,
-      minWidth: 50,
-      maxWidth: 150
-    }, 
+      width: 120,
+      minWidth: 100,
+      maxWidth: 150,
+      isDisplayTotal: true,
+      footerLabel: "Proccessed",
+      setFooterValue(total, rows) {
+        const proccessedCount = rows?.filter(
+          ({ original }) =>
+            original.SI_EXECUTE_FLG === "Y" || original.SI_EXECUTE_FLG === "C"
+        ).length;
+        return [proccessedCount ?? 0];
+      },
+    },
     {
       accessor: "PROCESS_DT",
       columnName: "ProcessDate",
       sequence: 3,
       alignment: "left",
       componentType: "date",
-      width: 100,
-      minWidth: 50,
-      maxWidth: 150
-    }, 
+      width: 120,
+      minWidth: 100,
+      maxWidth: 150,
+      isDisplayTotal: true,
+      footerLabel: "Pending",
+      setFooterValue(total, rows) {
+        const pendingCount = rows?.filter(
+          ({ original }) => original?.SI_EXECUTE_FLG === "N"
+        ).length;
+        return [pendingCount ?? 0];
+      },
+    },
     {
       accessor: "SI_EXECUTE_FLG_DIS",
       columnName: "SIExecuteProcess",
@@ -722,7 +742,7 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-    }, 
+    },
     {
       accessor: "REASON",
       columnName: "Reason",
@@ -732,7 +752,7 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       width: 200,
       minWidth: 150,
       maxWidth: 250,
-    }, 
+    },
     {
       accessor: "BRANCH_CD",
       columnName: "DebitBranchCode",
@@ -781,7 +801,7 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 100,
       minWidth: 50,
-      maxWidth: 350
+      maxWidth: 350,
     },
     {
       accessor: "CR_ACCT_CD",
@@ -791,30 +811,30 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 100,
       minWidth: 50,
-      maxWidth: 350
+      maxWidth: 350,
     },
     {
       accessor: "SI_AMOUNT",
       columnName: "SIAmount",
       sequence: 9,
-      alignment:"right",
+      alignment: "right",
       componentType: "currency",
       width: 150,
       minWidth: 50,
       maxWidth: 170,
-      isDisplayTotal:true
-    }, 
+      isDisplayTotal: true,
+    },
     {
       accessor: "SI_CHARGE",
       columnName: "SICharge",
       sequence: 10,
-      alignment:"right",
+      alignment: "right",
       componentType: "currency",
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-      isDisplayTotal:true
-    }, 
+      isDisplayTotal: true,
+    },
     {
       accessor: "REMARKS",
       columnName: "Remark",
@@ -823,7 +843,7 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 150,
       minWidth: 100,
-      maxWidth: 350
+      maxWidth: 350,
     },
     {
       columnName: "",
@@ -836,15 +856,13 @@ export const siExecuteDetailViewGridMetaData: GridMetaDataType = {
       shouldExclude: (initialValue, original, prevRows, nextRows) => {
         if (original?.AUDIT_CNT > 0) {
           return false;
-        }
-        else {
+        } else {
           return true;
         }
       },
     },
   ],
-}
-
+};
 
 export const AuditgridMetaData: GridMetaDataType = {
   gridConfig: {
@@ -857,7 +875,7 @@ export const AuditgridMetaData: GridMetaDataType = {
       minWidth: 100,
     },
     allowColumnReordering: true,
-    disableGlobalFilter:true,
+    disableGlobalFilter: true,
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
@@ -874,7 +892,6 @@ export const AuditgridMetaData: GridMetaDataType = {
     isCusrsorFocused: true,
   },
   columns: [
-
     {
       accessor: "Sr No.",
       columnName: "SrNo",
@@ -894,8 +911,8 @@ export const AuditgridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 150,
       minWidth: 100,
-      maxWidth: 200
-    }, 
+      maxWidth: 200,
+    },
     {
       accessor: "COLUMN_LABEL",
       columnName: "ColumnName",
@@ -904,8 +921,8 @@ export const AuditgridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 150,
       minWidth: 100,
-      maxWidth: 200
-    }, 
+      maxWidth: 200,
+    },
     {
       accessor: "OLD_VALUE",
       columnName: "OldValue",
@@ -915,7 +932,7 @@ export const AuditgridMetaData: GridMetaDataType = {
       width: 200,
       minWidth: 100,
       maxWidth: 250,
-    }, 
+    },
     {
       accessor: "NEW_VALUE",
       columnName: "NewValue",
@@ -925,10 +942,29 @@ export const AuditgridMetaData: GridMetaDataType = {
       width: 200,
       minWidth: 100,
       maxWidth: 250,
-    }, 
+    },
+    {
+      accessor: "USER_NM",
+      columnName: "Maker",
+      sequence: 5,
+      alignment: "left",
+      componentType: "default",
+      width: 80,
+      minWidth: 50,
+      maxWidth: 100,
+    },
+    {
+      accessor: "ACTIVITY_DATE",
+      columnName: "Act. Date",
+      sequence: 5,
+      alignment: "left",
+      componentType: "date",
+      width: 120,
+      minWidth: 80,
+      maxWidth: 150,
+    },
   ],
-}
-
+};
 
 export const populateGridData: GridMetaDataType = {
   gridConfig: {
@@ -966,8 +1002,8 @@ export const populateGridData: GridMetaDataType = {
       componentType: "date",
       width: 100,
       minWidth: 50,
-      maxWidth: 150
-    }, 
+      maxWidth: 150,
+    },
     {
       accessor: "PROCESS_DT",
       columnName: "ProcessDate",
@@ -976,8 +1012,8 @@ export const populateGridData: GridMetaDataType = {
       componentType: "date",
       width: 100,
       minWidth: 50,
-      maxWidth: 150
-    }, 
+      maxWidth: 150,
+    },
     {
       accessor: "SI_EXECUTE_FLG_DIS",
       columnName: "SIExecuteProcess",
@@ -987,7 +1023,7 @@ export const populateGridData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-    }, 
+    },
     {
       accessor: "REASON",
       columnName: "Reason",
@@ -997,7 +1033,7 @@ export const populateGridData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
-    }, 
+    },
     {
       accessor: "BRANCH_CD",
       columnName: "DebitBranchCode",
@@ -1046,7 +1082,7 @@ export const populateGridData: GridMetaDataType = {
       componentType: "default",
       width: 100,
       minWidth: 50,
-      maxWidth: 350
+      maxWidth: 350,
     },
     {
       accessor: "CR_ACCT_CD",
@@ -1056,28 +1092,28 @@ export const populateGridData: GridMetaDataType = {
       componentType: "default",
       width: 100,
       minWidth: 50,
-      maxWidth: 350
+      maxWidth: 350,
     },
     {
       accessor: "SI_AMOUNT",
       columnName: "SIAmount",
       sequence: 12,
-      alignment:"right",
+      alignment: "right",
       componentType: "currency",
       width: 150,
       minWidth: 50,
       maxWidth: 170,
-    }, 
+    },
     {
       accessor: "SI_CHARGE",
       columnName: "SICharge",
       sequence: 13,
-      alignment:"right",
+      alignment: "right",
       componentType: "currency",
       width: 100,
       minWidth: 50,
-      maxWidth: 150
-    }, 
+      maxWidth: 150,
+    },
     {
       accessor: "REMARKS",
       columnName: "Remark",
@@ -1086,10 +1122,10 @@ export const populateGridData: GridMetaDataType = {
       componentType: "default",
       width: 150,
       minWidth: 100,
-      maxWidth: 350
+      maxWidth: 350,
     },
   ],
-}
+};
 
 // export const editDataMasterMetaData: MasterDetailsMetaData = {
 //   masterForm: {
@@ -1167,8 +1203,8 @@ export const populateGridData: GridMetaDataType = {
 //         GridProps: { xs: 12, sm: 6, md: 3, lg: 3, xl: 3 },
 //       },
 //       {
-//         render: { 
-          
+//         render: {
+
 //           componentType: "_accountNumber" },
 //           name:"data",
 //         branchCodeMetadata: {
@@ -1187,7 +1223,7 @@ export const populateGridData: GridMetaDataType = {
 //               USER_NAME: authState?.user?.id,
 //               DOC_CD: "SIDRTYPE",
 //             });
-  
+
 //           },
 //           _optionsKey: "debit_acct_type",
 //           GridProps: { xs: 6, sm: 6, md: 3, lg: 3, xl: 3},
@@ -1205,7 +1241,7 @@ export const populateGridData: GridMetaDataType = {
 //             dependentFieldValues
 //           ) => {
 //             if (formState?.isSubmitting) return {};
-  
+
 //             const reqParameters = {
 //               BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
 //               COMP_CD: authState?.companyID,
@@ -1216,23 +1252,23 @@ export const populateGridData: GridMetaDataType = {
 //               ),
 //               SCREEN_REF: "TRN/394",
 //             };
-  
+
 //             if (
-  
+
 //               dependentFieldValues?.BRANCH_CD?.value &&
 //               dependentFieldValues?.DR_ACCT_TYPE?.value
 //             ) {
 //               const postData = await GeneralAPI.getAccNoValidation(reqParameters);
-    
+
 //               let btn99, returnVal;
 
 //               const getButtonName = async (obj) => {
 //                 let btnName = await formState.MessageBox(obj);
 //                 return { btnName, obj };
 //               };
-  
+
 //               for (let i = 0; i < postData.MSG.length; i++) {
-           
+
 //                 if (postData.MSG[i]?.O_STATUS === "999") {
 //                   const { btnName, obj } = await getButtonName({
 //                     messageTitle: "ValidationFailed",
@@ -1266,7 +1302,7 @@ export const populateGridData: GridMetaDataType = {
 //                 }
 //               }
 //               btn99 = 0;
-  
+
 //               if (dependentFieldValues?.["CR_ACCT_CD"]?.value === utilFunction.getPadAccountNumber(
 //                 currentField?.value,
 //                 dependentFieldValues?.DR_ACCT_CD?.optionData
@@ -1297,7 +1333,7 @@ export const populateGridData: GridMetaDataType = {
 //               };
 //             }
 //           },
-  
+
 //           // runPostValidationHookAlways: true,
 //           FormatProps: {
 //             isAllowed: (values) => {
@@ -1311,7 +1347,7 @@ export const populateGridData: GridMetaDataType = {
 //           fullWidth: true,
 //           GridProps: { xs: 6, sm: 6, md: 3, lg: 2, xl: 2 },
 //         },
-  
+
 //       },
 //       {
 //         render: { componentType: "_accountNumber" },
@@ -1334,7 +1370,7 @@ export const populateGridData: GridMetaDataType = {
 //               USER_NAME: authState?.user?.id,
 //               DOC_CD: "SICRTYPE",
 //             });
-  
+
 //           },
 //           _optionsKey: "credit_acct_type",
 //           GridProps: { xs: 6, sm: 6, md: 3, lg: 3, xl: 3 },
@@ -1353,7 +1389,7 @@ export const populateGridData: GridMetaDataType = {
 //             dependentFieldValues
 //           ) => {
 //             if (formState?.isSubmitting) return {};
-  
+
 //             const reqParameters = {
 //               BRANCH_CD: dependentFieldValues?.CR_BRANCH_CD?.value,
 //               COMP_CD: authState?.companyID,
@@ -1364,23 +1400,23 @@ export const populateGridData: GridMetaDataType = {
 //               ),
 //               SCREEN_REF: "TRN/394",
 //             };
-  
+
 //             if (
-  
+
 //               dependentFieldValues?.CR_BRANCH_CD?.value &&
 //               dependentFieldValues?.CR_ACCT_TYPE?.value
 //             ) {
 //               const postData = await GeneralAPI.getAccNoValidation(reqParameters);
-    
+
 //               let btn99, returnVal;
 
 //               const getButtonName = async (obj) => {
 //                 let btnName = await formState.MessageBox(obj);
 //                 return { btnName, obj };
 //               };
-  
+
 //               for (let i = 0; i < postData.MSG.length; i++) {
-           
+
 //                 if (postData.MSG[i]?.O_STATUS === "999") {
 //                   const { btnName, obj } = await getButtonName({
 //                     messageTitle: "ValidationFailed",
@@ -1414,8 +1450,7 @@ export const populateGridData: GridMetaDataType = {
 //                 }
 //               }
 //               btn99 = 0;
-  
-             
+
 //               if (dependentFieldValues?.["DR_ACCT_CD"]?.value === utilFunction.getPadAccountNumber(
 //                 currentField?.value,
 //                 dependentFieldValues?.CR_ACCT_CD?.optionData
@@ -1429,10 +1464,10 @@ export const populateGridData: GridMetaDataType = {
 //                 return {
 //                   CR_ACCT_CD: { value: "" },
 //                 };
-  
+
 //               }
 //               // alert end
-  
+
 //               return {
 //                 CR_ACCT_CD:
 //                   postData[0] !== ""
@@ -1449,7 +1484,7 @@ export const populateGridData: GridMetaDataType = {
 //               };
 //             }
 //           },
-  
+
 //           // runPostValidationHookAlways: true,
 //           FormatProps: {
 //             isAllowed: (values) => {
@@ -1463,7 +1498,7 @@ export const populateGridData: GridMetaDataType = {
 //           fullWidth: true,
 //           GridProps: { xs: 6, sm: 6, md: 3, lg: 3, xl: 3},
 //         },
-  
+
 //       },
 //       {
 //         render: {
@@ -1485,7 +1520,7 @@ export const populateGridData: GridMetaDataType = {
 //         //   dependentFieldValues
 //         // ) => {
 //         //   if (formState?.isSubmitting) return {};
-  
+
 //         //   const reqParameters = {
 //         //     COMP_CD: dependentFieldValues?.["COMP_CD"]?.value,
 //         //     BRANCH_CD: dependentFieldValues?.["BRANCH_CD"]?.value,
@@ -1497,7 +1532,7 @@ export const populateGridData: GridMetaDataType = {
 //         //   };
 //         //   const postData = await API.getSiCharge(reqParameters);
 //         //   return {
-            
+
 //         //     SI_CHARGE: {
 //         //       value:postData
 //         //           ? postData[0]?.SI_CHARGE ?? ""
@@ -1505,7 +1540,7 @@ export const populateGridData: GridMetaDataType = {
 //         //       ignoreUpdate: true,
 //         //     },
 //         //   };
-        
+
 //         // },
 //         required: true,
 //         GridProps: { xs: 6, sm: 6,md: 3, lg: 3, xl:3 },
@@ -1513,7 +1548,7 @@ export const populateGridData: GridMetaDataType = {
 //           type: "string",
 //           rules: [{ name: "required", params: ["SI Amount is Required"] }],
 //         },
-  
+
 //       },
 //       {
 //         render: {
@@ -1559,8 +1594,8 @@ export const populateGridData: GridMetaDataType = {
 //         },
 //         name: "DEF_TRAN_CD",
 //         label:"HIDDEN FLAG"
-//       },   
-      
+//       },
+
 //     ],
 //   },
 //   detailsGrid: {
@@ -1600,7 +1635,7 @@ export const populateGridData: GridMetaDataType = {
 //         width: 100,
 //         minWidth: 50,
 //         maxWidth: 150
-//       }, 
+//       },
 //       {
 //         accessor: "PROCESS_DT",
 //         columnName: "Process Date",
@@ -1610,7 +1645,7 @@ export const populateGridData: GridMetaDataType = {
 //         width: 100,
 //         minWidth: 50,
 //         maxWidth: 150
-//       }, 
+//       },
 //       {
 //         accessor: "SI_EXECUTE_FLG_DIS",
 //         columnName: "SI Execute Process",
@@ -1620,7 +1655,7 @@ export const populateGridData: GridMetaDataType = {
 //         width: 100,
 //         minWidth: 50,
 //         maxWidth: 150,
-//       }, 
+//       },
 //       {
 //         accessor: "REASON",
 //         columnName: "Reason",
@@ -1630,7 +1665,7 @@ export const populateGridData: GridMetaDataType = {
 //         width: 100,
 //         minWidth: 50,
 //         maxWidth: 150,
-//       }, 
+//       },
 //       {
 //         accessor: "BRANCH_CD",
 //         columnName: "Debit Branch Code",
@@ -1700,7 +1735,7 @@ export const populateGridData: GridMetaDataType = {
 //         width: 100,
 //         minWidth: 50,
 //         maxWidth: 150
-//       }, 
+//       },
 //       {
 //         accessor: "SI_CHARGE",
 //         columnName: "SI Charge",
@@ -1710,7 +1745,7 @@ export const populateGridData: GridMetaDataType = {
 //         width: 100,
 //         minWidth: 50,
 //         maxWidth: 150
-//       }, 
+//       },
 //       {
 //         accessor: "REMARKS",
 //         columnName: "Remark",
@@ -1747,7 +1782,7 @@ export const populateGridData: GridMetaDataType = {
 //       //   sequence: 14,
 //       //   alignment: "center",
 //       //   shouldExclude: (initialValue, original, prevRows, nextRows) => {
-  
+
 //       //     if (original?.SI_EXECUTE_FLG == 'N') {
 //       //       return false;
 //       //     }

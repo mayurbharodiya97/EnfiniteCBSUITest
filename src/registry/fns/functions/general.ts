@@ -1,8 +1,6 @@
-import { DefaultErrorObject } from "components/utils";
+import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 import { AuthSDK } from "../auth";
-import { format } from "date-fns";
-import { isValidDate } from "components/utils/utilFunctions/function";
-import { useEffect } from "react";
+import { format, isValid } from "date-fns";
 
 const GeneralAPISDK = () => {
   const GetMiscValue = async (ReqData) => {
@@ -203,14 +201,16 @@ const GeneralAPISDK = () => {
             },
             STMT_FROM_DATE: {
               value: format(
-                isValidDate(LST_STATEMENT_DT)
+                utilFunction.isValidDate(LST_STATEMENT_DT)
                   ? originalDate.setDate(originalDate.getDate() + 1)
                   : new Date(),
                 "dd/MMM/yyyy"
               ),
             },
             WK_STMT_TO_DATE: {
-              value: isValidDate(new Date()) ? new Date() : new Date(),
+              value: utilFunction.isValidDate(new Date())
+                ? new Date()
+                : new Date(),
             },
             ACCT_CD: {
               value: data?.[0]?.ACCT_CD,
@@ -383,7 +383,7 @@ const GeneralAPISDK = () => {
       await AuthSDK.internalFetcher("GETTBGFROMCONFIGLIST", {
         BRANCH_CD: reqData?.[3]?.user?.branchCode,
         COMP_CD: reqData?.[3]?.companyID,
-        DOC_CD: reqData?.[4] ?? "",
+        DOC_CD: reqData?.[1]?.docCD ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -502,7 +502,7 @@ const GeneralAPISDK = () => {
   const getDependentFieldList = async (...reqData) => {
     const { status, data, message, messageDetails } =
       await AuthSDK.internalFetcher("GETFIELDLIST", {
-        DOC_CD: reqData?.[4] ?? "",
+        DOC_CD: reqData?.[1]?.docCD ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -714,7 +714,7 @@ const GeneralAPISDK = () => {
 
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
-          ({ ACCT_TYPE, PARENT_CODE, CONCDESCRIPTION, ...other }) => {
+          ({ ACCT_TYPE, CONCDESCRIPTION, ...other }) => {
             return {
               value: ACCT_TYPE,
               label: ACCT_TYPE + " - " + other.DESCRIPTION,
@@ -769,7 +769,15 @@ const GeneralAPISDK = () => {
     }
   };
 
-  const getCustAccountLatestDtl = async ({ COMP_CD, BRANCH_CD, ACCT_TYPE, ACCT_CD, AMOUNT, SCREEN_REF }) => {
+  const getCustAccountLatestDtl = async ({
+    COMP_CD,
+    BRANCH_CD,
+    ACCT_TYPE,
+    ACCT_CD,
+    AMOUNT,
+    SCREEN_REF,
+    AC_CUST_LEVEL,
+  }) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETSIGNPHOTOVIEW", {
         COMP_CD: COMP_CD,
@@ -778,6 +786,7 @@ const GeneralAPISDK = () => {
         ACCT_CD: ACCT_CD,
         AMOUNT: AMOUNT,
         SCREEN_REF: SCREEN_REF,
+        AC_CUST_LEVEL: AC_CUST_LEVEL,
       });
     if (status === "0") {
       return data;
@@ -797,7 +806,7 @@ const GeneralAPISDK = () => {
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
-  }
+  };
   const getCalGstAmountData = async (apiReq) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETCALCGSTAMT", {
@@ -808,6 +817,18 @@ const GeneralAPISDK = () => {
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
+  };
+
+  const getDateWithCurrentTime = async (date) => {
+    if (isValid(date)) {
+      const selectedDate = new Date(date);
+      selectedDate.setHours(new Date().getHours());
+      selectedDate.setMinutes(new Date().getMinutes());
+      selectedDate.setSeconds(new Date().getSeconds());
+      const formattedDate = format(selectedDate, "eee MMM dd yyyy HH:mm:ss");
+      return formattedDate;
+    }
+    return "";
   };
 
   return {
@@ -843,7 +864,8 @@ const GeneralAPISDK = () => {
     getCommTypeList,
     getPhotoSignHistory,
     getCustAccountLatestDtl,
-    getCalGstAmountData
+    getCalGstAmountData,
+    getDateWithCurrentTime,
   };
 };
 export const GeneralAPI = GeneralAPISDK();
