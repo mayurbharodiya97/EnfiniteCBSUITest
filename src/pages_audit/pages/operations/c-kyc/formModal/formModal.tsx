@@ -1041,7 +1041,13 @@ export default function FormModal({
       </Grid>
 
       <RemarksAPIWrapper
-        TitleText={"Rejection Reason"}
+        TitleText={
+          confirmAction === "Y"
+            ? "Confirm"
+            : confirmAction === "M"
+            ? "Raise Query"
+            : confirmAction === "R" && "Rejection Reason"
+        }
         onActionNo={() => {
           setIsOpen(false);
           setConfirmAction(null);
