@@ -45,8 +45,8 @@ const PendingCustomer = () => {
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      // REQ_FLAG: "A",
-      REQ_FLAG: "P", //for checking only
+      REQ_FLAG: "A",
+      // REQ_FLAG: "P", //for checking only
       ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       // ENTERED_DATE: "26-12-2023"
     })
