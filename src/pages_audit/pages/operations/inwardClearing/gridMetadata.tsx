@@ -133,9 +133,14 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       sequence: 1,
       alignment: "right",
       componentType: "default",
-      width: 90,
+      width: 110,
       minWidth: 100,
-      maxWidth: 180,
+      maxWidth: 200,
+      isDisplayTotal: true,
+      footerLabel: "Total Cheques",
+      setFooterValue(total, rows) {
+        return [rows.length ?? 0];
+      },
     },
     {
       accessor: "AMOUNT",
@@ -143,9 +148,21 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "right",
       componentType: "currency",
-      width: 100,
-      minWidth: 150,
-      maxWidth: 250,
+      width: 150,
+      minWidth: 100,
+      maxWidth: 350,
+      isDisplayTotal: true,
+      footerLabel: "Total Amount",
+      setFooterValue(total, rows) {
+        // Filter rows where TYPE_CD is 1, 2, or 3
+        const sum =
+          rows?.reduce(
+            (acc, { original }) => acc + Number(original.AMOUNT),
+            0
+          ) ?? 0;
+        const formattedSum = sum.toFixed(2);
+        return [formattedSum];
+      },
     },
     {
       accessor: "BRANCH_CD",
@@ -231,8 +248,9 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       accessor: "CHEQUE_DT",
       columnName: "ChequeDate",
       sequence: 10,
-      alignment: "right",
-      componentType: "default",
+      alignment: "center",
+      componentType: "date",
+      dateFormat: "dd/MM/yyyy",
       width: 100,
       minWidth: 150,
       maxWidth: 300,

@@ -44,9 +44,10 @@ export const accountFindmetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
           return {
-            ACCT_NM: { value: "" },
             ACCT_TYPE: { value: "" },
             ACCT_CD: { value: "" },
+            ACCT_NM: { value: "" },
+            TRAN_BAL: { value: "" },
           };
         },
         GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
@@ -77,14 +78,29 @@ export const accountFindmetaData = {
 
             if (buttonName === "Ok") {
               return {
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
                 ACCT_TYPE: {
                   value: "",
                   isFieldFocused: false,
                   ignoreUpdate: true,
                 },
-                BRANCH_CD: {
+                ACCT_CD: {
                   value: "",
-                  isFieldFocused: true,
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_NM: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                TRAN_BAL: {
+                  value: "",
+                  isFieldFocused: false,
                   ignoreUpdate: true,
                 },
               };
@@ -93,6 +109,7 @@ export const accountFindmetaData = {
           return {
             ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },
+            TRAN_BAL: { value: "" },
           };
         },
         GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
@@ -119,6 +136,7 @@ export const accountFindmetaData = {
           ) {
             return {
               ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
             };
           } else if (!Boolean(currentField?.displayValue)) {
             return {};
@@ -145,6 +163,11 @@ export const accountFindmetaData = {
                 ACCT_TYPE: {
                   value: "",
                   isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+                TRAN_BAL: {
+                  value: "",
+                  isFieldFocused: false,
                   ignoreUpdate: true,
                 },
               };
@@ -239,6 +262,7 @@ export const accountFindmetaData = {
           } else if (!currentField?.value) {
             return {
               ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
             };
           }
         },

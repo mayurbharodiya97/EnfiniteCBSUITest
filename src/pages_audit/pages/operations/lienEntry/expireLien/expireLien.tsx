@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Button,
   CircularProgress,
   Dialog,
   LinearProgress,
@@ -22,6 +21,7 @@ import {
   FormWrapper,
   queryClient,
   MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 export const ExpireLien = ({ navigate, getLienDetail }) => {
@@ -90,10 +90,16 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
       REMARKS: data?.REMARKS,
       ...upd,
     };
-    expireLienData.mutate(apiReq);
-
-    //@ts-ignore
-    endSubmit(true);
+    expireLienData.mutate(apiReq, {
+      onSuccess: () => {
+        //@ts-ignore
+        endSubmit(true);
+      },
+      onError: () => {
+        //@ts-ignore
+        endSubmit(true);
+      },
+    });
   };
   return (
     <Dialog
@@ -141,20 +147,20 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
+                <GradientButton
                   onClick={(event) => {
                     handleSubmit(event, "Save");
                   }}
-                  // disabled={isSubmitting}
+                  disabled={isSubmitting}
                   endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                   color={"primary"}
                 >
                   {t("Save")}
-                </Button>
+                </GradientButton>
 
-                <Button color="primary" onClick={() => navigate(".")}>
+                <GradientButton color="primary" onClick={() => navigate(".")}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

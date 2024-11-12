@@ -18,8 +18,8 @@ export const fdDetailGridData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "51vh",
-      max: "51vh",
+      min: "58vh",
+      max: "58vh",
     },
     allowFilter: false,
     allowColumnHiding: false,

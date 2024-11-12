@@ -1,4 +1,4 @@
-import { AppBar, Button, Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { tempODConfirmFormMetaData } from "./confirmFormMetadata";
@@ -12,6 +12,7 @@ import {
   usePopupContext,
   FormWrapper,
   MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 export const TempODConfirmationForm = ({ closeDialog, result }) => {
   const { state: rows }: any = useLocation();
@@ -126,15 +127,21 @@ export const TempODConfirmationForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button color="primary" onClick={() => handleChange("C")}>
+                <GradientButton
+                  color="primary"
+                  onClick={() => handleChange("C")}
+                >
                   {t("Confirm")}
-                </Button>
-                <Button color="primary" onClick={() => handleChange("R")}>
+                </GradientButton>
+                <GradientButton
+                  color="primary"
+                  onClick={() => handleChange("R")}
+                >
                   {t("Reject")}
-                </Button>
-                <Button color="primary" onClick={() => closeDialog()}>
+                </GradientButton>
+                <GradientButton color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

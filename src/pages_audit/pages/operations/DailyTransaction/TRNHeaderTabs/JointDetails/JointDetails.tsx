@@ -43,7 +43,7 @@ export const JointDetails = ({ reqData }) => {
     {
       actionName: "close",
       actionLabel: "Close",
-      multiple: false,
+      multiple: undefined,
       rowDoubleClick: false,
       alwaysAvailable: true,
     },
@@ -153,7 +153,6 @@ export const JointDetails = ({ reqData }) => {
           setAction={setCurrentAction}
           ref={myGridRef}
           refetchData={() => refetch()}
-          variant={"outlined"}
           loading={isLoading || isFetching}
         />
       </div>

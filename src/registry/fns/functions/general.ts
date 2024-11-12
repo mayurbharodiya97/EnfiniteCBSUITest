@@ -1,7 +1,6 @@
 import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 import { AuthSDK } from "../auth";
-import { format } from "date-fns";
-import { useEffect } from "react";
+import { format, isValid } from "date-fns";
 
 const GeneralAPISDK = () => {
   const GetMiscValue = async (ReqData) => {
@@ -715,7 +714,7 @@ const GeneralAPISDK = () => {
 
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
-          ({ ACCT_TYPE, PARENT_CODE, CONCDESCRIPTION, ...other }) => {
+          ({ ACCT_TYPE, CONCDESCRIPTION, ...other }) => {
             return {
               value: ACCT_TYPE,
               label: ACCT_TYPE + " - " + other.DESCRIPTION,
@@ -821,7 +820,7 @@ const GeneralAPISDK = () => {
   };
 
   const getDateWithCurrentTime = async (date) => {
-    if (utilFunction?.isValidDate(date)) {
+    if (isValid(date)) {
       const selectedDate = new Date(date);
       selectedDate.setHours(new Date().getHours());
       selectedDate.setMinutes(new Date().getMinutes());

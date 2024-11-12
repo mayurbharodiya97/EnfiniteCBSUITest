@@ -1,5 +1,5 @@
-import { CircularProgress, Dialog } from "@mui/material";
-import { useContext, useRef } from "react";
+import { Dialog } from "@mui/material";
+import { useContext } from "react";
 import { AuthContext } from "pages_audit/auth";
 import { FDRetriveMetadata } from "./metaData/fdRetriveMetaData";
 import { FDContext } from "../context/fdContext";
@@ -9,7 +9,6 @@ import {
   GradientButton,
   FormWrapper,
   MetaDataType,
-  utilFunction,
 } from "@acuteinfo/common-base";
 
 export const FDRetriveForm = ({ handleDialogClose, getFDViewDtlMutation }) => {
@@ -32,20 +31,11 @@ export const FDRetriveForm = ({ handleDialogClose, getFDViewDtlMutation }) => {
   ) => {
     endSubmit(true);
     updateRetrieveFormData(data);
-
-    // const reqParam = {
-    //   COMP_CD: authState?.companyID ?? "",
-    //   BRANCH_CD: data?.BRANCH_CD ?? "",
-    //   ACCT_TYPE: data?.ACCT_TYPE ?? "",
-    //   ACCT_CD: data?.ACCT_CD ?? "",
-    //   WORKING_DT: authState?.workingDate ?? "",
-    // };
     const reqParam = {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: data?.BRANCH_CD ?? "",
       ACCT_TYPE: data?.ACCT_TYPE ?? "",
-      ACCT_CD:
-        utilFunction.getPadAccountNumber(data?.ACCT_CD, data?.ACCT_TYPE) ?? "",
+      ACCT_CD: data?.ACCT_CD ?? "",
       WORKING_DT: authState?.workingDate ?? "",
     };
     getFDViewDtlMutation?.mutate(reqParam);

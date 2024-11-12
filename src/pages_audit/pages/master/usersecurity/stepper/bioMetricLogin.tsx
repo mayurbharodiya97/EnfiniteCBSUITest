@@ -11,7 +11,7 @@ import { LoginBiometricForm } from "./metaData/metaDataForm";
 import { SecurityContext } from "../context/SecuityForm";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api/api";
-import { ActionTypes } from "@acuteinfo/common-base";
+import { ActionTypes, Alert } from "@acuteinfo/common-base";
 import { useNavigate } from "react-router-dom";
 import { loginBiometric } from "./metaData/metaDataGrid";
 import { Dialog } from "@mui/material";
@@ -28,6 +28,7 @@ import {
   FormWrapper,
   MetaDataType,
 } from "@acuteinfo/common-base";
+import { t } from "i18next";
 
 const actions: ActionTypes[] = [
   {
@@ -158,7 +159,7 @@ const BiometricLogins = forwardRef<any, any>(({ defaultView, userId }, ref) => {
   useEffect(() => {
     if (userState?.grid5?.isNewRow?.length > 0) {
       const contextData = userState?.grid5?.isNewRow;
-      const combined = [...data, ...contextData];
+      const combined = [...(data ?? ""), ...(contextData ?? "")];
       setGridData(combined);
     } else {
       setGridData(data);
@@ -185,6 +186,14 @@ const BiometricLogins = forwardRef<any, any>(({ defaultView, userId }, ref) => {
 
   return (
     <Fragment>
+      {isError && (
+        <Alert
+          severity="error"
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
+          errorDetail={error?.error_detail}
+          color="error"
+        />
+      )}
       <GridWrapper
         key={"LoginBiometrics"}
         finalMetaData={

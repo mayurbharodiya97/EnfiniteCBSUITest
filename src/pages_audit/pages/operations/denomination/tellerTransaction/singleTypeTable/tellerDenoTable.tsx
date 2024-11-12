@@ -65,17 +65,27 @@ const TellerDenoTable = ({
   const customParameter = usePropertiesConfigContext();
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
 
-  // useEffect(() => {
-  //   inputValue = {};
-  //   amount = {};
-  // }, []);
+  // Focus the first input field when the table is displayed
+  useEffect(() => {
+    if (Object.keys(inputRefs.current).length > 0) {
+      setRefsReady(true);
+    }
+  }, [data]);
 
+  useEffect(() => {
+    if (refsReady) {
+      inputRefs?.current["0"].focus();
+    }
+  }, [refsReady, displayTable, data]);
+
+  //For highlight the input value when get focus on input field
   const handleonFocus = (event, index) => {
     const input = event.target;
     if (input.value) {
       input.select();
     }
   };
+
   // console.log(displayTable, data, "weuweuwueywe");
 
   // useEffect(() => {
@@ -87,21 +97,7 @@ const TellerDenoTable = ({
   //   }
   // }, [displayTable, data]);
 
-  useEffect(() => {
-    // console.log(inputRefs.current, "inputRefs.current5645454545");
-    if (Object.keys(inputRefs.current).length > 0) {
-      setRefsReady(true);
-    }
-  }, [data]); // Assuming 'data' influences the number of TextFields
-
-  useEffect(() => {
-    if (refsReady) {
-      inputRefs?.current["0"].focus();
-    }
-  }, [refsReady, displayTable, data]);
-
   return (
-    // <Slide direction="left" in={displayTable} mountOnEnterx unmountOnExit>
     <Dialog open={displayTable && data?.length > 0} maxWidth={"xl"}>
       {saveDenominationData?.isError ? (
         <Fragment>
@@ -415,7 +411,6 @@ const TellerDenoTable = ({
         </Paper>
       </DialogContent>
     </Dialog>
-    // </Slide>
   );
 };
 

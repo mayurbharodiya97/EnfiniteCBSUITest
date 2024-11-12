@@ -197,15 +197,13 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
             buttonNames: ["Ok"],
           });
         } else if (
-          !(
-            format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
-            format(new Date(authState?.workingDate), "dd/MMM/yyyy")
-          )
+          new Date(rowsData?.TRAN_DT) !== new Date(authState?.workingDate)
         ) {
           await MessageBox({
             messageTitle: t("ValidationFailed"),
             message: t("CannotDeleteBackDatedEntry"),
             buttonNames: ["Ok"],
+            icon: "ERROR",
           });
         } else {
           SetDeleteRemark(true);
@@ -266,7 +264,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       const buttonName = await MessageBox({
                         messageTitle: t("Confirmation"),
                         message: t(
-                          "DoYouWantToAllowTheTransaction" +
+                          t("DoYouWantToAllowTheTransaction") +
                             " - " +
                             "Slip No." +
                             data?.[0]?.SLIP_CD +
@@ -310,13 +308,14 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         buttonNames: ["Ok"],
                       });
                     } else if (
-                      format(new Date(rowsData?.TRAN_DT), "dd/MMM/yyyy") ===
-                      format(new Date(authState?.workingDate), "dd/MMM/yyyy")
+                      new Date(rowsData?.TRAN_DT) !==
+                      new Date(authState?.workingDate)
                     ) {
                       await MessageBox({
                         messageTitle: t("Validation Failed"),
                         message: t("CannotDeleteBackDatedEntry"),
                         buttonNames: ["Ok"],
+                        icon: "ERROR",
                       });
                     } else {
                       SetDeleteRemark(true);
@@ -327,16 +326,18 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                 </GradientButton>
                 <GradientButton
                   onClick={() => {
-                    if (currentIndex && currentIndex !== totalData)
+                    if (currentIndex && currentIndex !== totalData) {
                       handleNext();
+                    }
                   }}
                 >
                   {t("MoveForward")}
                 </GradientButton>
                 <GradientButton
-                  onClick={() => {
-                    if (currentIndex && currentIndex !== totalData)
+                  onClick={(e) => {
+                    if (currentIndex && currentIndex > 0) {
                       handlePrev();
+                    }
                   }}
                 >
                   {t("Previous")}
@@ -419,7 +420,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
             ) : (
               <>
                 <FormWrapper
-                  key={"CTSOutwardClearingConfirm"}
+                  key={"CTSOutwardClearingConfirm" + currentIndex}
                   metaData={
                     extractMetaData(
                       CTSOutwardClearingConfirmMetaData,
@@ -437,7 +438,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                   }}
                 />
                 <FormWrapper
-                  key={`ChequeDetails` + formMode}
+                  key={`ChequeDetails` + formMode + currentIndex}
                   metaData={
                     extractMetaData(
                       zoneTranType === "S"

@@ -8,7 +8,6 @@ import React, {
 import {
   AppBar,
   Box,
-  Button,
   Container,
   Grid,
   LinearProgress,
@@ -39,6 +38,7 @@ import {
   MasterDetailsForm,
   GridWrapper,
   utilFunction,
+  GradientButton,
 } from "@acuteinfo/common-base";
 
 export const TemporaryOD = () => {
@@ -249,7 +249,10 @@ export const TemporaryOD = () => {
               onSubmitData={onSubmitHandler}
               isNewRow={false}
               onClickActionEvent={() => {}}
-              formState={{ MessageBox: MessageBox }}
+              formState={{
+                MessageBox: MessageBox,
+                WORKING_DATE: authState?.workingDate,
+              }}
               setDataOnFieldChange={(action, payload) => {
                 if (action === "IS_VISIBLE") {
                   setIsData((old) => ({
@@ -264,7 +267,7 @@ export const TemporaryOD = () => {
               ref={myRef}
               formStyle={{
                 background: "white",
-                height: "23vh",
+                height: "25vh",
                 overflowY: "auto",
                 overflowX: "hidden",
               }}
@@ -272,7 +275,7 @@ export const TemporaryOD = () => {
               {({ isSubmitting, handleSubmit }) => {
                 return (
                   <>
-                    <Button
+                    <GradientButton
                       onClick={handleSubmit}
                       disabled={isSubmitting}
                       // endIcon={
@@ -281,7 +284,7 @@ export const TemporaryOD = () => {
                       color={"primary"}
                     >
                       {t("Save")}
-                    </Button>
+                    </GradientButton>
                   </>
                 );
               }}

@@ -115,10 +115,7 @@ export const StockEntryMetaData = {
         render: {
           componentType: "textField",
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
+
         validate: (columnValue) => {
           let regex = /^[^!&]*$/;
           if (!regex.test(columnValue.value)) {

@@ -127,10 +127,12 @@ export const ThemeProviders: React.FC<ThemeProviderProps> = ({ children }) => {
           MuiButton: {
             defaultProps: {
               sx: {
-                boxShadow: "2px 2px 4px rgba(0,0,0,.2) !important",
-                "&:hover": {
-                  boxShadow:
-                    "rgba(0, 0, 0, 0.2) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px !important",
+                "&.gradient-btn": {
+                  boxShadow: "2px 2px 4px rgba(0,0,0,.2) !important",
+                  "&:hover": {
+                    boxShadow:
+                      "rgba(0, 0, 0, 0.2) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px !important",
+                  },
                 },
               },
             },

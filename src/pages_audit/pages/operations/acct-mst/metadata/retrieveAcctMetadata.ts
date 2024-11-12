@@ -156,6 +156,14 @@ export const retrieveAcctFormMetaData = {
                 messageTitle: msgTitle,
                 message: msg,
                 buttonNames: buttonNames,
+                icon:
+                  status === "9"
+                    ? "WARNING"
+                    : status === "99"
+                    ? "CONFIRM"
+                    : status === "999"
+                    ? "ERROR"
+                    : status === "0" && "SUCCESS",
               });
               return { buttonName, status };
             };
@@ -164,7 +172,9 @@ export const retrieveAcctFormMetaData = {
                 if (apiRespMSGdata[i]?.O_STATUS !== "0") {
                   let btnName = await messagebox(
                     apiRespMSGdata[i]?.O_STATUS === "999"
-                      ? "validation fail"
+                      ? "ValidationFailed"
+                      : apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "Confirmation"
                       : "Alert",
                     apiRespMSGdata[i]?.O_MESSAGE,
                     apiRespMSGdata[i]?.O_STATUS === "99"

@@ -273,7 +273,7 @@ const Form15GHEntry = ({
     },
     onSuccess: (data, variables) => {
       if (variables?._isDeleteRow === false) {
-        enqueueSnackbar(data, {
+        enqueueSnackbar(t("FormConfirmationMsg"), {
           variant: "success",
         });
         isDataChangedRef.current = true;

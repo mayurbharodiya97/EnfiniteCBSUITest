@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import {
+  extractMetaData,
   FormWrapper,
   MetaDataType,
   usePopupContext,
@@ -106,8 +107,7 @@ const SignatoryJointTab = () => {
           const formData = _.pick(data?.JOINT_SIGNATORY_DTL[i], formFields);
           return {
             ...formData,
-            J_TYPE: "S",
-            CUSTOMER_ID: AcctMSTState?.customerIDctx,
+            // J_TYPE: "S",
           };
         });
         newData["JOINT_SIGNATORY_DTL"] = [...newFormatOtherAdd];
@@ -175,7 +175,12 @@ const SignatoryJointTab = () => {
       <FormWrapper
         key={"acct-mst-joint-signatory-form" + initialVal}
         ref={formRef}
-        metaData={signatoryjoint_tab_metadata as MetaDataType}
+        metaData={
+          extractMetaData(
+            signatoryjoint_tab_metadata,
+            AcctMSTState?.formmodectx
+          ) as MetaDataType
+        }
         onSubmitHandler={onFormSubmitHandler}
         formState={{
           PARAM320: AcctMSTState?.param320,

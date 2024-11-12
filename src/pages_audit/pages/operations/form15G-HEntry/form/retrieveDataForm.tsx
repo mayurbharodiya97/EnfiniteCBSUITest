@@ -153,6 +153,9 @@ export const RetrievalParametersFormWrapper = ({
         style: {
           width: "100%",
           overflow: "auto",
+          position: "absolute",
+          top: 100,
+          margin: 0,
         },
       }}
       maxWidth="sm"
