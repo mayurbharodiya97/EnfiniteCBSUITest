@@ -112,7 +112,7 @@ export const CkycConfirm = () => {
   // }, [location])
 
   ckyc_pending_req_meta_data.gridConfig.gridLabel =
-    "Confirmation Pending Request";
+    "C-KYC Customer Confirmation (MST/710)";
   ckyc_pending_req_meta_data.gridConfig["containerHeight"] = {
     min: "42vh",
     max: "65vh",
