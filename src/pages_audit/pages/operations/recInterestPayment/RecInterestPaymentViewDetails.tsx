@@ -72,9 +72,6 @@ const RecInterestPaymentViewDetails = ({
     let newData = { ...data };
     let oldData = { ...rows?.[0]?.data };
     let upd = utilFunction.transformDetailsData(newData, oldData);
-    console.log("newData", newData);
-    console.log("oldData", oldData);
-    console.log("upd", upd);
 
     isErrorFuncRef.current = {
       data: {
@@ -93,27 +90,18 @@ const RecInterestPaymentViewDetails = ({
       endSubmit,
       setFieldError,
     };
-    console.log("isErrorFuncRef.current", isErrorFuncRef.current);
 
-    if (!Boolean(data?.PAYMENT_MODE)) {
-      const btnName = await MessageBox({
-        messageTitle: "Alert",
-        message: "PaymentModerequired",
-        icon: "WARNING",
+    const btnName = await MessageBox({
+      message: "SaveData",
+      messageTitle: "Confirmation",
+      buttonNames: ["Yes", "No"],
+      loadingBtnName: ["Yes"],
+      icon: "CONFIRM",
+    });
+    if (btnName === "Yes") {
+      updateRecInterestPaymentEntry.mutate({
+        data: { ...isErrorFuncRef.current?.data },
       });
-      return;
-    } else {
-      const btnName = await MessageBox({
-        message: "SaveData",
-        messageTitle: "Confirmation",
-        buttonNames: ["Yes", "No"],
-        loadingBtnName: ["Yes"],
-      });
-      if (btnName === "Yes") {
-        updateRecInterestPaymentEntry.mutate({
-          data: { ...isErrorFuncRef.current?.data },
-        });
-      }
     }
   };
   const handleButtonDisable = (disable) => {
@@ -184,11 +172,7 @@ const RecInterestPaymentViewDetails = ({
                 >
                   {t("Save")}
                 </GradientButton>
-                <GradientButton
-                  onClick={closeDialog}
-                  disabled={isSubmitting || disableButton}
-                  color={"primary"}
-                >
+                <GradientButton onClick={closeDialog} color={"primary"}>
                   {t("Close")}
                 </GradientButton>
               </>
@@ -204,11 +188,7 @@ const RecInterestPaymentViewDetails = ({
                 >
                   {t("Save")}
                 </GradientButton>
-                <GradientButton
-                  onClick={closeDialog}
-                  disabled={isSubmitting || disableButton}
-                  color={"primary"}
-                >
+                <GradientButton onClick={closeDialog} color={"primary"}>
                   {t("Close")}
                 </GradientButton>
               </>
