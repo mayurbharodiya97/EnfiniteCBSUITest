@@ -122,18 +122,18 @@ const ClearingDateTransferGrid = () => {
         for (let i = 0; i < data?.length; i++) {
           if (data[i]?.O_STATUS === "999") {
             const buttonName = await MessageBox({
-              messageTitle: t("ValidationFailed"),
+              messageTitle: data[i]?.O_MSG_TITLE,
               message: data[i]?.O_MESSAGE,
               icon: "ERROR",
             });
           } else if (data[i]?.O_STATUS === "99") {
             const buttonName = await MessageBox({
-              messageTitle: t("Confirmation"),
+              messageTitle: data[i]?.O_MSG_TITLE,
               message: data[i]?.O_MESSAGE,
             });
           } else if (data[i]?.O_STATUS === "9") {
             const buttonName = await MessageBox({
-              messageTitle: t("Alert"),
+              messageTitle: data[i]?.O_MSG_TITLE,
               message: data[i]?.O_MESSAGE,
               icon: "WARNING",
             });
@@ -179,15 +179,15 @@ const ClearingDateTransferGrid = () => {
           message:
             t("AreYouSuretransfer") +
             " " +
-            format(new Date(res?.FR_TRAN_DT), "dd/MMM/yyyy") +
+            format(new Date(res?.FR_TRAN_DT), "dd/MM/yyyy") +
             " / " +
             res?.FR_ZONE +
             t("ClearingTodateZone") +
             " " +
-            format(new Date(res?.TO_TRAN_DT), "dd/MMM/yyyy") +
+            format(new Date(res?.TO_TRAN_DT), "dd/MM/yyyy") +
             " / " +
             res?.TO_ZONE,
-          buttonNames: ["No", "Yes"],
+          buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
           loadingBtnName: ["Yes"],
         });
@@ -200,11 +200,11 @@ const ClearingDateTransferGrid = () => {
               totalCount +
               " " +
               t("ChequeAvailableforClearingDateTransferAreYouSureContinue"),
-            buttonNames: ["Cancel", "Ok"],
-            defFocusBtnName: "Ok",
-            loadingBtnName: ["Ok"],
+            buttonNames: ["Yes", "No"],
+            defFocusBtnName: "Yes",
+            loadingBtnName: ["Yes"],
           });
-          if (button === "Ok") {
+          if (button === "Yes") {
             transferDateMutation.mutate({
               CLG_FLAG: res?.FLAG,
               FR_TRAN_DT: format(new Date(res?.FR_TRAN_DT), "dd/MMM/yyyy"),

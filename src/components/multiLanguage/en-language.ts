@@ -1595,6 +1595,8 @@ export const en_language_data = {
   Count: "Count",
   ClearingRetrieveGrid: "Clearing Retrieve Grid",
   SlipRetrieveGrid: "Slip Retrieve Grid",
+  FromClgDate: "From CLG Date",
+  ToClgDate: "To CLG Date",
 
   // inward clearing
 
