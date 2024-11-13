@@ -20,6 +20,7 @@ export const OrnamentTypeMasterGridMetaData: GridMetaDataType = {
       max: "70vh",
     },
     isCusrsorFocused: true,
+    allowRowSelection: false,
   },
 
   columns: [

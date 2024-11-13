@@ -49,19 +49,10 @@ export const CategoryMasterGrid = () => {
 
   const deleteMutation = useMutation(API.categoryMasterDML, {
     onError: async (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      await MessageBox({
-        messageTitle: "Error",
-        message: errorMsg ?? "",
-        icon: "ERROR",
-      });
       CloseMessageBox();
     },
     onSuccess: () => {
-      enqueueSnackbar(t("RecordsDeletedMsg"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -78,6 +69,7 @@ export const CategoryMasterGrid = () => {
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
@@ -133,14 +125,21 @@ export const CategoryMasterGrid = () => {
 
   return (
     <>
-      {isError && (
+      {(isError || deleteMutation.isError) && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
-          errorDetail={error?.error_detail}
+          errorMsg={
+            error?.error_msg ||
+            deleteMutation?.error?.error_msg ||
+            t("Somethingwenttowrong")
+          }
+          errorDetail={
+            error?.error_detail || deleteMutation?.error?.error_detail || ""
+          }
           color="error"
         />
       )}
+
       <GridWrapper
         key={"categoryMasterGrid"}
         finalMetaData={CategoryMasterGridMetaData as GridMetaDataType}

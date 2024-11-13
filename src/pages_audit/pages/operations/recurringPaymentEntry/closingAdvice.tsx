@@ -163,17 +163,16 @@ const ClosingAdvice = ({ handleCloseAdviceDetails }) => {
       return acc + Number(value.PENALTY);
     }, 0) ?? 0;
   let recoverInt =
-    Number(rpState?.closingAdviceData?.[0]?.INT_AMT ?? 0) + totalPenaltyAmt;
+    Number(rpState?.dataForJasperParam?.INT_AMOUNT ?? 0) + totalPenaltyAmt;
   recoverInt = Math.abs(recoverInt);
-  const intAmount = Number(rpState?.closingAdviceData?.[0]?.INT_AMT ?? 0);
+  const restIntAmount = Number(rpState?.dataForJasperParam?.INT_AMOUNT ?? 0);
   const actualDeposit = Number(
     rpState?.closingAdviceData?.[0]?.ACTUAL_DEPOSIT ?? 0
   );
-  const recPenaltyAmt = Number(rpState?.getAcctData?.REC_PENALTY_AMT ?? 0);
   const amountPayableToParty =
     actualDeposit +
     totalIntAmt +
-    intAmount +
+    restIntAmount +
     totalPenaltyAmt -
     (totalPenaltyAmt + Number(rpState?.closingAdviceData?.[0]?.TDS_AMT ?? 0));
 
@@ -388,7 +387,7 @@ const ClosingAdvice = ({ handleCloseAdviceDetails }) => {
 
               <TableRow>
                 <TableCell className={classes.tCellFt}>
-                  {intAmount + recPenaltyAmt < 0
+                  {restIntAmount + totalPenaltyAmt < 0
                     ? `${t("RecoverInterest")} :`
                     : `${t("RemainingIntToPaid")} :`}
                 </TableCell>

@@ -242,6 +242,7 @@ export const en_language_data = {
   AccountBranch: "Account Branch",
   PrematurePayment: "Premature Payment",
   SelectPaymentmode: "Select Payment Mode",
+  PenalRt: "Penal Rate",
 
   // GridWrapper
   Search: "Search",
@@ -615,6 +616,7 @@ export const en_language_data = {
   EnterAccountType: "Enter Account Type.",
   EnterAccountBranch: "Enter Account Branch.",
   EnterAccountNumber: "Please Enter Accont Number.",
+  EnterAccountNum: "Enter Accont Number",
   ModeOfOperation: "Mode of Operation",
   GetDetails: "Get Details",
   EnterAcNo: "Enter A/c No.",

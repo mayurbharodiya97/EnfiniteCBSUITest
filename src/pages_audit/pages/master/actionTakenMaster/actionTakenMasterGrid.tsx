@@ -49,17 +49,10 @@ export const ActionTakenMasterGrid = () => {
 
   const deleteMutation = useMutation(API.actionTakenMasterDML, {
     onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
       CloseMessageBox();
     },
     onSuccess: () => {
-      enqueueSnackbar(t("RecordsDeletedMsg"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -76,6 +69,7 @@ export const ActionTakenMasterGrid = () => {
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
@@ -131,11 +125,17 @@ export const ActionTakenMasterGrid = () => {
 
   return (
     <Fragment>
-      {isError && (
+      {(isError || deleteMutation.isError) && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
-          errorDetail={error?.error_detail}
+          errorMsg={
+            error?.error_msg ||
+            deleteMutation?.error?.error_msg ||
+            t("Somethingwenttowrong")
+          }
+          errorDetail={
+            error?.error_detail || deleteMutation?.error?.error_detail || ""
+          }
           color="error"
         />
       )}
