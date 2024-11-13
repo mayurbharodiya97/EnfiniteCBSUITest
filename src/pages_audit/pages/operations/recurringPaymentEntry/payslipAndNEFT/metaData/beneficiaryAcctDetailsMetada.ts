@@ -247,7 +247,8 @@ export const BeneficiaryAcctDetailsFormMetaData = {
               if (validateIFSC?.[0]?.O_STATUS === "999") {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: validateIFSC?.[0]?.O_MESSAGE,
+                  message:
+                    validateIFSC?.[0]?.O_MESSAGE ?? "Somethingwenttowrong",
                   buttonNames: ["Ok"],
                   icon: "ERROR",
                 });

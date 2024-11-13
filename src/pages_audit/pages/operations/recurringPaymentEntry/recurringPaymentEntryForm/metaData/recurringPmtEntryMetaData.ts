@@ -606,16 +606,14 @@ export const RecurringPaymentEntryFormMetaData = {
                   value: returnVal?.TYPE_CD ?? "",
                 },
                 FORM_60: {
-                  __NEW__: {
-                    value:
-                      returnVal?.FORM_60 === "Y"
-                        ? "FORM 60 Submitted"
-                        : returnVal?.FORM_60 === "F"
-                        ? "FORM 61 Submitted"
-                        : returnVal?.FORM_60 === "N"
-                        ? "N"
-                        : "",
-                  },
+                  value:
+                    returnVal?.FORM_60 === "Y"
+                      ? "FORM 60 Submitted"
+                      : returnVal?.FORM_60 === "F"
+                      ? "FORM 61 Submitted"
+                      : returnVal?.FORM_60 === "N"
+                      ? "N"
+                      : "",
                 },
                 PREMATURE_VAL: { value: getRecurValidAcctDtl?.PREMATURE ?? "" },
                 STATUS: { value: getRecurValidAcctDtl?.STATUS ?? "" },
@@ -1216,11 +1214,9 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       textFieldStyle: {
         "& .MuiInputBase-input": {
-          "&.Mui-disabled": {
-            color: "var(--theme-color1) !important",
-            fontWeight: "bold",
-            "-webkit-text-fill-color": "var(--theme-color1) !important",
-          },
+          color: "var(--theme-color1) !important",
+          fontWeight: "bold",
+          "-webkit-text-fill-color": "var(--theme-color1) !important",
         },
       },
       GridProps: {
@@ -1245,10 +1241,8 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       textFieldStyle: {
         "& .MuiInputBase-input": {
-          "&.Mui-disabled": {
-            color: "rgb(255, 0, 0)  !important",
-            "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
-          },
+          color: "rgb(255, 0, 0)  !important",
+          "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
         },
       },
       GridProps: {
@@ -1316,6 +1310,7 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       TypographyProps: {
         variant: "subtitle2",
+        color: "rgb(255, 0, 0) !important",
         style: {
           marginTop: "33px",
           fontSize: "14px",
@@ -1350,15 +1345,11 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       textFieldStyle: {
         "& .MuiInputBase-input": {
-          "&.Mui-disabled": {
-            color: "rgb(255, 0, 0) !important",
-            "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
-          },
+          color: "rgb(255, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
         },
         "& .MuiInputLabel-root": {
-          "&.Mui-disabled": {
-            color: "rgb(255, 0, 0) !important",
-          },
+          color: "rgb(255, 0, 0) !important",
         },
       },
       GridProps: { xs: 12, sm: 2.5, md: 2.25, lg: 3, xl: 3 },

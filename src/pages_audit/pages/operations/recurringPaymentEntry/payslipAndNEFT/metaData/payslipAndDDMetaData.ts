@@ -433,7 +433,7 @@ export const PayslipAndDDFormMetaData = {
                     messageTitle: postData[i]?.O_MSG_TITLE?.length
                       ? postData[i]?.O_MSG_TITLE
                       : "ValidationFailed",
-                    message: postData[i]?.O_MESSAGE,
+                    message: postData[i]?.O_MESSAGE ?? "",
                     icon: "ERROR",
                   });
                   returnVal = "";
@@ -442,7 +442,7 @@ export const PayslipAndDDFormMetaData = {
                     messageTitle: postData[i]?.O_MSG_TITLE?.length
                       ? postData[i]?.O_MSG_TITLE
                       : "Confirmation",
-                    message: postData[i]?.O_MESSAGE,
+                    message: postData[i]?.O_MESSAGE ?? "",
                     buttonNames: ["Yes", "No"],
                     icon: "CONFIRM",
                   });
@@ -456,7 +456,7 @@ export const PayslipAndDDFormMetaData = {
                       messageTitle: postData[i]?.O_MSG_TITLE?.length
                         ? postData[i]?.O_MSG_TITLE
                         : "Alert",
-                      message: postData[i]?.O_MESSAGE,
+                      message: postData[i]?.O_MESSAGE ?? "",
                       icon: "WARNING",
                     });
                   }
