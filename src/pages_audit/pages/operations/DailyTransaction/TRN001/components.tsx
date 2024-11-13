@@ -186,7 +186,7 @@ export const CustomAmountField = ({
   ...rest
 }: CustomAmountFieldProps) => {
   const { dynamicAmountSymbol, dynamicAmountGroupStyle, decimalCount } =
-    customParameter;
+    customParameter ?? {};
   return (
     <>
       <TextField

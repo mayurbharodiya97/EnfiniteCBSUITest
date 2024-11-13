@@ -460,7 +460,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
                     onChange={(e) =>
                       handleChange(index, "LOAN_AMT", e.target.value)
                     }
-                    maxLength={15}
+                    // maxLength={15}
                   />
                 </TableCell>
 
