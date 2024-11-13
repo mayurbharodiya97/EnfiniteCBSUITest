@@ -144,6 +144,9 @@ export const OrnamentTypeMasterFormMetaData = {
           if (values?.value?.length > 6) {
             return false;
           }
+          if (values.floatValue === 0) {
+            return false;
+          }
           return true;
         },
       },

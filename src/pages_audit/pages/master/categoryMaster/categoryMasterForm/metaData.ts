@@ -528,9 +528,9 @@ export const CategoryMasterFormMetaData = {
       render: {
         componentType: "numberFormat",
       },
-      label: "AccountNumber",
+      label: "AccountNum",
       name: "TDS_SUR_ACCT_CD",
-      placeholder: "AccountNumberPlaceHolder",
+      placeholder: "EnterAccountNum",
       autoComplete: "off",
       dependentFields: ["TDS_SUR_ACCT_TYPE", "BRANCH_CD"],
       runPostValidationHookAlways: true,

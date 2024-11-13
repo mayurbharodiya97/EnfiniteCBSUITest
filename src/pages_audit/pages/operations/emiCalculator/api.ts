@@ -74,11 +74,33 @@ export const getEMICalcIntFund = async ({ COMP_CD, BRANCH_CD }) => {
   }
 };
 
-export const validateCheckEmiSchedule = async ({ ...reqdata }) => {
+export const validateCheckEmiSchedule = async ({
+  A_FLAG,
+  A_INST_NO,
+  A_FROM_INST,
+  A_TO_INST,
+  A_EMI_RS,
+  A_PREV_FROM_INST,
+  A_GD_DATE,
+  A_SCREEN_REF,
+  A_LANG,
+  A_USER,
+  A_USER_LEVEL,
+}) => {
   const { data, status, message } = await AuthSDK.internalFetcher(
     "CHECKEMISCHEDULEDTL",
     {
-      ...reqdata,
+      A_FLAG: A_FLAG,
+      A_INST_NO: A_INST_NO,
+      A_FROM_INST: A_FROM_INST,
+      A_TO_INST: A_TO_INST,
+      A_EMI_RS: A_EMI_RS,
+      A_PREV_FROM_INST: A_PREV_FROM_INST,
+      A_GD_DATE: A_GD_DATE,
+      A_SCREEN_REF: A_SCREEN_REF,
+      A_LANG: A_LANG,
+      A_USER: A_USER,
+      A_USER_LEVEL: A_USER_LEVEL,
     }
   );
   if (status === "0") {
@@ -88,17 +110,15 @@ export const validateCheckEmiSchedule = async ({ ...reqdata }) => {
   }
 };
 
-export const validateDisburseDetail = async ({ ...reqdata }) => {
-  const { data, status, message } = await AuthSDK.internalFetcher(
-    "CHECKEMIDISBURSDTL",
-    {
-      ...reqdata,
-    }
-  );
+export const validateDisburseDetail = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CHECKEMIDISBURSDTL", {
+      ...ApiReq,
+    });
   if (status === "0") {
     return data;
   } else {
-    throw DefaultErrorObject(message);
+    throw DefaultErrorObject(message, messageDetails);
   }
 };
 

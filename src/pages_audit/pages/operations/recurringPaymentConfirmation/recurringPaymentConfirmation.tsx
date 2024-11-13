@@ -164,9 +164,9 @@ export const RecurringPaymentConfirmation = ({
                 authState?.menulistdata,
                 false
               )}
-              {`\u00A0\u00A0${t("EnteredBy")}: ${
+              {`\u00A0\u00A0||\u00A0\u00A0${t("EnteredBy")}: ${
                 rows?.[0]?.data?.ENTERED_BY ?? ""
-              }\u00A0\u00A0${t("Status")}: ${
+              }\u00A0\u00A0||\u00A0\u00A0${t("Status")}: ${
                 rows?.[0]?.data?.CONF_STATUS ?? ""
               }\u00A0\u00A0`}
             </Typography>
@@ -224,6 +224,17 @@ export const RecurringPaymentConfirmation = ({
         >
           <VouchersDetailsGrid />
         </Paper>
+
+        <Typography
+          color="rgb(128, 0, 57)"
+          variant={"h6"}
+          component="div"
+          fontSize="16px"
+          paddingLeft="10px"
+          fontWeight="bold"
+        >
+          {rows?.[0]?.data?.CONF_MSG ?? ""}
+        </Typography>
       </Dialog>
 
       {/*Open Photo Signature */}
