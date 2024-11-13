@@ -70,14 +70,21 @@ const AgentMasterForm = ({
 
     let newData = {
       ...data,
-      SECURITY_PER: parseFloat(data?.SECURITY_PER).toFixed(2),
+      SECURITY_PER: data?.SECURITY_PER
+        ? parseFloat(data?.SECURITY_PER).toFixed(2)
+        : "",
     };
     let oldData = {
       ...rows?.[0]?.data,
-      SECURITY_PER: parseFloat(rows?.[0]?.data?.SECURITY_PER).toFixed(2),
+      SECURITY_PER: rows?.[0]?.data?.SECURITY_PER
+        ? parseFloat(rows?.[0]?.data?.SECURITY_PER).toFixed(2)
+        : "",
     };
 
-    let upd = utilFunction.transformDetailsData(newData, oldData);
+    let upd = utilFunction.transformDetailsData(
+      newData,
+      defaultView === "new" ? {} : oldData
+    );
 
     if (
       Number(newData?.SECURITY_AMT) !== 0 &&
