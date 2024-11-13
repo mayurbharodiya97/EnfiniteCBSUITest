@@ -6,7 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "@acuteinfo/common-base";
+import { Alert, LoaderPaperComponent } from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
 import {
   usePopupContext,
@@ -34,21 +34,17 @@ const OrnamentTypeMasterForm = ({
 
   const mutation = useMutation(API.ornamentTypeMasterDML, {
     onError: async (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      await MessageBox({
-        messageTitle: "Error",
-        message: errorMsg ?? "",
-        icon: "ERROR",
-      });
       CloseMessageBox();
     },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
+    onSuccess: (msg, data) => {
+      enqueueSnackbar(
+        Boolean(data?._isNewRow)
+          ? t("RecordInsertedMsg")
+          : t("RecordUpdatedMsg"),
+        {
+          variant: "success",
+        }
+      );
       isDataChangedRef.current = true;
       CloseMessageBox();
       closeDialog();
@@ -92,6 +88,7 @@ const OrnamentTypeMasterForm = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         mutation.mutate({
@@ -103,6 +100,14 @@ const OrnamentTypeMasterForm = ({
 
   return (
     <>
+      {mutation.isError && (
+        <Alert
+          severity="error"
+          errorMsg={mutation?.error?.error_msg || t("Somethingwenttowrong")}
+          errorDetail={mutation?.error?.error_detail ?? ""}
+          color="error"
+        />
+      )}
       {gridData ? (
         <FormWrapper
           key={"ornamentTypeMasterFormMetaData" + formMode}

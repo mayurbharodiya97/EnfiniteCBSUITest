@@ -50,19 +50,10 @@ export const OrnamentTypeMasterGrid = () => {
 
   const deleteMutation = useMutation(API.ornamentTypeMasterDML, {
     onError: async (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      await MessageBox({
-        messageTitle: "Error",
-        message: errorMsg ?? "",
-        icon: "ERROR",
-      });
       CloseMessageBox();
     },
     onSuccess: () => {
-      enqueueSnackbar(t("RecordsDeletedMsg"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -79,6 +70,7 @@ export const OrnamentTypeMasterGrid = () => {
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
@@ -134,11 +126,17 @@ export const OrnamentTypeMasterGrid = () => {
 
   return (
     <>
-      {isError && (
+      {(isError || deleteMutation.isError) && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
-          errorDetail={error?.error_detail}
+          errorMsg={
+            error?.error_msg ||
+            deleteMutation?.error?.error_msg ||
+            t("Somethingwenttowrong")
+          }
+          errorDetail={
+            error?.error_detail || deleteMutation?.error?.error_detail || ""
+          }
           color="error"
         />
       )}
