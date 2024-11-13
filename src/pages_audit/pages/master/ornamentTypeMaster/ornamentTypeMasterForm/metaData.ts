@@ -137,15 +137,8 @@ export const OrnamentTypeMasterFormMetaData = {
         xl: 3,
       },
       FormatProps: {
-        allowLeadingZeros: false,
         isAllowed: (values) => {
-          if (
-            values?.formattedValue.startsWith("0") &&
-            !values?.formattedValue.startsWith("0.")
-          ) {
-            return false;
-          }
-          if (parseFloat(values?.value) >= 100.01) {
+          if (values?.floatValue > 100) {
             return false;
           }
           if (values?.value?.length > 6) {
