@@ -270,19 +270,25 @@ const RecurringPaymentStepperForm = ({
             for (const ddNeftObj of data[0][obj] ?? []) {
               if (ddNeftObj?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: ddNeftObj?.O_MSG_TITLE?.length
+                    ? ddNeftObj?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: ddNeftObj?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
               } else if (ddNeftObj?.O_STATUS === "9") {
                 await MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: ddNeftObj?.O_MSG_TITLE?.length
+                    ? ddNeftObj?.O_MSG_TITLE
+                    : "Alert",
                   message: ddNeftObj?.O_MESSAGE ?? "",
                   icon: "WARNING",
                 });
               } else if (ddNeftObj?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: ddNeftObj?.O_MSG_TITLE?.length
+                    ? ddNeftObj?.O_MSG_TITLE
+                    : "Confirmation",
                   message: ddNeftObj?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
@@ -297,19 +303,25 @@ const RecurringPaymentStepperForm = ({
             for (const voucherMsg of data[0][obj] ?? []) {
               if (voucherMsg?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: voucherMsg?.O_MSG_TITLE?.length
+                    ? voucherMsg?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: voucherMsg?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
               } else if (voucherMsg?.O_STATUS === "9") {
                 await MessageBox({
-                  messageTitle: "VouchersConfirmation",
+                  messageTitle: voucherMsg?.O_MSG_TITLE?.length
+                    ? voucherMsg?.O_MSG_TITLE
+                    : "VouchersConfirmation",
                   message: voucherMsg?.O_MESSAGE ?? "",
                   icon: "WARNING",
                 });
               } else if (voucherMsg?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: voucherMsg?.O_MSG_TITLE?.length
+                    ? voucherMsg?.O_MSG_TITLE
+                    : "Confirmation",
                   message: voucherMsg?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
@@ -454,14 +466,18 @@ const RecurringPaymentStepperForm = ({
               }
             } else if (obj?.O_STATUS === "9") {
               await MessageBox({
-                messageTitle: "validationAlert",
-                message: obj?.O_MESSAGE,
+                messageTitle: obj?.O_MSG_TITLE?.length
+                  ? obj?.O_MSG_TITLE
+                  : "validationAlert",
+                message: obj?.O_MESSAGE ?? "",
                 icon: "WARNING",
               });
             } else if (obj?.O_STATUS === "99") {
               const buttonName = await MessageBox({
-                messageTitle: "Confirmation",
-                message: obj?.O_MESSAGE,
+                messageTitle: obj?.O_MSG_TITLE?.length
+                  ? obj?.O_MSG_TITLE
+                  : "Confirmation",
+                message: obj?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
                 icon: "CONFIRM",
               });
@@ -513,8 +529,10 @@ const RecurringPaymentStepperForm = ({
               }
             } else if (obj?.O_STATUS === "999") {
               await MessageBox({
-                messageTitle: "ValidationFailed",
-                message: obj?.O_MESSAGE,
+                messageTitle: obj?.O_MSG_TITLE?.length
+                  ? obj?.O_MSG_TITLE
+                  : "ValidationFailed",
+                message: obj?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
             }
