@@ -25,6 +25,7 @@ import { Notification_App } from "./appBar/notification";
 import { IconButton, Tooltip } from "@mui/material";
 import { Accountinquiry } from "./acct_Inquiry/acct_inquiry";
 import AllScreensGridWrapper from "./pages/allScreens/index";
+import CloseScreen from "./appBar/closeScreen";
 
 export const PagesAudit = (props, { columns }) => {
   const [acctInq, setAcctInq] = useState(false);
@@ -91,6 +92,13 @@ export const PagesAudit = (props, { columns }) => {
               },
               { Component: Quick_View },
               { Component: Notification_App },
+              {
+                Component:
+                  location.pathname.includes("dashboard") ||
+                  location.pathname.includes("all-screens")
+                    ? () => null
+                    : CloseScreen,
+              },
             ]}
             hideGreetings={false}
           />

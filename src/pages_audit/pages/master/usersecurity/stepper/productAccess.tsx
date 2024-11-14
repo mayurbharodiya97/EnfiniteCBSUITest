@@ -12,12 +12,12 @@ import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import { useNavigate } from "react-router-dom";
 import { SecurityContext } from "../context/SecuityForm";
-import { Alert } from "reactstrap";
 import {
   extractGridMetaData,
   GridWrapper,
   GridMetaDataType,
   ActionTypes,
+  Alert,
 } from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
