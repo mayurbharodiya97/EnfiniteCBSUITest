@@ -204,6 +204,7 @@ export const FdInterestPaymentGrid = () => {
             messageTitle: "Confirmation",
             message: "DeleteData",
             buttonNames: ["Yes", "No"],
+            icon: "CONFIRM",
           });
 
           if (btnName === "Yes") {
@@ -232,6 +233,7 @@ export const FdInterestPaymentGrid = () => {
             messageTitle: "Confirmation",
             message: `RetrieveConfirmation`,
             buttonNames: ["Yes", "No"],
+            icon: "CONFIRM",
           });
           if (btnName === "Yes") {
             setFormOpen(true);
@@ -289,6 +291,7 @@ export const FdInterestPaymentGrid = () => {
             message: "SaveData",
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
+            icon: "CONFIRM",
           });
           if (btnName === "Yes") {
             updateFDPayment.mutate({
@@ -509,15 +512,7 @@ export const FdInterestPaymentGrid = () => {
                 {t("Submit")}
               </GradientButton>
 
-              <GradientButton
-                onClick={handleCloseForm}
-                color={"primary"}
-                disabled={
-                  isSubmitting ||
-                  fetchFDPaymentInstructions?.isLoading ||
-                  isButtonDisabled
-                }
-              >
+              <GradientButton onClick={handleCloseForm} color={"primary"}>
                 {t("Cancel")}
               </GradientButton>
             </>

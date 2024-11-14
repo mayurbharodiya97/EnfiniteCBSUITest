@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { FdInterestPaymentFormMetaData } from "./metaData";
@@ -58,14 +58,6 @@ const FdInterestPaymentForm = ({
   ) => {
     // @ts-ignore
     endSubmit(true);
-    if (!Boolean(data?.PAYMENT_MODE)) {
-      const btnName = await MessageBox({
-        messageTitle: "Alert",
-        message: "PaymentModerequired",
-        icon: "WARNING",
-      });
-      return;
-    }
     const index = gridData?.findIndex(
       (item) => JSON.stringify(item) === JSON.stringify(rows?.[0]?.data)
     );
@@ -100,6 +92,7 @@ const FdInterestPaymentForm = ({
         message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         updateAndCheck(currentNewData, currentOldData);
@@ -146,6 +139,7 @@ const FdInterestPaymentForm = ({
           CARRYFORWARD_FD_NO: carryForwardData?.FD_NO,
         })}`,
         buttonNames: ["Yes", "No"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         updateAndCheck(carryForwardData, nextRowData);
@@ -156,8 +150,9 @@ const FdInterestPaymentForm = ({
   const handleButtonDisable = (disable) => {
     setDisableButton(disable);
   };
+  useEffect(() => {
+    console.log("abcd");
 
-  if (FdInterestPaymentFormMetaData)
     FdInterestPaymentFormMetaData.form.label =
       utilFunction?.getDynamicLabel(
         currentPath,
@@ -166,6 +161,7 @@ const FdInterestPaymentForm = ({
       ) +
       " " +
       rows?.[0]?.data?.FD_NO;
+  }, [rows?.[0]?.data]);
 
   return (
     <>
@@ -219,7 +215,7 @@ const FdInterestPaymentForm = ({
                     disabled={isSubmitting || disableButton}
                     color={"primary"}
                   >
-                    {t("Carry Forward")}
+                    {t("CarryForward")}
                   </GradientButton>
                 )}
                 <GradientButton
@@ -232,11 +228,7 @@ const FdInterestPaymentForm = ({
                 >
                   {t("Save")}
                 </GradientButton>
-                <GradientButton
-                  onClick={closeDialog}
-                  disabled={isSubmitting || disableButton}
-                  color={"primary"}
-                >
+                <GradientButton onClick={closeDialog} color={"primary"}>
                   {t("Close")}
                 </GradientButton>
               </>
@@ -252,11 +244,7 @@ const FdInterestPaymentForm = ({
                 >
                   {t("Save")}
                 </GradientButton>
-                <GradientButton
-                  onClick={closeDialog}
-                  disabled={isSubmitting || disableButton}
-                  color={"primary"}
-                >
+                <GradientButton onClick={closeDialog} color={"primary"}>
                   {t("Close")}
                 </GradientButton>
               </>
@@ -269,7 +257,7 @@ const FdInterestPaymentForm = ({
                     }}
                     color={"primary"}
                   >
-                    {t("Carry Forward")}
+                    {t("CarryForward")}
                   </GradientButton>
                 )}
                 <GradientButton

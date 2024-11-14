@@ -72,7 +72,7 @@ export const PassbookPrintingInq = {
           ACCT_CD: { value: "" },
         };
       },
-      required: "true",
+      required: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["BranchCodeReqired"] }],
@@ -97,7 +97,7 @@ export const PassbookPrintingInq = {
         });
       },
       _optionsKey: "get_Account_Type",
-      required: "true",
+      required: true,
       validationRun: "onChange",
       runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
@@ -113,7 +113,7 @@ export const PassbookPrintingInq = {
         ) {
           let buttonName = await formState?.MessageBox({
             messageTitle: "Alert",
-            message: "Enter Account Branch.",
+            message: "EnterAccountBranch",
             buttonNames: ["Ok"],
             icon: "WARNING",
           });
@@ -130,12 +130,18 @@ export const PassbookPrintingInq = {
                 isFieldFocused: true,
                 ignoreUpdate: true,
               },
+              TRAN_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
             };
           }
         }
         return {
-          ACCT_CD: { value: "" },
-          ACCT_NM: { value: "" },
+          ACCT_CD: { value: "", ignoreUpdate: true },
+          ACCT_NM: { value: "", ignoreUpdate: true },
+          TRAN_CD: { value: "", ignoreUpdate: true },
         };
       },
 
@@ -179,7 +185,7 @@ export const PassbookPrintingInq = {
         }
       },
       _optionsKey: "getPassBookTemplate",
-      required: "true",
+      required: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["TemplateReqired"] }],
@@ -196,7 +202,7 @@ export const PassbookPrintingInq = {
       placeholder: "AccountNumberPlaceHolder",
       autoComplete: "off",
       dependentFields: ["ACCT_TYPE", "BRANCH_CD", "TRAN_CD"],
-      required: "true",
+      required: true,
       runPostValidationHookAlways: true,
       schemaValidation: {
         type: "string",
@@ -208,15 +214,13 @@ export const PassbookPrintingInq = {
         authState,
         dependentFieldsValues
       ) => {
-        console.log("dependentFieldsValues", dependentFieldsValues);
-
         if (formState?.isSubmitting) return {};
         if (
           !Boolean(currentField?.displayValue) &&
           !Boolean(currentField?.value)
         ) {
           return {
-            ACCT_NM: { value: "" },
+            ACCT_NM: { value: "", ignoreUpdate: true },
           };
         } else if (!Boolean(currentField?.displayValue)) {
           return {};
@@ -228,7 +232,7 @@ export const PassbookPrintingInq = {
         ) {
           let buttonName = await formState?.MessageBox({
             messageTitle: "Alert",
-            message: "Enter Branch Code",
+            message: "EnterAccountBranch",
             buttonNames: ["Ok"],
             icon: "WARNING",
           });
@@ -242,9 +246,11 @@ export const PassbookPrintingInq = {
               },
               ACCT_CD: {
                 value: "",
+                ignoreUpdate: true,
               },
               ACCT_TYPE: {
                 value: "",
+                ignoreUpdate: true,
               },
             };
           }
@@ -254,7 +260,7 @@ export const PassbookPrintingInq = {
         ) {
           let buttonName = await formState?.MessageBox({
             messageTitle: "Alert",
-            message: "Enter Account Type.",
+            message: "EnterAccountType",
             buttonNames: ["Ok"],
             icon: "WARNING",
           });
@@ -266,7 +272,7 @@ export const PassbookPrintingInq = {
                 isFieldFocused: true,
                 ignoreUpdate: true,
               },
-              ACCT_CD: { value: "" },
+              ACCT_CD: { value: "", ignoreUpdate: true },
             };
           }
         } else if (
@@ -275,7 +281,7 @@ export const PassbookPrintingInq = {
         ) {
           let buttonName = await formState?.MessageBox({
             messageTitle: "Alert",
-            message: "Select Template",
+            message: "SelectTemplate",
             buttonNames: ["Ok"],
             icon: "WARNING",
           });
@@ -284,6 +290,11 @@ export const PassbookPrintingInq = {
               TRAN_CD: {
                 value: "",
                 isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+              ACCT_CD: {
+                value: "",
+                isFieldFocused: false,
                 ignoreUpdate: true,
               },
             };
@@ -311,7 +322,6 @@ export const PassbookPrintingInq = {
           formState.handleButonDisable(true);
 
           const postData = await passbookAccountDetails(reqParameters);
-          console.log("postData", postData);
 
           formState.handleButonDisable(false);
 
@@ -328,7 +338,7 @@ export const PassbookPrintingInq = {
                   isFieldFocused: true,
                   ignoreUpdate: true,
                 },
-                ACCT_NM: { value: "" },
+                ACCT_NM: { value: "", ignoreUpdate: true },
               };
             }
           } else {
@@ -341,7 +351,7 @@ export const PassbookPrintingInq = {
             for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: postData[i]?.O_MSG_TITLE ?? "ValidationFailed",
                   message: postData[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
@@ -357,7 +367,7 @@ export const PassbookPrintingInq = {
                 }
               } else if (postData[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData[i]?.O_MSG_TITLE ?? "Confirmation",
                   message: postData[i]?.O_MESSAGE,
                   icon: "CONFIRM",
                   buttonNames: ["Yes", "No"],
@@ -369,7 +379,7 @@ export const PassbookPrintingInq = {
               } else if (postData[i]?.O_STATUS === "9") {
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
+                    messageTitle: postData[i]?.O_MSG_TITLE ?? "Alert",
                     message: postData[i]?.O_MESSAGE,
                     icon: "WARNING",
                   });
@@ -421,15 +431,19 @@ export const PassbookPrintingInq = {
           return {
             ACCT_NM: {
               value: "",
+              ignoreUpdate: true,
             },
             PASS_BOOK_LINE: {
               value: "",
+              ignoreUpdate: true,
             },
             PASS_BOOK_DT: {
               value: "",
+              ignoreUpdate: true,
             },
             PASS_BOOK_TO_DT: {
               value: "",
+              ignoreUpdate: true,
             },
           };
         }
@@ -497,7 +511,6 @@ export const PassbookPrintingInq = {
         dependentFieldValues
       ) => {
         if (formState?.isSubmitting) return {};
-        console.log("dependentFieldValues", dependentFieldValues);
 
         if (currentField?.value) {
           return {
