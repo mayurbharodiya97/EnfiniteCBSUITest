@@ -1973,6 +1973,8 @@ export const en_language_data = {
   confirmSI: "Are you sure to confirm SI?",
 
   //Recurring Interest Calculator
+  notAllowed: "Not Allowed.",
+  noMoreRemainingInst: "No More Remaining Installment.",
   Categoryisrequired: "Category is required",
   IntType: "Interest Type",
   InstallmentType: "Installment Type",
@@ -1983,6 +1985,8 @@ export const en_language_data = {
   SelectInstallmentTypePlaceHolder: "Select Installment Type",
 
   //EMI Calculator
+  addRow: "Add Row",
+  loanRepaymentSchedule: "Loan Repayment Schedule",
   InterestFunded: "Interest Funded",
   LoanAmount: "Loan Amount",
   Calculate: "Calculate",
