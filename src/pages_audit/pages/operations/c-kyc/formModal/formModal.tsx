@@ -721,6 +721,7 @@ export default function FormModal({
             <GradientButton
               onClick={() => openActionDialog("Y")}
               color="primary"
+              style={{ minWidth: "fit-content" }}
               // disabled={mutation.isLoading}
             >
               {t("Confirm")}
@@ -729,6 +730,7 @@ export default function FormModal({
               <GradientButton
                 onClick={() => openActionDialog("M")}
                 color="primary"
+                style={{ minWidth: "fit-content" }}
                 // disabled={mutation.isLoading}
               >
                 {t("Raise Query")}
@@ -737,6 +739,7 @@ export default function FormModal({
             <GradientButton
               onClick={() => openActionDialog("R")}
               color="primary"
+              style={{ minWidth: "fit-content" }}
               // disabled={mutation.isLoading}
             >
               {t("Reject")}
@@ -744,7 +747,11 @@ export default function FormModal({
           </React.Fragment>
         )
       : state?.formmodectx == "edit" && state?.fromctx !== "new-draft" && (
-          <GradientButton onClick={onUpdateForm} color="primary">
+          <GradientButton
+            onClick={onUpdateForm}
+            color="primary"
+            style={{ minWidth: "fit-content" }}
+          >
             {t("Update")}
           </GradientButton>
         );
@@ -894,6 +901,7 @@ export default function FormModal({
           <GradientButton
             onClick={onCancelForm}
             color="primary"
+            style={{ minWidth: "fit-content" }}
             // disabled={mutation.isLoading}
           >
             {t("Close")}
