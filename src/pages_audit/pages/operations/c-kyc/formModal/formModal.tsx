@@ -156,7 +156,7 @@ export function TabPanel(props: TabPanelProps) {
 }
 
 export default function FormModal({
-  // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
+  // handleFormModalOpen, handleFormModalClose,
   // isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
   // colTabValue, setColTabValue, handleColTabChange,
   onClose,
@@ -458,8 +458,8 @@ export default function FormModal({
   ]);
 
   // useEffect(() => {
-  //   console.log("asdasdasdsasdasdas.", state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx)
-  // }, [state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx])
+  //   console.log("asdasdasdsasdasdas.", state?.entityTypectx, state?.isFreshEntryctx)
+  // }, [state?.entityTypectx, state?.isFreshEntryctx])
 
   // useEffect(() => {
   //   if(!isAccTypeLoading && AccTypeOptions) {
@@ -829,11 +829,7 @@ export default function FormModal({
   return (
     // <div>
     //   <Button onClick={handleFormModalOpen}>Open modal</Button>
-    <Dialog
-      fullScreen={true}
-      open={true}
-      // open={state?.isFormModalOpenctx}
-    >
+    <Dialog fullScreen={true} open={true}>
       <ExtractedHeader />
       <AppBar
         position="sticky"
