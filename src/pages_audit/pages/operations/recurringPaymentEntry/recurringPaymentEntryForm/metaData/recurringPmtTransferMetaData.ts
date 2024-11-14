@@ -173,7 +173,7 @@ export const RecurringPaymentTransferFormMetaData = {
       },
       name: "RECPAYTRANS",
       isScreenStyle: true,
-      displayCountName: "TransferToAccount",
+      displayCountName: "Record",
       addRowFn: (data) => {
         const dataArray = Array.isArray(data?.RECPAYTRANS)
           ? data?.RECPAYTRANS
@@ -238,10 +238,10 @@ export const RecurringPaymentTransferFormMetaData = {
                   ?.length === 0
               ) {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: "ValidationFailed",
                   message: "Enter Account Branch.",
                   buttonNames: ["Ok"],
-                  icon: "WARNING",
+                  icon: "ERROR",
                 });
 
                 if (buttonName === "Ok") {
@@ -289,10 +289,10 @@ export const RecurringPaymentTransferFormMetaData = {
                   ?.length === 0
               ) {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: "ValidationFailed",
                   message: "Enter Account Type.",
                   buttonNames: ["Ok"],
-                  icon: "WARNING",
+                  icon: "ERROR",
                 });
 
                 if (buttonName === "Ok") {
@@ -344,25 +344,34 @@ export const RecurringPaymentTransferFormMetaData = {
                   if (postData?.MSG?.[i]?.O_STATUS === "999") {
                     formState?.handleDisableButton(false);
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "ValidationFailed",
-                      message: postData?.MSG?.[i]?.O_MESSAGE,
+                      messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.MSG?.[i]?.O_MSG_TITLE
+                        : "ValidationFailed",
+                      message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
+                      icon: "ERROR",
                     });
                     returnVal = "";
                   } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
                     formState?.handleDisableButton(false);
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
-                        message: postData?.MSG?.[i]?.O_MESSAGE,
+                        messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                          ? postData?.MSG?.[i]?.O_MSG_TITLE
+                          : "Alert",
+                        message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
+                        icon: "WARNING",
                       });
                     }
                     returnVal = postData;
                   } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                     formState?.handleDisableButton(false);
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Confirmation",
-                      message: postData?.MSG?.[i]?.O_MESSAGE,
+                      messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.MSG?.[i]?.O_MSG_TITLE
+                        : "Confirmation",
+                      message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
 
                     btn99 = btnName;

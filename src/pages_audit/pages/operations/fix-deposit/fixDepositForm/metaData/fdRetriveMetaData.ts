@@ -74,10 +74,6 @@ export const FDRetriveMetadata = {
         validationRun: "onChange",
         dependentFields: ["BRANCH_CD"],
         isFieldFocused: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -288,11 +284,15 @@ export const FDRetriveMetadata = {
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
               },
+              TRAN_BAL: {
+                value: returnVal?.TRAN_BAL ?? "",
+              },
             };
           } else if (!currentField?.value) {
             formState?.handleDisableButton(false);
             return {
               ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
             };
           }
           formState?.handleDisableButton(false);
@@ -302,6 +302,7 @@ export const FDRetriveMetadata = {
         GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
       },
     },
+
     {
       render: {
         componentType: "textField",
@@ -310,8 +311,25 @@ export const FDRetriveMetadata = {
       label: "AccountName",
       type: "text",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      GridProps: { xs: 12, sm: 8, md: 8, lg: 8, xl: 8 },
     },
+
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TRAN_BAL",
+      label: "Balance",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        sm: 4,
+        md: 4,
+        lg: 4,
+        xl: 4,
+      },
+    },
+
     {
       render: {
         componentType: "hidden",

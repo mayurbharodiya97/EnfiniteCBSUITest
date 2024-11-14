@@ -87,8 +87,12 @@ export const InwardClearing = () => {
   const { t } = useTranslation();
 
   const [state, setState] = useState<any>({
-    selectedRows: authState?.user?.branchCode ?? [],
-    selectedRowsData: authState?.user?.branchCode ?? [],
+    selectedRows: authState?.user?.branchCode
+      ? [authState.user.branchCode]
+      : [],
+    selectedRowsData: authState?.user?.branchCode
+      ? [authState.user.branchCode]
+      : [],
     isOpenRetrieve: true,
     selectAll: false,
     searchQuery: "",
@@ -123,13 +127,38 @@ export const InwardClearing = () => {
           index: indexRef.current,
         },
       });
+    } else if (data.name === "_rowChanged") {
+      if (data?.rows?.[0]?.data?.P2F_FLAG_MSG?.length > 0) {
+        MessageBox({
+          messageTitle: "Information",
+          message: data?.rows?.[0]?.data?.P2F_FLAG_MSG,
+          buttonNames: ["Ok"],
+        });
+      }
     }
   }, []);
-  const { data, isLoading, isFetching, refetch, error, isError, status } =
-    useQuery<any, any>(["BranchSelectionGridData", isOpenRetrieve], () =>
-      API.BranchSelectionGridData()
-    );
 
+  const { data, isLoading, isFetching, refetch, error, isError, status } =
+    useQuery<any, any>(
+      ["BranchSelectionGridData", isOpenRetrieve],
+      () => API.BranchSelectionGridData(),
+      {
+        enabled: isOpenRetrieve, // The query only runs when isOpenRetrieve is true
+      }
+    );
+  useEffect(() => {
+    if (isOpenRetrieve) {
+      setState((prevState) => ({
+        ...prevState,
+        selectedRows: authState?.user?.branchCode
+          ? [authState.user.branchCode]
+          : [],
+        selectedRowsData: authState?.user?.branchCode
+          ? [authState.user.branchCode]
+          : [],
+      }));
+    }
+  }, [isOpenRetrieve]);
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["BranchSelectionGridData", isOpenRetrieve]);
@@ -224,13 +253,13 @@ export const InwardClearing = () => {
           }
         } else if (data[i]?.O_STATUS === "9") {
           MessageBox({
-            messageTitle: t("Alert"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             icon: "WARNING",
           });
         } else if (data[i]?.O_STATUS === "99") {
           const buttonName = await MessageBox({
-            messageTitle: t("Confirmation"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
@@ -252,7 +281,7 @@ export const InwardClearing = () => {
           }
         } else if (data[i]?.O_STATUS === "999") {
           MessageBox({
-            messageTitle: t("ValidationFailed"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             icon: "ERROR",
           });
@@ -343,42 +372,33 @@ export const InwardClearing = () => {
   });
   const handlePrev = useCallback(() => {
     navigate(".");
-    setState((prevState) => ({
-      ...prevState,
-      isOpenRetrieve: false,
-    }));
-    const index = (indexRef.current -= 1);
-    setTimeout(() => {
-      setCurrentAction({
-        name: "view-detail",
-        rows: [
-          {
-            data: getInwardClearingData?.data[index],
-            id: String(index - 1),
-          },
-        ],
-      });
-    }, 0);
-  }, [getInwardClearingData?.data]);
+    if (indexRef.current > 1) {
+      indexRef.current -= 1;
+      const index = indexRef.current;
+      setTimeout(() => {
+        setCurrentAction({
+          name: "view-detail",
+          rows: [
+            { data: getInwardClearingData?.data[index - 1], id: String(index) },
+          ],
+        });
+      }, 0);
+    }
+  }, [getInwardClearingData?.data, indexRef.current]);
   const handleNext = useCallback(() => {
     navigate(".");
-    setState((prevState) => ({
-      ...prevState,
-      isOpenRetrieve: false,
-    }));
     const index = indexRef.current++;
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
+
         rows: [
-          {
-            data: getInwardClearingData?.data[index + 1],
-            id: String(index + 1),
-          },
+          { data: getInwardClearingData?.data[index], id: String(index + 1) },
         ],
       });
     }, 0);
-  }, [getInwardClearingData?.data]);
+  }, [getInwardClearingData?.data, indexRef.current]);
+
   const handleDialogClose = () => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
@@ -412,6 +432,14 @@ export const InwardClearing = () => {
       }));
     }
   }, [isLoading, isFetching]);
+
+  if (getInwardClearingData) {
+    const { isLoading, data } = getInwardClearingData;
+    InwardCleaingGridMetaData.gridConfig.footerNote =
+      !isLoading && data?.length > 0
+        ? `Batch ID: ${data[0].BATCH_ID}    , Double click on records for detailed view , In Green Colour Indicates Posted and Confirmation Pending , In Pink Colour Indicates Draft/Banker Cheque , Blue Colour Indicates Share Dividend Warrant`
+        : "";
+  }
 
   const handleRowClick = (event: any, name: string, label: string) => {
     setState((prevState) => ({
@@ -482,7 +510,7 @@ export const InwardClearing = () => {
               </Toolbar>
             </AppBar>
             <FormWrapper
-              key={"inwardClearingRetrieval"}
+              key={"inwardClearingRetrieval" + selectedRows}
               metaData={InwardClearingRetrievalMetadata as MetaDataType}
               initialValues={{}}
               onSubmitHandler={async (
@@ -504,7 +532,7 @@ export const InwardClearing = () => {
                 setState((prevState) => ({
                   ...prevState,
                   formData: data, // Update formData in the state
-                  isOpenRetrieve: false, // Close the retrieve dialog
+                  // isOpenRetrieve: false, // Close the retrieve dialog
                 }));
               }}
               //@ts-ignore
@@ -600,25 +628,25 @@ export const InwardClearing = () => {
                         </>
                       </Box>
                       <List style={{ paddingTop: "0px", paddingBottom: "0px" }}>
-                        {[...filteredData]
-                          .sort((a, b) => {
-                            // If 'a' is selected and 'b' is not, move 'a' up
-                            if (
-                              selectedRows.includes(a?.value) &&
-                              !selectedRows.includes(b?.value)
-                            ) {
-                              return -1;
-                            }
-                            // If 'b' is selected and 'a' is not, move 'b' up
-                            if (
-                              selectedRows.includes(b?.value) &&
-                              !selectedRows.includes(a?.value)
-                            ) {
-                              return 1;
-                            }
-                            // Otherwise, maintain the current order
-                            return 0;
-                          })
+                        {[...(filteredData ?? [])]
+                          // ?.sort((a, b) => {
+                          //   // If 'a' is selected and 'b' is not, move 'a' up
+                          //   if (
+                          //     selectedRows.includes(a?.value) &&
+                          //     !selectedRows.includes(b?.value)
+                          //   ) {
+                          //     return -1;
+                          //   }
+                          //   // If 'b' is selected and 'a' is not, move 'b' up
+                          //   if (
+                          //     selectedRows.includes(b?.value) &&
+                          //     !selectedRows.includes(a?.value)
+                          //   ) {
+                          //     return 1;
+                          //   }
+                          //   // Otherwise, maintain the current order
+                          //   return 0;
+                          // })
                           ?.map((item) => (
                             <ListItemData
                               key={item?.value}
@@ -679,7 +707,8 @@ export const InwardClearing = () => {
                     }));
                   }}
                 >
-                  {getInwardClearingData?.status === "success" && selectAll
+                  {(getInwardClearingData?.status === "success" && selectAll) ||
+                  selectAll
                     ? t("DeselectAll")
                     : t("SelectAll")}
                 </GradientButton>
@@ -701,14 +730,20 @@ export const InwardClearing = () => {
                       setState((prevState) => ({
                         ...prevState,
                         isOpenRetrieve: false,
+                        searchQuery: "",
                       }));
                       myRef?.current?.handleSubmit(event, "save");
                       selectedRowsRef.current = selectedRows;
                     }
                   }}
                   ref={inputButtonRef}
+                  disabled={
+                    selectedRows?.length === 0 || selectedRowsData?.length === 0
+                  }
                 >
-                  {t("Ok")}
+                  {`${t("Ok")}${
+                    data?.length > 0 ? ` (${selectedRows.length})` : ""
+                  }`}
                 </GradientButton>
 
                 <GradientButton
@@ -716,6 +751,7 @@ export const InwardClearing = () => {
                     setState((prevState) => ({
                       ...prevState,
                       isOpenRetrieve: false,
+                      searchQuery: "",
                     }));
                   }}
                 >
@@ -731,11 +767,11 @@ export const InwardClearing = () => {
         {/* {getInwardClearingData?.data &&
         getInwardClearingData?.data?.length > 0 ? ( */}
         <GridWrapper
-          key={"inwardCleringGrid"}
+          key={"inwardCleringGrid" + getInwardClearingData.isLoading}
           finalMetaData={InwardCleaingGridMetaData as GridMetaDataType}
           data={getInwardClearingData?.data ?? []}
           setData={() => null}
-          loading={getInwardClearingData.isLoading || isFetching}
+          loading={getInwardClearingData.isLoading}
           actions={actions}
           setAction={setCurrentAction}
           enableExport={true}
@@ -748,10 +784,8 @@ export const InwardClearing = () => {
               },
             })
           }
-          // onlySingleSelectionAllow={true}
-          // doubleClickAction={(index, id, data): any => {
-          //   console.log("index, id, data", index, id, data)
-          // }}
+          actionContextAtBottom={true}
+          disableMultipleRowSelect={true}
           onClickActionEvent={async (index, id, data) => {
             if (id === "SIGN_PATH") {
               mysubdtlRef.current = data;

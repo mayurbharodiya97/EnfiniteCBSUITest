@@ -1,4 +1,4 @@
-import * as API from "../api";
+import * as API from "../../../api";
 
 export const locker_tab_metadata = {
   form: {

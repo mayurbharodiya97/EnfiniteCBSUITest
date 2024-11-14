@@ -371,7 +371,7 @@ export const Trn002 = () => {
         ACCT_TYPE: dataRow?.ACCT_TYPE ?? "",
         ACCT_CD: dataRow?.ACCT_CD ?? "",
         TRAN_AMOUNT: dataRow?.AMOUNT ?? "",
-        ACTIVITY_TYPE: "DAILY TRANSACTION CONFIRMATION" ?? "",
+        ACTIVITY_TYPE: "DAILY TRANSACTION CONFIRMATION",
         TRAN_DT: dataRow?.TRAN_DT ?? "",
         CONFIRMED: dataRow?.CONFIRMED ?? "",
         USER_DEF_REMARKS: input ?? "",
@@ -394,12 +394,12 @@ export const Trn002 = () => {
   const handleConfirmByScroll = async () => {
     setScrollConfDialog(false);
     const msgBoxRes = await MessageBox({
-      messageTitle: "Alert",
+      messageTitle: "Confirmation",
       message: `Are you sure you want to confirm ${
         filteredGridDdata?.length ?? ""
       } records?`,
       defFocusBtnName: "Yes",
-      icon: "INFO",
+      icon: "CONFIRM",
       buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],
     });
@@ -513,12 +513,12 @@ export const Trn002 = () => {
   const handleDeletByScroll = async () => {
     setScrollDelDialog(false);
     const msgBoxRes = await MessageBox({
-      messageTitle: "Alert",
+      messageTitle: "Confirmation",
       message: `Are you sure you want to remove ${
         filteredGridDdata?.length ?? ""
       } records?`,
       defFocusBtnName: "Yes",
-      icon: "INFO",
+      icon: "CONFIRM",
       buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],
     });

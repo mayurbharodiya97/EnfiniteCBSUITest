@@ -48,6 +48,7 @@ export const ChequeReturnPostForm: FC<{
   const [acImageData, setAcImageData] = useState<any>(null);
   const [isDividend, setIsDividend] = useState(false);
   const [isPositivePay, setIsPositvePay] = useState(false);
+  const [isPositivePayData, setIsPositvePayData] = useState<any>({});
   // const [noFlag, setNoFlag] = useState(false);
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
@@ -142,13 +143,13 @@ export const ChequeReturnPostForm: FC<{
           }
         } else if (data[i]?.O_STATUS === "9") {
           MessageBox({
-            messageTitle: t("Alert"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             icon: "WARNING",
           });
         } else if (data[i]?.O_STATUS === "99") {
           const buttonName = await MessageBox({
-            messageTitle: t("Confirmation"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
@@ -183,7 +184,7 @@ export const ChequeReturnPostForm: FC<{
           }
         } else if (data[i]?.O_STATUS === "999") {
           MessageBox({
-            messageTitle: t("ValidationFailed"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             icon: "ERROR",
           });
@@ -256,7 +257,7 @@ export const ChequeReturnPostForm: FC<{
         }
       } else if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
         MessageBox({
-          messageTitle: t("ValidationFailed"),
+          messageTitle: data[0]?.O_MSG_TITLE,
           message: data?.[0]?.O_MESSAGE,
           icon: "ERROR",
         });
@@ -297,7 +298,7 @@ export const ChequeReturnPostForm: FC<{
               t("DoYouWantAllowTransactionVoucherNo") +
               variables?.DAILY_TRN_CD +
               "?",
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -307,13 +308,13 @@ export const ChequeReturnPostForm: FC<{
           }
         } else if (data[i]?.O_STATUS === "9") {
           MessageBox({
-            messageTitle: t("Alert"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             icon: "WARNING",
           });
         } else if (data[i]?.O_STATUS === "99") {
           const buttonName = await MessageBox({
-            messageTitle: t("Confirmation"),
+            messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
@@ -525,6 +526,9 @@ export const ChequeReturnPostForm: FC<{
         TRAN_CD: inwardGridData?.TRAN_CD,
         MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
       });
+    } else if (actionFlag === "POSITIVE_PAY") {
+      setIsPositvePayData({ ...data, COMP_CD: inwardGridData?.COMP_CD ?? "" });
+      setIsPositvePay(true);
     }
   };
   return (
@@ -540,7 +544,7 @@ export const ChequeReturnPostForm: FC<{
       ) : ( */}
       <>
         <FormWrapper
-          key={`chequeReturnPost`}
+          key={`chequeReturnPost` + currentIndex}
           metaData={chequeReturnPostFormMetaData as unknown as MetaDataType}
           initialValues={inwardGridData}
           // initialValues={{
@@ -598,7 +602,7 @@ export const ChequeReturnPostForm: FC<{
             } else if (id === "RETURN") {
               formRef?.current?.handleSubmit(event, "RETURN");
             } else if (id === "POSITIVE_PAY") {
-              setIsPositvePay(true);
+              formRef?.current?.handleSubmit(event, "POSITIVE_PAY");
             } else if (id === "CONFIRM") {
               formRef?.current?.handleSubmit(event, "CONFIRM");
             }
@@ -624,8 +628,10 @@ export const ChequeReturnPostForm: FC<{
           {({ isSubmitting, handleSubmit }) => (
             <>
               <GradientButton
-                onClick={() => {
-                  if (currentIndex && currentIndex !== totalData) handlePrev();
+                onClick={(e) => {
+                  if (currentIndex && currentIndex > 0) {
+                    handlePrev();
+                  }
                 }}
               >
                 {t("Previous")}
@@ -665,6 +671,7 @@ export const ChequeReturnPostForm: FC<{
             <ChequeSignImage
               imgData={result?.[0]?.data}
               acSignImage={acImageData}
+              formData={inwardGridData}
             />
           </>
         )}
@@ -674,7 +681,7 @@ export const ChequeReturnPostForm: FC<{
             onClose={() => {
               setIsPositvePay(false);
             }}
-            positiveData={inwardGridData}
+            positiveData={isPositivePayData}
           />
         ) : null}
 

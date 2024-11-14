@@ -1,1 +1,1 @@
-export { EMICalculatorFormWrapper as default } from "./emiCalculatorForm";
+export { EMICalculatorForm as default } from "./emiCalculatorForm";

@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import ExtractedHeader from "../c-kyc/formModal/ExtractedHeader";
-import { GradientButton } from "@acuteinfo/common-base";
+import { GradientButton, queryClient } from "@acuteinfo/common-base";
 import { t } from "i18next";
 import {
   Fragment,
@@ -51,7 +51,7 @@ import ShareNominalTab from "./tabComponents/ShareNominalTab";
 import OtherAddTab from "./tabComponents/OtherAddTab";
 import Document from "./tabComponents/DocumentTab/Document";
 // import Document from "./tabComponents/DocumentTab2/Document";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import {
   Alert,
   RemarksAPIWrapper,
@@ -72,18 +72,65 @@ const AcctModal = ({ onClose, formmode, from }) => {
     handleCurrFormctx,
     onFinalUpdatectx,
     handleUpdatectx,
+    handleModifiedColsctx,
+    handleFormDataonSavectx,
+    handleFormLoading,
   } = useContext(AcctMSTContext);
-  const { MessageBox } = usePopupContext();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
   const location: any = useLocation();
   const classes = useDialogStyles();
   const [isOpen, setIsOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<any>(null);
+  const reqCD =
+    formmode === "new"
+      ? ""
+      : !isNaN(parseInt(location?.state?.[0]?.data?.REQUEST_ID))
+      ? parseInt(location?.state?.[0]?.data?.REQUEST_ID)
+      : "";
+  const acctType =
+    formmode === "new" ? "" : location?.state?.[0].data?.ACCT_TYPE;
+  const acctCD =
+    formmode === "new" ? "" : location?.state?.[0].data?.ACCT_CD ?? "";
 
   // get account form details
-  const mutation: any = useMutation(API.getAccountDetails, {
+  const {
+    data: accountDetails,
+    isLoading,
+    isError: isAcctDtlError,
+    error: AcctDtlError,
+    refetch,
+  } = useQuery<any, any>(
+    ["getAccountDetails", acctType],
+    () =>
+      API.getAccountDetails({
+        ACCT_TYPE: acctType,
+        ACCT_CD: acctCD,
+        REQUEST_CD: reqCD,
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        SCREEN_REF: "MST/002",
+      }),
+    { enabled: false }
+  );
+
+  useEffect(() => {
+    if (isLoading) {
+      handleFormLoading(true);
+    } else {
+      handleFormLoading(false);
+    }
+    if (!isLoading && accountDetails) {
+      handleFormDataonRetrievectx(accountDetails[0]);
+      handleColTabChangectx(0);
+      handleFormLoading(false);
+    }
+  }, [accountDetails, isLoading]);
+
+  // validate new account entry
+  const validateAcctMutation: any = useMutation(API.validateNewAcct, {
     onSuccess: (data) => {
-      handleFormDataonRetrievectx(data[0]);
+      enqueueSnackbar("Validated Successfully", { variant: "success" });
     },
     onError: (error: any) => {},
   });
@@ -99,8 +146,27 @@ const AcctModal = ({ onClose, formmode, from }) => {
 
   // modify new account entry
   const modifyAcctMutation: any = useMutation(API.accountModify, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
+    onSuccess: (data) => {
+      CloseMessageBox();
+      handleCurrFormctx({
+        currentFormSubmitted: null,
+        isLoading: false,
+      });
+      handleModifiedColsctx({});
+      handleFormDataonSavectx({});
+      enqueueSnackbar("Updated Successfully", { variant: "success" });
+      refetch();
+      handleFormLoading(true);
+    },
+    onError: (error: any) => {
+      CloseMessageBox();
+      handleCurrFormctx({
+        currentFormSubmitted: null,
+        isLoading: false,
+      });
+      handleModifiedColsctx({});
+      handleFormDataonSavectx({});
+    },
   });
 
   // confirm acount entry
@@ -126,49 +192,24 @@ const AcctModal = ({ onClose, formmode, from }) => {
 
   useEffect(() => {
     handleFromFormModectx({ formmode, from });
-    return () => {
-      handleFormModalClosectx();
-    };
-  }, []);
-
-  useEffect(() => {
     if (Boolean(location.state)) {
-      if (AcctMSTState?.formmodectx === "new") {
-        handleFormModalOpenctx();
-      } else {
+      if (formmode === "new") {
         handleColTabChangectx(0);
+        handleFormModalOpenctx();
+      } else if (Array.isArray(location.state) && location.state.length > 0) {
         handleFormModalOpenOnEditctx(location?.state);
-
-        if (Array.isArray(location.state) && location.state.length > 0) {
-          const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-          const acctType = location.state?.[0]?.data.ACCT_TYPE ?? "";
-          const acctCD = location.state?.[0]?.data.ACCT_CD ?? "";
-          let payload: {
-            COMP_CD?: string;
-            CUSTOMER_ID?: string;
-            BRANCH_CD: string;
-            REQUEST_CD: string;
-            ACCT_TYPE: string;
-            ACCT_CD: string;
-            SCREEN_REF: string;
-          } = {
-            BRANCH_CD: authState?.user?.branchCode ?? "",
-            REQUEST_CD: reqCD,
-            ACCT_TYPE: acctType,
-            ACCT_CD: acctCD,
-            SCREEN_REF: "MST/002",
-            COMP_CD: authState?.companyID ?? "",
-          };
-          if (Object.keys(payload)?.length > 1) {
-            mutation.mutate(payload);
-          }
-        }
+        refetch();
       }
     } else {
       handleFormModalClosectx();
       onClose();
     }
-  }, [AcctMSTState?.formmodectx]);
+
+    return () => {
+      handleFormModalClosectx();
+      queryClient.removeQueries(["getAccountDetails", acctType]);
+    };
+  }, []);
 
   const closeForm = () => {
     handleFormModalClosectx();
@@ -185,6 +226,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
           messageTitle: "Alert",
           message: "Your changes will be Lost. Are you Sure?",
           buttonNames: ["Yes", "No"],
+          icon: "WARNING",
         });
         if (buttonName === "Yes") {
           closeForm();
@@ -284,6 +326,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
             formData: AcctMSTState?.formDatactx,
             OP_DATE: authState?.workingDate,
           };
+          // validateAcctMutation.mutate(reqPara);
           saveAcctMutation.mutate(reqPara);
         }
       } else if (formmode === "edit") {
@@ -291,6 +334,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
           const getUpdatedTabs = async () => {
             const { updated_tab_format, update_type } = await handleUpdatectx({
               COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: authState?.user?.branchCode ?? "",
             });
             if (typeof updated_tab_format === "object") {
               // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
@@ -299,6 +343,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
                   messageTitle: "Alert",
                   message: "You have not made any changes yet.",
                   buttonNames: ["Ok"],
+                  icon: "WARNING",
                 });
               } else if (Object.keys(updated_tab_format)?.length > 0) {
                 let buttonName = await MessageBox({
@@ -306,6 +351,8 @@ const AcctModal = ({ onClose, formmode, from }) => {
                   message:
                     "Are you sure you want to apply changes and update ?",
                   buttonNames: ["Yes", "No"],
+                  loadingBtnName: ["Yes"],
+                  icon: "WARNING",
                 });
                 if (buttonName === "Yes") {
                   const reqPara = {
@@ -318,6 +365,8 @@ const AcctModal = ({ onClose, formmode, from }) => {
                     ACCT_TYPE: AcctMSTState?.accTypeValuectx,
                     ACCT_CD: AcctMSTState?.acctNumberctx,
                     COMP_CD: authState?.companyID ?? "",
+                    BRANCH_CD: authState?.user?.branchCode ?? "",
+                    IS_FROM_MAIN: "N",
                     formData: AcctMSTState?.formDatactx,
                     OP_DATE: authState?.workingDate,
                     updated_tab_format: updated_tab_format,
@@ -612,13 +661,11 @@ const AcctModal = ({ onClose, formmode, from }) => {
           {AcctMSTState?.tabsApiResctx &&
             AcctMSTState?.tabsApiResctx.length > 0 &&
             AcctMSTState?.isFreshEntryctx && <TabStepper />}
-          {mutation.isError ? (
+          {isAcctDtlError ? (
             <Alert
-              severity={mutation.error?.severity ?? "error"}
-              errorMsg={
-                mutation.error?.error_msg ?? "Something went to wrong.."
-              }
-              errorDetail={mutation.error?.error_detail}
+              severity={AcctDtlError?.severity ?? "error"}
+              errorMsg={AcctDtlError?.error_msg ?? "Something went to wrong.."}
+              errorDetail={AcctDtlError?.error_detail}
               color="error"
             />
           ) : saveAcctMutation.isError ? (

@@ -98,23 +98,25 @@ export const FdInterestPaymentGrid = () => {
           const updatedData = data?.map((item) => ({
             ...item,
             FULL_ACCOUNT:
-              item?.BRANCH_CD?.trim() ??
-              "" + "-" + item?.ACCT_TYPE?.trim() ??
-              "" + "-" + item?.ACCT_CD?.trim() ??
-              "",
+              (item?.BRANCH_CD?.trim() ?? "") +
+              "-" +
+              (item?.ACCT_TYPE?.trim() ?? "") +
+              "-" +
+              (item?.ACCT_CD?.trim() ?? ""),
             CR_COMP_CD: authState?.companyID ?? "",
             CREDIT_DTL:
               item?.PAYMENT_MODE === "BANKACCT"
-                ? item?.CR_BRANCH_CD?.trim() ??
-                  "" + "-" + item?.CR_ACCT_TYPE?.trim() ??
-                  "" + "-" + item?.CR_ACCT_CD?.trim() ??
-                  ""
+                ? (item?.CR_BRANCH_CD?.trim() ?? "") +
+                  "-" +
+                  (item?.CR_ACCT_TYPE?.trim() ?? "") +
+                  "-" +
+                  (item?.CR_ACCT_CD?.trim() ?? "")
                 : item?.PAYMENT_MODE === "NEFT"
                 ? "NEFT :" +
                   " " +
-                  item?.TO_IFSCCODE.trim() +
+                  (item?.TO_IFSCCODE.trim() ?? "") +
                   "-" +
-                  item?.TO_ACCT_TYPE.trim()
+                  (item?.TO_ACCT_TYPE.trim() ?? "")
                 : "-",
             _rowColor: Boolean(item?.PAYMENT_MODE)
               ? "rgb(130, 224, 170)"
@@ -168,7 +170,7 @@ export const FdInterestPaymentGrid = () => {
             setPaidFDOpen(false);
           }
         } else {
-          const updatedData = data.map((item) => ({
+          const updatedData = data?.map((item) => ({
             ...item,
             INT_RATE: parseFloat(item?.INT_RATE ?? 0).toFixed(2),
             TOT_TDS_RECO_INT_AMT: parseFloat(
@@ -381,22 +383,24 @@ export const FdInterestPaymentGrid = () => {
     formDataRef.current = formDataRef?.current?.map((item) => ({
       ...item,
       FULL_ACCOUNT:
-        item?.BRANCH_CD?.trim() ??
-        "" + "-" + item?.ACCT_TYPE?.trim() ??
-        "" + "-" + item?.ACCT_CD?.trim() ??
-        "",
+        (item?.BRANCH_CD?.trim() ?? "") +
+        "-" +
+        (item?.ACCT_TYPE?.trim() ?? "") +
+        "-" +
+        (item?.ACCT_CD?.trim() ?? ""),
       CREDIT_DTL:
         item?.PAYMENT_MODE === "BANKACCT"
-          ? item?.CR_BRANCH_CD?.trim() ??
-            "" + "-" + item?.CR_ACCT_TYPE?.trim() ??
-            "" + "-" + item?.CR_ACCT_CD?.trim() ??
-            ""
+          ? (item?.CR_BRANCH_CD?.trim() ?? "") +
+            "-" +
+            (item?.CR_ACCT_TYPE?.trim() ?? "") +
+            "-" +
+            (item?.CR_ACCT_CD?.trim() ?? "")
           : item?.PAYMENT_MODE === "NEFT"
           ? "NEFT :" +
             " " +
-            item?.TO_IFSCCODE.trin() +
+            (item?.TO_IFSCCODE.trim() ?? "") +
             "-" +
-            item?.TO_ACCT_TYPE.trim()
+            (item?.TO_ACCT_TYPE.trim() ?? "")
           : "-",
       _rowColor: Boolean(item?.PAYMENT_MODE) ? "rgb(130, 224, 170)" : undefined,
     }));
@@ -486,38 +490,36 @@ export const FdInterestPaymentGrid = () => {
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <Box display="flex" gap={2}>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={
-                    isSubmitting ||
-                    fetchFDPaymentInstructions?.isLoading ||
-                    isButtonDisabled
-                  }
-                  endIcon={
-                    isSubmitting || fetchFDPaymentInstructions?.isLoading ? (
-                      <CircularProgress size={20} />
-                    ) : null
-                  }
-                  color={"primary"}
-                >
-                  {t("Submit")}
-                </GradientButton>
+              <GradientButton
+                onClick={(event) => {
+                  handleSubmit(event, "Save");
+                }}
+                disabled={
+                  isSubmitting ||
+                  fetchFDPaymentInstructions?.isLoading ||
+                  isButtonDisabled
+                }
+                endIcon={
+                  isSubmitting || fetchFDPaymentInstructions?.isLoading ? (
+                    <CircularProgress size={20} />
+                  ) : null
+                }
+                color={"primary"}
+              >
+                {t("Submit")}
+              </GradientButton>
 
-                <GradientButton
-                  onClick={handleCloseForm}
-                  color={"primary"}
-                  disabled={
-                    isSubmitting ||
-                    fetchFDPaymentInstructions?.isLoading ||
-                    isButtonDisabled
-                  }
-                >
-                  {t("Cancel")}
-                </GradientButton>
-              </Box>
+              <GradientButton
+                onClick={handleCloseForm}
+                color={"primary"}
+                disabled={
+                  isSubmitting ||
+                  fetchFDPaymentInstructions?.isLoading ||
+                  isButtonDisabled
+                }
+              >
+                {t("Cancel")}
+              </GradientButton>
             </>
           )}
         </FormWrapper>

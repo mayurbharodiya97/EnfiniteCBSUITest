@@ -238,6 +238,7 @@ const CtsOutwardClearingForm: FC<{
         message: t("ProceedGen"),
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (buttonName === "Yes") {
         mutationOutward.mutate(finalReqDataRef.current);
@@ -319,6 +320,7 @@ const CtsOutwardClearingForm: FC<{
               messageTitle: t("ValidationFailed"),
               message: t("CannotDeleteBackDatedEntry"),
               buttonNames: ["Ok"],
+              icon: "ERROR",
             });
           } else {
             SetDeleteRemark(true);
@@ -563,6 +565,7 @@ const CtsOutwardClearingForm: FC<{
                             messageTitle: t("ValidationFailed"),
                             message: t("CannotDeleteBackDatedEntry"),
                             buttonNames: ["Ok"],
+                            icon: "ERROR",
                           });
                         } else {
                           SetDeleteRemark(true);
@@ -700,6 +703,7 @@ const CtsOutwardClearingForm: FC<{
                       messageTitle: t("Confirmation"),
                       message: t("AreYouSureToAddBank"),
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
                     if (res === "Yes") {
                       setOpenAddBankForm(true);
@@ -783,6 +787,7 @@ const CtsOutwardClearingForm: FC<{
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                   loadingBtnName: ["Yes"],
+                  icon: "CONFIRM",
                 });
                 if (buttonName === "Yes") {
                   deleteMutation.mutate({

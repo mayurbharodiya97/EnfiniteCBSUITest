@@ -1,7 +1,6 @@
 import {
   AppBar,
   Box,
-  Button,
   Container,
   Dialog,
   Grid,
@@ -46,6 +45,7 @@ import {
   GridWrapper,
   GridMetaDataType,
   ActionTypes,
+  GradientButton,
 } from "@acuteinfo/common-base";
 import { LinearProgressBarSpacer } from "components/common/custom/linerProgressBarSpacer";
 import { cloneDeep } from "lodash";
@@ -438,7 +438,7 @@ const StockEntryCustom = ({ screenFlag, reqData }) => {
                 >
                   {({ isSubmitting, handleSubmit }) => (
                     <>
-                      <Button
+                      <GradientButton
                         onClick={(event) => {
                           handleSubmit(event, "Save");
                         }}
@@ -446,7 +446,7 @@ const StockEntryCustom = ({ screenFlag, reqData }) => {
                         color={"primary"}
                       >
                         {t("Save")}
-                      </Button>
+                      </GradientButton>
                     </>
                   )}
                 </FormWrapper>

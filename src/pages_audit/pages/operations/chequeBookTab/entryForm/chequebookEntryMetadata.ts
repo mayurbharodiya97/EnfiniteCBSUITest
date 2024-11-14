@@ -158,10 +158,6 @@ export const ChequeBookEntryMetaData = {
           }
           return "";
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -184,9 +180,6 @@ export const ChequeBookEntryMetaData = {
             };
 
             let postData = await API.getChequebookData({ otherAPIRequestPara });
-            postData = postData.sort(
-              (a, b) => parseInt(b.O_STATUS) - parseInt(a.O_STATUS)
-            );
             formState.setDataOnFieldChange("DTL_TAB", {
               DTL_TAB:
                 postData.some((item) => item["O_STATUS"] === "0") ?? false,
@@ -202,14 +195,18 @@ export const ChequeBookEntryMetaData = {
             for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: postData[i]?.O_MSG_TITLE
+                    ? postData[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: postData[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "RiskCategoryAlert",
+                  messageTitle: postData[i]?.O_MSG_TITLE
+                    ? postData[i]?.O_MSG_TITLE
+                    : "confirmation",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "INFO",
@@ -221,7 +218,9 @@ export const ChequeBookEntryMetaData = {
               } else if (postData[i]?.O_STATUS === "9") {
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "HNIAlert",
+                    messageTitle: postData[i]?.O_MSG_TITLE
+                      ? postData[i]?.O_MSG_TITLE
+                      : "Alert",
                     message: postData[i]?.O_MESSAGE,
                     icon: "INFO",
                   });

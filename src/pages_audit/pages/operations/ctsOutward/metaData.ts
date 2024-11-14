@@ -2029,6 +2029,10 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 100,
       maxWidth: 150,
+      isDisplayTotal: true,
+      setFooterValue(total, rows) {
+        return [rows.length ?? 0];
+      },
     },
     {
       accessor: "CHQ_CNT",
@@ -2063,6 +2067,23 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 500,
       isDisplayTotal: true,
+      footerLabel: "Total Cheque Amount",
+      setFooterValue(total, rows) {
+        const filteredRows = rows?.filter(
+          ({ original }) => original.CHQ_AMT_LIST
+        );
+        const sum =
+          filteredRows?.reduce((acc, { original }) => {
+            // Split the CHQ_AMT_LIST by commas, convert each to a number, and sum them
+            const chqAmtListSum = original.CHQ_AMT_LIST.split(",")
+              .map(Number) // Convert to numbers
+              .reduce((a, b) => a + b, 0); // Sum the numbers in this row
+            return acc + chqAmtListSum; // Add to the accumulator
+          }, 0) ?? 0;
+        const formattedSum = sum.toFixed(2);
+
+        return [formattedSum];
+      },
     },
     {
       accessor: "TRAN_DT",

@@ -1,4 +1,4 @@
-import { AppBar, Button, Dialog } from "@mui/material";
+import { AppBar, Dialog } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { stockconfirmFormMetaData } from "./confirmFormMetadata";
@@ -11,10 +11,10 @@ import {
   usePopupContext,
   Alert,
   RemarksAPIWrapper,
-  GridMetaDataType,
   FormWrapper,
   queryClient,
   MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 
 export const StockConfirmationForm = ({ closeDialog, result }) => {
@@ -135,7 +135,7 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
           {({ isSubmitting, handleSubmit }) => {
             return (
               <>
-                <Button
+                <GradientButton
                   color="primary"
                   onClick={async () => {
                     let buttonName = await MessageBox({
@@ -160,13 +160,16 @@ export const StockConfirmationForm = ({ closeDialog, result }) => {
                   }}
                 >
                   {t("Confirm")}
-                </Button>
-                <Button color="primary" onClick={() => setDeletePopup(true)}>
+                </GradientButton>
+                <GradientButton
+                  color="primary"
+                  onClick={() => setDeletePopup(true)}
+                >
                   {t("Reject")}
-                </Button>
-                <Button color="primary" onClick={() => closeDialog()}>
+                </GradientButton>
+                <GradientButton color="primary" onClick={() => closeDialog()}>
                   {t("Close")}
-                </Button>
+                </GradientButton>
               </>
             );
           }}

@@ -3,9 +3,8 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { FDRetriveForm } from "./fixDepositForm/fdRetriveForm";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { FixDepositForm } from "./fixDepositForm/fdStepperForm";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import { enqueueSnackbar } from "notistack";
 import { PaidFDGrid } from "./paidFDGrid";
 import { Dialog, Paper } from "@mui/material";
 import { ViewMasterForm } from "./fixDepositForm/viewMasterForm";
@@ -23,9 +22,15 @@ import {
   ActionTypes,
   utilFunction,
   GridMetaDataType,
+  Alert,
+  queryClient,
 } from "@acuteinfo/common-base";
 import { format } from "date-fns";
 import { FDPayment } from "./fixDepositForm/fdPayment";
+import { useTranslation } from "react-i18next";
+import FDPaymentStepperForm from "./fixDepositForm/fdPaymentStepper";
+import { FDPaymentBtns } from "./fixDepositForm/fdPaymentBtnsForm";
+
 export const FDDetailGrid = () => {
   const {
     FDState,
@@ -36,19 +41,42 @@ export const FDDetailGrid = () => {
     setActiveStep,
     updateCheckAllowFDPayApiData,
     updatePrematureRateData,
+    updateFDPaymentData,
+    updateRenewTrnsFormData,
+    updateFdSavedPaymentData,
+    updateSourceAcctFormData,
+    updateBeneficiaryAcctData,
+    updatePayslipAndDDData,
   } = useContext(FDContext);
   const [openFDPmtBtns, setOpenFDPmtBtns] = useState(false);
   const [openIntPayment, setOpenIntPayment] = useState(false);
-  const [openDetailForm, setOpenDetailForm] = useState(false);
+  const [openLienForm, setOpenLienForm] = useState(false);
   const [displayAllActions, setDisplayAllActions] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const isDataChangedRef = useRef(false);
-  const initialRender = useRef(true);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const paramDataRef: any = useRef({});
   const { authState } = useContext(AuthContext);
   let currentPath = useLocation().pathname;
+  const { t } = useTranslation();
+
+  //Api for get FD Action button's label
+  const {
+    data: actionButtonData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useQuery<any, any>(["getFDButtons", authState?.user?.branchCode], () =>
+    API.getFDButtons()
+  );
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getFDButtons"]);
+    };
+  }, []);
 
   const actions: ActionTypes[] = !Boolean(displayAllActions)
     ? [
@@ -61,38 +89,59 @@ export const FDDetailGrid = () => {
       ]
     : [
         {
-          actionName: "view-master",
-          actionLabel: "View Master",
+          actionName: actionButtonData?.find((item) => item.FLAG === "VIEWM")
+            ?.ACTIONNAME,
+          actionLabel: actionButtonData?.find((item) => item.FLAG === "VIEWM")
+            ?.ACTIONLABEL,
+
+          multiple: undefined,
+          alwaysAvailable: true,
+        },
+        ...(Number(FDState?.acctNoData?.PAID_FD_CNT) > 0
+          ? [
+              {
+                actionName: actionButtonData?.find(
+                  (item) => item.FLAG === "PAIDFD"
+                )?.ACTIONNAME,
+                actionLabel: `${
+                  actionButtonData?.find((item) => item.FLAG === "PAIDFD")
+                    ?.ACTIONLABEL
+                }  (${FDState?.acctNoData?.PAID_FD_CNT ?? ""})`,
+
+                multiple: undefined,
+                alwaysAvailable: true,
+              },
+            ]
+          : []),
+        {
+          actionName: actionButtonData?.find((item) => item.FLAG === "JOINT")
+            ?.ACTIONNAME,
+          actionLabel: actionButtonData?.find((item) => item.FLAG === "JOINT")
+            ?.ACTIONLABEL,
           multiple: undefined,
           alwaysAvailable: true,
         },
         {
-          actionName: "paid-fd",
-          actionLabel: "Paid FD",
+          actionName: actionButtonData?.find((item) => item.FLAG === "INTPAID")
+            ?.ACTIONNAME,
+          actionLabel: actionButtonData?.find((item) => item.FLAG === "INTPAID")
+            ?.ACTIONLABEL,
           multiple: undefined,
           alwaysAvailable: true,
         },
         {
-          actionName: "joint-dtl",
-          actionLabel: "Joint",
+          actionName: actionButtonData?.find((item) => item.FLAG === "DOC")
+            ?.ACTIONNAME,
+          actionLabel: actionButtonData?.find((item) => item.FLAG === "DOC")
+            ?.ACTIONLABEL,
           multiple: undefined,
           alwaysAvailable: true,
         },
         {
-          actionName: "int-paid-dtl",
-          actionLabel: "Int Paid Dtl",
-          multiple: undefined,
-          alwaysAvailable: true,
-        },
-        {
-          actionName: "docs",
-          actionLabel: "Docs",
-          multiple: undefined,
-          alwaysAvailable: true,
-        },
-        {
-          actionName: "add",
-          actionLabel: "New FD",
+          actionName: actionButtonData?.find((item) => item.FLAG === "NEWFD")
+            ?.ACTIONNAME,
+          actionLabel: actionButtonData?.find((item) => item.FLAG === "NEWFD")
+            ?.ACTIONLABEL,
           multiple: undefined,
           alwaysAvailable: true,
         },
@@ -120,6 +169,12 @@ export const FDDetailGrid = () => {
           multiple: false,
           rowDoubleClick: false,
         },
+        {
+          actionName: "lien",
+          actionLabel: "Lien",
+          multiple: false,
+          rowDoubleClick: false,
+        },
       ];
 
   useEffect(() => {
@@ -135,15 +190,6 @@ export const FDDetailGrid = () => {
     API.getFDViewDtl,
     {
       onError: async (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        await MessageBox({
-          messageTitle: "ERROR",
-          message: errorMsg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
       onSuccess: (data) => {
@@ -159,18 +205,7 @@ export const FDDetailGrid = () => {
     "checkAllowModifyFDData",
     API.checkAllowModifyFDData,
     {
-      onError: async (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        await MessageBox({
-          messageTitle: "ERROR",
-          message: errorMsg ?? "",
-          icon: "ERROR",
-        });
-        CloseMessageBox();
-      },
+      onError: () => {},
       onSuccess: () => {},
     }
   );
@@ -180,18 +215,7 @@ export const FDDetailGrid = () => {
     "checkAllowFDPay",
     API.checkAllowFDPay,
     {
-      onError: async (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        await MessageBox({
-          messageTitle: "ERROR",
-          message: errorMsg ?? "",
-          icon: "ERROR",
-        });
-        CloseMessageBox();
-      },
+      onError: () => {},
       onSuccess: () => {},
     }
   );
@@ -264,16 +288,54 @@ export const FDDetailGrid = () => {
         resetAllData();
         setDisplayAllActions(false);
         navigate("retrieve");
-      } else if (data.name === "paid-fd") {
-        navigate("paid-fd");
-      } else if (data.name === "int-paid-dtl") {
-        navigate("int-paid-dtl");
-      } else if (data.name === "joint-dtl") {
-        navigate("joint-dtl");
-      } else if (data.name === "view-master") {
-        navigate("view-master");
-      } else if (data.name === "docs") {
-        navigate("docs");
+      } else if (
+        data.name ===
+        `${
+          actionButtonData?.find((item) => item.FLAG === "PAIDFD")?.ACTIONNAME
+        }`
+      ) {
+        navigate(
+          `${
+            actionButtonData?.find((item) => item.FLAG === "PAIDFD")?.ACTIONNAME
+          }`
+        );
+      } else if (
+        data.name ===
+        `${
+          actionButtonData?.find((item) => item.FLAG === "INTPAID")?.ACTIONNAME
+        }`
+      ) {
+        navigate(
+          `${
+            actionButtonData?.find((item) => item.FLAG === "INTPAID")
+              ?.ACTIONNAME
+          }`
+        );
+      } else if (
+        data.name ===
+        `${actionButtonData?.find((item) => item.FLAG === "JOINT")?.ACTIONNAME}`
+      ) {
+        navigate(
+          `${
+            actionButtonData?.find((item) => item.FLAG === "JOINT")?.ACTIONNAME
+          }`
+        );
+      } else if (
+        data.name ===
+        `${actionButtonData?.find((item) => item.FLAG === "VIEWM")?.ACTIONNAME}`
+      ) {
+        navigate(
+          `${
+            actionButtonData?.find((item) => item.FLAG === "VIEWM")?.ACTIONNAME
+          }`
+        );
+      } else if (
+        data.name ===
+        `${actionButtonData?.find((item) => item.FLAG === "DOC")?.ACTIONNAME}`
+      ) {
+        navigate(
+          `${actionButtonData?.find((item) => item.FLAG === "DOC")?.ACTIONNAME}`
+        );
       } else if (data?.name === "view-details") {
         checkAllowModifyFDDataMutation.mutate(
           {
@@ -298,112 +360,219 @@ export const FDDetailGrid = () => {
           }
         );
       } else if (data?.name === "payment/renew") {
-        checkAllowFDPayMutation.mutate(
+        checkAllowModifyFDDataMutation.mutate(
           {
             ...reqParam,
-            A_FLAG: "P",
           },
           {
             onSuccess: async (data) => {
-              const checkAllowFDPayData = data;
-              updateCheckAllowFDPayApiData(checkAllowFDPayData?.[0]);
+              const allowModifyMutData = data[0];
+              if (allowModifyMutData?.O_STATUS === "999") {
+                await MessageBox({
+                  messageTitle: "Validation Failed",
+                  message: allowModifyMutData?.O_MESSAGE ?? "",
+                  icon: "ERROR",
+                });
+              } else {
+                checkAllowFDPayMutation.mutate(
+                  {
+                    ...reqParam,
+                    A_FLAG: "P",
+                  },
+                  {
+                    onSuccess: async (data) => {
+                      const checkAllowFDPayData = data;
+                      updateCheckAllowFDPayApiData(checkAllowFDPayData?.[0]);
 
-              for (const obj of checkAllowFDPayData) {
-                if (obj?.O_STATUS === "999") {
-                  await MessageBox({
-                    messageTitle: "ValidationFailed",
-                    message: obj?.O_MESSAGE,
-                    icon: "ERROR",
-                  });
-                } else if (obj?.O_STATUS === "9") {
-                  await MessageBox({
-                    messageTitle: "validationAlert",
-                    message: obj?.O_MESSAGE ?? "",
-                    icon: "WARNING",
-                  });
-                } else if (obj?.O_STATUS === "99") {
-                  const buttonName = await MessageBox({
-                    messageTitle: "Confirmation",
-                    message: obj?.O_MESSAGE ?? "",
-                    buttonNames: ["Yes", "No"],
-                  });
-                  if (buttonName === "No") {
-                    break;
+                      for (const obj of checkAllowFDPayData) {
+                        if (obj?.O_STATUS === "999") {
+                          await MessageBox({
+                            messageTitle: "ValidationFailed",
+                            message: obj?.O_MESSAGE,
+                            icon: "ERROR",
+                          });
+                        } else if (obj?.O_STATUS === "9") {
+                          await MessageBox({
+                            messageTitle: "validationAlert",
+                            message: obj?.O_MESSAGE ?? "",
+                            icon: "WARNING",
+                          });
+                        } else if (obj?.O_STATUS === "99") {
+                          const buttonName = await MessageBox({
+                            messageTitle: "Confirmation",
+                            message: obj?.O_MESSAGE ?? "",
+                            buttonNames: ["Yes", "No"],
+                            icon: "CONFIRM",
+                          });
+                          if (buttonName === "No") {
+                            break;
+                          }
+                        } else if (obj?.O_STATUS === "0") {
+                          if (obj?.IS_PREMATURE === "Y") {
+                            getPrematureRateMutation.mutate({
+                              ...reqParam,
+                            });
+                            navigate(actionData?.name, {
+                              state: actionData?.rows,
+                            });
+                          } else {
+                            navigate(actionData?.name, {
+                              state: actionData?.rows,
+                            });
+                            setOpenFDPmtBtns(true);
+                          }
+                        }
+                      }
+                      CloseMessageBox();
+                    },
                   }
-                } else if (obj?.O_STATUS === "0") {
-                  if (obj?.IS_PREMATURE === "Y") {
-                    getPrematureRateMutation.mutate({
-                      ...reqParam,
-                    });
-                    navigate(actionData?.name, {
-                      state: actionData?.rows,
-                    });
-                  } else {
-                    navigate(actionData?.name, {
-                      state: actionData?.rows,
-                    });
-                    setOpenFDPmtBtns(true);
-                  }
-                }
+                );
               }
               CloseMessageBox();
             },
           }
         );
       } else if (data?.name === "int-payment") {
-        checkAllowFDPayMutation.mutate(
+        checkAllowModifyFDDataMutation.mutate(
           {
             ...reqParam,
-            A_FLAG: "I",
           },
           {
             onSuccess: async (data) => {
-              const checkAllowFDPayData = data;
-              updateCheckAllowFDPayApiData(checkAllowFDPayData?.[0]);
+              const allowModifyMutData = data[0];
+              if (allowModifyMutData?.O_STATUS === "999") {
+                await MessageBox({
+                  messageTitle: "Validation Failed",
+                  message: allowModifyMutData?.O_MESSAGE ?? "",
+                  icon: "ERROR",
+                });
+              } else {
+                checkAllowFDPayMutation.mutate(
+                  {
+                    ...reqParam,
+                    A_FLAG: "I",
+                  },
+                  {
+                    onSuccess: async (data) => {
+                      const checkAllowFDPayData = data;
+                      updateCheckAllowFDPayApiData(checkAllowFDPayData?.[0]);
 
-              for (const obj of checkAllowFDPayData) {
-                if (obj?.O_STATUS === "999") {
-                  await MessageBox({
-                    messageTitle: "ValidationFailed",
-                    message: obj?.O_MESSAGE,
-                    icon: "ERROR",
-                  });
-                } else if (obj?.O_STATUS === "9") {
-                  await MessageBox({
-                    messageTitle: "validationAlert",
-                    message: obj?.O_MESSAGE ?? "",
-                    icon: "WARNING",
-                  });
-                } else if (obj?.O_STATUS === "99") {
-                  const buttonName = await MessageBox({
-                    messageTitle: "Confirmation",
-                    message: obj?.O_MESSAGE ?? "",
-                    buttonNames: ["Yes", "No"],
-                  });
-                  if (buttonName === "No") {
-                    break;
+                      for (const obj of checkAllowFDPayData) {
+                        if (obj?.O_STATUS === "999") {
+                          await MessageBox({
+                            messageTitle: "ValidationFailed",
+                            message: obj?.O_MESSAGE,
+                            icon: "ERROR",
+                          });
+                        } else if (obj?.O_STATUS === "9") {
+                          await MessageBox({
+                            messageTitle: "validationAlert",
+                            message: obj?.O_MESSAGE ?? "",
+                            icon: "WARNING",
+                          });
+                        } else if (obj?.O_STATUS === "99") {
+                          const buttonName = await MessageBox({
+                            messageTitle: "Confirmation",
+                            message: obj?.O_MESSAGE ?? "",
+                            buttonNames: ["Yes", "No"],
+                            icon: "CONFIRM",
+                          });
+                          if (buttonName === "No") {
+                            break;
+                          }
+                        } else if (obj?.O_STATUS === "0") {
+                          if (obj?.IS_PREMATURE === "Y") {
+                            getPrematureRateMutation.mutate({
+                              ...reqParam,
+                            });
+                            navigate(actionData?.name, {
+                              state: actionData?.rows,
+                            });
+                          } else {
+                            navigate(actionData?.name, {
+                              state: actionData?.rows,
+                            });
+                            setOpenIntPayment(true);
+                          }
+                        }
+                      }
+                      CloseMessageBox();
+                    },
                   }
-                } else if (obj?.O_STATUS === "0") {
-                  if (obj?.IS_PREMATURE === "Y") {
-                    getPrematureRateMutation.mutate({
-                      ...reqParam,
-                    });
-                    navigate(actionData?.name, {
-                      state: actionData?.rows,
-                    });
-                  } else {
-                    navigate(actionData?.name, {
-                      state: actionData?.rows,
-                    });
-                    setOpenIntPayment(true);
-                  }
-                }
+                );
               }
               CloseMessageBox();
             },
           }
         );
-      } else if (data?.name === "add") {
+      } else if (data?.name === "lien") {
+        checkAllowModifyFDDataMutation.mutate(
+          {
+            ...reqParam,
+          },
+          {
+            onSuccess: async (data) => {
+              const allowModifyMutData = data[0];
+              if (allowModifyMutData?.O_STATUS === "999") {
+                await MessageBox({
+                  messageTitle: "Validation Failed",
+                  message: allowModifyMutData?.O_MESSAGE ?? "",
+                  icon: "ERROR",
+                });
+              } else {
+                checkAllowFDPayMutation.mutate(
+                  {
+                    ...reqParam,
+                    A_FLAG: "L",
+                  },
+                  {
+                    onSuccess: async (data) => {
+                      const checkAllowFDPayData = data;
+                      updateCheckAllowFDPayApiData(checkAllowFDPayData?.[0]);
+
+                      for (const obj of checkAllowFDPayData) {
+                        if (obj?.O_STATUS === "999") {
+                          await MessageBox({
+                            messageTitle: "ValidationFailed",
+                            message: obj?.O_MESSAGE,
+                            icon: "ERROR",
+                          });
+                        } else if (obj?.O_STATUS === "9") {
+                          await MessageBox({
+                            messageTitle: "validationAlert",
+                            message: obj?.O_MESSAGE ?? "",
+                            icon: "WARNING",
+                          });
+                        } else if (obj?.O_STATUS === "99") {
+                          const buttonName = await MessageBox({
+                            messageTitle: "Confirmation",
+                            message: obj?.O_MESSAGE ?? "",
+                            buttonNames: ["Yes", "No"],
+                            icon: "CONFIRM",
+                          });
+                          if (buttonName === "No") {
+                            break;
+                          }
+                        } else if (obj?.O_STATUS === "0") {
+                          navigate(actionData?.name, {
+                            state: actionData?.rows,
+                          });
+                          setOpenLienForm(true);
+                        }
+                      }
+                      CloseMessageBox();
+                    },
+                  }
+                );
+              }
+              CloseMessageBox();
+            },
+          }
+        );
+      } else if (
+        data?.name ===
+        `${actionButtonData?.find((item) => item.FLAG === "NEWFD")?.ACTIONNAME}`
+      ) {
         navigate(data?.name, {
           state: [],
         });
@@ -422,10 +591,29 @@ export const FDDetailGrid = () => {
         ACCT_NAME: "",
       },
     ]);
+    updateFDPaymentData({});
+    updateFdSavedPaymentData({});
+    updateRenewTrnsFormData({});
+    updateSourceAcctFormData([
+      {
+        ACCT_NAME: "",
+      },
+    ]);
+    updatePayslipAndDDData([
+      {
+        ACCT_NAME: "",
+      },
+    ]);
+    updateBeneficiaryAcctData([
+      {
+        ACCT_NAME: "",
+      },
+    ]);
     setActiveStep(0);
-    setOpenDetailForm(false);
+    setOpenLienForm(false);
     setOpenFDPmtBtns(false);
     setOpenIntPayment(false);
+    setOpenLienForm(false);
     navigate(".");
     if (isDataChangedRef.current === true) {
       const reqParam = {
@@ -474,6 +662,26 @@ export const FDDetailGrid = () => {
         </Dialog>
       )}
 
+      {(checkAllowModifyFDDataMutation?.isError ||
+        checkAllowFDPayMutation?.isError ||
+        getFDViewDtlMutation?.isError) && (
+        <Alert
+          severity="error"
+          errorMsg={
+            checkAllowModifyFDDataMutation?.error?.error_msg ||
+            checkAllowFDPayMutation?.error?.error_msg ||
+            getFDViewDtlMutation?.error?.error_msg ||
+            t("Somethingwenttowrong")
+          }
+          errorDetail={
+            checkAllowModifyFDDataMutation?.error?.error_detail ||
+            checkAllowFDPayMutation?.error?.error_detail ||
+            getFDViewDtlMutation?.error?.error_detail
+          }
+          color="error"
+        />
+      )}
+
       <GridWrapper
         key={
           "fdDetailGrid" +
@@ -485,29 +693,126 @@ export const FDDetailGrid = () => {
         data={FDState?.viewDtlGridData ?? []}
         setData={() => null}
         loading={getFDViewDtlMutation?.isLoading}
-        actions={actions}
+        actions={actionButtonData && actions}
         setAction={setCurrentAction}
+        enableExport={true}
         onClickActionEvent={async (index, id, data) => {
           if (id === "LEAN_FLAG") {
-            updateFDDetailsFormData([
-              { ...data, LEAN_COMP_CD: authState?.companyID ?? "" },
-            ]);
-            const buttonName = await MessageBox({
-              messageTitle: "Confirmation",
-              message: "Are you sure to Lift lien from this FD?",
-              buttonNames: ["Yes", "No"],
-              defFocusBtnName: "Yes",
-            });
-            if (buttonName === "Yes") {
-              setOpenDetailForm(true);
-            }
+            let rowData = data;
+            const reqParam = {
+              A_COMP_CD: data?.COMP_CD ?? "",
+              A_BRANCH_CD: data?.BRANCH_CD ?? "",
+              A_ACCT_TYPE: data?.ACCT_TYPE ?? "",
+              A_ACCT_CD: data?.ACCT_CD ?? "",
+              A_FD_NO: data?.FD_NO ?? "",
+              A_LEAN_FLAG: data?.LEAN_FLAG ?? "",
+              A_MATURITY_DT: data?.MATURITY_DT
+                ? format(new Date(data?.MATURITY_DT), "dd/MMM/yyyy")
+                : "",
+              A_TRAN_DT: data?.TRAN_DT
+                ? format(new Date(data?.TRAN_DT), "dd/MMM/yyyy")
+                : "",
+              A_BASE_BRANCH: authState?.user?.baseBranchCode ?? "",
+              A_SCREEN_REF: "RPT/401",
+              WORKING_DATE: authState?.workingDate ?? "",
+              USERROLE: authState?.role ?? "",
+              USERNAME: authState?.user?.id ?? "",
+              A_PRIN_AMT: data?.TOT_AMT ?? "",
+              A_INT_RATE: data?.INT_RATE ?? "",
+              A_SPL_AMT: paramDataRef?.current?.SPL_AMT ?? "",
+              COMP_CD: data?.COMP_CD ?? "",
+              LOGIN_COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: data?.BRANCH_CD ?? "",
+              LOGIN_BRANCH_CD: authState?.user?.branchCode ?? "",
+              ACCT_TYPE: data?.ACCT_TYPE ?? "",
+              ACCT_CD: data?.ACCT_CD ?? "",
+              WORKING_DT: authState?.workingDate ?? "",
+              USER_NM: authState?.user?.id ?? "",
+              USER_LEVEL: authState?.role ?? "",
+              FD_NO: data?.FD_NO ?? "",
+              CONFIRMED: data?.CONFIRMED ?? "",
+              LAST_ENT_BY: data?.LAST_ENTERED_BY ?? "",
+              DOC_CD: "RPT/401",
+              STATUS: paramDataRef?.current?.AC_STATUS ?? "",
+            };
+
+            checkAllowModifyFDDataMutation.mutate(
+              {
+                ...reqParam,
+              },
+              {
+                onSuccess: async (data) => {
+                  updateFDDetailsFormData([
+                    { ...rowData, LEAN_COMP_CD: authState?.companyID ?? "" },
+                  ]);
+                  const allowModifyMutData = data[0];
+                  if (allowModifyMutData?.O_STATUS === "999") {
+                    await MessageBox({
+                      messageTitle: "Validation Failed",
+                      message: allowModifyMutData?.O_MESSAGE ?? "",
+                      icon: "ERROR",
+                    });
+                  } else {
+                    checkAllowFDPayMutation.mutate(
+                      {
+                        ...reqParam,
+                        A_FLAG: "L",
+                      },
+                      {
+                        onSuccess: async (data) => {
+                          const checkAllowFDPayData = data;
+                          updateCheckAllowFDPayApiData(
+                            checkAllowFDPayData?.[0]
+                          );
+
+                          for (const obj of checkAllowFDPayData) {
+                            if (obj?.O_STATUS === "999") {
+                              await MessageBox({
+                                messageTitle: "ValidationFailed",
+                                message: obj?.O_MESSAGE,
+                                icon: "ERROR",
+                              });
+                            } else if (obj?.O_STATUS === "9") {
+                              await MessageBox({
+                                messageTitle: "validationAlert",
+                                message: obj?.O_MESSAGE ?? "",
+                                icon: "WARNING",
+                              });
+                            } else if (obj?.O_STATUS === "99") {
+                              const buttonName = await MessageBox({
+                                messageTitle: "Confirmation",
+                                message: obj?.O_MESSAGE ?? "",
+                                buttonNames: ["Yes", "No"],
+                                icon: "CONFIRM",
+                              });
+                              if (buttonName === "No") {
+                                break;
+                              }
+                            } else if (obj?.O_STATUS === "0") {
+                              navigate("", {
+                                state: [{ data: rowData }],
+                              });
+                              setOpenLienForm(true);
+                            }
+                          }
+                          CloseMessageBox();
+                        },
+                      }
+                    );
+                  }
+                  CloseMessageBox();
+                },
+              }
+            );
           }
         }}
       />
 
       <Routes>
         <Route
-          path="add/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "NEWFD")?.ACTIONNAME
+          }/*`}
           element={
             <FixDepositForm
               isDataChangedRef={isDataChangedRef}
@@ -538,7 +843,9 @@ export const FDDetailGrid = () => {
           }
         />
         <Route
-          path="joint-dtl/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "JOINT")?.ACTIONNAME
+          }/*`}
           element={
             <Dialog
               open={true}
@@ -566,7 +873,6 @@ export const FDDetailGrid = () => {
                     ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
                     ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
                     ACCT_NM: FDState?.retrieveFormData?.ACCT_NM ?? "",
-                    BTN_FLAG: "Y",
                   }}
                 />
               </div>
@@ -575,7 +881,9 @@ export const FDDetailGrid = () => {
         />
 
         <Route
-          path="view-master/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "VIEWM")?.ACTIONNAME
+          }/*`}
           element={
             <ViewMasterForm
               handleDialogClose={handleDialogClose}
@@ -587,11 +895,16 @@ export const FDDetailGrid = () => {
           }
         />
         <Route
-          path="paid-fd/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "PAIDFD")?.ACTIONNAME
+          }/*`}
           element={<PaidFDGrid handleDialogClose={handleDialogClose} />}
         />
         <Route
-          path="int-paid-dtl/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "INTPAID")
+              ?.ACTIONNAME
+          }/*`}
           element={<IntPaidDtlGrid handleDialogClose={handleDialogClose} />}
         />
         <Route
@@ -604,7 +917,9 @@ export const FDDetailGrid = () => {
           }
         />
         <Route
-          path="docs/*"
+          path={`${
+            actionButtonData?.find((item) => item.FLAG === "DOC")?.ACTIONNAME
+          }/*`}
           element={
             <Dialog
               open={true}
@@ -634,6 +949,7 @@ export const FDDetailGrid = () => {
                     ACCT_NM: FDState?.retrieveFormData?.ACCT_NM ?? "",
                   }}
                   handleDialogClose={handleDialogClose}
+                  isDisplayClose={true}
                 />
               </div>
             </Dialog>
@@ -641,7 +957,7 @@ export const FDDetailGrid = () => {
         />
       </Routes>
 
-      {openDetailForm ? (
+      {openLienForm ? (
         <Dialog
           open={true}
           fullWidth={true}
@@ -662,18 +978,17 @@ export const FDDetailGrid = () => {
       ) : null}
 
       {openFDPmtBtns ? (
-        <FDPayment
+        <FDPaymentBtns
           handleDialogClose={handleDialogClose}
-          screenFlag=""
           isDataChangedRef={isDataChangedRef}
         />
       ) : null}
 
       {openIntPayment ? (
-        <FDPayment
+        <FDPaymentStepperForm
           handleDialogClose={handleDialogClose}
-          screenFlag="intPayment"
           isDataChangedRef={isDataChangedRef}
+          openIntPayment={openIntPayment}
         />
       ) : null}
     </>

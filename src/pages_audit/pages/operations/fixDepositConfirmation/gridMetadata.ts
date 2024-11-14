@@ -38,11 +38,11 @@ export const FDConfirmationGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "BRANCH_CD",
-      columnName: "Branch",
+      columnName: "BranchCode",
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 90,
+      width: 110,
       minWidth: 40,
       maxWidth: 150,
     },

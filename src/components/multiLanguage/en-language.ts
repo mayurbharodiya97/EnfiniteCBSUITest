@@ -242,6 +242,7 @@ export const en_language_data = {
   AccountBranch: "Account Branch",
   PrematurePayment: "Premature Payment",
   SelectPaymentmode: "Select Payment Mode",
+  PenalRt: "Penal Rate",
 
   // GridWrapper
   Search: "Search",
@@ -615,6 +616,7 @@ export const en_language_data = {
   EnterAccountType: "Enter Account Type.",
   EnterAccountBranch: "Enter Account Branch.",
   EnterAccountNumber: "Please Enter Accont Number.",
+  EnterAccountNum: "Enter Accont Number",
   ModeOfOperation: "Mode of Operation",
   GetDetails: "Get Details",
   EnterAcNo: "Enter A/c No.",
@@ -885,9 +887,9 @@ export const en_language_data = {
   },
 
   // common
-  newmode: "new mode",
-  editmode: "edit mode",
-  viewmode: "view mode",
+  newmode: "New Mode",
+  editmode: "Edit Mode",
+  viewmode: "View Mode",
   FileName: "File Name",
   ClearAll: "Clear All",
   ViewFile: "View File",
@@ -958,7 +960,7 @@ export const en_language_data = {
   ToDateshouldbegreaterthanorequaltoFromDate:
     "To Date should be greater than or equal to From Date.",
   OptionIsAlreadyEntered: "Option is Already entered",
-
+  FooterNoteMsgCfmRej: "Note :- Double-click the record to confirm or reject",
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
   DoYouWantDeleteRow: "Do you want to delete this row?",
@@ -1025,6 +1027,7 @@ export const en_language_data = {
   ClearingDateshouldbelessthanorequaltoGdDate:
     "Clearing Date should be less than or equal to Working Date.",
   Whichformatdoyouwanttodownload: "Which format do you want to download?",
+  PleaseEnterValidDate: "Please Enter Valid Date",
   Excel: "Excel",
   CSV: "CSV",
   Nodatafoundtoexports: "No data found to export!",
@@ -1135,10 +1138,12 @@ export const en_language_data = {
   CollateralAmount: "Collateral Amount",
   CollateralRate: "Collateral Rate%",
   IssueCompany: "Issue Company",
+  IssuedBy: "Issued By",
   IssueBy: "Issue By",
   MaturedAmount: "Matured Amount",
   PeriodNumber: "Period No.",
   Period: "Period",
+  PeriodType: "Period Type",
   RegistrationNumber: "Registration No.",
   LienYesNo: "Lien Yes No",
   RemovalRemarksLimit: "Enter Removal Remarks for Limit Confirmation (TRN/374)",
@@ -1259,7 +1264,7 @@ export const en_language_data = {
   RemovalRemarksLien: "Enter Removal Remarks for Lien Confirmation (TRN/655)",
   LienReason: "Lien Reason",
   RemovalDtShouldBeGreterThanEqualToEffDT:
-    "Removal Date should be greter than or Equal to Effective date",
+    "Removal Date should be greater than or Equal to Effective date",
 
   // Temporary OD
 
@@ -1481,6 +1486,7 @@ export const en_language_data = {
   AreYouSaveThisRecord: "Are you sure to save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
+  UTRConfirmation: "UTR(s) Confirmation",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1795,7 +1801,7 @@ export const en_language_data = {
   ConfirmationStatus: "Confirm Status",
   TotalIncomeValidateMessage:
     "This Customer is not eligible for {{formName}}.Total Income of this Financial Year exceeds {{interestAmtLimit}}.",
-
+  FormConfirmationMsg: "Form confirmed successfully.",
   // GST Outward Entry
   TranCd: "Tran Cd",
   taxAmount: "Tax Amount",
@@ -1967,6 +1973,7 @@ export const en_language_data = {
   TotalNoofActiveSI: "Total No. of Active SI",
   EnterRemovalRemarksForSI: "Enter Removal Remarks For Search SI",
   IncompleteDocument: "Incomplete Document(s)",
+  RemovalRemarkRequire: "Removal Remarks are required",
 
   //standing instruction Confirmation
   SInotConfirmByYou: "You can not confirm SI entered by you.",
@@ -2186,4 +2193,36 @@ export const en_language_data = {
   VerifiedMachineName: "Verified Machine Name",
   //FD Interest Payment Confirmation
   CompanyCode: "Company Code",
+  // Security User
+  DefaultBankRequired: "Default Bank is required",
+  DefaultBranchRequired: "Default Branch is required",
+  UsernameRequired: "User Name is required",
+  EnterUsernames: "Enter User Name",
+  GroupName: "Group Name",
+  SelectGroupName: "Select Group Name",
+  CustomerIdName: "Customer ID Name",
+  EnterCustomerIDName: "Enter Customer ID Name",
+  ReportingName: "Reporting Name",
+  EnterReportingName: "Enter Reporting Name",
+  UserLevel: "User Level",
+  EnterUserLevel: "Enter User Level",
+  UserLevelRequired: "User Level is required",
+  DefaultBank: "Default Bank",
+  SelectDefaultBank: "Select Default Bank",
+  SelectDefaultBranch: "Select Default Branch",
+  ClgSlipNoStartFrom: "Clg.Slip No.Start From",
+  DigitalSignConfig: "Digital Sign Config",
+  ADUsername: "Ad Username",
+  ADUsernameRequire: "Ad User Name is required",
+  AllowRelease: "Allow Release",
+  AllowDigitalSign: "Allow Digital Sign",
+  AllowConcurrentAppLogin: "Allow Concurrent App. Login",
+  DebitCashLimit: "Debit Cash Limit",
+  DebitClearingLimit: "Debit Clearing Limit",
+  DebitTransferLimit: "Debit Transfer Limit",
+  CreditCashLimit: "Credit Cash Limit",
+  CreditClearingLimit: "Credit Clearing Limit",
+  CreditTransferLimit: "Credit Transfer Limit",
+  DoubleClickForEditDetail: "Double click or right click for Edit-Detail.",
+  RDAC_NO: "RD A/c No.",
 };

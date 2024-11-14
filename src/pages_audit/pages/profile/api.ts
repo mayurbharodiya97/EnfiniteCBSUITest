@@ -124,6 +124,7 @@ export const getdashUserboxData = async ({ userID, COMP_CD }) => {
       // USER_NAME: "adi",
       USER_NAME: userID,
       COMP_CD: COMP_CD,
+      APP_TRAN_CD: "51",
     });
   if (status === "0") {
     return data;

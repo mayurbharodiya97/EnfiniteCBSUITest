@@ -58,6 +58,7 @@ const AcctConfirm = () => {
           messageTitle: "Alert",
           message: "You can not confirm your own posted transaction",
           buttonNames: ["Ok"],
+          icon: "WARNING",
         });
       } else {
         if (data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
