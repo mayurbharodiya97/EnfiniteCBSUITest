@@ -22,6 +22,7 @@ export const ParameterConfirmGridMetaData: GridMetaDataType = {
     allowFilter: true,
     allowColumnHiding: false,
     allowRowSelection: false,
+    footerNote: "RightClickAcceptReject",
   },
   filters: [
     {
