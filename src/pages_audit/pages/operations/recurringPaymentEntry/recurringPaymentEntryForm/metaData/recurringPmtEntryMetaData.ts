@@ -278,10 +278,6 @@ export const RecurringPaymentEntryFormMetaData = {
           maxLength: 20,
           dependentFields: ["ACCT_TYPE", "BRANCH_CD", "INT_RATE"],
           runPostValidationHookAlways: true,
-          AlwaysRunPostValidationSetCrossFieldValues: {
-            alwaysRun: true,
-            touchAndValidate: true,
-          },
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
@@ -471,12 +467,49 @@ export const RecurringPaymentEntryFormMetaData = {
                     if (btnName === "Ok") {
                       formState?.handleDisableButton(false);
                       return {
-                        ACCT_CD: { value: "" },
+                        ACCT_CD: {
+                          value: "",
+                          ignoreUpdate: true,
+                          isFieldFocused: true,
+                        },
                         ACCT_NM: { value: "" },
                       };
                     }
-                  } else {
-                    returnVal = getRecurAcctAllData?.[0];
+                  }
+
+                  for (const obj of getRecurAcctAllData?.[0]?.MSG ?? []) {
+                    if (obj?.O_STATUS === "999") {
+                      await formState?.MessageBox({
+                        messageTitle: obj?.O_MSG_TITLE?.length
+                          ? obj?.O_MSG_TITLE
+                          : "ValidationFailed",
+                        message: obj?.O_MESSAGE ?? "",
+                        icon: "ERROR",
+                      });
+                    } else if (obj?.O_STATUS === "9") {
+                      await formState?.MessageBox({
+                        messageTitle: obj?.O_MSG_TITLE?.length
+                          ? obj?.O_MSG_TITLE
+                          : "VouchersConfirmation",
+                        message: obj?.O_MESSAGE ?? "",
+                        icon: "WARNING",
+                      });
+                    } else if (obj?.O_STATUS === "99") {
+                      const buttonName = await formState?.MessageBox({
+                        messageTitle: obj?.O_MSG_TITLE?.length
+                          ? obj?.O_MSG_TITLE
+                          : "Confirmation",
+                        message: obj?.O_MESSAGE ?? "",
+                        buttonNames: ["Yes", "No"],
+                        defFocusBtnName: "Yes",
+                        icon: "CONFIRM",
+                      });
+                      if (buttonName === "No") {
+                        break;
+                      }
+                    } else if (obj?.O_STATUS === "0") {
+                      returnVal = getRecurAcctAllData?.[0];
+                    }
                   }
 
                   formState?.setDataOnFieldChange("GET_ACCT_DATA", {

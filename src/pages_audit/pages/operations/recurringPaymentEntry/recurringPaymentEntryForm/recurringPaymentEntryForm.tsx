@@ -124,11 +124,11 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
           authState?.menulistdata,
           false
         );
-        const label2 = `${label ?? ""}\u00A0\u00A0 ${t("EnteredBy")}: ${
-          rows?.[0]?.data?.ENTERED_BY ?? ""
-        }\u00A0\u00A0 ${t("Status")}: ${
-          rows?.[0]?.data?.CONF_STATUS ?? ""
-        }\u00A0\u00A0`;
+        const label2 = `${label ?? ""}\u00A0\u00A0||\u00A0\u00A0${t(
+          "EnteredBy"
+        )}: ${rows?.[0]?.data?.ENTERED_BY ?? ""}\u00A0\u00A0||\u00A0\u00A0${t(
+          "Status"
+        )}: ${rows?.[0]?.data?.CONF_STATUS ?? ""}\u00A0\u00A0`;
         RecurringPaymentEntryFormMetaData.form.label = label2;
       } else {
         RecurringPaymentEntryFormMetaData.form.label = "";

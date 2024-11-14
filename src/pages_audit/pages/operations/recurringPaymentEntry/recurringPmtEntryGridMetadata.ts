@@ -101,7 +101,7 @@ export const RecurringPaymentEntryGridMetaData: GridMetaDataType = {
       columnName: "CashPaymentTokenNo",
       sequence: 8,
       alignment: "right",
-      componentType: "currency",
+      componentType: "default",
       width: 200,
       minWidth: 160,
       maxWidth: 250,
