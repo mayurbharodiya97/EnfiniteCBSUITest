@@ -400,6 +400,7 @@ export default function FormModal({
                 messageTitle: "Alert",
                 message: "You have not made any changes yet.",
                 buttonNames: ["Ok"],
+                icon: "WARNING",
               });
               if (buttonName === "Ok") {
                 handleCurrFormctx({
@@ -416,6 +417,7 @@ export default function FormModal({
                 message: "Are you sure you want to apply changes and update ?",
                 buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
+                icon: "WARNING",
               });
               if (buttonName === "Yes") {
                 const payload = {
@@ -702,6 +704,7 @@ export default function FormModal({
           messageTitle: "Alert",
           message: "Your changes will be Lost. Are you Sure?",
           buttonNames: ["Yes", "No"],
+          icon: "WARNING",
         });
         if (buttonName === "Yes") {
           closeForm();

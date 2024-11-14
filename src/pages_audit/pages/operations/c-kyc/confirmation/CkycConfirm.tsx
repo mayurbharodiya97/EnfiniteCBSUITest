@@ -65,6 +65,7 @@ export const CkycConfirm = () => {
           messageTitle: "Alert",
           message: "You can not confirm your own posted transaction",
           buttonNames: ["Ok"],
+          icon: "WARNING",
         });
       } else {
         // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM)

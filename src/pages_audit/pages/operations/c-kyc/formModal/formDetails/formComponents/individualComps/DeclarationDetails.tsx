@@ -247,10 +247,11 @@ const DeclarationDetails = () => {
       };
       if (!Boolean(state?.req_cd_ctx)) {
         const buttonName = await MessageBox({
-          messageTitle: "Confirm",
+          messageTitle: "Confirmation",
           message: "Do you want to save entry as draft?",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           let payload = {
