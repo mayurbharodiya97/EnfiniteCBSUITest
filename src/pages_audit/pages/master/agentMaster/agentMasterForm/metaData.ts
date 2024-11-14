@@ -200,10 +200,6 @@ export const AgentMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["AGENT_TYPE_CD", "AGENT_BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -499,10 +495,6 @@ export const AgentMasterFormMetaData = {
         schemaValidation: {},
         dependentFields: ["SECURITY_TYPE_CD", "SECURITY_BRANCH"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -890,10 +882,6 @@ export const AgentMasterFormMetaData = {
         required: false,
         schemaValidation: {},
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -1190,10 +1178,6 @@ export const AgentMasterFormMetaData = {
         schemaValidation: {},
         dependentFields: ["PTAX_ACCT_TYPE", "PTAX_BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,

@@ -272,10 +272,6 @@ export const RecurringPaymentTransferFormMetaData = {
             autoComplete: "off",
             dependentFields: ["DC_ACCT_TYPE", "DC_BRANCH_CD"],
             runPostValidationHookAlways: true,
-            AlwaysRunPostValidationSetCrossFieldValues: {
-              alwaysRun: true,
-              touchAndValidate: true,
-            },
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,

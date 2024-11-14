@@ -291,10 +291,6 @@ export const CategoryMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["TDS_ACCT_TYPE", "TDS_BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -534,10 +530,6 @@ export const CategoryMasterFormMetaData = {
       autoComplete: "off",
       dependentFields: ["TDS_SUR_ACCT_TYPE", "BRANCH_CD"],
       runPostValidationHookAlways: true,
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -765,10 +757,6 @@ export const CategoryMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["TDS_REC_ACCT_TYPE", "TDS_REC_BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
