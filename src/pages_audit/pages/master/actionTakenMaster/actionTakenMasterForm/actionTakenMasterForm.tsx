@@ -17,6 +17,7 @@ import {
   FormWrapper,
   MetaDataType,
   InitialValuesType,
+  Alert,
 } from "@acuteinfo/common-base";
 
 const ActionTakenMasterForm = ({
@@ -35,19 +36,17 @@ const ActionTakenMasterForm = ({
 
   const mutation = useMutation(API.actionTakenMasterDML, {
     onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
       CloseMessageBox();
     },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
+    onSuccess: (msg, data) => {
+      enqueueSnackbar(
+        Boolean(data?._isNewRow)
+          ? t("RecordInsertedMsg")
+          : t("RecordUpdatedMsg"),
+        {
+          variant: "success",
+        }
+      );
       isDataChangedRef.current = true;
       CloseMessageBox();
       closeDialog();
@@ -100,6 +99,7 @@ const ActionTakenMasterForm = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         mutation.mutate({
@@ -115,6 +115,14 @@ const ActionTakenMasterForm = ({
 
   return (
     <>
+      {mutation.isError && (
+        <Alert
+          severity="error"
+          errorMsg={mutation?.error?.error_msg || t("Somethingwenttowrong")}
+          errorDetail={mutation?.error?.error_detail ?? ""}
+          color="error"
+        />
+      )}
       {gridData ? (
         <FormWrapper
           key={"actionTakenMasterForm" + formMode}

@@ -430,15 +430,21 @@ export const PayslipAndDDFormMetaData = {
               for (let i = 0; i < postData.length; i++) {
                 if (postData[i]?.O_STATUS === "999") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "ValidationFailed",
-                    message: postData[i]?.O_MESSAGE,
+                    messageTitle: postData[i]?.O_MSG_TITLE?.length
+                      ? postData[i]?.O_MSG_TITLE
+                      : "ValidationFailed",
+                    message: postData[i]?.O_MESSAGE ?? "",
+                    icon: "ERROR",
                   });
                   returnVal = "";
                 } else if (postData[i]?.O_STATUS === "99") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Confirmation",
-                    message: postData[i]?.O_MESSAGE,
+                    messageTitle: postData[i]?.O_MSG_TITLE?.length
+                      ? postData[i]?.O_MSG_TITLE
+                      : "Confirmation",
+                    message: postData[i]?.O_MESSAGE ?? "",
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
                   btn99 = btnName;
                   if (btnName === "No") {
@@ -447,8 +453,11 @@ export const PayslipAndDDFormMetaData = {
                 } else if (postData[i]?.O_STATUS === "9") {
                   if (btn99 !== "No") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Alert",
-                      message: postData[i]?.O_MESSAGE,
+                      messageTitle: postData[i]?.O_MSG_TITLE?.length
+                        ? postData[i]?.O_MSG_TITLE
+                        : "Alert",
+                      message: postData[i]?.O_MESSAGE ?? "",
+                      icon: "WARNING",
                     });
                   }
                   returnVal = "";

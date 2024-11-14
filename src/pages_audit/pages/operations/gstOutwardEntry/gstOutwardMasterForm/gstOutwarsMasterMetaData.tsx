@@ -392,7 +392,7 @@ export const GstOutwardForm = {
       },
       {
         accessor: "CHEQUE_NO",
-        columnName: "Chequeno",
+        columnName: "ChequeNo",
         sequence: 5,
         alignment: "right",
         componentType: "default",
