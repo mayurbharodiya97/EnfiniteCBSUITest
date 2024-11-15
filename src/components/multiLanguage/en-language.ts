@@ -1595,6 +1595,8 @@ export const en_language_data = {
   ThereAre: "There are",
   ChequeAvailableforClearingDateTransferAreYouSureContinue:
     "Cheque(s) available for clearing date transfer. Are you sure to Continue?",
+  ChequeAvailableforClearingDateTransfer:
+    "Cheque(s) available for clearing date transfer",
   FromZone: "From Zone",
   ToZone: "To Zone",
   Count: "Count",
@@ -1602,6 +1604,8 @@ export const en_language_data = {
   SlipRetrieveGrid: "Slip Retrieve Grid",
   FromClgDate: "From CLG Date",
   ToClgDate: "To CLG Date",
+  SuccessfullyTransferedClearingDateZone:
+    "Successfully transfered clearing date/Zone",
 
   // inward clearing
 

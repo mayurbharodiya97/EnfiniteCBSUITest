@@ -57,7 +57,7 @@ export const RetrieveFormConfigMetaData = {
       GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["FromDateRequired."] }],
+        rules: [{ name: "required", params: ["FromDateRequired"] }],
       },
       validate: (value) => {
         if (Boolean(value?.value) && !isValid(value?.value)) {
@@ -126,7 +126,7 @@ export const RetrieveFormConfigMetaData = {
         componentType: "autocomplete",
       },
       name: "FLAG",
-      label: "",
+      label: "Grouping",
       defaultValue: "N",
       options: [
         { label: "Normal", value: "N" },
@@ -216,10 +216,10 @@ export const branchClearingDateTransferGridMetaData: GridMetaDataType = {
       componentType: "currency",
       placeholder: "",
       isDisplayTotal: true,
-      // isSelectedTotal: true,
+      isSelectedTotal: true,
       width: 250,
-      minWidth: 200,
-      maxWidth: 300,
+      minWidth: 150,
+      maxWidth: 350,
     },
     // {
     //   accessor: "CHECKED",
@@ -437,9 +437,9 @@ export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
       placeholder: "",
       width: 100,
       minWidth: 80,
-      maxWidth: 130,
+      maxWidth: 250,
       isDisplayTotal: true,
-      // isSelectedTotal: true,
+      isSelectedTotal: true,
     },
     {
       accessor: "AMOUNT",
@@ -449,10 +449,10 @@ export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
       componentType: "currency",
       placeholder: "",
       width: 250,
-      minWidth: 200,
-      maxWidth: 300,
+      minWidth: 150,
+      maxWidth: 350,
       isDisplayTotal: true,
-      // isSelectedTotal: true,
+      isSelectedTotal: true,
     },
     {
       accessor: "CNT",
