@@ -1707,6 +1707,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             // return formState?.rtgsAcData
             return API.getRtgsBenfDtlList({
               COMP_CD: authState?.companyID,
+              WORKING_DATE: authState?.workingDate,
               BRANCH_CD:
                 formState?.rtgsAcData?.BRANCH_CD ??
                 authState?.user?.branchCode ??

@@ -45,6 +45,10 @@ const InsuranceEntryForm = lazy(() => import("./insuranceEntry"));
 const DailyTransactionImportForm = lazy(
   () => import("./dailyTransactionImport")
 );
+const BeneficiaryEnrtyForm = lazy(() => import("./beneficiaryEntry"));
+const BeneficiAccountConfGrid = lazy(
+  () => import("./beneficiaryEntry/confirmation")
+);
 const TellerScreen = lazy(
   () => import("./denomination/tellerTransaction/cashReceipt/tellerScreen")
 );
@@ -269,7 +273,11 @@ export const OperationsMenu = () => (
       path="daily-transaction-import/*"
       element={<DailyTransactionImportForm />}
     />
-
+    <Route path="beneficiary-entry/*" element={<BeneficiaryEnrtyForm />} />
+    <Route
+      path="beneficiary-confirmation/*"
+      element={<BeneficiAccountConfGrid />}
+    />
     {/* <Route
       path="fix-deposit/*"
       element={
