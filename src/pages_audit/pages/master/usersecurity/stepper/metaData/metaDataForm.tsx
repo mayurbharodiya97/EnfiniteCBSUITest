@@ -285,21 +285,52 @@ export const UserOnboardform = {
         authState,
         dependentFields
       ) => {
+        if (formState?.isSubmitting) return {};
         if (currentField?.value.length > 0) {
-          const CustomerIdAPI = await API.getCustomerId(currentField, {
+          const CustomerIdAPI = await API.ValidateCustomerId(currentField, {
             COMP_CD: authState?.companyID,
-            CUSTOMER_ID: currentField?.value,
+            CUST_ID: currentField?.value,
           });
-          return {
-            ACCT_NM: {
-              value: CustomerIdAPI?.data?.[0]?.ACCT_NM ?? "",
-              ignoreUpdate: true,
-            },
-            CONTACT2: {
-              value: CustomerIdAPI?.data?.[0]?.CONTACT2 ?? "",
-              ignoreUpdate: true,
-            },
-          };
+          if (!Boolean(CustomerIdAPI?.[0]?.CUST_STATUS)) {
+            const setData = await API.getCustomerId(currentField, {
+              COMP_CD: authState?.companyID,
+              CUSTOMER_ID: currentField?.value,
+            });
+
+            return {
+              ACCT_NM: {
+                value: setData?.[0]?.ACCT_NM ?? "",
+                ignoreUpdate: true,
+              },
+              CONTACT2: {
+                value: setData?.[0]?.CONTACT2 ?? "",
+                ignoreUpdate: true,
+              },
+            };
+          } else {
+            let btnName = formState?.MessageBox({
+              message: "SaveData",
+              messageTitle: CustomerIdAPI?.[0]?.CUST_STATUS,
+              buttonNames: ["Ok"],
+            });
+            if (btnName === "Ok") {
+              return {
+                CUSTOMER_ID: {
+                  value: "",
+                  ignoreUpdate: false,
+                  isFieldFocused: true,
+                },
+                ACCT_NM: {
+                  value: "",
+                  ignoreUpdate: false,
+                },
+                CONTACT2: {
+                  value: "",
+                  ignoreUpdate: false,
+                },
+              };
+            }
+          }
         }
       },
       GridProps: {
@@ -1035,6 +1066,7 @@ export const loginShift = {
       name: "LOGINSHIFT",
       enableGrid: true,
       changeRowOrder: true,
+      hideRemoveIconOnSingleRecord: false,
       removeRowFn: "deleteFormArrayFieldData",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
@@ -1223,6 +1255,7 @@ export const editloginShift = {
       name: "EDITLOGINSHIFT",
       enableGrid: true,
       changeRowOrder: true,
+      hideRemoveIconOnSingleRecord: false,
       removeRowFn: "deleteFormArrayFieldData",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [

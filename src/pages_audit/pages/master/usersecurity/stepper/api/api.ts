@@ -19,7 +19,19 @@ export const getCustomerId = async (...reqdata) => {
       CUSTOMER_ID: reqdata?.[1]?.CUSTOMER_ID,
     });
   if (status === "0") {
-    return { data, status };
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const ValidateCustomerId = async (...reqdata) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECUSTID", {
+      COMP_CD: reqdata?.[1]?.COMP_CD,
+      CUST_ID: reqdata?.[1]?.CUST_ID,
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

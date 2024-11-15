@@ -2198,6 +2198,7 @@ export const en_language_data = {
   DefaultBranchRequired: "Default Branch is required",
   UsernameRequired: "User Name is required",
   EnterUsernames: "Enter User Name",
+  EnterUserId: "Enter User ID",
   GroupName: "Group Name",
   SelectGroupName: "Select Group Name",
   CustomerIdName: "Customer ID Name",
