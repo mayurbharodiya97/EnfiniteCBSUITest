@@ -1372,22 +1372,29 @@ export const FDPaymentMetadata = {
           for (const response of postData?.[0]?.MSG ?? []) {
             if (response?.O_STATUS === "999") {
               await formState?.MessageBox({
-                messageTitle: "ValidationFailed",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "ValidationFailed",
                 message: response?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
             } else if (response?.O_STATUS === "9") {
               await formState?.MessageBox({
-                messageTitle: "Alert",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Alert",
                 message: response?.O_MESSAGE ?? "",
                 icon: "WARNING",
               });
             } else if (response?.O_STATUS === "99") {
               const buttonName = await formState?.MessageBox({
-                messageTitle: "Confirmation",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Confirmation",
                 message: response?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
                 defFocusBtnName: "Yes",
+                icon: "CONFIRM",
               });
               if (buttonName === "No") {
                 break;
@@ -1545,6 +1552,7 @@ export const FDPaymentMetadata = {
             message: "Ason Calculation Required?",
             buttonNames: ["Yes", "No"],
             defFocusBtnName: "Yes",
+            icon: "CONFIRM",
           });
           if (buttonName === "Yes") {
             reqParameters = { ...reqParameters, A_IS_PREMATURE: "Y" };
@@ -1557,22 +1565,29 @@ export const FDPaymentMetadata = {
           for (const response of postData?.[0]?.MSG ?? []) {
             if (response?.O_STATUS === "999") {
               await formState?.MessageBox({
-                messageTitle: "ValidationFailed",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "ValidationFailed",
                 message: response?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
             } else if (response?.O_STATUS === "9") {
               await formState?.MessageBox({
-                messageTitle: "Alert",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Alert",
                 message: response?.O_MESSAGE ?? "",
                 icon: "WARNING",
               });
             } else if (response?.O_STATUS === "99") {
               const buttonName = await formState?.MessageBox({
-                messageTitle: "Confirmation",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Confirmation",
                 message: response?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
                 defFocusBtnName: "Yes",
+                icon: "CONFIRM",
               });
               if (buttonName === "No") {
                 break;
@@ -2246,16 +2261,21 @@ export const FDPaymentMetadata = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "ValidationFailed",
+                messageTitle: postData[i]?.O_MSG_TITLE?.length
+                  ? postData[i]?.O_MSG_TITLE
+                  : "ValidationFailed",
                 message: postData[i]?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
               returnVal = "";
             } else if (postData[i]?.O_STATUS === "99") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "Confirmation",
+                messageTitle: postData[i]?.O_MSG_TITLE?.length
+                  ? postData[i]?.O_MSG_TITLE
+                  : "Confirmation",
                 message: postData[i]?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               btn99 = btnName;
               if (btnName === "No") {
@@ -2264,8 +2284,11 @@ export const FDPaymentMetadata = {
             } else if (postData[i]?.O_STATUS === "9") {
               if (btn99 !== "No") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Alert",
+                  messageTitle: postData[i]?.O_MSG_TITLE?.length
+                    ? postData[i]?.O_MSG_TITLE
+                    : "Alert",
                   message: postData[i]?.O_MESSAGE ?? "",
+                  icon: "WARNING",
                 });
               }
               returnVal = "";

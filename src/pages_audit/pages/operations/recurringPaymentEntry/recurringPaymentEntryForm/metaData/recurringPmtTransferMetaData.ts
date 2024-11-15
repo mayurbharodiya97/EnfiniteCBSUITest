@@ -214,7 +214,7 @@ export const RecurringPaymentTransferFormMetaData = {
               if (formState?.isSubmitting) return {};
               return {
                 DC_ACCT_TYPE: { value: "" },
-                DC_ACCT_CD: { value: "" },
+                DC_ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -260,7 +260,7 @@ export const RecurringPaymentTransferFormMetaData = {
                 }
               }
               return {
-                DC_ACCT_CD: { value: "" },
+                DC_ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -296,7 +296,7 @@ export const RecurringPaymentTransferFormMetaData = {
                     DC_ACCT_CD: {
                       value: "",
                       isFieldFocused: false,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
                     DC_ACCT_TYPE: {
                       value: "",
@@ -400,7 +400,7 @@ export const RecurringPaymentTransferFormMetaData = {
                       : {
                           value: "",
                           isFieldFocused: true,
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                         },
                   ACCT_NM: {
                     value: returnVal?.ACCT_NM ?? "",
