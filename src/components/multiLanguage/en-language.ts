@@ -1606,7 +1606,9 @@ export const en_language_data = {
   ToClgDate: "To CLG Date",
   SuccessfullyTransferedClearingDateZone:
     "Successfully transfered clearing date/Zone",
-
+  SelectGrouping: "Select Grouping",
+  ToDateshouldbegreaterthantoFromDate:
+    "To Date should be greater than to From Date",
   // inward clearing
 
   ValidationSuccessful: "Validation Successful",

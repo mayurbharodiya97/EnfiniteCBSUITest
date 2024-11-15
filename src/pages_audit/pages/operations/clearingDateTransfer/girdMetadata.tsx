@@ -51,9 +51,9 @@ export const RetrieveFormConfigMetaData = {
       },
       name: "FR_TRAN_DT",
       label: "FromClgDate",
-      placeholder: "",
       fullWidth: true,
       format: "dd/MM/yyyy",
+      placeholder: "DD/MM/YYYY",
       GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
       schemaValidation: {
         type: "string",
@@ -72,7 +72,7 @@ export const RetrieveFormConfigMetaData = {
       },
       name: "TO_TRAN_DT",
       label: "ToClgDate",
-      placeholder: "",
+      placeholder: "DD/MM/YYYY",
       fullWidth: true,
       format: "dd/MM/yyyy",
       schemaValidation: {
@@ -84,14 +84,14 @@ export const RetrieveFormConfigMetaData = {
           return "Mustbeavaliddate";
         }
         if (
-          new Date(currentField?.value) <
-          new Date(dependentField?.FROM_TRAN_DT?.value)
+          new Date(currentField?.value) <=
+          new Date(dependentField?.FR_TRAN_DT?.value)
         ) {
-          return "ToDateshouldbegreaterthanorequaltoFromDate";
+          return "ToDateshouldbegreaterthantoFromDate";
         }
         return "";
       },
-      dependentFields: ["FR_TRAN_DT "],
+      dependentFields: ["FR_TRAN_DT"],
       runValidationOnDependentFieldsChange: true,
       GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
@@ -127,6 +127,7 @@ export const RetrieveFormConfigMetaData = {
       },
       name: "FLAG",
       label: "Grouping",
+      placeholder: "SelectGrouping",
       defaultValue: "N",
       options: [
         { label: "Normal", value: "N" },
