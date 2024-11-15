@@ -223,6 +223,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
                   ? dependentValue?.ACCT_CD?.value ?? ""
                   : "",
               FLAG: formState?.NEFTFlagsData?.[0]?.PARA_BNFCRY ?? "",
+              WORKING_DATE: authState?.workingDate ?? "",
             });
           },
 
@@ -247,8 +248,10 @@ export const BeneficiaryAcctDetailsFormMetaData = {
               if (validateIFSC?.[0]?.O_STATUS === "999") {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: validateIFSC?.[0]?.O_MESSAGE,
+                  message:
+                    validateIFSC?.[0]?.O_MESSAGE ?? "Somethingwenttowrong",
                   buttonNames: ["Ok"],
+                  icon: "ERROR",
                 });
                 if (buttonName === "Ok") {
                   return {

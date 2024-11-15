@@ -72,7 +72,7 @@ export const accountFindmetaData = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "Alert",
-              message: "Enter Account Branch.",
+              message: "EnterAccountBranch",
               buttonNames: ["Ok"],
               icon: "WARNING",
             });
@@ -128,7 +128,7 @@ export const accountFindmetaData = {
               currentField?.value ?? "",
               dependentFieldValues?.ACCT_TYPE?.optionData ?? ""
             ),
-            SCREEN_REF: "MST/606",
+            SCREEN_REF: formState?.docCD ?? "",
           };
           if (
             currentField?.value &&
@@ -136,7 +136,7 @@ export const accountFindmetaData = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "Alert",
-              message: "Enter Account Type.",
+              message: "EnterAccountType",
               buttonNames: ["Ok"],
               icon: "WARNING",
             });
@@ -169,14 +169,14 @@ export const accountFindmetaData = {
             for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: postData[i]?.O_MSG_TITLE ?? "ValidationFailed",
                   message: postData[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData[i]?.O_STATUS === "99") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData[i]?.O_MSG_TITLE ?? "Confirmation",
                   message: postData[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "CONFIRM",
@@ -191,7 +191,7 @@ export const accountFindmetaData = {
               } else if (postData[i]?.O_STATUS === "9") {
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
+                    messageTitle: postData[i]?.O_MSG_TITLE ?? "Alert",
                     message: postData[i]?.O_MESSAGE,
                     icon: "WARNING",
                   });
@@ -939,7 +939,7 @@ export const AccountCloseForm = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "Alert",
-              message: "Enter Account Branch.",
+              message: "EnterAccountBranch",
               buttonNames: ["Ok"],
               icon: "WARNING",
             });
@@ -1014,7 +1014,7 @@ export const AccountCloseForm = {
               currentField?.value ?? "",
               dependentFieldValues?.TRN_ACCT_TYPE?.optionData ?? ""
             ),
-            SCREEN_REF: "MST/606",
+            SCREEN_REF: formState?.docCD,
           };
           if (
             currentField?.value &&
@@ -1022,7 +1022,7 @@ export const AccountCloseForm = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "Alert",
-              message: "Enter Account Type.",
+              message: "EnterAccountType",
               buttonNames: ["Ok"],
               icon: "WARNING",
             });
@@ -1050,16 +1050,18 @@ export const AccountCloseForm = {
             for (let i = 0; i < postData?.MSG.length; i++) {
               if (postData?.MSG[i]?.O_STATUS === "999") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle:
+                    postData?.MSG[i]?.O_MSG_TITLE ?? "ValidationFailed",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG[i]?.O_STATUS === "99") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE ?? "Confirmation",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
@@ -1067,7 +1069,7 @@ export const AccountCloseForm = {
                 }
               } else if (postData?.MSG[i]?.O_STATUS === "9") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE ?? "Alert",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   icon: "WARNING",
                 });
@@ -1256,7 +1258,7 @@ export const AccountCloseForm = {
                 formState.accountRef?.ACCT_TYPE?.optionData ?? ""
               ) ?? "",
             TOKEN_NO: currentField?.value ?? "",
-            SCREEN_REF: "MST/606",
+            SCREEN_REF: formState?.docCD,
           };
           let postData = await API.checkTokenValidate(reqParameters);
           postData = postData.sort(
@@ -1270,15 +1272,17 @@ export const AccountCloseForm = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "ValidationFailed",
+                messageTitle: postData[i]?.O_MSG_TITLE ?? "ValidationFailed",
                 message: postData[i]?.O_MESSAGE ?? "",
+                icon: "ERROR",
               });
               returnVal = "";
             } else if (postData[i]?.O_STATUS === "99") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "Confirmation",
+                messageTitle: postData[i]?.O_MSG_TITLE ?? "Confirmation",
                 message: postData[i]?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               btn99 = btnName;
               if (btnName === "No") {
@@ -1287,8 +1291,9 @@ export const AccountCloseForm = {
             } else if (postData[i]?.O_STATUS === "9") {
               if (btn99 !== "No") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Alert",
+                  messageTitle: postData[i]?.O_MSG_TITLE ?? "Alert",
                   message: postData[i]?.O_MESSAGE ?? "",
+                  icon: "WARNING",
                 });
               }
               returnVal = "";
@@ -1389,71 +1394,74 @@ export const AccountCloseForm = {
       ) => {
         if (formState?.isSubmitting) return {};
 
-        let postData = await GeneralAPI.getChequeNoValidation({
-          BRANCH_CD: formState.accountRef?.BRANCH_CD ?? "",
-          ACCT_TYPE: formState.accountRef?.ACCT_TYPE ?? "",
-          ACCT_CD:
-            utilFunction.getPadAccountNumber(
-              formState.accountRef?.ACCT_CD ?? "",
-              formState.accountRef?.ACCT_TYPE?.optionData ?? ""
-            ) ?? "",
-          CHEQUE_NO: field.value ?? "",
-          TYPE_CD: dependentFieldsValues?.TYPE_CD?.value ?? "",
-          SCREEN_REF: "MST/606",
-        });
-        let btn99;
+        if (Boolean(field?.value)) {
+          let postData = await GeneralAPI.getChequeNoValidation({
+            BRANCH_CD: formState.accountRef?.BRANCH_CD ?? "",
+            ACCT_TYPE: formState.accountRef?.ACCT_TYPE ?? "",
+            ACCT_CD:
+              utilFunction.getPadAccountNumber(
+                formState.accountRef?.ACCT_CD ?? "",
+                formState.accountRef?.ACCT_TYPE?.optionData ?? ""
+              ) ?? "",
+            CHEQUE_NO: field.value ?? "",
+            TYPE_CD: dependentFieldsValues?.TYPE_CD?.value ?? "",
+            SCREEN_REF: formState?.docCD,
+          });
+          let btn99;
 
-        const getButtonName = async (obj) => {
-          let btnName = await formState.MessageBox(obj);
-          return { btnName, obj };
-        };
-        for (let i = 0; i < postData.length; i++) {
-          if (postData[i]?.ERR_CODE === "999") {
-            const { btnName, obj } = await getButtonName({
-              messageTitle: "ValidationFailed",
-              message: postData[i]?.ERR_MSG,
-              icon: "ERROR",
-            });
-            if (btnName === "Ok") {
+          const getButtonName = async (obj) => {
+            let btnName = await formState.MessageBox(obj);
+            return { btnName, obj };
+          };
+          for (let i = 0; i < postData.length; i++) {
+            if (postData[i]?.ERR_CODE === "999") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: postData[i]?.O_MSG_TITLE ?? "ValidationFailed",
+                message: postData[i]?.ERR_MSG,
+                icon: "ERROR",
+              });
+              if (btnName === "Ok") {
+                return {
+                  CHEQUE_NO: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
+            } else if (postData[i]?.ERR_CODE === "99") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: postData[i]?.O_MSG_TITLE ?? "Confirmation",
+                message: postData[i]?.ERR_MSG,
+                buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
+              });
+
+              btn99 = btnName;
+              if (btnName === "No") {
+                return {
+                  CHEQUE_NO: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
+            } else if (postData[i]?.ERR_CODE === "9") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: postData[i]?.O_MSG_TITLE ?? "Alert",
+                message: postData[i]?.ERR_MSG,
+                icon: "WARNING",
+              });
+            } else if (postData[i]?.ERR_CODE === "0") {
               return {
                 CHEQUE_NO: {
-                  value: "",
-                  isFieldFocused: true,
+                  value: field?.value,
+                  isFieldFocused: false,
                   ignoreUpdate: true,
                 },
               };
             }
-          } else if (postData[i]?.ERR_CODE === "99") {
-            const { btnName, obj } = await getButtonName({
-              messageTitle: "Confirmation",
-              message: postData[i]?.ERR_MSG,
-              buttonNames: ["Yes", "No"],
-            });
-
-            btn99 = btnName;
-            if (btnName === "No") {
-              return {
-                CHEQUE_NO: {
-                  value: "",
-                  isFieldFocused: true,
-                  ignoreUpdate: true,
-                },
-              };
-            }
-          } else if (postData[i]?.ERR_CODE === "9") {
-            const { btnName, obj } = await getButtonName({
-              messageTitle: "Alert",
-              message: postData[i]?.ERR_MSG,
-              icon: "WARNING",
-            });
-          } else if (postData[i]?.ERR_CODE === "0") {
-            return {
-              CHEQUE_NO: {
-                value: field?.value,
-                isFieldFocused: false,
-                ignoreUpdate: true,
-              },
-            };
           }
         }
       },
