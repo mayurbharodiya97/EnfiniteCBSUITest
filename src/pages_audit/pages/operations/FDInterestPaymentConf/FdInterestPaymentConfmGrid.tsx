@@ -133,7 +133,7 @@ export const FDInterestPaymentConfm = () => {
         <FdInterestPaymentConfDetail
           closeDialog={handleFDDetailClose}
           fdDetails={fDDetailsData}
-          loader={getFDPaymentInstruDetail.isLoading ? true : false}
+          loader={getFDPaymentInstruDetail?.isLoading ? true : false}
           rowsData={rowsData}
         />
       </Dialog>

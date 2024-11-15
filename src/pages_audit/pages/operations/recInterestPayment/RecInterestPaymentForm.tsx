@@ -1,37 +1,62 @@
-import { Box, CircularProgress, Dialog } from "@mui/material";
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useMutation } from "react-query";
-import { useLocation } from "react-router-dom";
-import * as API from "./api";
-import { AuthContext } from "pages_audit/auth";
 import {
+  ActionTypes,
   Alert,
   FormWrapper,
   GradientButton,
+  GridWrapper,
   MetaDataType,
-  queryClient,
   SubmitFnType,
-  Transition,
   usePopupContext,
-  utilFunction,
 } from "@acuteinfo/common-base";
-import { accountFindmetaData } from "../FDInterestPayment/FdInterestPaymentGridMetaData";
-import { FdInterestPaymentFormMetaData } from "../FDInterestPayment/viewDetails/metaData";
+import { CircularProgress, Dialog } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
+import { AuthContext } from "pages_audit/auth";
+import { useCallback, useContext, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { Fragment } from "react/jsx-runtime";
+import {
+  accountFindmetaData,
+  FdInterestPaymentGridMetaData,
+} from "../FDInterestPayment/FdInterestPaymentGridMetaData";
+import * as API from "./api";
+import { RecInterestPaymentDetail } from "./RecInterestPaymentViewDetails";
+
+const actions: ActionTypes[] = [
+  {
+    actionName: "retrieve",
+    actionLabel: "Retrieve",
+    multiple: undefined,
+    rowDoubleClick: false,
+    alwaysAvailable: true,
+  },
+  {
+    actionName: "view-details",
+    actionLabel: "ViewDetails",
+    multiple: false,
+    rowDoubleClick: true,
+  },
+  {
+    actionName: "delete",
+    actionLabel: "Delete",
+    multiple: false,
+    rowDoubleClick: false,
+  },
+];
 
 export const RecInterestPaymentForm = () => {
   const [isFormOpen, setFormOpen] = useState(true);
-  const [recPaymentInstructions, setRecPaymentInstructions] = useState<any>({});
-  const [isButtonDisabled, setButtonDisabled] = useState(false);
-  const [balance, setBalance] = useState<any>({});
-  const { authState } = useContext(AuthContext);
-  const parameterRef = useRef<any>();
-  const isErrorFuncRef = useRef<any>(null);
-  const { t } = useTranslation();
+  const [isRecDetailOpen, setRecDetailOpen] = useState(false);
+  const [rowsData, setRowsData] = useState<any>([]);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  let currentPath = useLocation().pathname;
-  const clearFormRef = useRef<any>(null);
+  const { authState } = useContext(AuthContext);
+  const [recPaymentInstructions, setRecPaymentInstructions] = useState<any>([]);
+  const { t } = useTranslation();
+  const parameterRef = useRef<any>();
+  const RecDetailsRef = useRef<any>();
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
+  const navigate = useNavigate();
 
   const fetchRecPaymentInstructions: any = useMutation(
     "getRecPaymentInstrudtl",
@@ -46,7 +71,37 @@ export const RecInterestPaymentForm = () => {
             icon: "ERROR",
           });
         } else {
-          setRecPaymentInstructions(data?.[0]);
+          const updatedData = data?.map((item) => ({
+            ...item,
+            FULL_ACCOUNT:
+              (item?.BRANCH_CD?.trim() ?? "") +
+              "-" +
+              (item?.ACCT_TYPE?.trim() ?? "") +
+              "-" +
+              (item?.ACCT_CD?.trim() ?? ""),
+            CR_COMP_CD: authState?.companyID ?? "",
+            CREDIT_DTL:
+              item?.PAYMENT_MODE === "BANKACCT"
+                ? (item?.CR_BRANCH_CD?.trim() ?? "") +
+                  "-" +
+                  (item?.CR_ACCT_TYPE?.trim() ?? "") +
+                  "-" +
+                  (item?.CR_ACCT_CD?.trim() ?? "")
+                : item?.PAYMENT_MODE === "NEFT"
+                ? "NEFT :" +
+                  " " +
+                  (item?.TO_IFSCCODE.trim() ?? "") +
+                  "-" +
+                  (item?.TO_ACCT_TYPE.trim() ?? "")
+                : "-",
+            _rowColor: Boolean(item?.PAYMENT_MODE)
+              ? "rgb(130, 224, 170)"
+              : undefined,
+          }));
+
+          setRecPaymentInstructions(updatedData);
+          RecDetailsRef.current = updatedData;
+          //@ts-ignore
           setFormOpen(false);
           CloseMessageBox();
         }
@@ -64,19 +119,10 @@ export const RecInterestPaymentForm = () => {
           enqueueSnackbar(t("RecordRemovedMsg"), {
             variant: "success",
           });
-        } else {
-          enqueueSnackbar(
-            Boolean(recPaymentInstructions?.PAYMENT_MODE)
-              ? t("RecordUpdatedMsg")
-              : t("RecordInsertedMsg"),
-            {
-              variant: "success",
-            }
-          );
         }
         setFormOpen(true);
-        setRecPaymentInstructions({});
-        setBalance({});
+        setRecPaymentInstructions([]);
+        RecDetailsRef.current = [];
         CloseMessageBox();
       },
       onError: async (error: any) => {
@@ -91,7 +137,6 @@ export const RecInterestPaymentForm = () => {
     endSubmit,
     setFieldError
   ) => {
-    setBalance(data);
     fetchRecPaymentInstructions.mutate(parameterRef?.current, {
       onSettled: () => {
         if (!fetchRecPaymentInstructions?.isLoading) {
@@ -100,129 +145,81 @@ export const RecInterestPaymentForm = () => {
       },
     });
   };
-  const onFinalSubmitHandler: SubmitFnType = async (
-    data: any,
-    displayData: any,
-    endSubmit,
-    setFieldError,
-    actionFlag
-  ) => {
-    let newData = { ...data };
-    let oldData = { ...recPaymentInstructions };
-    let upd = utilFunction.transformDetailsData(newData, oldData);
-
-    if (actionFlag === "Save") {
-      isErrorFuncRef.current = {
-        data: {
-          ...newData,
-          ...upd,
-          COMP_CD: authState?.companyID ?? "",
-          BRANCH_CD: authState?.user?.branchCode ?? "",
-          _isNewRow: !Boolean(recPaymentInstructions?.PAYMENT_MODE)
-            ? true
-            : false,
-        },
-        displayData,
-        endSubmit,
-        setFieldError,
-      };
-
-      if (isErrorFuncRef?.current?.data?._UPDATEDCOLUMNS.length !== 0) {
-        const btnName = await MessageBox({
-          messageTitle: "Confirmation",
-          message: "SaveData",
-          buttonNames: ["Yes", "No"],
-          loadingBtnName: ["Yes"],
-        });
-        if (btnName === "Yes") {
-          updateRecInterestPaymentEntry.mutate({
-            data: {
-              ...isErrorFuncRef.current?.data,
-              ENTERED_COMP_CD: authState?.companyID ?? "",
-              ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
-              COMP_CD: recPaymentInstructions?.COMP_CD ?? "",
-              CR_COMP_CD: recPaymentInstructions?.COMP_CD ?? "",
-              BRANCH_CD: recPaymentInstructions?.BRANCH_CD ?? "",
-              ACCT_TYPE: recPaymentInstructions?.ACCT_TYPE ?? "",
-              ACCT_CD: recPaymentInstructions?.ACCT_CD ?? "",
-              FD_NO: recPaymentInstructions?.FD_NO ?? "",
-            },
-          });
-        }
-      }
-    }
-    endSubmit(true);
+  const handleButtonDisable = (disable) => {
+    setButtonDisabled(disable);
   };
   const handleCloseForm = () => {
     setFormOpen(false);
   };
-  const handleDelete = async () => {
-    const btnName = await MessageBox({
-      messageTitle: "Confirmation",
-      message: "DoYouWantDeleteRow",
-      buttonNames: ["Yes", "No"],
-      loadingBtnName: ["Yes"],
-    });
-    if (btnName === "Yes") {
-      updateRecInterestPaymentEntry.mutate({
-        data: {
-          COMP_CD: recPaymentInstructions?.COMP_CD ?? "",
-          CR_COMP_CD: recPaymentInstructions?.COMP_CD ?? "",
-          BRANCH_CD: recPaymentInstructions?.BRANCH_CD ?? "",
-          FD_NO: recPaymentInstructions?.FD_NO ?? "",
-          ACCT_TYPE: recPaymentInstructions?.ACCT_TYPE ?? "",
-          ACCT_CD: recPaymentInstructions?.ACCT_CD ?? "",
-          _isDeleteRow: true,
-        },
-      });
-    }
+  const handleRecDetailClose = () => {
+    setRecDetailOpen(false);
   };
-  const handleRetrieve = async () => {
-    if (Object.keys(recPaymentInstructions)?.length > 0) {
-      let btnName = await MessageBox({
-        messageTitle: "Confirmation",
-        message: `RetrieveConfirmation`,
-        buttonNames: ["Yes", "No"],
-      });
-      if (btnName === "Yes") {
-        setRecPaymentInstructions({});
-        setFormOpen(true);
-        setBalance({});
+  const handleReset = () => {
+    setRecPaymentInstructions([]);
+    RecDetailsRef.current = [];
+    setFormOpen(true);
+  };
+
+  const setCurrentAction = useCallback(
+    async (data) => {
+      if (data?.name === "delete") {
+        const btnName = await MessageBox({
+          messageTitle: "Confirmation",
+          message: "DoYouWantDeleteRow",
+          buttonNames: ["Yes", "No"],
+          loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
+        });
+        if (btnName === "Yes") {
+          updateRecInterestPaymentEntry.mutate({
+            data: {
+              COMP_CD: data?.rows?.[0]?.data?.COMP_CD ?? "",
+              CR_COMP_CD: data?.rows?.[0]?.data?.COMP_CD ?? "",
+              BRANCH_CD: data?.rows?.[0]?.data?.BRANCH_CD ?? "",
+              FD_NO: data?.rows?.[0]?.data?.FD_NO ?? "",
+              ACCT_TYPE: data?.rows?.[0]?.data?.ACCT_TYPE ?? "",
+              ACCT_CD: data?.rows?.[0]?.data?.ACCT_CD ?? "",
+              _isDeleteRow: true,
+            },
+          });
+        }
+      } else if (data?.name === "retrieve") {
+        if (
+          Array.isArray(recPaymentInstructions) &&
+          RecDetailsRef?.current?.length > 0
+        ) {
+          let btnName = await MessageBox({
+            messageTitle: "Confirmation",
+            message: `RetrieveConfirmation`,
+            buttonNames: ["Yes", "No"],
+            icon: "CONFIRM",
+          });
+          if (btnName === "Yes") {
+            setFormOpen(true);
+            setRecPaymentInstructions([]);
+            RecDetailsRef.current = [];
+          }
+        } else {
+          setFormOpen(true);
+          setRecPaymentInstructions([]);
+          RecDetailsRef.current = [];
+        }
+      } else if (data?.name === "view-details") {
+        setRowsData(data?.rows);
+        setRecDetailOpen(true);
+      } else {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
       }
-    } else {
-      setRecPaymentInstructions({});
-      setFormOpen(true);
-      setBalance({});
-    }
-  };
-  const handleButtonDisable = (disable) => {
-    setButtonDisabled(disable);
-  };
-
-  // Clear catch
-  useEffect(() => {
-    const keysToRemove = [
-      "getRecPaymentInstrudtl",
-      "getPMISCData",
-      "getAccountTypeList",
-    ].map((key) => [key, authState?.user?.branchCode]);
-    return () => {
-      keysToRemove.forEach((key) => queryClient?.removeQueries(key));
-    };
-  }, []);
-
-  FdInterestPaymentFormMetaData.form.label = utilFunction.getDynamicLabel(
-    currentPath,
-    authState?.menulistdata,
-    true
+    },
+    [navigate]
   );
 
   return (
     <Fragment>
       <Dialog
         open={isFormOpen}
-        // @ts-ignore
-        TransitionComponent={Transition}
         PaperProps={{
           style: {
             width: "100%",
@@ -263,113 +260,66 @@ export const RecInterestPaymentForm = () => {
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <Box display="flex" gap={2}>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={
-                    isSubmitting ||
-                    fetchRecPaymentInstructions?.isLoading ||
-                    isButtonDisabled
-                  }
-                  endIcon={
-                    isSubmitting || fetchRecPaymentInstructions?.isLoading ? (
-                      <CircularProgress size={20} />
-                    ) : null
-                  }
-                  color={"primary"}
-                >
-                  {t("Submit")}
-                </GradientButton>
+              <GradientButton
+                onClick={(event) => {
+                  handleSubmit(event, "Save");
+                }}
+                disabled={
+                  isSubmitting ||
+                  fetchRecPaymentInstructions?.isLoading ||
+                  isButtonDisabled
+                }
+                endIcon={
+                  isSubmitting || fetchRecPaymentInstructions?.isLoading ? (
+                    <CircularProgress size={20} />
+                  ) : null
+                }
+                color={"primary"}
+              >
+                {t("Submit")}
+              </GradientButton>
 
-                <GradientButton
-                  onClick={handleCloseForm}
-                  color={"primary"}
-                  disabled={
-                    isSubmitting ||
-                    fetchRecPaymentInstructions?.isLoading ||
-                    isButtonDisabled
-                  }
-                >
-                  {t("Cancel")}
-                </GradientButton>
-              </Box>
+              <GradientButton onClick={handleCloseForm} color={"primary"}>
+                {t("Cancel")}
+              </GradientButton>
             </>
           )}
         </FormWrapper>
       </Dialog>
-      {updateRecInterestPaymentEntry?.error && (
-        <Alert
-          severity="error"
-          errorMsg={
-            updateRecInterestPaymentEntry?.error?.error_msg ||
-            t("Somethingwenttowrong")
-          }
-          errorDetail={updateRecInterestPaymentEntry?.error?.error_detail || ""}
-          color="error"
-        />
-      )}
-      <FormWrapper
-        key={
-          "RecInterestPaymentMetaData" +
-          updateRecInterestPaymentEntry?.isSuccess +
-          Object.keys(recPaymentInstructions)?.length +
-          Object.keys(balance)?.length
-        }
-        metaData={FdInterestPaymentFormMetaData as MetaDataType}
-        formStyle={{
-          background: "white",
-        }}
-        onSubmitHandler={onFinalSubmitHandler}
-        initialValues={{
-          ...recPaymentInstructions,
-          ACCT_NAME: recPaymentInstructions?.HOLDER_ACCT_NM ?? "",
-          TRAN_BAL: balance?.TRAN_BAL ?? "",
-        }}
-        formState={{
-          MessageBox: MessageBox,
-          handleButtonDisable: handleButtonDisable,
-          accountDetail: recPaymentInstructions,
-          SCREEN_REF: "MST/894",
-        }}
-        ref={clearFormRef}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <>
-            <Box display="flex" gap={2}>
-              {Object.keys(recPaymentInstructions)?.length > 0 && (
-                <>
-                  <GradientButton
-                    onClick={(event) => {
-                      handleSubmit(event, "Save");
-                    }}
-                    disabled={isSubmitting || isButtonDisabled}
-                    color={"primary"}
-                  >
-                    {t("Save")}
-                  </GradientButton>
 
-                  <GradientButton
-                    onClick={() => handleDelete()}
-                    color={"primary"}
-                    disabled={isSubmitting || isButtonDisabled}
-                  >
-                    {t("Delete")}
-                  </GradientButton>
-                </>
-              )}
-              <GradientButton
-                onClick={handleRetrieve}
-                color={"primary"}
-                disabled={isSubmitting}
-              >
-                {t("Retrieve")}
-              </GradientButton>
-            </Box>
-          </>
-        )}
-      </FormWrapper>
+      <GridWrapper
+        key={
+          "RecinterestPaymentGrid" + isFormOpen + recPaymentInstructions?.length
+        }
+        finalMetaData={FdInterestPaymentGridMetaData}
+        data={recPaymentInstructions ?? []}
+        setData={() => null}
+        enableExport={true}
+        actions={actions}
+        setAction={setCurrentAction}
+      />
+
+      <Dialog
+        open={isRecDetailOpen}
+        PaperProps={{
+          style: {
+            width: "100%",
+            overflow: "auto",
+          },
+        }}
+        maxWidth="lg"
+      >
+        <RecInterestPaymentDetail
+          closeDialog={handleRecDetailClose}
+          dataReset={handleReset}
+          gridData={recPaymentInstructions}
+          rows={rowsData}
+          fdDetails={recPaymentInstructions}
+          defaultView={
+            Boolean(rowsData?.[0]?.data?.PAYMENT_MODE) ? "edit" : "new"
+          }
+        />
+      </Dialog>
     </Fragment>
   );
 };

@@ -338,6 +338,7 @@ export const clearingDateTransferGridMetaData: GridMetaDataType = {
       minWidth: 200,
       maxWidth: 300,
       isDisplayTotal: true,
+      footerLabel: "Total Amount:",
     },
     {
       accessor: "ACT_BANK_CD",

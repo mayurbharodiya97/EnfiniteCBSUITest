@@ -4,6 +4,8 @@ export interface FDStateType {
   disableButton: boolean;
   fdDetailFormData: object;
   sourceAcctFormData: object;
+  payslipAndDDData: object;
+  beneficiaryAcctData: object;
   retrieveFormData: object;
   fdParaDetailData: object;
   acctNoData: object;
@@ -13,6 +15,8 @@ export interface FDStateType {
   prematureRateData: object;
   fdSavedPaymentData: object;
   renewTrnsFormData: object;
+  renewDataForDeposit: object;
+  validatePaymetEntryData: object;
 }
 
 export interface ActionType {

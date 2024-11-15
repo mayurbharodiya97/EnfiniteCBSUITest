@@ -8,6 +8,7 @@ import {
   usePopupContext,
   FormWrapper,
   MetaDataType,
+  GradientButton,
 } from "@acuteinfo/common-base";
 
 export const TemplateDetail = ({
@@ -17,11 +18,12 @@ export const TemplateDetail = ({
   open,
   rowsData,
 }) => {
-  const { state: rows }: any = useLocation();
+  const { state: rows } = useLocation();
   const [optionData, setOptionData] = useState([]);
   const optionRef = useRef<any>(optionData);
   optionRef.current = optionData;
   const { MessageBox } = usePopupContext();
+  const [disableButton, setDisableButton] = useState(false);
   const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
     // @ts-ignore
     endSubmit(true);
@@ -29,6 +31,9 @@ export const TemplateDetail = ({
       return row.value === data?.TEMPLATE_CODE;
     });
     getFormData({ ...data, TEMP_DISP: FilterOptionData?.[0]?.label });
+  };
+  const handleButtonDisable = (disable) => {
+    setDisableButton(disable);
   };
   return (
     <Dialog
@@ -49,6 +54,7 @@ export const TemplateDetail = ({
           MessageBox: MessageBox,
           REFDATA: refData,
           optionRef: setOptionData,
+          handleButtonDisable: handleButtonDisable,
         }}
         onSubmitHandler={onSubmitHandler}
         formStyle={{
@@ -59,18 +65,19 @@ export const TemplateDetail = ({
       >
         {({ isSubmitting, handleSubmit }) => (
           <>
-            <Button
+            <GradientButton
               onClick={(event) => {
                 handleSubmit(event, "Save");
               }}
               color={"primary"}
+              disabled={isSubmitting || disableButton}
             >
-              {rows?.length ? t("Update") : t("Add")}
-            </Button>
+              {rowsData?.[0]?.data ? t("Update") : t("Add")}
+            </GradientButton>
 
-            <Button onClick={onClose} color={"primary"}>
+            <GradientButton onClick={onClose} color={"primary"}>
               {t("Close")}
-            </Button>
+            </GradientButton>
           </>
         )}
       </FormWrapper>

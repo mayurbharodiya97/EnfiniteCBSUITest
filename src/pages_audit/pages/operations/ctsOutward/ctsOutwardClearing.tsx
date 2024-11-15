@@ -236,8 +236,9 @@ const CtsOutwardClearingForm: FC<{
       const buttonName = await MessageBox({
         messageTitle: t("Confirmation"),
         message: t("ProceedGen"),
-        buttonNames: ["No", "Yes"],
+        buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (buttonName === "Yes") {
         mutationOutward.mutate(finalReqDataRef.current);
@@ -319,6 +320,7 @@ const CtsOutwardClearingForm: FC<{
               messageTitle: t("ValidationFailed"),
               message: t("CannotDeleteBackDatedEntry"),
               buttonNames: ["Ok"],
+              icon: "ERROR",
             });
           } else {
             SetDeleteRemark(true);
@@ -563,6 +565,7 @@ const CtsOutwardClearingForm: FC<{
                             messageTitle: t("ValidationFailed"),
                             message: t("CannotDeleteBackDatedEntry"),
                             buttonNames: ["Ok"],
+                            icon: "ERROR",
                           });
                         } else {
                           SetDeleteRemark(true);
@@ -700,6 +703,7 @@ const CtsOutwardClearingForm: FC<{
                       messageTitle: t("Confirmation"),
                       message: t("AreYouSureToAddBank"),
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
                     if (res === "Yes") {
                       setOpenAddBankForm(true);
@@ -780,9 +784,10 @@ const CtsOutwardClearingForm: FC<{
                 const buttonName = await MessageBox({
                   messageTitle: t("Confirmation"),
                   message: t("DoYouWantDeleteRow"),
-                  buttonNames: ["No", "Yes"],
+                  buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                   loadingBtnName: ["Yes"],
+                  icon: "CONFIRM",
                 });
                 if (buttonName === "Yes") {
                   deleteMutation.mutate({

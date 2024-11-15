@@ -43,6 +43,7 @@ import {
   TransactionHoldGridMetaData,
 } from "./metaData";
 import { useTranslation } from "react-i18next";
+import { getdocCD } from "components/utilFunction/function";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -82,6 +83,7 @@ export const AccountCloseProcess = () => {
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { t } = useTranslation();
+  const docCD = getdocCD(currentPath, authState?.menulistdata);
 
   // Function for tab change
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -187,20 +189,20 @@ export const AccountCloseProcess = () => {
       onSuccess: async (data) => {
         if (data?.[0]?.O_STATUS === "999") {
           const btnName = await MessageBox({
-            messageTitle: "ValidationFailed",
+            messageTitle: data?.[0]?.O_MSG_TITLE ?? "ValidationFailed",
             message: data?.[0]?.O_MESSAGE,
             icon: "ERROR",
           });
         } else if (data?.[0]?.O_STATUS === "99") {
           const btnName = await MessageBox({
-            messageTitle: "Confirmation",
+            messageTitle: data?.[0]?.O_MSG_TITLE ?? "Confirmation",
             message: data?.[0]?.O_MESSAGE,
             buttonNames: ["Yes", "No"],
             icon: "CONFIRM",
           });
         } else if (data?.[0]?.O_STATUS === "9") {
           const btnName = await MessageBox({
-            messageTitle: "Alert",
+            messageTitle: data?.[0]?.O_MSG_TITLE ?? "Alert",
             message: data?.[0]?.O_MESSAGE,
             icon: "WARNING",
           });
@@ -276,13 +278,13 @@ export const AccountCloseProcess = () => {
         for (let i = 0; i < data?.length; i++) {
           if (data?.[i]?.O_STATUS === "999") {
             const btnName = await MessageBox({
-              messageTitle: "ValidationFailed",
+              messageTitle: data?.[0]?.O_MSG_TITLE ?? "ValidationFailed",
               message: data?.[i]?.O_MESSAGE,
               icon: "ERROR",
             });
           } else if (data?.[i]?.O_STATUS === "99") {
             const btnName = await MessageBox({
-              messageTitle: "Confirmation",
+              messageTitle: data?.[0]?.O_MSG_TITLE ?? "Confirmation",
               message: data?.[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
               icon: "CONFIRM",
@@ -298,14 +300,15 @@ export const AccountCloseProcess = () => {
             }
           } else if (data?.[i]?.O_STATUS === "9") {
             const btnName = await MessageBox({
-              messageTitle: "Alert",
+              messageTitle: data?.[0]?.O_MSG_TITLE ?? "Alert",
               message: data?.[i]?.O_MESSAGE,
               icon: "WARNING",
             });
           } else if (data?.[i]?.O_STATUS === "0") {
             if (
-              Boolean(accountCloseRef?.current?.NEFT) ||
-              Boolean(accountCloseRef?.current?.PAYSLIP)
+              (Boolean(accountCloseRef?.current?.NEFT) ||
+                Boolean(accountCloseRef?.current?.PAYSLIP)) &&
+              accountCloseRef?.current?.AMOUNT > 0
             ) {
               setIsopenDDNeft(true);
               CloseMessageBox();
@@ -331,7 +334,7 @@ export const AccountCloseProcess = () => {
                 TRAN_CD: accountCloseRef?.current?.TRAN_CD ?? "",
                 LST_INT_DT: parameterRef?.current?.LST_INT_APPLY_DT ?? "",
                 STATUS: parameterRef?.current?.STATUS ?? "",
-                SCREEN_REF: "MST/606",
+                SCREEN_REF: docCD,
               });
             }
           }
@@ -352,13 +355,13 @@ export const AccountCloseProcess = () => {
         for (let i = 0; i < data?.length; i++) {
           if (data?.[i]?.O_STATUS === "999") {
             const btnName = await MessageBox({
-              messageTitle: "ValidationFailed",
+              messageTitle: data?.[i]?.O_MSG_TITLE ?? "ValidationFailed",
               message: data?.[i]?.O_MESSAGE,
               icon: "ERROR",
             });
           } else if (data?.[i]?.O_STATUS === "99") {
             const btnName = await MessageBox({
-              messageTitle: "Confirmation",
+              messageTitle: data?.[i]?.O_MSG_TITLE ?? "Confirmation",
               message: data?.[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
               icon: "CONFIRM",
@@ -368,7 +371,7 @@ export const AccountCloseProcess = () => {
             }
           } else if (data?.[i]?.O_STATUS === "9") {
             const btnName = await MessageBox({
-              messageTitle: "Alert",
+              messageTitle: data?.[i]?.O_MSG_TITLE ?? "Alert",
               message: data?.[i]?.O_MESSAGE,
               icon: "WARNING",
             });
@@ -394,7 +397,7 @@ export const AccountCloseProcess = () => {
               TRAN_CD: accountCloseRef?.current?.TRAN_CD ?? "",
               LST_INT_DT: parameterRef?.current?.LST_INT_APPLY_DT ?? "",
               STATUS: parameterRef?.current?.STATUS ?? "",
-              SCREEN_REF: "MST/606",
+              SCREEN_REF: docCD,
             });
           }
         }
@@ -445,7 +448,13 @@ export const AccountCloseProcess = () => {
     setFieldError
   ) => {
     if (Object?.keys(parameterRef?.current)?.length > 0) {
-      getAccountDetails.mutate(parameterRef?.current);
+      getAccountDetails.mutate({
+        PARENT_TYPE: parameterRef?.current?.PARENT_TYPE,
+        COMP_CD: parameterRef?.current?.COMP_CD,
+        ACCT_TYPE: parameterRef?.current?.ACCT_TYPE,
+        ACCT_CD: parameterRef?.current?.ACCT_CD,
+        BRANCH_CD: parameterRef?.current?.BRANCH_CD,
+      });
     }
     accountCloseRef.current = data;
     endSubmit(true);
@@ -460,7 +469,7 @@ export const AccountCloseProcess = () => {
     accountCloseRef.current = {
       ...accountCloseRef?.current,
       ...data,
-      SCREEN_REF: "MST/606",
+      SCREEN_REF: docCD,
       INSTRUCTION_REMARKS: `A/c Close:-${accountCloseRef?.current?.BRANCH_CD?.trim()}-${accountCloseRef?.current?.ACCT_TYPE?.trim()}-${accountCloseRef?.current?.ACCT_CD?.trim()}`,
     };
     valildateAcctCloseBtn.mutate({
@@ -475,7 +484,7 @@ export const AccountCloseProcess = () => {
       STATUS: parameterRef?.current?.STATUS ?? "",
       LST_INT_DT: parameterRef?.current?.LST_INT_APPLY_DT ?? "",
       TRAN_BAL: parameterRef?.current?.CLOSE_BAL ?? "",
-      SCREEN_REF: "MST/606",
+      SCREEN_REF: docCD,
       TYPE_CD: accountCloseRef?.current?.TYPE_CD ?? "",
       NEFT: Boolean(accountCloseRef?.current?.NEFT) ? "Y" : "N",
       DD_PAYSLIP: Boolean(accountCloseRef?.current?.PAYSLIP) ? "Y" : "N",
@@ -511,7 +520,7 @@ export const AccountCloseProcess = () => {
         DD_NEFT_PAY_AMT: data?.TOTAL_AMOUNT ?? "",
         SCROLL1: parameterRef?.current?.SCROLL ?? "",
         REQUEST_CD: "0",
-        SCREEN_REF: "MST/606",
+        SCREEN_REF: docCD,
       });
     if (accountCloseRef?.current?.PAYSLIP)
       neftDDValidation.mutate({
@@ -533,7 +542,7 @@ export const AccountCloseProcess = () => {
         DD_NEFT_PAY_AMT: data?.TOTAL_AMOUNT ?? "",
         SCROLL1: parameterRef?.current?.SCROLL ?? "",
         REQUEST_CD: "0",
-        SCREEN_REF: "MST/606",
+        SCREEN_REF: docCD,
       });
     endSubmit(true);
   };
@@ -550,7 +559,7 @@ export const AccountCloseProcess = () => {
       COMP_CD: authState?.companyID ?? "",
       CLOSE_BAL: parameterRef?.current?.CLOSE_BAL ?? "",
       CONF_BAL: parameterRef?.current?.CONF_BAL ?? "",
-      SCREEN_REF: "MST/606",
+      SCREEN_REF: docCD,
     });
   };
 
@@ -657,7 +666,7 @@ export const AccountCloseProcess = () => {
     ACCT_TYPE: accountCloseRef?.current?.ACCT_TYPE ?? "",
     BRANCH_CD: accountCloseRef?.current?.BRANCH_CD ?? "",
     ACCT_CD: accountCloseRef?.current?.ACCT_CD ?? "",
-    SCREEN_REF: "MST/606",
+    SCREEN_REF: docCD,
   };
 
   return (
@@ -694,7 +703,7 @@ export const AccountCloseProcess = () => {
           formState={{
             MessageBox: MessageBox,
             handleButtonDisable: handleButtonDisable,
-            docCD: "MST/606",
+            docCD: docCD,
           }}
           setDataOnFieldChange={(action, payload) => {
             if (action === "closeAccountDetails") {
@@ -917,7 +926,7 @@ export const AccountCloseProcess = () => {
             formState={{
               MessageBox: MessageBox,
               handleButtonDisable: handleButtonDisable,
-              docCD: "MST/606",
+              docCD: docCD,
               TYPE_CD: parameterRef?.current?.TYPE_CD ?? "",
               accountRef: accountCloseRef?.current ?? "",
             }}
@@ -963,11 +972,13 @@ export const AccountCloseProcess = () => {
                     getParkedChargesTabData?.isLoading ||
                     getSettleCharges?.isLoading ||
                     valildateAcctCloseBtn?.isLoading ||
+                    accountCloseEntry?.isLoading ||
                     disableButton
                   }
                   endicon="CancelOutlined"
                   endIcon={
-                    valildateAcctCloseBtn?.isLoading ? (
+                    valildateAcctCloseBtn?.isLoading ||
+                    accountCloseEntry?.isLoading ? (
                       <CircularProgress size={20} />
                     ) : null
                   }

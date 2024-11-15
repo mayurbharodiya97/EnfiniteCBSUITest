@@ -242,6 +242,7 @@ export const en_language_data = {
   AccountBranch: "Account Branch",
   PrematurePayment: "Premature Payment",
   SelectPaymentmode: "Select Payment Mode",
+  PenalRt: "Penal Rate",
 
   // GridWrapper
   Search: "Search",
@@ -346,6 +347,8 @@ export const en_language_data = {
   PassbookUpdateMessage:
     "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
   TemplateReqired: "Template Reqired",
+  SelectTemplate: "Select Template",
+  PassbookPrintsuccessfully: "Passbook Print successfully.?",
 
   //for priority master main
   ParentGroup: "Parent Group",
@@ -615,6 +618,7 @@ export const en_language_data = {
   EnterAccountType: "Enter Account Type.",
   EnterAccountBranch: "Enter Account Branch.",
   EnterAccountNumber: "Please Enter Accont Number.",
+  EnterAccountNum: "Enter Accont Number",
   ModeOfOperation: "Mode of Operation",
   GetDetails: "Get Details",
   EnterAcNo: "Enter A/c No.",
@@ -1484,6 +1488,7 @@ export const en_language_data = {
   AreYouSaveThisRecord: "Are you sure to save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
+  UTRConfirmation: "UTR(s) Confirmation",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1799,7 +1804,7 @@ export const en_language_data = {
   ConfirmationStatus: "Confirm Status",
   TotalIncomeValidateMessage:
     "This Customer is not eligible for {{formName}}.Total Income of this Financial Year exceeds {{interestAmtLimit}}.",
-
+  FormConfirmationMsg: "Form confirmed successfully.",
   // GST Outward Entry
   TranCd: "Tran Cd",
   taxAmount: "Tax Amount",
@@ -1812,6 +1817,8 @@ export const en_language_data = {
     "You have no rights to confirm this transaction.",
   ConfirmRecord: "Are you sure to confirm this record?",
   RejectDeleteRecord: "Are you sure to reject/delete this record?",
+  ChargeAmountrequired: "Charge Amount is required",
+  TemplateRequire: "Template is required",
   //Dayend process
   VerifyDayEndChecksums: "Verify DayEnd Checksums",
   PendingTransactions: "Pending Transactions",
@@ -2185,6 +2192,7 @@ export const en_language_data = {
   ModifiedDateTime: "Modified Date-Time",
   ModifiedMachineName: "Modified Machine Name",
   VerifiedMachineName: "Verified Machine Name",
+  RightClickAcceptReject: "Right Click for Confirm/Reject Record.",
   //FD Interest Payment Confirmation
   CompanyCode: "Company Code",
   // Security User
@@ -2218,4 +2226,6 @@ export const en_language_data = {
   CreditClearingLimit: "Credit Clearing Limit",
   CreditTransferLimit: "Credit Transfer Limit",
   DoubleClickForEditDetail: "Double click or right click for Edit-Detail.",
+  RDAC_NO: "RD A/c No.",
+  CarryForward: "Carry Forward",
 };

@@ -57,6 +57,12 @@ export const GstOutwardMasterDetailForm = ({
   const [trancdjoin, setTrancdJoin] = useState("");
   const [rowsData, setRowsData] = useState([]);
   const navigate = useNavigate();
+  const [disableButton, setDisableButton] = useState(false);
+  const [saveButton, setSaveButton] = useState(true);
+  const [previousValue, setPreviousValue] = useState([]);
+  const handleButtonDisable = (disable) => {
+    setDisableButton(disable);
+  };
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -103,13 +109,26 @@ export const GstOutwardMasterDetailForm = ({
       });
       CloseMessageBox();
     },
-    onSuccess: (data) => {
-      CloseMessageBox();
-      closeDialog();
-      refetchData();
-      enqueueSnackbar(t("Success"), {
-        variant: "success",
-      });
+    onSuccess: async (data) => {
+      if (data?.[0]?.O_STATUS === "9") {
+        const VoucherConfirmation = await MessageBox({
+          messageTitle: data?.[0]?.O_MSG_TITLE,
+          message: data?.[0]?.O_MESSAGE,
+          buttonNames: ["Ok"],
+        });
+        if (VoucherConfirmation === "Ok") {
+          CloseMessageBox();
+          closeDialog();
+          refetchData();
+        }
+      } else {
+        CloseMessageBox();
+        closeDialog();
+        refetchData();
+        enqueueSnackbar(t("Success"), {
+          variant: "success",
+        });
+      }
     },
   });
   const singleDeletemutation = useMutation(API.getGstOutwardENtryDML, {
@@ -234,6 +253,7 @@ export const GstOutwardMasterDetailForm = ({
         message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
+        icon: "CONFIRM",
         loadingBtnName: ["Yes"],
       });
       if (btnName === "Yes") {
@@ -248,6 +268,7 @@ export const GstOutwardMasterDetailForm = ({
         await MessageBox({
           messageTitle: "ValidationFailed",
           message: "CannotDeleteBackDatedEntry",
+          icon: "ERROR",
           buttonNames: ["Ok"],
         });
       } else {
@@ -286,6 +307,7 @@ export const GstOutwardMasterDetailForm = ({
         const btnName = await MessageBox({
           message: "SaveData",
           messageTitle: "Confirmation",
+          icon: "CONFIRM",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
@@ -305,6 +327,7 @@ export const GstOutwardMasterDetailForm = ({
       await MessageBox({
         messageTitle: "ValidationFailed",
         message: "CannotDeleteBackDatedEntry",
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
     } else {
@@ -331,6 +354,7 @@ export const GstOutwardMasterDetailForm = ({
         const confirmation = await MessageBox({
           message: "DeleteData",
           messageTitle: "Confirmation",
+          icon: "CONFIRM",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
@@ -341,6 +365,7 @@ export const GstOutwardMasterDetailForm = ({
         const confirmation = await MessageBox({
           message: "RejectDeleteRecord",
           messageTitle: "Confirmation",
+          icon: "CONFIRM",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
         });
@@ -373,24 +398,28 @@ export const GstOutwardMasterDetailForm = ({
       await MessageBox({
         messageTitle: "ValidationFailed",
         message: "CannotDeleteBackDatedEntry",
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
     } else if (rows?.[0]?.data?.LAST_ENTERED_BY === authState?.user?.id) {
       await MessageBox({
         messageTitle: "InvalidConfirmation",
         message: "ConfirmTransactionRestrictionMessage",
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
     } else if (authState?.role < "2") {
       await MessageBox({
         messageTitle: "InvalidConfirmation",
         message: "ConfirmRightsRestrictionMessage",
+        icon: "WARNING",
         buttonNames: ["Ok"],
       });
     } else {
       const confirmation = await MessageBox({
         messageTitle: "Confirmation",
         message: "ConfirmRecord",
+        icon: "CONFIRM",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
       });
@@ -472,14 +501,21 @@ export const GstOutwardMasterDetailForm = ({
           }}
           displayMode={defaultView}
           actions={defaultView === "new" ? actions : []}
-          setDataOnFieldChange={gridData || []}
+          // setDataOnFieldChange={gridData || []}
+          setDataOnFieldChange={(action, payload) => {
+            if (action === "TemplateOpen") {
+              setDilogueOpen(payload?.OPEN === "SHOW" ? true : false);
+            }
+          }}
           isLoading={isLoading || isFetching}
           handelActionEvent={setCurrentAction}
           formState={{
             docCD: "TRN/658",
             MessageBox: MessageBox,
             defaultView: defaultView,
-            OpenDilogueBox: setDilogueOpen,
+            handleButtonDisable: handleButtonDisable,
+            setPreviousValue: setPreviousValue,
+            setDilogueOpen,
           }}
           onSubmitData={onSubmitHandler}
           onClickActionEvent={async (index, id, data) => {
@@ -488,9 +524,11 @@ export const GstOutwardMasterDetailForm = ({
                 const SingleRecordDelete = await MessageBox({
                   message: "DeleteData",
                   messageTitle: "Confirmation",
+                  icon: "CONFIRM",
                   buttonNames: ["Yes", "No"],
                 });
                 if (SingleRecordDelete === "Yes") {
+                  setSaveButton(false);
                   setGridData((old) => {
                     return [...old, { ...data }];
                   });
@@ -535,6 +573,7 @@ export const GstOutwardMasterDetailForm = ({
                   <GradientButton
                     onClick={(event) => handleSubmit(event, "Save")}
                     color={"primary"}
+                    disabled={isSubmitting || disableButton}
                   >
                     {t("Save")}
                   </GradientButton>
@@ -550,6 +589,7 @@ export const GstOutwardMasterDetailForm = ({
                   <GradientButton
                     onClick={(event) => handleSubmit(event, "SingleDelete")}
                     color={"primary"}
+                    disabled={isSubmitting || saveButton}
                   >
                     {t("Save")}
                   </GradientButton>
@@ -589,13 +629,15 @@ export const GstOutwardMasterDetailForm = ({
             </>
           )}
         </MasterDetailsForm>
-        <TemplateDetail
-          open={dilogueOpen}
-          onClose={() => setDilogueOpen(false)}
-          getFormData={getFormData}
-          refData={myRef}
-          rowsData={rowsData}
-        />
+        {dilogueOpen ? (
+          <TemplateDetail
+            open={dilogueOpen}
+            onClose={() => setDilogueOpen(false)}
+            getFormData={getFormData}
+            refData={myRef}
+            rowsData={rowsData}
+          />
+        ) : null}
       </Dialog>
     </Fragment>
   );

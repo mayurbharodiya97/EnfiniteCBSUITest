@@ -305,7 +305,7 @@ const ClearingDateTransferGrid = () => {
                             format(new Date(res?.TO_TRAN_DT), "dd/MMM/yyyy") +
                             " / " +
                             res?.TO_ZONE,
-                          buttonNames: ["No", "Yes"],
+                          buttonNames: ["Yes", "No"],
                           defFocusBtnName: "Yes",
                           loadingBtnName: ["Yes"],
                         });

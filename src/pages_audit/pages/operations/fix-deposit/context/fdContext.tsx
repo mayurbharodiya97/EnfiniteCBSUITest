@@ -19,6 +19,20 @@ const inititalState: FDStateType = {
       },
     ],
   },
+  payslipAndDDData: {
+    PAYSLIPDD: [
+      {
+        TRANS_ACCT_NM: "",
+      },
+    ],
+  },
+  beneficiaryAcctData: {
+    BENEFIACCTDTL: [
+      {
+        TRANS_ACCT_NM: "",
+      },
+    ],
+  },
   retrieveFormData: {},
   fdParaDetailData: {},
   acctNoData: {},
@@ -28,6 +42,8 @@ const inititalState: FDStateType = {
   viewDtlGridData: [],
   checkAllowFDPayApiData: {},
   renewTrnsFormData: {},
+  validatePaymetEntryData: {},
+  renewDataForDeposit: {},
 };
 
 const FDReducer = (state: FDStateType, action: ActionType): FDStateType => {
@@ -167,11 +183,45 @@ export const FDContextWrapper = ({ children }) => {
       },
     });
   };
+  const updateValidatePaymetEntryData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        validatePaymetEntryData: data,
+      },
+    });
+  };
+  const updateRenewDataForDeposit = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        renewDataForDeposit: data,
+      },
+    });
+  };
 
   const resetAllData = (data) => {
     dispatch({
       type: "resetAllData",
       payload: {},
+    });
+  };
+
+  const updatePayslipAndDDData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        payslipAndDDData: { PAYSLIPDD: data },
+      },
+    });
+  };
+
+  const updateBeneficiaryAcctData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        beneficiaryAcctData: { BENEFIACCTDTL: data },
+      },
     });
   };
 
@@ -194,6 +244,10 @@ export const FDContextWrapper = ({ children }) => {
         updatePrematureRateData,
         updateFdSavedPaymentData,
         updateRenewTrnsFormData,
+        updateValidatePaymetEntryData,
+        updateRenewDataForDeposit,
+        updatePayslipAndDDData,
+        updateBeneficiaryAcctData,
       }}
     >
       {children}
