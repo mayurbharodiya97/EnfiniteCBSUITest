@@ -270,6 +270,7 @@ export const RtgsEntryFormMetaData = {
             return {
               ACCT_CD: { value: "" },
               LIMIT_AMOUNT: { value: "" },
+              ACCT_NM: { value: "" },
               ACCT_NAME: { value: "" },
               CONTACT_INFO: { value: "" },
               ACCT_MODE: { value: "" },
@@ -1832,7 +1833,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             componentType: "formbutton",
           },
           name: "BENEFICIARY",
-          label: "AuditTrail",
+          label: "Add",
           placeholder: "",
           type: "text",
           tabIndex: "-1",
