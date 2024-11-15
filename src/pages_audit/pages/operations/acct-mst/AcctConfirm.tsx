@@ -76,7 +76,11 @@ const AcctConfirm = () => {
         } else {
           setRowsData(data?.rows);
           navigate(data?.name, {
-            state: data?.rows,
+            state: {
+              rows: data?.rows ?? [{ data: null }],
+              formmode: "view",
+              from: "confirmation-entry",
+            },
           });
         }
       }
