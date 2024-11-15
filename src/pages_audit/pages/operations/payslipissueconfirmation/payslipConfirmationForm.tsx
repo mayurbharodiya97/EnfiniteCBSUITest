@@ -284,7 +284,7 @@ function PayslipConfirmationForm({
                 if (id === `PAYSLIP_MST_DTL[${btnIndex}].SIGN`) {
                   const retrievedObject = acctDtlData
                     ? acctDtlData[btnIndex]
-                    : [];
+                    : [{}];
                   setSignData(retrievedObject);
                   setIsPhotoSign(true);
                 }

@@ -172,7 +172,6 @@ const HoldTrnsConfirmation = () => {
         data={data ?? []}
         setData={() => null}
         actions={actions}
-        refetchData={() => refetch()}
         loading={isLoading || isFetching}
         enableExport={true}
         setAction={setCurrentAction}

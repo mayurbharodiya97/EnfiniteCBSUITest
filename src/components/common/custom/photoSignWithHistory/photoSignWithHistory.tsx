@@ -201,7 +201,7 @@ const PhotoSignWithHistory = ({
                 </Typography>
                 <GradientButton
                   onClick={() => {
-                    setAcCustLevel(LatestPhotoSignData[0]?.AC_CUST_LEVEL);
+                    setAcCustLevel(LatestPhotoSignData?.[0]?.AC_CUST_LEVEL);
                   }}
                 >
                   {LatestPhotoSignData[0]?.BT_NAME || ""}
@@ -422,7 +422,7 @@ const PhotoSignWithHistory = ({
                                       {item?.MODIFIED_DATE
                                         ? format(
                                             new Date(item.MODIFIED_DATE),
-                                            "dd/MM/yyyy"
+                                            "dd/MMM/yyyy"
                                           )
                                         : ""}
                                     </Typography>

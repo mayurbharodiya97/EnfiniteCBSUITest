@@ -8,12 +8,13 @@ import {
 } from "react";
 import { RetrievedinfoGridMetaData } from "./RetrivalInfoGridMetadata";
 import { AuthContext } from "pages_audit/auth";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
 import { DataRetrival } from "./RetriveData";
 import { PayslipConfirmationFormDetails } from "./payslipConfirmationForm";
 import { enqueueSnackbar } from "notistack";
+
 import {
   Alert,
   GridWrapper,
@@ -67,6 +68,8 @@ const PayslipissueconfirmationGrid = ({ onClose }) => {
   const retrievalParaRef = useRef<any>(null);
   const [gridData, setGridData] = useState<any[]>([]);
   const [isDataRetrieved, setIsDataRetrieved] = useState(false);
+  const location = useLocation();
+  const initialRender = useRef(true);
 
   const {
     data,

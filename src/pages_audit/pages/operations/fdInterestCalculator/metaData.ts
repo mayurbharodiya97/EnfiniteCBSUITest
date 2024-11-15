@@ -534,6 +534,17 @@ export const metaData = {
         "PRE_INT_FLG_D",
         "PRINCIPAL_AMT_D",
       ],
+      FormatProps: {
+        isAllowed: (values) => {
+          if (values?.value?.length > 10) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -612,7 +623,10 @@ export const metaData = {
       },
 
       shouldExclude: (val1, dependent) => {
-        if (dependent?.CALCSWITCH?.value === "D") {
+        if (
+          dependent?.CALCSWITCH?.value === "D" &&
+          dependent?.PERIOD_CD_D?.value === "D"
+        ) {
           return false;
         }
         return true;
