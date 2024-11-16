@@ -11,47 +11,54 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState, useCallback, Fragment } from "react";
+import { useState, useCallback, Fragment, useRef } from "react";
 import "./Trn001.css";
 import { getCurrencySymbol } from "@acuteinfo/common-base";
 import Draggable from "react-draggable";
 import { NumberFormatCustom } from "components/custom/NumberFormatCustom";
 
 const useAutocompleteHandlers = (onChangeCallback) => {
-  const [highlightedOption, setHighlightedOption] = useState(null);
+  // const [highlightedOption, setHighlightedOption] = useState(null);
+  const highlightedOptionRef = useRef<any>(null);
 
   const handleHighlightChange = useCallback((event, option, reason) => {
-    setHighlightedOption(option);
+    highlightedOptionRef.current = option;
   }, []);
 
   const handleKeyDown = useCallback(
     (event, unqID, flag) => {
-      if (event?.key === "Tab" && highlightedOption) {
+      if (event?.key === "Tab" && highlightedOptionRef?.current) {
         switch (flag) {
           case "BRANCH_CD":
-            onChangeCallback({ updUnqId: unqID, branchVal: highlightedOption });
+            onChangeCallback({
+              updUnqId: unqID,
+              branchVal: highlightedOptionRef?.current,
+            });
             break;
           case "ACCT_TYPE":
             onChangeCallback({
               updUnqId: unqID,
-              value: highlightedOption,
+              value: highlightedOptionRef?.current,
             });
             break;
           case "TRX":
-            onChangeCallback(event, highlightedOption, unqID);
+            onChangeCallback(event, highlightedOptionRef?.current, unqID);
             break;
           case "SDC":
-            onChangeCallback({ updUnqId: unqID, value: highlightedOption });
+            onChangeCallback({
+              updUnqId: unqID,
+              value: highlightedOptionRef?.current,
+            });
             break;
           default:
             onChangeCallback({
               updUnqId: unqID,
-              value: highlightedOption,
+              value: highlightedOptionRef?.current,
             });
         }
       }
     },
-    [highlightedOption, onChangeCallback]
+    [highlightedOptionRef?.current, onChangeCallback]
   );
 
   return {
@@ -130,7 +137,10 @@ export const CustomeAutocomplete = ({
         <>
           <TextField
             {...params}
-            style={{ width }}
+            style={{
+              width,
+              backgroundColor: disabled ? "rgb(238, 238, 238)" : "transparent",
+            }}
             onBlur={onBlur}
             onKeyDown={onKeyDown}
             variant="outlined"
@@ -169,6 +179,25 @@ export const CustomeAutocomplete = ({
           {errorMsg && <DynFormHelperText msg={errorMsg} />}
         </>
       )}
+      PaperComponent={({ children }) => {
+        return (
+          <div
+            // style={paperStyles}
+            style={{
+              width: "max-content",
+              background: "white",
+              boxShadow:
+                "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+              overflowX: "scroll",
+              maxWidth: "320px",
+              // width: "200px",
+              // minWidth: "max(160px, 100%)",
+            }}
+          >
+            {children}
+          </div>
+        );
+      }}
     />
   );
 };
@@ -215,6 +244,9 @@ export const CustomAmountField = ({
           if (input.value) {
             input.select();
           }
+        }}
+        style={{
+          backgroundColor: disabled ? "rgb(238, 238, 238)" : "transparent",
         }}
         InputProps={{
           inputComponent: NumberFormatCustom,
@@ -331,6 +363,9 @@ export const CustomTextField = ({
         onBlur={onBlur}
         variant="outlined"
         id={id}
+        style={{
+          backgroundColor: disabled ? "rgb(238, 238, 238)" : "transparent",
+        }}
         sx={{
           "& .MuiOutlinedInput-root": {
             "& fieldset": {
