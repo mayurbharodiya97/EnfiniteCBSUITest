@@ -634,9 +634,9 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           Array.isArray(dependentFieldState?.["chequeDetails"])
             ? dependentFieldState?.["chequeDetails"]
             : []
-        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
+        ).reduce((accum, obj) => accum + Number(obj?.AMOUNT?.value), 0);
 
-        return accumulatedTakeoverLoanAmount;
+        return accumulatedTakeoverLoanAmount ?? 0;
       },
 
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
@@ -1180,7 +1180,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           Array.isArray(dependentFieldState?.["chequeDetails"])
             ? dependentFieldState?.["chequeDetails"]
             : []
-        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
+        ).reduce((accum, obj) => accum + Number(obj?.AMOUNT?.value), 0);
 
         if (
           Number(currentFieldState.value) ===
