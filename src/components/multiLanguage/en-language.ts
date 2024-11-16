@@ -1489,6 +1489,8 @@ export const en_language_data = {
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
   UTRConfirmation: "UTR(s) Confirmation",
+  PleaseEnterAlphabeticValueSlipNumber:
+    "Please enter Alphabetic Value in Slip Number",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",

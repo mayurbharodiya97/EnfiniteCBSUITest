@@ -120,11 +120,30 @@ export const RtgsEntryFormMetaData = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "SLIP_NO",
       label: "SlipNo",
       type: "text",
+      FormatProps: {
+        allowNegative: false,
+        isAllowed: (values) => {
+          if (values?.value?.length > 10) {
+            return false;
+          }
+          return true;
+        },
+      },
+      validate: (columnValue, allField, flag) => {
+        let regex = /^[a-zA-Z0-9 ]*$/;
+        // special-character not allowed
+        if (columnValue.value) {
+          if (!regex.test(columnValue.value)) {
+            return "PleaseEnterAlphabeticValueSlipNumber";
+          }
+        }
+        return "";
+      },
       __EDIT__: {
         isFieldFocused: true,
         dependentFields: ["BR_CONFIRMED"],
@@ -134,6 +153,25 @@ export const RtgsEntryFormMetaData = {
           } else {
             return true;
           }
+        },
+        FormatProps: {
+          allowNegative: false,
+          isAllowed: (values) => {
+            if (values?.value?.length > 10) {
+              return false;
+            }
+            return true;
+          },
+        },
+        validate: (columnValue, allField, flag) => {
+          let regex = /^[a-zA-Z0-9 ]*$/;
+          // special-character not allowed
+          if (columnValue.value) {
+            if (!regex.test(columnValue.value)) {
+              return "PleaseEnterAlphabeticValueSlipNumber";
+            }
+          }
+          return "";
         },
       },
 
@@ -238,6 +276,10 @@ export const RtgsEntryFormMetaData = {
               TRAN_BAL: { value: "" },
               ACCT_CD: { value: "" },
               ACCT_TYPE: { value: "" },
+              SER_CHRG_AMT: { value: "" },
+              COMM_AMT: { value: "" },
+              AMOUNT: { value: "" },
+              TOTAL: { value: "" },
             };
           },
         },
@@ -278,6 +320,10 @@ export const RtgsEntryFormMetaData = {
               TRAN_BAL: { value: "" },
               PARA_BNFCRY: { value: "" },
               TYPE_CD: { value: "" },
+              SER_CHRG_AMT: { value: "" },
+              COMM_AMT: { value: "" },
+              AMOUNT: { value: "" },
+              TOTAL: { value: "" },
             };
           },
         },
@@ -439,6 +485,10 @@ export const RtgsEntryFormMetaData = {
                 PARA_BNFCRY: { value: "" },
                 TYPE_CD: { value: "" },
                 PARA_UTR: { value: "" },
+                SER_CHRG_AMT: { value: "" },
+                COMM_AMT: { value: "" },
+                AMOUNT: { value: "" },
+                TOTAL: { value: "" },
               };
             }
 
@@ -826,7 +876,7 @@ export const RtgsEntryFormMetaData = {
       },
       name: "CHEQUE_DT",
       label: "ChequeDate",
-      placeholder: "",
+      placeholder: "DD/MM/YYYY",
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
@@ -908,6 +958,7 @@ export const RtgsEntryFormMetaData = {
             },
           ],
         },
+        runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -1146,13 +1197,12 @@ export const RtgsEntryFormMetaData = {
       GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
 
       dependentFields: ["AMOUNT", "SER_CHRG_AMT", "COMM_AMT"],
-
       setValueOnDependentFieldsChange: (dependentFields) => {
-        let value =
-          parseInt(dependentFields?.SER_CHRG_AMT?.value) +
-          parseInt(dependentFields?.AMOUNT?.value) +
-          parseInt(dependentFields?.COMM_AMT?.value);
-        return value ?? "--";
+        const amount = parseInt(dependentFields?.AMOUNT?.value) || 0;
+        const serviceCharge =
+          parseInt(dependentFields?.SER_CHRG_AMT?.value) || 0;
+        const commission = parseInt(dependentFields?.COMM_AMT?.value) || 0;
+        return amount + serviceCharge + commission;
       },
     },
     {
@@ -1738,7 +1788,6 @@ export const rtgsAccountDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
-            console.log("formState", formState);
             if (formState?.isSubmitting) return {};
             if (
               field?.value &&
