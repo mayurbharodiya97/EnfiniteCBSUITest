@@ -55,15 +55,17 @@ export const RtgsEntryFormMetaData = {
   fields: [
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "select",
       },
       name: "ENTRY_TYPE",
       label: "RTGSNEFT",
       defaultValue: "RTGS",
+      defaultOptionLabel: "SelectRTGSNEFTTransactionType",
       options: () => {
         return API.getEntryType();
       },
       _optionsKey: "getEntryType",
+      required: true,
       GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
       __EDIT__: { render: { componentType: "textField" }, isReadOnly: true },
     },
@@ -84,6 +86,7 @@ export const RtgsEntryFormMetaData = {
       name: "TRAN_TYPE",
       label: "TransactionType",
       defaultValue: "R42",
+      required: true,
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       skipDefaultOption: true,
       dependentFields: ["ENTRY_TYPE"],
@@ -184,6 +187,7 @@ export const RtgsEntryFormMetaData = {
       name: "DEF_TRAN_CD",
       label: "CommType",
       defaultValue: "149",
+      required: true,
       GridProps: { xs: 12, sm: 2.4, md: 2.4, lg: 2.4, xl: 2.4 },
       options: (dependentValue, formState, _, authState) => {
         return API.getCommTypeList({
@@ -936,7 +940,6 @@ export const RtgsEntryFormMetaData = {
       placeholder: "",
       type: "text",
       required: true,
-
       __EDIT__: { isReadOnly: true },
       __NEW__: {
         FormatProps: {
@@ -1739,6 +1742,7 @@ export const rtgsAccountDetailFormMetaData: any = {
           },
           name: "TO_ACCT_NO",
           label: "ACNo",
+          required: true,
           defaultValue: "",
           GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
           __EDIT__: {
@@ -1758,6 +1762,7 @@ export const rtgsAccountDetailFormMetaData: any = {
             // return formState?.rtgsAcData
             return API.getRtgsBenfDtlList({
               COMP_CD: authState?.companyID,
+              WORKING_DATE: authState?.workingDate,
               BRANCH_CD:
                 formState?.rtgsAcData?.BRANCH_CD ??
                 authState?.user?.branchCode ??
@@ -1921,7 +1926,6 @@ export const rtgsAccountDetailFormMetaData: any = {
           fullWidth: true,
           required: true,
           isReadOnly: true,
-          // maxLength: 20,
 
           GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
         },
@@ -1935,7 +1939,6 @@ export const rtgsAccountDetailFormMetaData: any = {
           placeholder: "",
           type: "text",
           isReadOnly: true,
-          // defaultValue: "0123456789",
           GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
         },
 
@@ -2024,6 +2027,7 @@ export const rtgsAccountDetailFormMetaData: any = {
           label: "Amount",
           placeholder: "",
           type: "text",
+          required: true,
           __EDIT__: {
             dependentFields: ["FILED_HIDDEN"],
             isReadOnly: (field, dependentField, formState) => {
@@ -2040,17 +2044,6 @@ export const rtgsAccountDetailFormMetaData: any = {
           FormatProps: {
             allowNegative: false,
           },
-          // postValidationSetCrossFieldValues: async (...arr) => {
-          //   if (arr[0].value) {
-          //     return {
-          //       BENIFICIARY_AMOUNT: { value: arr[0].value ?? "0" },
-          //     };
-          //   } else {
-          //     return {
-          //       BENIFICIARY_AMOUNT: { value: "" },
-          //     };
-          //   }
-          // },
           AlwaysRunPostValidationSetCrossFieldValues: {
             alwaysRun: true,
             touchAndValidate: false,
@@ -2058,13 +2051,6 @@ export const rtgsAccountDetailFormMetaData: any = {
           postValidationSetCrossFieldValues: async (...arr) => {
             if (arr[0].value) {
               arr?.[1].setDataOnFieldChange("AMOUNT", "");
-              // return {
-              //   TOTAL_DR_AMOUNT: { value: arr[0].value ?? "0" },
-              // };
-            } else {
-              // return {
-              //   TOTAL_DR_AMOUNT: { value: "" },
-              // };
             }
           },
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
@@ -2389,6 +2375,7 @@ export const AuditBenfiDetailFormMetadata = {
         isReadOnly: true,
       },
       __NEW__: {
+        required: true,
         schemaValidation: {
           type: "string",
           rules: [
@@ -2517,6 +2504,7 @@ export const AuditBenfiDetailFormMetadata = {
       placeholder: "",
       type: "text",
       __NEW__: {
+        required: true,
         schemaValidation: {
           type: "string",
           rules: [
@@ -2538,6 +2526,7 @@ export const AuditBenfiDetailFormMetadata = {
       placeholder: "",
       type: "text",
       __NEW__: {
+        required: true,
         schemaValidation: {
           type: "string",
           rules: [
@@ -2560,6 +2549,7 @@ export const AuditBenfiDetailFormMetadata = {
       type: "text",
       txtTransform: "uppercase",
       __NEW__: {
+        required: true,
         schemaValidation: {
           type: "string",
           rules: [
@@ -2592,6 +2582,7 @@ export const AuditBenfiDetailFormMetadata = {
       },
       maxLength: 10,
       __NEW__: {
+        required: true,
         schemaValidation: {
           type: "string",
           rules: [
@@ -2629,6 +2620,7 @@ export const AuditBenfiDetailFormMetadata = {
       placeholder: "",
       type: "text",
       __NEW__: {
+        required: true,
         schemaValidation: {
           type: "string",
           rules: [
@@ -2700,11 +2692,9 @@ export const AuditBenfiDetailFormMetadata = {
       __NEW__: {
         validate: (columnValue, allField, flag) => {
           let regex = /^[a-zA-Z0-9]*$/;
-          if (!columnValue?.value) {
-            return "PleaseEnterTheBeneficiaryLEINo";
-          } else if (!regex.test(columnValue.value)) {
+          if (!regex.test(columnValue.value)) {
             return "LEINoShouldBeAlphaNumeric";
-          } else if (columnValue.value.length < 20) {
+          } else if (columnValue?.value && columnValue?.value?.length < 20) {
             return "LEINoShouldBeExactlyCharacters";
           } else {
             return "";

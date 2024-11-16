@@ -1491,6 +1491,7 @@ export const en_language_data = {
   UTRConfirmation: "UTR(s) Confirmation",
   PleaseEnterAlphabeticValueSlipNumber:
     "Please enter Alphabetic Value in Slip Number",
+  SelectRTGSNEFTTransactionType: "Select RTGS/NEFT Transaction",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
