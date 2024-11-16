@@ -1,19 +1,19 @@
 {
-  "software_version": "24.04.00.00.12",
-  "date": "13/11/2024",
+  "software_version": "24.04.00.00.13",
+  "date": "16/11/2024",
   "Microservice_Name": "EnfiniteCBS_UI",
   "version_information": {
     "major_release_aa": "24",
     "minor_release_bb": "04",
     "patch_release_cc": "00",
     "patch_release_dd": "00",
-    "internal_release_ee": "12"
+    "internal_release_ee": "13"
   },
   "changes": {
     "feature_addition": "Description of new features added in this version.",
     "bug_fixes": "List of bugs fixed in this version.",
     "improvements": "Description of improvements or optimizations made.",
-    "other_changes": "Any other relevant changes or updates.",
+    "other_changes": "SSL configured",
     "internal_build_update": "For Internal and development purpose"
   },
   "version_information_detailed": {
@@ -34,7 +34,7 @@
       "description": "Patch release, Internal minor update"
     },
     "internal_release_ee": {
-      "version": "12",
+      "version": "13",
       "description": "For Internal and development purpose"
     }
   }
