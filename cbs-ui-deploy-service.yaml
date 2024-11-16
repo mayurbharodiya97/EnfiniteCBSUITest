@@ -86,16 +86,16 @@ spec:
         volumeMounts: #bind mount with host
         # - mountPath: /opt/API_LOGS/EnfintyCBS-UI ##mount path from container
         #   name: apilogs
-        # - name: ssl-config
-        #   mountPath: /opt/ssl
-        #   readOnly: true
+        - name: ssl-config
+          mountPath: /opt/ssl
+          readOnly: true
       volumes:
       # - name: apilogs  ##pass the same name as container mount name
       #   hostPath:
       #     path: /opt/API_LOGS/EnfintyCBS-UI ##path from host machine
-      # - name: ssl-config
-      #   hostPath:
-      #     path: /opt/ssl
+      - name: ssl-config
+        hostPath:
+          path: /opt/ssl
       imagePullSecrets:
       - name: cbs-enfinity
       terminationGracePeriodSeconds: 150
