@@ -84,6 +84,7 @@ export const AddNewBeneficiaryDetail: FC<{
       ACCT_CD:
         isBenAuditTrailData?.ACCT_CD.padStart(6, "0")?.padEnd(20, " ") ?? "",
       FLAG: "D",
+      WORKING_DATE: authState?.workingDate,
     })
   );
   useEffect(() => {
