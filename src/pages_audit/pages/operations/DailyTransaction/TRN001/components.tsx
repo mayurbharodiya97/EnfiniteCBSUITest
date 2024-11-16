@@ -198,6 +198,24 @@ export const CustomeAutocomplete = ({
           </div>
         );
       }}
+      filterOptions={(options, state) => {
+        const inputValue = state.inputValue.toLowerCase();
+        const filtered = options.filter((option) =>
+          option.label.toLowerCase().includes(inputValue)
+        );
+        return filtered.sort((a, b) => {
+          const aStartsWith = a.label.toLowerCase().startsWith(inputValue);
+          const bStartsWith = b.label.toLowerCase().startsWith(inputValue);
+
+          if (aStartsWith && !bStartsWith) {
+            return -1;
+          }
+          if (!aStartsWith && bStartsWith) {
+            return 1;
+          }
+          return 0;
+        });
+      }}
     />
   );
 };
