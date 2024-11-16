@@ -135,6 +135,18 @@ export const CustomeAutocomplete = ({
             onKeyDown={onKeyDown}
             variant="outlined"
             autoFocus={autoFocus}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "gray",
+                  borderWidth: "1px",
+                },
+                "&:hover fieldset, &.Mui-focused fieldset": {
+                  borderColor: "gray",
+                  borderWidth: "1px",
+                },
+              },
+            }}
             InputProps={{
               ...params?.InputProps,
               endAdornment: (
@@ -260,6 +272,16 @@ export const CustomAmountField = ({
               padding: "0.6rem",
             },
           },
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "gray",
+              borderWidth: "1px",
+            },
+            "&:hover fieldset, &.Mui-focused fieldset": {
+              borderColor: "gray",
+              borderWidth: "1px",
+            },
+          },
         }}
       />
       {errorMsg && <DynFormHelperText msg={errorMsg} />}
@@ -309,6 +331,18 @@ export const CustomTextField = ({
         onBlur={onBlur}
         variant="outlined"
         id={id}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "gray",
+              borderWidth: "1px",
+            },
+            "&:hover fieldset, &.Mui-focused fieldset": {
+              borderColor: "gray",
+              borderWidth: "1px",
+            },
+          },
+        }}
         onFocus={(event) => {
           const input = event.target;
           if (input.value) {

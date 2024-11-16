@@ -320,7 +320,7 @@ const RowsTable = forwardRef<any, any>(
                     >
                       <CustomTextField
                         value={row?.accNo}
-                        type="number"
+                        type="text"
                         onChange={(event) =>
                           handleAcctNoChange({
                             updUnqId: row?.unqID,
@@ -554,6 +554,14 @@ const RowsTable = forwardRef<any, any>(
                                     "& fieldset": {
                                       borderColor: "inherit",
                                     },
+                                  },
+                                  "& fieldset": {
+                                    borderColor: "gray",
+                                    borderWidth: "1px",
+                                  },
+                                  "&:hover fieldset, &.Mui-focused fieldset": {
+                                    borderColor: "gray",
+                                    borderWidth: "1px",
                                   },
                                 },
                               },
