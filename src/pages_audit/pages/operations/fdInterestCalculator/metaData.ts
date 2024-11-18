@@ -849,6 +849,7 @@ export const metaData = {
       },
       defaultValue: "M",
       fullWidth: true,
+      required: true,
       GridProps: { xs: 1.5, sm: 1.5, md: 2, lg: 2, xl: 2 },
       dependentFields: [
         "CALCSWITCH",
@@ -2430,6 +2431,7 @@ export const metaData = {
       label: "asonDate",
       defaultValue: new Date(),
       fullWidth: true,
+      required: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: ["CALCSWITCH"],

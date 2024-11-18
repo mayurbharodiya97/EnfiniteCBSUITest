@@ -942,6 +942,7 @@ const PayslipIsuueEntryform = ({
             onClose={async (result) => {
               setjointDtl(result);
             }}
+            hideHeader={false}
           />
         </Dialog>
         <Dialog

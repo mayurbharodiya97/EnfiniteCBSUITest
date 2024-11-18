@@ -354,7 +354,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
             {rows.map((row, index) => (
               <TableRow key={row.unqID}>
                 <TableCell
-                  sx={{ minWidth: 60, width: 80, maxWidth: 100 }}
+                  sx={{ minWidth: 40, width: 10, maxWidth: 100 }}
                   style={{ verticalAlign: "baseline" }}
                 >
                   <CustomTextField
@@ -366,7 +366,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
                   />
                 </TableCell>
                 <TableCell
-                  sx={{ minWidth: 150, width: 220, maxWidth: 250 }}
+                  sx={{ minWidth: 80, width: 80, maxWidth: 100 }}
                   style={{ verticalAlign: "baseline" }}
                 >
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -407,7 +407,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
                 </TableCell>
 
                 <TableCell
-                  sx={{ minWidth: 150, width: 220, maxWidth: 250 }}
+                  sx={{ minWidth: 100, width: 80, maxWidth: 100 }}
                   style={{ verticalAlign: "baseline" }}
                 >
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -448,7 +448,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
                 </TableCell>
 
                 <TableCell
-                  sx={{ minWidth: 220, width: 250, maxWidth: 300 }}
+                  sx={{ minWidth: 100, width: 130, maxWidth: 130 }}
                   style={{ verticalAlign: "baseline" }}
                 >
                   <CustomAmountField
@@ -465,8 +465,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
                 </TableCell>
 
                 <TableCell
-                  sx={{ minWidth: 220, width: 250, maxWidth: 300 }}
-                  style={{ verticalAlign: "baseline" }}
+                  style={{ width: "300px", verticalAlign: "baseline" }}
                 >
                   <GradientButton
                     disabled={

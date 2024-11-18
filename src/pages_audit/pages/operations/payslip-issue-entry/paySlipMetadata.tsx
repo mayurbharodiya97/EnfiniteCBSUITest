@@ -2478,8 +2478,8 @@ export const SlipJoinDetailGridMetaData = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "28vh",
-      max: "28vh",
+      min: "50vh",
+      max: "50vh",
     },
     allowFilter: false,
     allowColumnHiding: false,

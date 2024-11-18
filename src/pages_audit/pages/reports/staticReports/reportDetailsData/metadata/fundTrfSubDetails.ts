@@ -1,6 +1,6 @@
 import { components } from "@acuteinfo/common-base";
 export const fundTrfSubDetailsMetaData = {
-  title: "APIResponseDetailsReport",
+  title: "Report Details",
   disableGroupBy: "",
   hideFooter: "",
   hideAmountIn: "False",
@@ -29,34 +29,34 @@ export const fundTrfSubDetailsMetaData = {
   // ],
   columns: [
     {
-      columnName: "LoginID",
+      columnName: "User Name",
       accessor: "USER_NAME",
       width: 140,
       type: "default",
     },
     {
-      columnName: "TransactionType",
+      columnName: "Transaction Type",
       accessor: "TRN_TYPE",
       width: 180,
     },
     {
-      columnName: "FromACNo",
+      columnName: "From A/C No.",
       accessor: "FROM_ACCT_NO",
       width: 170,
     },
     {
-      columnName: "ToACNo",
+      columnName: "To A/C No.",
       accessor: "TO_ACCT_NO",
       width: 170,
     },
     {
-      columnName: "ResponseDate",
+      columnName: "Response Date",
       accessor: "REQ_DATE",
       width: 160,
-      Cell: components.DateTimeCell,
+      // Cell: components.DateTimeCell,
     },
     {
-      columnName: "ApiName",
+      columnName: "Api Name",
       accessor: "API_NAME",
       width: 150,
     },
@@ -67,17 +67,17 @@ export const fundTrfSubDetailsMetaData = {
     },
 
     {
-      columnName: "RespCode",
+      columnName: "Resp. Code",
       accessor: "RESPONSE_CODE",
       width: 150,
     },
     {
-      columnName: "RefTranID",
+      columnName: "Ref.Tran.ID",
       accessor: "REF_TRAN_ID",
       width: 150,
     },
     {
-      columnName: "ResponseMessage",
+      columnName: "Response Message",
       accessor: "RESPONSE_MSG",
       width: 180,
     },

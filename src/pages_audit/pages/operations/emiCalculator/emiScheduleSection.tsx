@@ -100,7 +100,6 @@ export const CustomGridTable = ({
     onSuccess: async (data) => {
       const index = selectedIndexRef.current;
       const flag = selectedFlagRef.current;
-      console.log("data", data);
 
       if (data[0]?.O_STATUS !== "0") {
         const btnName = await MessageBox({
@@ -232,17 +231,6 @@ export const CustomGridTable = ({
   };
   return (
     <>
-      {/* <Dialog
-        open={open}
-        maxWidth="xl"
-        fullWidth
-        PaperProps={{
-          sx: {
-            padding: "20px",
-            borderRadius: "10px",
-          },
-        }}
-      > */}
       <AppBar position="relative" color="secondary">
         <Toolbar className={headerClasses.root} variant="dense">
           <Typography
@@ -305,8 +293,7 @@ export const CustomGridTable = ({
             {rows?.map((row: any, index) => (
               <TableRow key={"emiCalculatorRow" + row?.unqID}>
                 <TableCell
-                  sx={{ minWidth: 120 }}
-                  style={{ verticalAlign: "baseline" }}
+                  style={{ width: "300px", verticalAlign: "baseline" }}
                 >
                   <CustomTextField
                     value={index + 1}
@@ -317,8 +304,7 @@ export const CustomGridTable = ({
                   />
                 </TableCell>
                 <TableCell
-                  sx={{ minWidth: 120 }}
-                  style={{ verticalAlign: "baseline" }}
+                  style={{ width: "300px", verticalAlign: "baseline" }}
                 >
                   <CustomTextField
                     value={row?.FROM_INST}
@@ -331,8 +317,7 @@ export const CustomGridTable = ({
                   />
                 </TableCell>
                 <TableCell
-                  sx={{ minWidth: 120 }}
-                  style={{ verticalAlign: "baseline" }}
+                  style={{ width: "300px", verticalAlign: "baseline" }}
                 >
                   <CustomTextField
                     value={row?.TO_INST}
@@ -345,8 +330,7 @@ export const CustomGridTable = ({
                   />
                 </TableCell>
                 <TableCell
-                  sx={{ minWidth: 120 }}
-                  style={{ verticalAlign: "baseline" }}
+                  style={{ width: "300px", verticalAlign: "baseline" }}
                 >
                   <CustomTextField
                     value={row?.NO_OF_INST}
@@ -357,8 +341,7 @@ export const CustomGridTable = ({
                   />
                 </TableCell>
                 <TableCell
-                  sx={{ minWidth: 120 }}
-                  style={{ verticalAlign: "baseline" }}
+                  style={{ width: "300px", verticalAlign: "baseline" }}
                 >
                   <CustomAmountField
                     value={row?.EMI_RS}

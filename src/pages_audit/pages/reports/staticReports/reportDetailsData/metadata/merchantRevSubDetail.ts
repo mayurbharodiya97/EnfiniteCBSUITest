@@ -1,6 +1,6 @@
 import { components } from "@acuteinfo/common-base";
 export const merchantRevSubDetailsMetaData = {
-  title: "APIResponseDetailsReport",
+  title: "Report Details",
   disableGroupBy: "",
   hideFooter: "",
   hideAmountIn: "False",
@@ -28,41 +28,41 @@ export const merchantRevSubDetailsMetaData = {
   //   },
   // ],
   columns: [
-    // {
-    //   columnName: "Sr. No.",
-    //   accessor: "SR_CD",
-    //   width: 100,
-    //   type: "default",
-    // },
     {
-      columnName: "ResponseDate",
-      accessor: "REQ_DATE",
-      width: 160,
-      Cell: components.DateTimeCell,
+      columnName: "Sr. No.",
+      accessor: "SR_CD",
+      width: 100,
       type: "default",
     },
     {
-      columnName: "ApiName",
+      columnName: "Response Date",
+      accessor: "REQ_DATE",
+      width: 160,
+      // Cell: components.DateTimeCell,
+      type: "default",
+    },
+    {
+      columnName: "API Name.",
       accessor: "API_NAME",
       width: 170,
     },
     {
-      columnName: "Status",
+      columnName: "Status.",
       accessor: "STATUS",
       width: 170,
     },
     {
-      columnName: "RespCode",
+      columnName: "Resp. Code",
       accessor: "RESPONSE_CODE",
       width: 150,
     },
     {
-      columnName: "RefTranID",
+      columnName: "Ref.Tran.ID",
       accessor: "REF_TRAN_ID",
       width: 150,
     },
     {
-      columnName: "ResponseMessage",
+      columnName: "Response Message",
       accessor: "RESPONSE_MSG",
       width: 180,
     },

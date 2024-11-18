@@ -350,6 +350,7 @@ function PayslipConfirmationForm({
             onClose={async (result) => {
               setjointDtl(result);
             }}
+            hideHeader={false}
           />
         </Dialog>
       </Dialog>

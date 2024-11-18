@@ -1,3 +1,32 @@
+// import {
+//   Dialog,
+//   IconButton,
+//   Paper,
+//   Table,
+//   TableBody,
+//   TableCell,
+//   TableContainer,
+//   TableRow,
+//   Toolbar,
+//   Typography,
+//   makeStyles,
+// } from "@material-ui/core";
+// import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
+import { useQuery } from "react-query";
+import * as API from "../api";
+import "./styles.css";
+import logo from "assets/images/logo.jpg";
+import { ReactInstance, useContext, useRef } from "react";
+import { AuthContext } from "pages_audit/auth";
+import {
+  Tooltip,
+  PrintButton,
+  Alert,
+  LoaderPaperComponent,
+  useDialogStyles,
+  Transition,
+} from "@acuteinfo/common-base";
 import {
   Dialog,
   IconButton,
@@ -9,28 +38,13 @@ import {
   TableRow,
   Toolbar,
   Typography,
+  // makeStyles,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Theme } from "@mui/material/styles";
-import CloseIcon from "@mui/icons-material/Close";
-import {
-  useDialogStyles,
-  Alert,
-  PrintButton,
-  Tooltip,
-} from "@acuteinfo/common-base";
-import { Transition } from "@acuteinfo/common-base";
-import { useQuery } from "react-query";
-import * as API from "../api";
-import "./styles.css";
-import { LoaderPaperComponent } from "@acuteinfo/common-base";
-import { ReactInstance, useContext, useRef } from "react";
-import { AuthContext } from "pages_audit/auth";
-import { useTranslation } from "react-i18next";
-const useTypeStyles = makeStyles((theme: Theme) => ({
+const useTypeStyles: any = makeStyles((theme) => ({
   root: {
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
+    // paddingLeft: theme.spacing(1.5),
+    // paddingRight: theme.spacing(1.5),
     background: "var(--theme-color1)",
     boxShadow:
       "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
@@ -74,9 +88,9 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
     justifyContent: "center",
     padding: "2rem",
     // background: "var(--theme-color2)",
-    [theme.breakpoints.down("sm")]: {
-      display: "none",
-    },
+    // [theme.breakpoints.down("sm")]: {
+    //   display: "none",
+    // },
   },
 }));
 
@@ -89,7 +103,7 @@ export const TrnParticularsDetailsReports = ({
   const bodyClasses = useTypeStyles();
   const printRef = useRef<HTMLDivElement | null>(null);
   const { authState } = useContext(AuthContext);
-  const { t } = useTranslation();
+
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -127,15 +141,11 @@ export const TrnParticularsDetailsReports = ({
               variant={"h6"}
               component="div"
             >
-              {t("TransactionParticularsDetail")}
+              Transaction Particulars Detail
             </Typography>
-            {isLoading || isError ? (
-              <></>
-            ) : (
-              <PrintButton content={() => printRef?.current} />
-            )}
+            <PrintButton content={() => printRef?.current} />
             {typeof onClose === "function" ? (
-              <Tooltip title={t("Close")} arrow={true}>
+              <Tooltip title={"Close"} arrow={true}>
                 <IconButton onClick={onClose} size="small">
                   <CloseIcon style={{ color: "var(--white)" }} />
                 </IconButton>
@@ -153,7 +163,7 @@ export const TrnParticularsDetailsReports = ({
               }}
             >
               <img
-                src={`${new URL(window.location.href).origin}/bank-logo.jpg`}
+                src={logo}
                 alt="Logo"
                 width="70px"
                 height="auto"
@@ -162,7 +172,7 @@ export const TrnParticularsDetailsReports = ({
               <h1>{authState.user.branch}</h1>
             </div>
             <h1>
-              <span>{t("TransactionParticularsDetail")}</span>
+              <span>Transaction Particulars Detail</span>
             </h1>
           </div>
 
@@ -186,7 +196,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("TransactionRefNumber")} :
+                      Transaction Ref. Number :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -202,7 +212,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("LoginID")} :
+                      Login ID :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -218,7 +228,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("FromSource")} :
+                      From Source :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -234,7 +244,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("FromAccountNumber")} :
+                      From Account Number :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -250,7 +260,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("ToAccountNumber")} :
+                      To Account Number :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -266,7 +276,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("TrnParticulars")} :
+                      Trn. Particulars :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -282,7 +292,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("TrnParticulars2")} :
+                      Trn. Particulars2 :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -298,7 +308,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("AbabilTrnParticulars")} :
+                      Ababil Trn. Particulars :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -314,7 +324,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("AbabilTrnParticulars2")} :
+                      Ababil Trn. Particulars2 :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -330,7 +340,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("TranzwareTrnParticulars")} :
+                      Tranzware Trn. Particulars :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}
@@ -346,7 +356,7 @@ export const TrnParticularsDetailsReports = ({
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell1}`}
                       component="div"
                     >
-                      {t("TranzwareTrnParticulars2")} :
+                      Tranzware Trn. Particulars2 :
                     </TableCell>
                     <TableCell
                       className={`${bodyClasses.tableCell} ${bodyClasses.cell2}`}

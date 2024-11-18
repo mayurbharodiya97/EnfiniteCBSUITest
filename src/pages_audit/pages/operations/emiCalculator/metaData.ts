@@ -179,21 +179,6 @@ export const EMICalculateMetaData = {
       name: "spacer",
       GridProps: { xs: 1, sm: 1, md: 9, lg: 9, xl: 9 },
     },
-    // {
-    //   render: {
-    //     componentType: "formbutton",
-    //   },
-    //   name: "UPDOWN",
-    //   label: "Step up/down",
-    //   placeholder: "",
-    //   type: "text",
-    //   tabIndex: "-1",
-    //   iconStyle: {
-    //     fontSize: "25px !important",
-    //   },
-    //   GridProps: { xs: 2.2, sm: 2, md: 1.8, lg: 1.2, xl: 1.2 },
-    // },
-
     {
       render: {
         componentType: "formbutton",
@@ -268,7 +253,6 @@ export const EMICalculateMetaData = {
             authState,
             dependentFieldValues
           ) => {
-            // formState.setDataOnFieldChange("EMI_SCHEDULE", {});
             const refIDCurrent = formState?.refID?.current;
             const date = new Date(currentField?.value);
             if (isNaN(date.getTime())) {

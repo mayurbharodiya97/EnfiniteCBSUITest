@@ -99,8 +99,6 @@ export const EMICalculatorForm = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      console.log("data", data);
-
       let blobData = utilFunction.blobToFile(data, "");
       if (blobData) {
         setFileBlob(blobData);
@@ -141,38 +139,38 @@ export const EMICalculatorForm = () => {
     };
     mutation.mutate(requestData, {
       onSuccess: async (data) => {
-        for (let i = 0; i < data?.length; i++) {
-          console.log("data>>>", data);
-          if (data[i]?.O_STATUS === "999") {
-            const btnName = await MessageBox({
-              messageTitle: data[i]?.O_MSG_TITLE || "ValidationFailed",
-              message: data[i]?.O_MESSAGE,
-              buttonNames: ["Ok"],
-              icon: "ERROR",
-            });
-          } else if (data[i]?.O_STATUS === "9") {
-            const btnName = await MessageBox({
-              messageTitle: data[i]?.O_MSG_TITLE || "Alert",
-              message: data[i]?.O_MESSAGE,
-              icon: "WARNING",
-            });
-          } else if (data[i]?.O_STATUS === "99") {
-            const btnName = await MessageBox({
-              messageTitle: data[i]?.O_MSG_TITLE || "Confirmation",
-              message: data[i]?.O_MESSAGE,
-              buttonNames: ["Yes", "No"],
-              icon: "CONFIRM",
-            });
-            if (btnName === "No") {
-              break;
-            }
-          } else if (
-            Boolean(data[i]?.V_MSG) &&
-            data[i]?.V_MSG[0].O_STATUS === "0"
-          ) {
-            ReportMutation.mutate(requestData);
-          }
-        }
+        ReportMutation.mutate(requestData);
+        // for (let i = 0; i < data?.length; i++) {
+        //   if (data[i]?.O_STATUS === "999") {
+        //     const btnName = await MessageBox({
+        //       messageTitle: data[i]?.O_MSG_TITLE || "ValidationFailed",
+        //       message: data[i]?.O_MESSAGE,
+        //       buttonNames: ["Ok"],
+        //       icon: "ERROR",
+        //     });
+        //   } else if (data[i]?.O_STATUS === "9") {
+        //     const btnName = await MessageBox({
+        //       messageTitle: data[i]?.O_MSG_TITLE || "Alert",
+        //       message: data[i]?.O_MESSAGE,
+        //       icon: "WARNING",
+        //     });
+        //   } else if (data[i]?.O_STATUS === "99") {
+        //     const btnName = await MessageBox({
+        //       messageTitle: data[i]?.O_MSG_TITLE || "Confirmation",
+        //       message: data[i]?.O_MESSAGE,
+        //       buttonNames: ["Yes", "No"],
+        //       icon: "CONFIRM",
+        //     });
+        //     if (btnName === "No") {
+        //       break;
+        //     }
+        //   } else if (
+        //     Boolean(data[i]?.V_MSG) &&
+        //     data[i]?.V_MSG[0].O_STATUS === "0"
+        //   ) {
+        //     ReportMutation.mutate(requestData);
+        //   }
+        // }
       },
       onError: (data) => {},
     });
@@ -185,9 +183,6 @@ export const EMICalculatorForm = () => {
       setRefreshForm((prevVal) => prevVal + 1);
     }
   }, [disburseData]);
-  const handleMergedData = (data) => {
-    setMergedData(data);
-  };
 
   return (
     <>

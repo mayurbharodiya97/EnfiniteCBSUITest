@@ -1994,6 +1994,7 @@ export const en_language_data = {
   //EMI Calculator
   addRow: "Add Row",
   loanRepaymentSchedule: "Loan Repayment Schedule",
+  StepUpDown: "step Up-Down",
   InterestFunded: "Interest Funded",
   LoanAmount: "Loan Amount",
   Calculate: "Calculate",
@@ -2225,4 +2226,20 @@ export const en_language_data = {
   CreditTransferLimit: "Credit Transfer Limit",
   DoubleClickForEditDetail: "Double click or right click for Edit-Detail.",
   RDAC_NO: "RD A/c No.",
+  //locker Transaction Entry
+  lockerNumber: "Locker No.",
+  lockerSize: "Locker Size",
+  keyNumber: "Key No",
+  referenceAccountBalance: "Ref.A/c Balance",
+  totalRentPaid: "Total Rent Paid",
+  dueRent: "Due Rent",
+  keyEmboss: "Key Emboss",
+  operationStatus: "Operation Status",
+  inTime: "In Time",
+  timeIn: "Time In",
+  timeOut: "Time Out",
+  outTime: "Out Time",
+  chargeAmount: "Charge Amount",
+  debitFrom: "Debit From",
+  accompanyEmployeeName: "Accompany Employee Name",
 };
