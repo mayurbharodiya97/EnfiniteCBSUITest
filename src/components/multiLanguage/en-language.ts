@@ -1489,6 +1489,9 @@ export const en_language_data = {
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
   UTRConfirmation: "UTR(s) Confirmation",
+  PleaseEnterAlphabeticValueSlipNumber:
+    "Please enter Alphabetic Value in Slip Number",
+  SelectRTGSNEFTTransactionType: "Select RTGS/NEFT Transaction",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1595,12 +1598,20 @@ export const en_language_data = {
   ThereAre: "There are",
   ChequeAvailableforClearingDateTransferAreYouSureContinue:
     "Cheque(s) available for clearing date transfer. Are you sure to Continue?",
+  ChequeAvailableforClearingDateTransfer:
+    "Cheque(s) available for clearing date transfer",
   FromZone: "From Zone",
   ToZone: "To Zone",
   Count: "Count",
   ClearingRetrieveGrid: "Clearing Retrieve Grid",
   SlipRetrieveGrid: "Slip Retrieve Grid",
-
+  FromClgDate: "From CLG Date",
+  ToClgDate: "To CLG Date",
+  SuccessfullyTransferedClearingDateZone:
+    "Successfully transfered clearing date/Zone",
+  SelectGrouping: "Select Grouping",
+  ToDateshouldbegreaterthantoFromDate:
+    "To Date should be greater than to From Date",
   // inward clearing
 
   ValidationSuccessful: "Validation Successful",

@@ -58,7 +58,7 @@ export const getFDParaDetail = async (reqData) => {
   if (status === "0") {
     return data;
   } else if (status === "999") {
-    return { status: status, messageDetails: messageDetails };
+    return { status: status, messageDetails: message };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

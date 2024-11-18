@@ -119,15 +119,6 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
   //Mutation for delete recurring payment data
   const entryDeleteMutation = useMutation(API.recurringPaymentEntryDML, {
     onError: async (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      await MessageBox({
-        messageTitle: "ValidationFailed",
-        message: errorMsg ?? "",
-        icon: "ERROR",
-      });
       CloseMessageBox();
     },
     onSuccess: async (data) => {
@@ -148,16 +139,6 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
     {
       onSuccess: async (data) => {},
       onError: async (error: any) => {
-        setDeleteMessageBox(false);
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: errorMsg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
     }
@@ -217,15 +198,25 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
 
   return (
     <>
-      {isError && (
+      {(isError ||
+        entryScreenFlagIsError ||
+        entryDeleteMutation?.isError ||
+        validateDeleteRecurMutation?.isError) && (
         <Alert
           severity="error"
           errorMsg={
-            (error?.error_msg || entryScreenFlagError?.error_msg) ??
+            error?.error_msg ||
+            entryScreenFlagError?.error_msg ||
+            entryDeleteMutation?.error?.error_msg ||
+            validateDeleteRecurMutation?.error?.error_msg ||
             t("Somethingwenttowrong")
           }
           errorDetail={
-            error?.error_detail || entryScreenFlagError?.error_detail
+            error?.error_detail ||
+            entryScreenFlagError?.error_detail ||
+            entryDeleteMutation?.error?.error_detail ||
+            validateDeleteRecurMutation?.error?.error_detail ||
+            ""
           }
           color="error"
         />

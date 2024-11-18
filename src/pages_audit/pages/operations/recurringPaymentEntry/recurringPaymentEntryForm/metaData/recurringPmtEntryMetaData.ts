@@ -210,6 +210,7 @@ export const RecurringPaymentEntryFormMetaData = {
               },
               ACCT_CD: {
                 value: "",
+                ignoreUpdate: false,
               },
             };
           },
@@ -267,6 +268,7 @@ export const RecurringPaymentEntryFormMetaData = {
               ...resetFields,
               ACCT_CD: {
                 value: "",
+                ignoreUpdate: false,
               },
             };
           },
@@ -301,7 +303,7 @@ export const RecurringPaymentEntryFormMetaData = {
                   ACCT_CD: {
                     value: "",
                     isFieldFocused: false,
-                    ignoreUpdate: true,
+                    ignoreUpdate: false,
                   },
                   ACCT_TYPE: {
                     value: "",
@@ -342,7 +344,7 @@ export const RecurringPaymentEntryFormMetaData = {
                   return {
                     ACCT_CD: {
                       value: "",
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                       isFieldFocused: true,
                     },
                     ACCT_NM: { value: "" },
@@ -469,7 +471,7 @@ export const RecurringPaymentEntryFormMetaData = {
                       return {
                         ACCT_CD: {
                           value: "",
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                           isFieldFocused: true,
                         },
                         ACCT_NM: { value: "" },
@@ -534,7 +536,7 @@ export const RecurringPaymentEntryFormMetaData = {
                     : {
                         value: "",
                         isFieldFocused: true,
-                        ignoreUpdate: true,
+                        ignoreUpdate: false,
                       },
                 ACCT_NM: {
                   value: returnVal?.ACCT_NM ?? "",

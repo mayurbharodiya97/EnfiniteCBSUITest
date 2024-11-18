@@ -186,6 +186,7 @@ export const FixDepositDetailFormMetadata = {
           label: "FD Number",
           className: "textInputFromRight",
           placeholder: "",
+          autoComplete: "off",
           maxLength: 10,
           dependentFields: ["FD_NO_DISABLED"],
           isReadOnly(_, dependentFieldsValues, formState) {
@@ -221,6 +222,7 @@ export const FixDepositDetailFormMetadata = {
           label: "AsOn Date",
           placeholder: "",
           type: "text",
+          autoComplete: "off",
           format: "dd/MM/yyyy",
           defaultValue: new Date(),
           fullWidth: true,
@@ -353,6 +355,7 @@ export const FixDepositDetailFormMetadata = {
           label: "Tenor",
           className: "textInputFromRight",
           placeholder: "Enter Tenor",
+          autoComplete: "off",
           maxLength: 5,
           FormatProps: {
             isAllowed: (values) => {
@@ -406,6 +409,7 @@ export const FixDepositDetailFormMetadata = {
           label: "Interest Rate",
           required: true,
           type: "text",
+          autoComplete: "off",
           dependentFields: [
             "INT_RATE_DISABLED",
             "BRANCH_CD",
@@ -451,6 +455,15 @@ export const FixDepositDetailFormMetadata = {
           },
           FormatProps: {
             placeholder: "0.00",
+            isAllowed: (values) => {
+              if (values?.floatValue > 100) {
+                return false;
+              }
+              if (values?.value?.length > 6) {
+                return false;
+              }
+              return true;
+            },
           },
           __VIEW__: { isReadOnly: true },
           GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.7, xl: 1.5 },
@@ -568,6 +581,7 @@ export const FixDepositDetailFormMetadata = {
           label: "Cash",
           placeholder: "",
           type: "text",
+          autoComplete: "off",
           dependentFields: [
             "BRANCH_CD",
             "ACCT_TYPE",
@@ -598,8 +612,7 @@ export const FixDepositDetailFormMetadata = {
               if (
                 dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value &&
                 dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value &&
-                dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value &&
-                currentField?.value
+                dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value
               ) {
                 const reqParameters = {
                   A_COMP_CD: authState?.companyID ?? "",
@@ -680,6 +693,7 @@ export const FixDepositDetailFormMetadata = {
           name: "TRSF_AMT",
           label: "Transfer Amount",
           placeholder: "",
+          autoComplete: "off",
           type: "text",
           dependentFields: [
             "BRANCH_CD",
@@ -709,7 +723,6 @@ export const FixDepositDetailFormMetadata = {
               dependentFieldsValues?.["FDDTL.SPL_AMT"]?.value?.trim() === "Y"
             ) {
               if (
-                currentField?.value &&
                 dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value &&
                 dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value &&
                 dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value
@@ -799,6 +812,7 @@ export const FixDepositDetailFormMetadata = {
             label: "Credit A/c Branch",
             required: false,
             schemaValidation: {},
+            validationRun: "onChange",
             runPostValidationHookAlways: true,
             postValidationSetCrossFieldValues: (
               currentField,
@@ -809,7 +823,7 @@ export const FixDepositDetailFormMetadata = {
               if (formState?.isSubmitting) return {};
               return {
                 CR_ACCT_TYPE: { value: "" },
-                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_CD: { value: "", ignoreUpdate: false },
                 CR_ACCT_NM: { value: "" },
               };
             },
@@ -826,6 +840,7 @@ export const FixDepositDetailFormMetadata = {
             name: "CR_ACCT_TYPE",
             label: "Credit A/c Type",
             required: false,
+            validationRun: "onChange",
             schemaValidation: {},
             options: (dependentValue, formState, _, authState) => {
               return GeneralAPI.get_Account_Type({
@@ -837,6 +852,7 @@ export const FixDepositDetailFormMetadata = {
             },
             _optionsKey: "getCreditAccountType",
             runPostValidationHookAlways: true,
+            dependentFields: ["CR_BRANCH_CD"],
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -844,8 +860,35 @@ export const FixDepositDetailFormMetadata = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              if (
+                currentField?.value &&
+                dependentFieldValues?.["FDDTL.CR_BRANCH_CD"]?.value?.length ===
+                  0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: "Enter Account Branch.",
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    CR_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    CR_BRANCH_CD: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
               return {
-                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_CD: { value: "", ignoreUpdate: false },
                 CR_ACCT_NM: { value: "" },
               };
             },
@@ -863,6 +906,7 @@ export const FixDepositDetailFormMetadata = {
             label: "Credit A/c No.",
             required: false,
             schemaValidation: {},
+            autoComplete: "off",
             dependentFields: ["CR_BRANCH_CD", "CR_ACCT_TYPE"],
             postValidationSetCrossFieldValues: async (
               currentField,
@@ -871,8 +915,33 @@ export const FixDepositDetailFormMetadata = {
               dependentFieldsValues
             ) => {
               if (formState?.isSubmitting) return {};
-
               if (
+                currentField?.value &&
+                dependentFieldsValues?.["FDDTL.CR_ACCT_TYPE"]?.value?.length ===
+                  0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: "Enter Account Type.",
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    CR_ACCT_CD: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: false,
+                    },
+                    CR_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (
                 currentField?.value &&
                 dependentFieldsValues?.["FDDTL.CR_BRANCH_CD"]?.value &&
                 dependentFieldsValues?.["FDDTL.CR_ACCT_TYPE"]?.value
@@ -902,7 +971,9 @@ export const FixDepositDetailFormMetadata = {
                 for (let i = 0; i < postData?.[0]?.MSG?.length; i++) {
                   if (postData?.[0]?.MSG?.[i]?.O_STATUS === "999") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "ValidationFailed",
+                      messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                        : "ValidationFailed",
                       message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                       icon: "ERROR",
                     });
@@ -910,7 +981,10 @@ export const FixDepositDetailFormMetadata = {
                   } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "9") {
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
+                        messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                          ?.length
+                          ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                          : "Alert",
                         message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                         icon: "WARNING",
                       });
@@ -918,9 +992,12 @@ export const FixDepositDetailFormMetadata = {
                     returnVal = postData[0];
                   } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "99") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Confirmation",
+                      messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                        : "Confirmation",
                       message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
 
                     btn99 = btnName;
@@ -950,7 +1027,7 @@ export const FixDepositDetailFormMetadata = {
                       : {
                           value: "",
                           isFieldFocused: true,
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                         },
                   CR_ACCT_NM: {
                     value: returnVal?.ACCT_NM ?? "",
@@ -991,6 +1068,7 @@ export const FixDepositDetailFormMetadata = {
           name: "MATURITY_AMT",
           label: "Maturity Amount",
           type: "text",
+          autoComplete: "off",
           required: true,
           FormatProps: {
             allowNegative: false,
@@ -1058,6 +1136,7 @@ export const FixDepositDetailFormMetadata = {
           name: "FD_REMARK",
           label: "FD Remark",
           type: "text",
+          autoComplete: "off",
           placeholder: "Enter FD Remark",
           isReadOnly(fieldData, dependentFieldsValues, formState) {
             if (formState?.screenFlag === "openLienForm") {
@@ -1087,6 +1166,7 @@ export const FixDepositDetailFormMetadata = {
           type: "text",
           placeholder: "Enter Nominee Name",
           fullWidth: true,
+          autoComplete: "off",
           GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 2 },
         },
         {
@@ -1304,6 +1384,7 @@ export const FixDepositDetailFormMetadata = {
           label: "Remark",
           type: "text",
           fullWidth: true,
+          autoComplete: "off",
           shouldExclude: (_, dependentFieldsValues, formState) => {
             if (formState?.screenFlag === "openLienForm") {
               return false;
@@ -1321,6 +1402,7 @@ export const FixDepositDetailFormMetadata = {
           label: "Bank Code",
           type: "text",
           isReadOnly: true,
+          autoComplete: "off",
           shouldExclude: (_, dependentFieldsValues, formState) => {
             if (formState?.screenFlag === "openLienForm") {
               return false;
@@ -1348,7 +1430,7 @@ export const FixDepositDetailFormMetadata = {
               if (formState?.isSubmitting) return {};
               return {
                 LEAN_ACCT_TYPE: { value: "" },
-                LEAN_ACCT_CD: { value: "" },
+                LEAN_ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -1392,8 +1474,35 @@ export const FixDepositDetailFormMetadata = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              if (
+                currentField?.value &&
+                dependentFieldValues?.["FDDTL.LEAN_BRANCH_CD"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: "Enter Account Branch.",
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    LEAN_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    LEAN_BRANCH_CD: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
               return {
-                LEAN_ACCT_CD: { value: "" },
+                LEAN_ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -1429,7 +1538,34 @@ export const FixDepositDetailFormMetadata = {
               dependentFieldsValues
             ) => {
               if (formState?.isSubmitting) return {};
+
               if (
+                currentField.value &&
+                dependentFieldsValues?.["FDDTL.LEAN_ACCT_TYPE"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: "Enter Account Type.",
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    LEAN_ACCT_CD: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: false,
+                    },
+                    LEAN_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (
                 currentField?.value &&
                 dependentFieldsValues?.["FDDTL.LEAN_BRANCH_CD"]?.value &&
                 dependentFieldsValues?.["FDDTL.LEAN_ACCT_TYPE"]?.value
@@ -1460,7 +1596,9 @@ export const FixDepositDetailFormMetadata = {
                 for (let i = 0; i < postData?.MSG?.length; i++) {
                   if (postData?.MSG?.[i]?.O_STATUS === "999") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "ValidationFailed",
+                      messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.MSG?.[i]?.O_MSG_TITLE
+                        : "ValidationFailed",
                       message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                       icon: "ERROR",
                     });
@@ -1468,7 +1606,9 @@ export const FixDepositDetailFormMetadata = {
                   } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
+                        messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                          ? postData?.MSG?.[i]?.O_MSG_TITLE
+                          : "Alert",
                         message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                         icon: "WARNING",
                       });
@@ -1476,9 +1616,12 @@ export const FixDepositDetailFormMetadata = {
                     returnVal = postData;
                   } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Confirmation",
+                      messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.MSG?.[i]?.O_MSG_TITLE
+                        : "Confirmation",
                       message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
 
                     btn99 = btnName;
@@ -1509,7 +1652,7 @@ export const FixDepositDetailFormMetadata = {
                       : {
                           value: "",
                           isFieldFocused: true,
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                         },
                   LEAN_ACCT_NM: {
                     value: returnVal?.ACCT_NM ?? "",
