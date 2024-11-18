@@ -188,11 +188,11 @@ export const CustomeAutocomplete = ({
                   letterSpacing: "0.03333em",
                   textAlign: "left",
                   marginTop: "3px",
-                  maxWidth: "100%", // NEW: Prevents the Typography from exceeding its container width.
-                  overflow: "hidden", // NEW: Ensures that any overflowing text is clipped.
-                  textOverflow: "ellipsis", // NEW: Adds an ellipsis for overflowing text.
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                   // whiteSpace: "nowrap",
-                  wordBreak: "break-word", // NEW: Ensures the text stays on a single line.
+                  wordBreak: "break-word",
                 }}
               >
                 {value?.actLabel}
