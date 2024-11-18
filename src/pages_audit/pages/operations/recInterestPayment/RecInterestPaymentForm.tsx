@@ -168,6 +168,7 @@ export const RecInterestPaymentForm = () => {
           message: "DoYouWantDeleteRow",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           updateRecInterestPaymentEntry.mutate({
@@ -191,6 +192,7 @@ export const RecInterestPaymentForm = () => {
             messageTitle: "Confirmation",
             message: `RetrieveConfirmation`,
             buttonNames: ["Yes", "No"],
+            icon: "CONFIRM",
           });
           if (btnName === "Yes") {
             setFormOpen(true);
@@ -277,15 +279,7 @@ export const RecInterestPaymentForm = () => {
                 {t("Submit")}
               </GradientButton>
 
-              <GradientButton
-                onClick={handleCloseForm}
-                color={"primary"}
-                disabled={
-                  isSubmitting ||
-                  fetchRecPaymentInstructions?.isLoading ||
-                  isButtonDisabled
-                }
-              >
+              <GradientButton onClick={handleCloseForm} color={"primary"}>
                 {t("Cancel")}
               </GradientButton>
             </>

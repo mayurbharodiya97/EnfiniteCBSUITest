@@ -30,6 +30,12 @@ export const VouchersDetailsGridMetaData: GridMetaDataType = {
       width: 140,
       minWidth: 130,
       maxWidth: 150,
+      isDisplayTotal: true,
+      footerIsMultivalue: true,
+      footerLabel: "Total :",
+      setFooterValue(total, rows) {
+        return "";
+      },
     },
     {
       accessor: "BRANCH_CD",
@@ -103,6 +109,7 @@ export const VouchersDetailsGridMetaData: GridMetaDataType = {
       minWidth: 120,
       maxWidth: 220,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
     {
       accessor: "DR_AMOUNT",
@@ -114,6 +121,7 @@ export const VouchersDetailsGridMetaData: GridMetaDataType = {
       minWidth: 120,
       maxWidth: 220,
       isDisplayTotal: true,
+      footerLabel: " ",
     },
   ],
 };

@@ -510,7 +510,7 @@ export const InwardClearing = () => {
               </Toolbar>
             </AppBar>
             <FormWrapper
-              key={"inwardClearingRetrieval" + selectedRows}
+              key={"inwardClearingRetrieval"}
               metaData={InwardClearingRetrievalMetadata as MetaDataType}
               initialValues={{}}
               onSubmitHandler={async (
@@ -647,9 +647,9 @@ export const InwardClearing = () => {
                           //   // Otherwise, maintain the current order
                           //   return 0;
                           // })
-                          ?.map((item) => (
+                          ?.map((item, index) => (
                             <ListItemData
-                              key={item?.value}
+                              key={index}
                               name={item?.label}
                               disabled={false}
                               selected={
@@ -964,6 +964,7 @@ export const ListItemData = ({
       >
         {splitNames?.map((names, index) => (
           <span
+            key={index}
             style={{
               textAlign: "left",
               flex: index === 2 ? 1.5 : 0.5,

@@ -145,7 +145,7 @@ export const AgentMasterFormMetaData = {
           return {
             ACCT_NM: { value: "" },
             AGENT_TYPE_CD: { value: "" },
-            AGENT_ACCT_CD: { value: "" },
+            AGENT_ACCT_CD: { value: "", ignoreUpdate: false },
           };
         },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
@@ -189,7 +189,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            AGENT_ACCT_CD: { value: "" },
+            AGENT_ACCT_CD: { value: "", ignoreUpdate: false },
             ACCT_NM: { value: "" },
           };
         },
@@ -200,10 +200,6 @@ export const AgentMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["AGENT_TYPE_CD", "AGENT_BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -238,7 +234,7 @@ export const AgentMasterFormMetaData = {
                 AGENT_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 AGENT_TYPE_CD: {
                   value: "",
@@ -332,7 +328,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -388,7 +384,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               SECURITY_TYPE_CD: { value: "" },
-              SECURITY_ACCT_CD: { value: "" },
+              SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
               SECURITY_ACCT_NM: { value: "" },
             };
           },
@@ -412,7 +408,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               SECURITY_TYPE_CD: { value: "" },
-              SECURITY_ACCT_CD: { value: "" },
+              SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
               SECURITY_ACCT_NM: { value: "" },
             };
           },
@@ -436,7 +432,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               SECURITY_TYPE_CD: { value: "" },
-              SECURITY_ACCT_CD: { value: "" },
+              SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
               SECURITY_ACCT_NM: { value: "" },
             };
           },
@@ -485,7 +481,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            SECURITY_ACCT_CD: { value: "" },
+            SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
             SECURITY_ACCT_NM: { value: "" },
           };
         },
@@ -499,10 +495,6 @@ export const AgentMasterFormMetaData = {
         schemaValidation: {},
         dependentFields: ["SECURITY_TYPE_CD", "SECURITY_BRANCH"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -537,7 +529,7 @@ export const AgentMasterFormMetaData = {
                 SECURITY_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 SECURITY_TYPE_CD: {
                   value: "",
@@ -631,7 +623,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               SECURITY_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -781,7 +773,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               OTH_ACCT_TYPE: { value: "" },
-              OTH_ACCT_CD: { value: "" },
+              OTH_ACCT_CD: { value: "", ignoreUpdate: false },
               OTHER_ACCT_NM: { value: "" },
             };
           },
@@ -805,7 +797,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               OTH_ACCT_TYPE: { value: "" },
-              OTH_ACCT_CD: { value: "" },
+              OTH_ACCT_CD: { value: "", ignoreUpdate: false },
               OTHER_ACCT_NM: { value: "" },
             };
           },
@@ -828,7 +820,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               OTH_ACCT_TYPE: { value: "" },
-              OTH_ACCT_CD: { value: "" },
+              OTH_ACCT_CD: { value: "", ignoreUpdate: false },
               OTHER_ACCT_NM: { value: "" },
             };
           },
@@ -877,7 +869,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            OTH_ACCT_CD: { value: "" },
+            OTH_ACCT_CD: { value: "", ignoreUpdate: false },
             OTHER_ACCT_NM: { value: "" },
           };
         },
@@ -890,10 +882,6 @@ export const AgentMasterFormMetaData = {
         required: false,
         schemaValidation: {},
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -928,7 +916,7 @@ export const AgentMasterFormMetaData = {
                 OTH_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 OTH_ACCT_TYPE: {
                   value: "",
@@ -1022,7 +1010,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               OTHER_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -1080,7 +1068,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               PTAX_ACCT_TYPE: { value: "" },
-              PTAX_ACCT_CD: { value: "" },
+              PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
               PTAX_ACCT_NM: { value: "" },
             };
           },
@@ -1104,7 +1092,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               PTAX_ACCT_TYPE: { value: "" },
-              PTAX_ACCT_CD: { value: "" },
+              PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
               PTAX_ACCT_NM: { value: "" },
             };
           },
@@ -1128,7 +1116,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               PTAX_ACCT_TYPE: { value: "" },
-              PTAX_ACCT_CD: { value: "" },
+              PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
               PTAX_ACCT_NM: { value: "" },
             };
           },
@@ -1177,7 +1165,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            PTAX_ACCT_CD: { value: "" },
+            PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
             PTAX_ACCT_NM: { value: "" },
           };
         },
@@ -1190,10 +1178,6 @@ export const AgentMasterFormMetaData = {
         schemaValidation: {},
         dependentFields: ["PTAX_ACCT_TYPE", "PTAX_BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -1228,7 +1212,7 @@ export const AgentMasterFormMetaData = {
                 PTAX_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 PTAX_ACCT_TYPE: {
                   value: "",
@@ -1322,7 +1306,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               PTAX_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",

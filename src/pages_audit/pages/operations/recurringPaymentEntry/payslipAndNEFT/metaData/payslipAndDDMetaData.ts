@@ -381,10 +381,6 @@ export const PayslipAndDDFormMetaData = {
           type: "number",
           maxLength: 12,
           disableCaching: true,
-          AlwaysRunPostValidationSetCrossFieldValues: {
-            alwaysRun: false,
-            touchAndValidate: false,
-          },
           dependentFields: ["DEF_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
             return dependentFields?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]

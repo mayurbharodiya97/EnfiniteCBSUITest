@@ -223,6 +223,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
                   ? dependentValue?.ACCT_CD?.value ?? ""
                   : "",
               FLAG: formState?.NEFTFlagsData?.[0]?.PARA_BNFCRY ?? "",
+              WORKING_DATE: authState?.workingDate ?? "",
             });
           },
 

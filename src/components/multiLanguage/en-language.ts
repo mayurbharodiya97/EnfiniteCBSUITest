@@ -347,6 +347,8 @@ export const en_language_data = {
   PassbookUpdateMessage:
     "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
   TemplateReqired: "Template Reqired",
+  SelectTemplate: "Select Template",
+  PassbookPrintsuccessfully: "Passbook Print successfully.?",
 
   //for priority master main
   ParentGroup: "Parent Group",
@@ -1487,6 +1489,9 @@ export const en_language_data = {
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
   UTRConfirmation: "UTR(s) Confirmation",
+  PleaseEnterAlphabeticValueSlipNumber:
+    "Please enter Alphabetic Value in Slip Number",
+  SelectRTGSNEFTTransactionType: "Select RTGS/NEFT Transaction",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1593,12 +1598,20 @@ export const en_language_data = {
   ThereAre: "There are",
   ChequeAvailableforClearingDateTransferAreYouSureContinue:
     "Cheque(s) available for clearing date transfer. Are you sure to Continue?",
+  ChequeAvailableforClearingDateTransfer:
+    "Cheque(s) available for clearing date transfer",
   FromZone: "From Zone",
   ToZone: "To Zone",
   Count: "Count",
   ClearingRetrieveGrid: "Clearing Retrieve Grid",
   SlipRetrieveGrid: "Slip Retrieve Grid",
-
+  FromClgDate: "From CLG Date",
+  ToClgDate: "To CLG Date",
+  SuccessfullyTransferedClearingDateZone:
+    "Successfully transfered clearing date/Zone",
+  SelectGrouping: "Select Grouping",
+  ToDateshouldbegreaterthantoFromDate:
+    "To Date should be greater than to From Date",
   // inward clearing
 
   ValidationSuccessful: "Validation Successful",
@@ -1814,6 +1827,8 @@ export const en_language_data = {
     "You have no rights to confirm this transaction.",
   ConfirmRecord: "Are you sure to confirm this record?",
   RejectDeleteRecord: "Are you sure to reject/delete this record?",
+  ChargeAmountrequired: "Charge Amount is required",
+  TemplateRequire: "Template is required",
   //Dayend process
   VerifyDayEndChecksums: "Verify DayEnd Checksums",
   PendingTransactions: "Pending Transactions",
@@ -2192,6 +2207,7 @@ export const en_language_data = {
   ModifiedDateTime: "Modified Date-Time",
   ModifiedMachineName: "Modified Machine Name",
   VerifiedMachineName: "Verified Machine Name",
+  RightClickAcceptReject: "Right Click for Confirm/Reject Record.",
   //FD Interest Payment Confirmation
   CompanyCode: "Company Code",
   // Security User
