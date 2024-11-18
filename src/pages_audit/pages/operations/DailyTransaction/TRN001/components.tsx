@@ -138,7 +138,6 @@ export const CustomeAutocomplete = ({
           <TextField
             {...params}
             style={{
-              width,
               backgroundColor: disabled ? "rgb(238, 238, 238)" : "transparent",
             }}
             onBlur={onBlur}
@@ -176,7 +175,30 @@ export const CustomeAutocomplete = ({
             }}
             inputRef={inputRef}
           />
-          {errorMsg && <DynFormHelperText msg={errorMsg} />}
+          {errorMsg ? (
+            <DynFormHelperText msg={errorMsg} />
+          ) : (
+            value?.actLabel && (
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 400,
+                  fontSize: "9.5px",
+                  lineHeight: "10px",
+                  letterSpacing: "0.03333em",
+                  textAlign: "left",
+                  marginTop: "3px",
+                  maxWidth: "100%", // NEW: Prevents the Typography from exceeding its container width.
+                  overflow: "hidden", // NEW: Ensures that any overflowing text is clipped.
+                  textOverflow: "ellipsis", // NEW: Adds an ellipsis for overflowing text.
+                  // whiteSpace: "nowrap",
+                  wordBreak: "break-word", // NEW: Ensures the text stays on a single line.
+                }}
+              >
+                {value?.actLabel}
+              </Typography>
+            )
+          )}
         </>
       )}
       PaperComponent={({ children }) => {
