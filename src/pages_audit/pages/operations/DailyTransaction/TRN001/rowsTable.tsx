@@ -320,7 +320,7 @@ const RowsTable = forwardRef<any, any>(
                     >
                       <CustomTextField
                         value={row?.accNo}
-                        type="number"
+                        type="text"
                         onChange={(event) =>
                           handleAcctNoChange({
                             updUnqId: row?.unqID,
@@ -524,6 +524,12 @@ const RowsTable = forwardRef<any, any>(
                           slotProps={{
                             textField: {
                               fullWidth: true,
+                              style: {
+                                backgroundColor:
+                                  Boolean(row?.isCredit) || !Boolean(row?.cNo)
+                                    ? "rgb(238, 238, 238)"
+                                    : "transparent",
+                              },
                               onBlur: (event) => {
                                 //when call API on cheqNo of valida... so this API calling two(because of open msgBox in cheqNo) times so after cheqNo API make cheqNoFlag true f0r call this API
                                 if (Boolean(row?.cheqNoFlag?.[row?.unqID])) {
@@ -554,6 +560,14 @@ const RowsTable = forwardRef<any, any>(
                                     "& fieldset": {
                                       borderColor: "inherit",
                                     },
+                                  },
+                                  "& fieldset": {
+                                    borderColor: "gray",
+                                    borderWidth: "1px",
+                                  },
+                                  "&:hover fieldset, &.Mui-focused fieldset": {
+                                    borderColor: "gray",
+                                    borderWidth: "1px",
                                   },
                                 },
                               },
