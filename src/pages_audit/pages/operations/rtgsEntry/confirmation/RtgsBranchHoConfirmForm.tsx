@@ -427,7 +427,10 @@ const RtgsBranchHoConfirmationForm: FC<{
             icon: "ERROR",
           });
         } else if (
-          new Date(rowsData?.TRAN_DT) !== new Date(authState?.workingDate)
+          !(
+            new Date(rowsData?.TRAN_DT).toString() ===
+            new Date(authState?.workingDate).toString()
+          )
         ) {
           await MessageBox({
             messageTitle: t("ValidationFailed"),
@@ -631,6 +634,9 @@ const RtgsBranchHoConfirmationForm: FC<{
                             }
                           }
                         }}
+                        disabled={
+                          result?.[0]?.isLoading || result?.[1]?.isLoading
+                        }
                       >
                         {t("Confirm")}
                       </GradientButton>
@@ -673,8 +679,10 @@ const RtgsBranchHoConfirmationForm: FC<{
                             icon: "ERROR",
                           });
                         } else if (
-                          new Date(rowsData?.TRAN_DT) !==
-                          new Date(authState?.workingDate)
+                          !(
+                            new Date(rowsData?.TRAN_DT).toString() ===
+                            new Date(authState?.workingDate).toString()
+                          )
                         ) {
                           await MessageBox({
                             messageTitle: t("ValidationFailed"),
@@ -704,6 +712,9 @@ const RtgsBranchHoConfirmationForm: FC<{
                           }
                         }
                       }}
+                      disabled={
+                        result?.[0]?.isLoading || result?.[1]?.isLoading
+                      }
                     >
                       {t("Remove")}
                     </GradientButton>
@@ -713,6 +724,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                       if (currentIndex && currentIndex !== totalData)
                         handleNext();
                     }}
+                    disabled={result?.[0]?.isLoading || result?.[1]?.isLoading}
                   >
                     {t("MoveForward")}
                   </GradientButton>
@@ -721,6 +733,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                       if (currentIndex && currentIndex !== totalData)
                         handlePrev();
                     }}
+                    disabled={result?.[0]?.isLoading || result?.[1]?.isLoading}
                   >
                     {t("Previous")}
                   </GradientButton>
@@ -732,6 +745,9 @@ const RtgsBranchHoConfirmationForm: FC<{
                       onClick={() => {
                         setIsPhotoSign(true);
                       }}
+                      disabled={
+                        result?.[0]?.isLoading || result?.[1]?.isLoading
+                      }
                     >
                       {t("SignView")}
                     </GradientButton>
@@ -751,6 +767,9 @@ const RtgsBranchHoConfirmationForm: FC<{
                         });
                         setIsConfHistory(true);
                       }}
+                      disabled={
+                        result?.[0]?.isLoading || result?.[1]?.isLoading
+                      }
                     >
                       {t("ConfHistory")}
                     </GradientButton>

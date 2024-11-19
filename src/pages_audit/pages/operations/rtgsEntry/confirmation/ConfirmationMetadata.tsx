@@ -588,7 +588,6 @@ export const RtgsOrderingBranchConfirmFormMetaData = {
       label: "TransactionType",
       defaultValue: "R42",
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
-      disableCaching: true,
     },
 
     {
@@ -921,6 +920,20 @@ export const RtgsOrderingBranchConfirmFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
+      textFieldStyle: {
+        "& .MuiInputBase-root": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+        },
+        "& .MuiInputBase-input": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "var(--theme-color2) !important",
+          },
+        },
+      },
       __VIEW__: { render: { componentType: "textField" } },
       __EDIT__: { render: { componentType: "textField" } },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
@@ -1465,6 +1478,20 @@ export const RtgsOrderingHOConfirmFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
+      textFieldStyle: {
+        "& .MuiInputBase-root": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+        },
+        "& .MuiInputBase-input": {
+          background: "var(--theme-color5)",
+          color: "var(--theme-color2) !important",
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "var(--theme-color2) !important",
+          },
+        },
+      },
       __VIEW__: { render: { componentType: "textField" } },
       __EDIT__: { render: { componentType: "textField" } },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },

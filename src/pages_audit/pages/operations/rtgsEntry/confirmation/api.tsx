@@ -28,27 +28,6 @@ export const rtgsHoConfirmtionAndDelete = async (formData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getRtgsTransactionTypeList = async (ApiReq) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETRTGSTRANTYPEDDW", {
-      ...ApiReq,
-    });
-  if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DESCRIPTION, MSG_TYPE, ...other }) => {
-        return {
-          value: MSG_TYPE,
-          label: MSG_TYPE + "-" + DESCRIPTION,
-          ...other,
-        };
-      });
-    }
-    return responseData;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
 
 export const getRtgsBranchConfirmtion = async (apiReq) => {
   const { data, status, message, messageDetails } =
@@ -88,7 +67,7 @@ export const getRtgsBranchConfirmOrderingData = async (ApiReq) => {
     await AuthSDK.internalFetcher("GETRTGSTRNHDRDATADISP", {
       ...ApiReq,
     });
-  if (status === "0") {
+  if (status === "0" && Array.isArray(data) && data.length > 0) {
     // if (data?.BR_CONFIRMED === "Y") {
     const acBalanceData = await getHoconfirmationAcBanlaceData({
       MSG_FLOW: data?.[0]?.MSG_FLOW,
