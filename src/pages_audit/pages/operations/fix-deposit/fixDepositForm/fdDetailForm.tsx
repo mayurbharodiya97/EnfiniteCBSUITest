@@ -318,6 +318,7 @@ export const FDDetailForm = forwardRef<any, any>(
             message: "Proceed?",
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
+            icon: "CONFIRM",
           });
           if (btnName === "Yes") {
             validAndUpdateFDDtlMutation.mutate({
@@ -376,26 +377,35 @@ export const FDDetailForm = forwardRef<any, any>(
           for (const response of data ?? []) {
             if (response?.O_STATUS === "999") {
               await MessageBox({
-                messageTitle: "ValidationFailed",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "ValidationFailed",
                 message: response?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
             } else if (response?.O_STATUS === "9") {
               await MessageBox({
-                messageTitle: "Alert",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Alert",
                 message: response?.O_MESSAGE ?? "",
                 icon: "WARNING",
               });
             } else if (response?.O_STATUS === "99") {
               const buttonName = await MessageBox({
-                messageTitle: "Confirmation",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Confirmation",
                 message: response?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
                 defFocusBtnName: "Yes",
+                icon: "CONFIRM",
               });
             } else if (response?.O_STATUS === "0") {
               const buttonName = await MessageBox({
-                messageTitle: "Voucher(s) Confirmation",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Voucher(s) Confirmation",
                 message: response?.VOUCHER_MSG ?? "",
                 buttonNames: ["Ok"],
               });
@@ -473,22 +483,29 @@ export const FDDetailForm = forwardRef<any, any>(
                   for (const response of data ?? []) {
                     if (response?.O_STATUS === "999") {
                       await MessageBox({
-                        messageTitle: "ValidationFailed",
+                        messageTitle: response?.O_MSG_TITLE?.length
+                          ? response?.O_MSG_TITLE
+                          : "ValidationFailed",
                         message: response?.O_MESSAGE ?? "",
                         icon: "ERROR",
                       });
                     } else if (response?.O_STATUS === "9") {
                       await MessageBox({
-                        messageTitle: "Alert",
+                        messageTitle: response?.O_MSG_TITLE?.length
+                          ? response?.O_MSG_TITLE
+                          : "Alert",
                         message: response?.O_MESSAGE ?? "",
                         icon: "WARNING",
                       });
                     } else if (response?.O_STATUS === "99") {
                       const buttonName = await MessageBox({
-                        messageTitle: "Confirmation",
+                        messageTitle: response?.O_MSG_TITLE?.length
+                          ? response?.O_MSG_TITLE
+                          : "Confirmation",
                         message: response?.O_MESSAGE ?? "",
                         buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
+                        icon: "CONFIRM",
                       });
                       if (buttonName === "No") {
                         break;

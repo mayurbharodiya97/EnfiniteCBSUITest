@@ -40,9 +40,15 @@ const actions: ActionTypes[] = [
     multiple: false,
     rowDoubleClick: true,
   },
+  {
+    actionName: "close",
+    actionLabel: "close",
+    multiple: false,
+    alwaysAvailable: true,
+  },
 ];
 
-const RetriveDataGrid = () => {
+const RetriveDataGrid = ({ onClose }) => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,6 +61,8 @@ const RetriveDataGrid = () => {
     async (data) => {
       if (data.name === "Retrive") {
         setopenDataRetrivalForm(true);
+      } else if (data.name === "close") {
+        onClose();
       } else {
         navigate(data?.name, {
           state: data?.rows,
@@ -175,10 +183,10 @@ const RetriveDataGrid = () => {
   );
 };
 
-export const PaySlipIssueEntry = () => {
+export const PaySlipIssueEntry = ({ onClose }) => {
   return (
     <ClearCacheProvider>
-      <RetriveDataGrid />
+      <RetriveDataGrid onClose={onClose} />
     </ClearCacheProvider>
   );
 };

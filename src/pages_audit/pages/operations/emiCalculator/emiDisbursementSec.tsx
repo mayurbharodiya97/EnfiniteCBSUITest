@@ -69,7 +69,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
             INST_START_DT: authState?.workingDate
               ? new Date(authState?.workingDate)
               : new Date(),
-            LOAN_AMT: "",
+            LOAN_AMT: initialRows[0]?.LOAN_AMT_MAIN,
           },
         ]
       : [];
@@ -87,7 +87,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
           INST_START_DT: authState?.workingDate
             ? new Date(authState?.workingDate)
             : new Date(),
-          LOAN_AMT: "",
+          LOAN_AMT: initialRows[0]?.LOAN_AMT_MAIN,
         },
       ]);
     }
@@ -354,7 +354,12 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
             {rows.map((row, index) => (
               <TableRow key={row.unqID}>
                 <TableCell
-                  sx={{ minWidth: 60, width: 80, maxWidth: 100 }}
+                  sx={{
+                    minWidth: 10,
+                    width: 10,
+                    maxWidth: 10,
+                    padding: 0,
+                  }}
                   style={{ verticalAlign: "baseline" }}
                 >
                   <CustomTextField
@@ -366,7 +371,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
                   />
                 </TableCell>
                 <TableCell
-                  sx={{ minWidth: 150, width: 220, maxWidth: 250 }}
+                  sx={{ minWidth: 80, width: 80, maxWidth: 100 }}
                   style={{ verticalAlign: "baseline" }}
                 >
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -407,7 +412,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
                 </TableCell>
 
                 <TableCell
-                  sx={{ minWidth: 150, width: 220, maxWidth: 250 }}
+                  sx={{ minWidth: 100, width: 80, maxWidth: 100 }}
                   style={{ verticalAlign: "baseline" }}
                 >
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -448,7 +453,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
                 </TableCell>
 
                 <TableCell
-                  sx={{ minWidth: 220, width: 250, maxWidth: 300 }}
+                  sx={{ minWidth: 80, width: 100, maxWidth: 110 }}
                   style={{ verticalAlign: "baseline" }}
                 >
                   <CustomAmountField
@@ -464,8 +469,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
                 </TableCell>
 
                 <TableCell
-                  sx={{ minWidth: 220, width: 250, maxWidth: 300 }}
-                  style={{ verticalAlign: "baseline" }}
+                  style={{ width: "300px", verticalAlign: "baseline" }}
                 >
                   <GradientButton
                     disabled={
@@ -475,12 +479,18 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
                       mutation?.isLoading
                     }
                     onClick={() => handleStepUpClick(index)}
+                    style={{
+                      transform: "translateY(11px)",
+                    }}
                   >
                     {t("StepUpDown")}
                   </GradientButton>
                   <GradientButton
                     onClick={() => handleDeleteRow(index)}
                     disabled={index === 0}
+                    style={{
+                      transform: "translateY(11px)",
+                    }}
                   >
                     {t("Remove")}
                   </GradientButton>

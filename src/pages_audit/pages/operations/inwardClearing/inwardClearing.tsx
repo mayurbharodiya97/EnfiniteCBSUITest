@@ -233,7 +233,7 @@ export const InwardClearing = () => {
           const buttonName = await MessageBox({
             messageTitle: t("ValidationSuccessful"),
             message: t("AreYouSurePostThisCheque"),
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -261,7 +261,7 @@ export const InwardClearing = () => {
           const buttonName = await MessageBox({
             messageTitle: data[i]?.O_MSG_TITLE,
             message: data[i]?.O_MESSAGE,
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -308,7 +308,7 @@ export const InwardClearing = () => {
               t("DoYouWantAllowTransactionVoucherNo") +
               variables?.DAILY_TRN_CD +
               "?",
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -335,7 +335,7 @@ export const InwardClearing = () => {
           const buttonName = await MessageBox({
             messageTitle: t("Confirmation"),
             message: data[i]?.O_MESSAGE,
-            buttonNames: ["No", "Yes"],
+            buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
           if (buttonName === "Yes") {
@@ -510,7 +510,7 @@ export const InwardClearing = () => {
               </Toolbar>
             </AppBar>
             <FormWrapper
-              key={"inwardClearingRetrieval" + selectedRows}
+              key={"inwardClearingRetrieval"}
               metaData={InwardClearingRetrievalMetadata as MetaDataType}
               initialValues={{}}
               onSubmitHandler={async (
@@ -647,9 +647,9 @@ export const InwardClearing = () => {
                           //   // Otherwise, maintain the current order
                           //   return 0;
                           // })
-                          ?.map((item) => (
+                          ?.map((item, index) => (
                             <ListItemData
-                              key={item?.value}
+                              key={index}
                               name={item?.label}
                               disabled={false}
                               selected={
@@ -964,6 +964,7 @@ export const ListItemData = ({
       >
         {splitNames?.map((names, index) => (
           <span
+            key={index}
             style={{
               textAlign: "left",
               flex: index === 2 ? 1.5 : 0.5,

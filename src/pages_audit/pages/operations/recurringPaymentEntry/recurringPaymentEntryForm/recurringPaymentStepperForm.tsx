@@ -22,6 +22,7 @@ import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
 import {
+  Alert,
   ColorlibConnector,
   ColorlibStepIconRoot,
 } from "@acuteinfo/common-base";
@@ -226,42 +227,11 @@ const RecurringPaymentStepperForm = ({
     },
   };
 
-  //Mutation for Closing Advice
-  const closingAdviceDtlMutation = useMutation(
-    "getRecurAdviceDtl",
-    API?.getRecurAdviceDtl,
-    {
-      onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        updateClosingAdviceData(data);
-        CloseMessageBox();
-      },
-    }
-  );
-
   //Mutation for Insert Data
   const recurringPaymentEntrySaveMutation = useMutation(
     API?.recurringPaymentEntryDML,
     {
       onError: async (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        await MessageBox({
-          messageTitle: "Error",
-          message: errorMsg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
       onSuccess: async (data) => {
@@ -270,19 +240,25 @@ const RecurringPaymentStepperForm = ({
             for (const ddNeftObj of data[0][obj] ?? []) {
               if (ddNeftObj?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: ddNeftObj?.O_MSG_TITLE?.length
+                    ? ddNeftObj?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: ddNeftObj?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
               } else if (ddNeftObj?.O_STATUS === "9") {
                 await MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: ddNeftObj?.O_MSG_TITLE?.length
+                    ? ddNeftObj?.O_MSG_TITLE
+                    : "Alert",
                   message: ddNeftObj?.O_MESSAGE ?? "",
                   icon: "WARNING",
                 });
               } else if (ddNeftObj?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: ddNeftObj?.O_MSG_TITLE?.length
+                    ? ddNeftObj?.O_MSG_TITLE
+                    : "Confirmation",
                   message: ddNeftObj?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
@@ -297,19 +273,25 @@ const RecurringPaymentStepperForm = ({
             for (const voucherMsg of data[0][obj] ?? []) {
               if (voucherMsg?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: voucherMsg?.O_MSG_TITLE?.length
+                    ? voucherMsg?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: voucherMsg?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
               } else if (voucherMsg?.O_STATUS === "9") {
                 await MessageBox({
-                  messageTitle: "VouchersConfirmation",
+                  messageTitle: voucherMsg?.O_MSG_TITLE?.length
+                    ? voucherMsg?.O_MSG_TITLE
+                    : "VouchersConfirmation",
                   message: voucherMsg?.O_MESSAGE ?? "",
                   icon: "WARNING",
                 });
               } else if (voucherMsg?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: voucherMsg?.O_MSG_TITLE?.length
+                    ? voucherMsg?.O_MSG_TITLE
+                    : "Confirmation",
                   message: voucherMsg?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
@@ -333,7 +315,6 @@ const RecurringPaymentStepperForm = ({
                   isDataChangedRef.current = true;
                   updateDataForJasperParam(reqParam);
                   setOpenClosingAdvice(true);
-                  closingAdviceDtlMutation.mutate(reqParam);
                   break;
                 } else {
                   isDataChangedRef.current = true;
@@ -354,20 +335,13 @@ const RecurringPaymentStepperForm = ({
     }
   );
 
-  //Mutation for Validation mutation for Entry form handler
+  //Mutation for Validate Entry form handler
   const onSaveValidationMutation: any = useMutation(
     "onSaveRecurValueValidation",
     API.onSaveRecurValueValidation,
     {
       onSuccess: () => {},
       onError: async (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
         CloseMessageBox();
       },
     }
@@ -454,14 +428,18 @@ const RecurringPaymentStepperForm = ({
               }
             } else if (obj?.O_STATUS === "9") {
               await MessageBox({
-                messageTitle: "validationAlert",
-                message: obj?.O_MESSAGE,
+                messageTitle: obj?.O_MSG_TITLE?.length
+                  ? obj?.O_MSG_TITLE
+                  : "validationAlert",
+                message: obj?.O_MESSAGE ?? "",
                 icon: "WARNING",
               });
             } else if (obj?.O_STATUS === "99") {
               const buttonName = await MessageBox({
-                messageTitle: "Confirmation",
-                message: obj?.O_MESSAGE,
+                messageTitle: obj?.O_MSG_TITLE?.length
+                  ? obj?.O_MSG_TITLE
+                  : "Confirmation",
+                message: obj?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
                 icon: "CONFIRM",
               });
@@ -513,8 +491,10 @@ const RecurringPaymentStepperForm = ({
               }
             } else if (obj?.O_STATUS === "999") {
               await MessageBox({
-                messageTitle: "ValidationFailed",
-                message: obj?.O_MESSAGE,
+                messageTitle: obj?.O_MSG_TITLE?.length
+                  ? obj?.O_MSG_TITLE
+                  : "ValidationFailed",
+                message: obj?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
             }
@@ -684,6 +664,23 @@ const RecurringPaymentStepperForm = ({
         maxWidth="xl"
       >
         <>
+          {(recurringPaymentEntrySaveMutation.isError ||
+            onSaveValidationMutation?.isError) && (
+            <Alert
+              severity="error"
+              errorMsg={
+                recurringPaymentEntrySaveMutation?.error?.error_msg ||
+                onSaveValidationMutation?.error?.error_msg ||
+                t("Somethingwenttowrong")
+              }
+              errorDetail={
+                recurringPaymentEntrySaveMutation?.error?.error_detail ||
+                onSaveValidationMutation?.error?.error_detail ||
+                ""
+              }
+              color="error"
+            />
+          )}
           <AppBar position="relative" style={{ marginBottom: "10px" }}>
             <Toolbar variant="dense" className={headerClasses.root}>
               <Typography
@@ -962,25 +959,10 @@ const RecurringPaymentStepperForm = ({
 
       {/*Open Closing Advice component */}
       {openClosingAdvice ? (
-        <Dialog
-          open={true}
-          fullWidth={true}
-          PaperProps={{
-            style: {
-              width: "100%",
-              padding: "10px 0",
-            },
-          }}
-          maxWidth="xl"
-        >
-          {closingAdviceDtlMutation?.isLoading ? (
-            <LoaderPaperComponent />
-          ) : (
-            <ClosingAdvice
-              handleCloseAdviceDetails={handleCloseAdviceDetails}
-            />
-          )}
-        </Dialog>
+        <ClosingAdvice
+          handleCloseAdviceDetails={handleCloseAdviceDetails}
+          setOpenClosingAdvice={setOpenClosingAdvice}
+        />
       ) : null}
     </>
   );

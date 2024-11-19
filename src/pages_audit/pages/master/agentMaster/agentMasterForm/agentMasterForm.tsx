@@ -17,6 +17,7 @@ import {
   utilFunction,
   FormWrapper,
   MetaDataType,
+  Alert,
 } from "@acuteinfo/common-base";
 
 const AgentMasterForm = ({
@@ -35,21 +36,17 @@ const AgentMasterForm = ({
 
   const mutation = useMutation(API.agentMasterDML, {
     onError: async (error: any) => {
-      let errorMsg = "Unknownerroroccured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      await MessageBox({
-        messageTitle: "Error",
-        message: errorMsg ?? "",
-        icon: "ERROR",
-      });
       CloseMessageBox();
     },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
+    onSuccess: (msg, data) => {
+      enqueueSnackbar(
+        Boolean(data?._isNewRow)
+          ? t("RecordInsertedMsg")
+          : t("RecordUpdatedMsg"),
+        {
+          variant: "success",
+        }
+      );
       isDataChangedRef.current = true;
       CloseMessageBox();
       closeDialog();
@@ -73,14 +70,21 @@ const AgentMasterForm = ({
 
     let newData = {
       ...data,
-      SECURITY_PER: parseFloat(data?.SECURITY_PER).toFixed(2),
+      SECURITY_PER: data?.SECURITY_PER
+        ? parseFloat(data?.SECURITY_PER).toFixed(2)
+        : "",
     };
     let oldData = {
       ...rows?.[0]?.data,
-      SECURITY_PER: parseFloat(rows?.[0]?.data?.SECURITY_PER).toFixed(2),
+      SECURITY_PER: rows?.[0]?.data?.SECURITY_PER
+        ? parseFloat(rows?.[0]?.data?.SECURITY_PER).toFixed(2)
+        : "",
     };
 
-    let upd = utilFunction.transformDetailsData(newData, oldData);
+    let upd = utilFunction.transformDetailsData(
+      newData,
+      defaultView === "new" ? {} : oldData
+    );
 
     if (
       Number(newData?.SECURITY_AMT) !== 0 &&
@@ -116,6 +120,7 @@ const AgentMasterForm = ({
             messageTitle: "Confirmation",
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
+            icon: "CONFIRM",
           });
           if (btnName === "Yes") {
             mutation.mutate({
@@ -135,6 +140,14 @@ const AgentMasterForm = ({
 
   return (
     <>
+      {mutation.isError && (
+        <Alert
+          severity="error"
+          errorMsg={mutation?.error?.error_msg || t("Somethingwenttowrong")}
+          errorDetail={mutation?.error?.error_detail ?? ""}
+          color="error"
+        />
+      )}
       {gridData ? (
         <FormWrapper
           key={"agentMasterForm" + formMode}

@@ -6,6 +6,7 @@ import {
 } from "../api";
 import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const AgentMasterFormMetaData = {
   form: {
@@ -142,10 +143,24 @@ export const AgentMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              AGENT_BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             ACCT_NM: { value: "" },
             AGENT_TYPE_CD: { value: "" },
-            AGENT_ACCT_CD: { value: "" },
+            AGENT_ACCT_CD: { value: "", ignoreUpdate: false },
           };
         },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
@@ -167,10 +182,10 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues?.AGENT_BRANCH_CD?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Branch.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -189,7 +204,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            AGENT_ACCT_CD: { value: "" },
+            AGENT_ACCT_CD: { value: "", ignoreUpdate: false },
             ACCT_NM: { value: "" },
           };
         },
@@ -200,10 +215,6 @@ export const AgentMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["AGENT_TYPE_CD", "AGENT_BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -227,10 +238,10 @@ export const AgentMasterFormMetaData = {
             dependentFieldsValues?.AGENT_TYPE_CD?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Type.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -238,7 +249,7 @@ export const AgentMasterFormMetaData = {
                 AGENT_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 AGENT_TYPE_CD: {
                   value: "",
@@ -274,8 +285,10 @@ export const AgentMasterFormMetaData = {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
                 returnVal = "";
@@ -283,8 +296,10 @@ export const AgentMasterFormMetaData = {
                 formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
-                    message: postData?.MSG?.[i]?.O_MESSAGE,
+                    messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                      ? postData?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
+                    message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                     icon: "WARNING",
                   });
                 }
@@ -292,9 +307,12 @@ export const AgentMasterFormMetaData = {
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -325,7 +343,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -381,7 +399,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               SECURITY_TYPE_CD: { value: "" },
-              SECURITY_ACCT_CD: { value: "" },
+              SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
               SECURITY_ACCT_NM: { value: "" },
             };
           },
@@ -405,7 +423,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               SECURITY_TYPE_CD: { value: "" },
-              SECURITY_ACCT_CD: { value: "" },
+              SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
               SECURITY_ACCT_NM: { value: "" },
             };
           },
@@ -429,7 +447,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               SECURITY_TYPE_CD: { value: "" },
-              SECURITY_ACCT_CD: { value: "" },
+              SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
               SECURITY_ACCT_NM: { value: "" },
             };
           },
@@ -456,10 +474,10 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues?.SECURITY_BRANCH?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Branch.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -478,7 +496,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            SECURITY_ACCT_CD: { value: "" },
+            SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
             SECURITY_ACCT_NM: { value: "" },
           };
         },
@@ -492,10 +510,6 @@ export const AgentMasterFormMetaData = {
         schemaValidation: {},
         dependentFields: ["SECURITY_TYPE_CD", "SECURITY_BRANCH"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -519,10 +533,10 @@ export const AgentMasterFormMetaData = {
             dependentFieldsValues?.SECURITY_TYPE_CD?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Type.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -530,7 +544,7 @@ export const AgentMasterFormMetaData = {
                 SECURITY_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 SECURITY_TYPE_CD: {
                   value: "",
@@ -566,8 +580,10 @@ export const AgentMasterFormMetaData = {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
                 returnVal = "";
@@ -575,8 +591,10 @@ export const AgentMasterFormMetaData = {
                 formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
-                    message: postData?.MSG?.[i]?.O_MESSAGE,
+                    messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                      ? postData?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
+                    message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                     icon: "WARNING",
                   });
                 }
@@ -584,9 +602,12 @@ export const AgentMasterFormMetaData = {
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -617,7 +638,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               SECURITY_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -708,6 +729,17 @@ export const AgentMasterFormMetaData = {
         }
         return {};
       },
+      FormatProps: {
+        isAllowed: (values) => {
+          if (values?.floatValue > 100) {
+            return false;
+          }
+          if (values?.value?.length > 6) {
+            return false;
+          }
+          return true;
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 5,
@@ -756,7 +788,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               OTH_ACCT_TYPE: { value: "" },
-              OTH_ACCT_CD: { value: "" },
+              OTH_ACCT_CD: { value: "", ignoreUpdate: false },
               OTHER_ACCT_NM: { value: "" },
             };
           },
@@ -778,9 +810,23 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                OTH_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               OTH_ACCT_TYPE: { value: "" },
-              OTH_ACCT_CD: { value: "" },
+              OTH_ACCT_CD: { value: "", ignoreUpdate: false },
               OTHER_ACCT_NM: { value: "" },
             };
           },
@@ -801,9 +847,23 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                OTH_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               OTH_ACCT_TYPE: { value: "" },
-              OTH_ACCT_CD: { value: "" },
+              OTH_ACCT_CD: { value: "", ignoreUpdate: false },
               OTHER_ACCT_NM: { value: "" },
             };
           },
@@ -830,10 +890,10 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues?.OTH_BRANCH_CD?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Branch.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -852,7 +912,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            OTH_ACCT_CD: { value: "" },
+            OTH_ACCT_CD: { value: "", ignoreUpdate: false },
             OTHER_ACCT_NM: { value: "" },
           };
         },
@@ -865,10 +925,6 @@ export const AgentMasterFormMetaData = {
         required: false,
         schemaValidation: {},
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -892,10 +948,10 @@ export const AgentMasterFormMetaData = {
             dependentFieldsValues?.OTH_ACCT_TYPE?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Type.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -903,7 +959,7 @@ export const AgentMasterFormMetaData = {
                 OTH_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 OTH_ACCT_TYPE: {
                   value: "",
@@ -939,8 +995,10 @@ export const AgentMasterFormMetaData = {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
                 returnVal = "";
@@ -948,8 +1006,10 @@ export const AgentMasterFormMetaData = {
                 formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
-                    message: postData?.MSG?.[i]?.O_MESSAGE,
+                    messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                      ? postData?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
+                    message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                     icon: "WARNING",
                   });
                 }
@@ -957,9 +1017,12 @@ export const AgentMasterFormMetaData = {
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -990,7 +1053,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               OTHER_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -1046,9 +1109,23 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                PTAX_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               PTAX_ACCT_TYPE: { value: "" },
-              PTAX_ACCT_CD: { value: "" },
+              PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
               PTAX_ACCT_NM: { value: "" },
             };
           },
@@ -1072,7 +1149,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               PTAX_ACCT_TYPE: { value: "" },
-              PTAX_ACCT_CD: { value: "" },
+              PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
               PTAX_ACCT_NM: { value: "" },
             };
           },
@@ -1094,9 +1171,23 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                PTAX_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               PTAX_ACCT_TYPE: { value: "" },
-              PTAX_ACCT_CD: { value: "" },
+              PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
               PTAX_ACCT_NM: { value: "" },
             };
           },
@@ -1123,10 +1214,10 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues?.PTAX_BRANCH_CD?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Branch.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -1145,7 +1236,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            PTAX_ACCT_CD: { value: "" },
+            PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
             PTAX_ACCT_NM: { value: "" },
           };
         },
@@ -1158,10 +1249,6 @@ export const AgentMasterFormMetaData = {
         schemaValidation: {},
         dependentFields: ["PTAX_ACCT_TYPE", "PTAX_BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -1185,10 +1272,10 @@ export const AgentMasterFormMetaData = {
             dependentFieldsValues?.PTAX_ACCT_TYPE?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Type.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -1196,7 +1283,7 @@ export const AgentMasterFormMetaData = {
                 PTAX_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 PTAX_ACCT_TYPE: {
                   value: "",
@@ -1232,8 +1319,10 @@ export const AgentMasterFormMetaData = {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
                 returnVal = "";
@@ -1241,8 +1330,10 @@ export const AgentMasterFormMetaData = {
                 formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
-                    message: postData?.MSG?.[i]?.O_MESSAGE,
+                    messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                      ? postData?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
+                    message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                     icon: "WARNING",
                   });
                 }
@@ -1250,9 +1341,12 @@ export const AgentMasterFormMetaData = {
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -1283,7 +1377,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               PTAX_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -1357,13 +1451,8 @@ export const AgentMasterFormMetaData = {
         xl: 3,
       },
       FormatProps: {
-        allowLeadingZeros: false,
         isAllowed: (values) => {
-          //@ts-ignore
-          if (values.floatValue > 99.99) {
-            return false;
-          }
-          if (values.floatValue === 0) {
+          if (values?.value?.length > 5) {
             return false;
           }
           return true;

@@ -1,4 +1,5 @@
 import { utilFunction } from "@acuteinfo/common-base";
+import { validateHOBranch } from "components/utilFunction/function";
 import { GeneralAPI } from "registry/fns/functions";
 
 export const RecurringPaymentTransferFormMetaData = {
@@ -212,9 +213,24 @@ export const RecurringPaymentTransferFormMetaData = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+
+              const isHOBranch = await validateHOBranch(
+                currentField,
+                formState?.MessageBox,
+                authState
+              );
+              if (isHOBranch) {
+                return {
+                  DC_BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: false,
+                  },
+                };
+              }
               return {
                 DC_ACCT_TYPE: { value: "" },
-                DC_ACCT_CD: { value: "" },
+                DC_ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -238,10 +254,10 @@ export const RecurringPaymentTransferFormMetaData = {
                   ?.length === 0
               ) {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: "ValidationFailed",
                   message: "Enter Account Branch.",
                   buttonNames: ["Ok"],
-                  icon: "WARNING",
+                  icon: "ERROR",
                 });
 
                 if (buttonName === "Ok") {
@@ -260,7 +276,7 @@ export const RecurringPaymentTransferFormMetaData = {
                 }
               }
               return {
-                DC_ACCT_CD: { value: "" },
+                DC_ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -272,10 +288,6 @@ export const RecurringPaymentTransferFormMetaData = {
             autoComplete: "off",
             dependentFields: ["DC_ACCT_TYPE", "DC_BRANCH_CD"],
             runPostValidationHookAlways: true,
-            AlwaysRunPostValidationSetCrossFieldValues: {
-              alwaysRun: true,
-              touchAndValidate: true,
-            },
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -289,10 +301,10 @@ export const RecurringPaymentTransferFormMetaData = {
                   ?.length === 0
               ) {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: "ValidationFailed",
                   message: "Enter Account Type.",
                   buttonNames: ["Ok"],
-                  icon: "WARNING",
+                  icon: "ERROR",
                 });
 
                 if (buttonName === "Ok") {
@@ -300,7 +312,7 @@ export const RecurringPaymentTransferFormMetaData = {
                     DC_ACCT_CD: {
                       value: "",
                       isFieldFocused: false,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
                     DC_ACCT_TYPE: {
                       value: "",
@@ -344,8 +356,10 @@ export const RecurringPaymentTransferFormMetaData = {
                   if (postData?.MSG?.[i]?.O_STATUS === "999") {
                     formState?.handleDisableButton(false);
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "ValidationFailed",
-                      message: postData?.MSG?.[i]?.O_MESSAGE,
+                      messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.MSG?.[i]?.O_MSG_TITLE
+                        : "ValidationFailed",
+                      message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                       icon: "ERROR",
                     });
                     returnVal = "";
@@ -353,8 +367,10 @@ export const RecurringPaymentTransferFormMetaData = {
                     formState?.handleDisableButton(false);
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
-                        message: postData?.MSG?.[i]?.O_MESSAGE,
+                        messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                          ? postData?.MSG?.[i]?.O_MSG_TITLE
+                          : "Alert",
+                        message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                         icon: "WARNING",
                       });
                     }
@@ -362,8 +378,10 @@ export const RecurringPaymentTransferFormMetaData = {
                   } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                     formState?.handleDisableButton(false);
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Confirmation",
-                      message: postData?.MSG?.[i]?.O_MESSAGE,
+                      messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.MSG?.[i]?.O_MSG_TITLE
+                        : "Confirmation",
+                      message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                       buttonNames: ["Yes", "No"],
                       icon: "CONFIRM",
                     });
@@ -398,7 +416,7 @@ export const RecurringPaymentTransferFormMetaData = {
                       : {
                           value: "",
                           isFieldFocused: true,
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                         },
                   ACCT_NM: {
                     value: returnVal?.ACCT_NM ?? "",

@@ -149,6 +149,7 @@ export const ParaDetailMetadata = {
       placeholder: "",
       type: "text",
       required: true,
+      maxLength: 100,
       schemaValidation: {
         type: "string",
         rules: [

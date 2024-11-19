@@ -324,7 +324,7 @@ export const FdInterestPaymentFormMetaData = {
         "BANK_FORM_HIDDEN",
         "NEFT_FORM_HIDDEN",
       ],
-      validationRun: "onChange",
+      validationRun: "all",
       isFieldFocused: true,
       postValidationSetCrossFieldValues: async (
         currentField,
@@ -370,6 +370,7 @@ export const FdInterestPaymentFormMetaData = {
               messageTitle: "Confirmation",
               message: "PaymentModeChangeConf",
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
             if (btnName === "Yes") {
               return {
@@ -477,6 +478,7 @@ export const FdInterestPaymentFormMetaData = {
               messageTitle: "Confirmation",
               message: "PaymentModeChangeConf",
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
             });
             if (btnName === "Yes") {
               return {
@@ -853,7 +855,7 @@ export const FdInterestPaymentFormMetaData = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "Alert",
-              message: "Enter Account Type.",
+              message: "EnterAccountType",
               buttonNames: ["Ok"],
               icon: "WARNING",
             });
@@ -893,14 +895,15 @@ export const FdInterestPaymentFormMetaData = {
             for (let i = 0; i < postData?.MSG.length; i++) {
               if (postData?.MSG[i]?.O_STATUS === "999") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle:
+                    postData?.MSG[i]?.O_MSG_TITLE ?? "ValidationFailed",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG[i]?.O_STATUS === "99") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE ?? "Confirmation",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "CONFIRM",
@@ -911,7 +914,7 @@ export const FdInterestPaymentFormMetaData = {
                 }
               } else if (postData?.MSG[i]?.O_STATUS === "9") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE ?? "Alert",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   icon: "WARNING",
                 });
@@ -1158,7 +1161,8 @@ export const FdInterestPaymentFormMetaData = {
           });
           if (validateIFSC?.[0]?.O_STATUS === "999") {
             let buttonName = await formState.MessageBox({
-              messageTitle: "ValidationFailed",
+              messageTitle:
+                validateIFSC?.[0]?.O_MSG_TITLE ?? "ValidationFailed",
               message: validateIFSC?.[0]?.O_MESSAGE,
               buttonNames: ["Ok"],
               icon: "ERROR",

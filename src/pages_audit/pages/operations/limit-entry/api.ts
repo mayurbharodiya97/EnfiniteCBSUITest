@@ -453,7 +453,7 @@ export const LimitSecurityData = async (apiReqPara) => {
                 let buttonName = await formState.MessageBox({
                   messageTitle: "Alert",
                   message: "AreYouSureToFutureLimit",
-                  buttonNames: ["No", "Yes"],
+                  buttonNames: ["Yes", "No"],
                 });
                 if (buttonName === "Yes") {
                   return {

@@ -11,47 +11,54 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState, useCallback, Fragment } from "react";
+import { useState, useCallback, Fragment, useRef } from "react";
 import "./Trn001.css";
 import { getCurrencySymbol } from "@acuteinfo/common-base";
 import Draggable from "react-draggable";
 import { NumberFormatCustom } from "components/custom/NumberFormatCustom";
 
 const useAutocompleteHandlers = (onChangeCallback) => {
-  const [highlightedOption, setHighlightedOption] = useState(null);
+  // const [highlightedOption, setHighlightedOption] = useState(null);
+  const highlightedOptionRef = useRef<any>(null);
 
   const handleHighlightChange = useCallback((event, option, reason) => {
-    setHighlightedOption(option);
+    highlightedOptionRef.current = option;
   }, []);
 
   const handleKeyDown = useCallback(
     (event, unqID, flag) => {
-      if (event?.key === "Tab" && highlightedOption) {
+      if (event?.key === "Tab" && highlightedOptionRef?.current) {
         switch (flag) {
           case "BRANCH_CD":
-            onChangeCallback({ updUnqId: unqID, branchVal: highlightedOption });
+            onChangeCallback({
+              updUnqId: unqID,
+              branchVal: highlightedOptionRef?.current,
+            });
             break;
           case "ACCT_TYPE":
             onChangeCallback({
               updUnqId: unqID,
-              value: highlightedOption,
+              value: highlightedOptionRef?.current,
             });
             break;
           case "TRX":
-            onChangeCallback(event, highlightedOption, unqID);
+            onChangeCallback(event, highlightedOptionRef?.current, unqID);
             break;
           case "SDC":
-            onChangeCallback({ updUnqId: unqID, value: highlightedOption });
+            onChangeCallback({
+              updUnqId: unqID,
+              value: highlightedOptionRef?.current,
+            });
             break;
           default:
             onChangeCallback({
               updUnqId: unqID,
-              value: highlightedOption,
+              value: highlightedOptionRef?.current,
             });
         }
       }
     },
-    [highlightedOption, onChangeCallback]
+    [highlightedOptionRef?.current, onChangeCallback]
   );
 
   return {
@@ -130,11 +137,25 @@ export const CustomeAutocomplete = ({
         <>
           <TextField
             {...params}
-            style={{ width }}
+            style={{
+              backgroundColor: disabled ? "rgb(238, 238, 238)" : "transparent",
+            }}
             onBlur={onBlur}
             onKeyDown={onKeyDown}
             variant="outlined"
             autoFocus={autoFocus}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "gray",
+                  borderWidth: "1px",
+                },
+                "&:hover fieldset, &.Mui-focused fieldset": {
+                  borderColor: "gray",
+                  borderWidth: "1px",
+                },
+              },
+            }}
             InputProps={{
               ...params?.InputProps,
               endAdornment: (
@@ -154,9 +175,69 @@ export const CustomeAutocomplete = ({
             }}
             inputRef={inputRef}
           />
-          {errorMsg && <DynFormHelperText msg={errorMsg} />}
+          {errorMsg ? (
+            <DynFormHelperText msg={errorMsg} />
+          ) : (
+            value?.actLabel && (
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 400,
+                  fontSize: "9.5px",
+                  lineHeight: "10px",
+                  letterSpacing: "0.03333em",
+                  textAlign: "left",
+                  marginTop: "3px",
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  // whiteSpace: "nowrap",
+                  wordBreak: "break-word",
+                }}
+              >
+                {value?.actLabel}
+              </Typography>
+            )
+          )}
         </>
       )}
+      PaperComponent={({ children }) => {
+        return (
+          <div
+            // style={paperStyles}
+            style={{
+              width: "max-content",
+              background: "white",
+              boxShadow:
+                "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+              overflowX: "scroll",
+              maxWidth: "320px",
+              // width: "200px",
+              // minWidth: "max(160px, 100%)",
+            }}
+          >
+            {children}
+          </div>
+        );
+      }}
+      filterOptions={(options, state) => {
+        const inputValue = state.inputValue.toLowerCase();
+        const filtered = options.filter((option) =>
+          option.label.toLowerCase().includes(inputValue)
+        );
+        return filtered.sort((a, b) => {
+          const aStartsWith = a.label.toLowerCase().startsWith(inputValue);
+          const bStartsWith = b.label.toLowerCase().startsWith(inputValue);
+
+          if (aStartsWith && !bStartsWith) {
+            return -1;
+          }
+          if (!aStartsWith && bStartsWith) {
+            return 1;
+          }
+          return 0;
+        });
+      }}
     />
   );
 };
@@ -186,7 +267,7 @@ export const CustomAmountField = ({
   ...rest
 }: CustomAmountFieldProps) => {
   const { dynamicAmountSymbol, dynamicAmountGroupStyle, decimalCount } =
-    customParameter;
+    customParameter ?? {};
   return (
     <>
       <TextField
@@ -203,6 +284,9 @@ export const CustomAmountField = ({
           if (input.value) {
             input.select();
           }
+        }}
+        style={{
+          backgroundColor: disabled ? "rgb(238, 238, 238)" : "transparent",
         }}
         InputProps={{
           inputComponent: NumberFormatCustom,
@@ -260,6 +344,16 @@ export const CustomAmountField = ({
               padding: "0.6rem",
             },
           },
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "gray",
+              borderWidth: "1px",
+            },
+            "&:hover fieldset, &.Mui-focused fieldset": {
+              borderColor: "gray",
+              borderWidth: "1px",
+            },
+          },
         }}
       />
       {errorMsg && <DynFormHelperText msg={errorMsg} />}
@@ -309,6 +403,21 @@ export const CustomTextField = ({
         onBlur={onBlur}
         variant="outlined"
         id={id}
+        style={{
+          backgroundColor: disabled ? "rgb(238, 238, 238)" : "transparent",
+        }}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "gray",
+              borderWidth: "1px",
+            },
+            "&:hover fieldset, &.Mui-focused fieldset": {
+              borderColor: "gray",
+              borderWidth: "1px",
+            },
+          },
+        }}
         onFocus={(event) => {
           const input = event.target;
           if (input.value) {

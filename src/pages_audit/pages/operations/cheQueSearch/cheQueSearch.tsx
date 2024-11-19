@@ -57,11 +57,7 @@ const ChequeSearchMain = () => {
   const headerClasses = useTypeStyles();
   const setCurrentAction = useCallback(
     async (data) => {
-      console.log(data);
-
       if (data?.name === "view-details") {
-        console.log(data?.rows[0]?.data?.ALLOW_RETURN);
-
         if (data?.rows[0]?.data?.ALLOW_RETURN === "Y") {
           checkDuplicateMutation.mutate({
             A_COMP_CD: authState?.companyID,

@@ -122,23 +122,23 @@ const ClearingDateTransferGrid = () => {
         for (let i = 0; i < data?.length; i++) {
           if (data[i]?.O_STATUS === "999") {
             const buttonName = await MessageBox({
-              messageTitle: t("ValidationFailed"),
+              messageTitle: data[i]?.O_MSG_TITLE,
               message: data[i]?.O_MESSAGE,
               icon: "ERROR",
             });
           } else if (data[i]?.O_STATUS === "99") {
             const buttonName = await MessageBox({
-              messageTitle: t("Confirmation"),
+              messageTitle: data[i]?.O_MSG_TITLE,
               message: data[i]?.O_MESSAGE,
             });
           } else if (data[i]?.O_STATUS === "9") {
             const buttonName = await MessageBox({
-              messageTitle: t("Alert"),
+              messageTitle: data[i]?.O_MSG_TITLE,
               message: data[i]?.O_MESSAGE,
               icon: "WARNING",
             });
           } else if (data[i]?.O_STATUS === "0") {
-            enqueueSnackbar(t("RecordSavedSuccessfully"), {
+            enqueueSnackbar(t("SuccessfullyTransferedClearingDateZone"), {
               variant: "success",
             });
             CloseMessageBox();
@@ -179,15 +179,15 @@ const ClearingDateTransferGrid = () => {
           message:
             t("AreYouSuretransfer") +
             " " +
-            format(new Date(res?.FR_TRAN_DT), "dd/MMM/yyyy") +
+            format(new Date(res?.FR_TRAN_DT), "dd/MM/yyyy") +
             " / " +
             res?.FR_ZONE +
             t("ClearingTodateZone") +
             " " +
-            format(new Date(res?.TO_TRAN_DT), "dd/MMM/yyyy") +
+            format(new Date(res?.TO_TRAN_DT), "dd/MM/yyyy") +
             " / " +
             res?.TO_ZONE,
-          buttonNames: ["No", "Yes"],
+          buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
           loadingBtnName: ["Yes"],
         });
@@ -200,7 +200,7 @@ const ClearingDateTransferGrid = () => {
               totalCount +
               " " +
               t("ChequeAvailableforClearingDateTransferAreYouSureContinue"),
-            buttonNames: ["Cancel", "Ok"],
+            buttonNames: ["Ok", "Cancel"],
             defFocusBtnName: "Ok",
             loadingBtnName: ["Ok"],
           });
@@ -252,13 +252,6 @@ const ClearingDateTransferGrid = () => {
     }
     setFormData(data);
   };
-  // if (clearingDateTransferGridMetaData) {
-  //   if (isFlag === "B") {
-  //     clearingDateTransferGridMetaData.gridConfig.allowRowSelection = true;
-  //   } else {
-  //     clearingDateTransferGridMetaData.gridConfig.allowRowSelection = false;
-  //   }
-  // }
 
   return (
     <Fragment>
@@ -297,50 +290,62 @@ const ClearingDateTransferGrid = () => {
                           message:
                             t("AreYouSuretransfer") +
                             " " +
-                            format(new Date(res?.FR_TRAN_DT), "dd/MMM/yyyy") +
+                            format(new Date(res?.FR_TRAN_DT), "dd/MM/yyyy") +
                             " / " +
                             res?.FR_ZONE +
                             t("ClearingTodateZone") +
                             " " +
-                            format(new Date(res?.TO_TRAN_DT), "dd/MMM/yyyy") +
+                            format(new Date(res?.TO_TRAN_DT), "dd/MM/yyyy") +
                             " / " +
                             res?.TO_ZONE,
-                          buttonNames: ["No", "Yes"],
+                          buttonNames: ["Yes", "No"],
                           defFocusBtnName: "Yes",
                           loadingBtnName: ["Yes"],
                         });
                         if (buttonName === "Yes") {
-                          const button = await MessageBox({
-                            messageTitle: t("Confirmation"),
-                            message:
-                              t("ThereAre") +
-                              " " +
-                              totalCount +
-                              " " +
-                              t(
-                                "ChequeAvailableforClearingDateTransferAreYouSureContinue"
-                              ),
-                            buttonNames: ["Cancel", "Ok"],
-                            defFocusBtnName: "Ok",
-                            loadingBtnName: ["Ok"],
-                          });
-                          if (button === "Ok") {
-                            transferDateMutation.mutate({
-                              CLG_FLAG: res?.FLAG,
-                              FR_TRAN_DT: format(
-                                new Date(res?.FR_TRAN_DT),
-                                "dd/MMM/yyyy"
-                              ),
-                              TO_TRAN_DT: format(
-                                new Date(res?.TO_TRAN_DT),
-                                "dd/MMM/yyyy"
-                              ),
-                              FR_ZONE: res?.FR_ZONE,
-                              TO_ZONE: res?.TO_ZONE,
-                              TRAN_TYPE: "S",
-                              DTL_CLOB: [],
-                              SCREEN_REF: "RPT/1188",
+                          if (totalCount === 0) {
+                            MessageBox({
+                              messageTitle: t("Information"),
+                              message:
+                                t("ThereAre") +
+                                " " +
+                                totalCount +
+                                " " +
+                                t("ChequeAvailableforClearingDateTransfer"),
                             });
+                          } else {
+                            const button = await MessageBox({
+                              messageTitle: t("Confirmation"),
+                              message:
+                                t("ThereAre") +
+                                " " +
+                                totalCount +
+                                " " +
+                                t(
+                                  "ChequeAvailableforClearingDateTransferAreYouSureContinue"
+                                ),
+                              buttonNames: ["Yes", "No"],
+                              defFocusBtnName: "Yes",
+                              loadingBtnName: ["Yes"],
+                            });
+                            if (button === "Yes") {
+                              transferDateMutation.mutate({
+                                CLG_FLAG: res?.FLAG,
+                                FR_TRAN_DT: format(
+                                  new Date(res?.FR_TRAN_DT),
+                                  "dd/MMM/yyyy"
+                                ),
+                                TO_TRAN_DT: format(
+                                  new Date(res?.TO_TRAN_DT),
+                                  "dd/MMM/yyyy"
+                                ),
+                                FR_ZONE: res?.FR_ZONE,
+                                TO_ZONE: res?.TO_ZONE,
+                                TRAN_TYPE: "S",
+                                DTL_CLOB: [],
+                                SCREEN_REF: "RPT/1188",
+                              });
+                            }
                           }
                         }
                       });

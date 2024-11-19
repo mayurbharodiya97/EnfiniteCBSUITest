@@ -41,6 +41,16 @@ export const GstOutwardForm = {
             TEMPLATE_TYPE: "OUT",
           });
         },
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValue,
+          reqFlag
+        ) => {
+          console.log("currentField", currentField);
+        },
         __EDIT__: {
           isReadOnly: true,
         },
@@ -91,6 +101,7 @@ export const GstOutwardForm = {
               return true;
             }
           },
+          runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: (
             currentField,
             formState,
@@ -98,13 +109,14 @@ export const GstOutwardForm = {
             dependentFieldValue,
             reqFlag
           ) => {
+            if (formState?.isSubmitting) return {};
             if (currentField?.value) {
               return {
                 ACCT_CD: { value: "" },
-                RECEIPT: { value: "" },
-                PAYMENT: { value: "" },
                 ACCT_NM: { value: "" },
-                BALANCE: { value: "" },
+                WIDTH_BAL: { value: "" },
+                ACCT_TYPE: { value: "" },
+                GSTIN: { value: "" },
               };
             }
           },
@@ -131,6 +143,23 @@ export const GstOutwardForm = {
               return false;
             }
           },
+          postValidationSetCrossFieldValues: (
+            currentField,
+            formState,
+            authState,
+            dependentFieldValue,
+            reqFlag
+          ) => {
+            if (formState?.isSubmitting) return {};
+            if (currentField?.value) {
+              return {
+                ACCT_CD: { value: "" },
+                ACCT_NM: { value: "" },
+                WIDTH_BAL: { value: "" },
+                GSTIN: { value: "" },
+              };
+            }
+          },
           GridProps: {
             xs: 12,
             sm: 2.4,
@@ -154,13 +183,14 @@ export const GstOutwardForm = {
               return false;
             }
           },
-
+          runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
             authState,
             dependentFieldValues
           ) => {
+            if (formState?.isSubmitting) return {};
             const reqParameters = {
               COMP_CD: authState?.companyID ?? "",
               BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value ?? "",
@@ -179,6 +209,7 @@ export const GstOutwardForm = {
               dependentFieldValues?.MODE?.value === "T" &&
               formState?.defaultView === "new"
             ) {
+              formState.handleButtonDisable(true);
               const postData = await API.getAccountDetail(reqParameters);
               let btn99, returnVal;
               for (let i = 0; i < postData?.length; i++) {
@@ -206,12 +237,13 @@ export const GstOutwardForm = {
                 } else if (postData?.[i]?.O_STATUS === "0") {
                   if (btn99 !== "No") {
                     returnVal = postData?.[i];
-                    formState?.OpenDilogueBox(true);
+                    formState?.setDilogueOpen(true);
                   } else {
                     returnVal = "";
                   }
                 }
               }
+              formState.handleButtonDisable(false);
               return {
                 ACCT_CD:
                   returnVal !== ""
@@ -392,7 +424,7 @@ export const GstOutwardForm = {
       },
       {
         accessor: "CHEQUE_NO",
-        columnName: "Chequeno",
+        columnName: "ChequeNo",
         sequence: 5,
         alignment: "right",
         componentType: "default",
@@ -417,6 +449,22 @@ export const GstOutwardForm = {
         sequence: 7,
         alignment: "left",
         componentType: "default",
+        isDisplayTotal: true,
+        footerLabel: "Total: ",
+        setFooterValue(total, rows) {
+          const { totalTaxableValue, totalTaxAmount } = rows.reduce(
+            (acc, row) => {
+              acc.totalTaxableValue += parseFloat(
+                row.values.TAXABLE_VALUE || 0
+              );
+              acc.totalTaxAmount += parseFloat(row.values.TAX_AMOUNT || 0);
+              return acc;
+            },
+            { totalTaxableValue: 0, totalTaxAmount: 0 }
+          );
+          const finalTotal = (totalTaxableValue + totalTaxAmount).toFixed(2);
+          return [finalTotal];
+        },
         width: 200,
         minWidth: 200,
         maxWidth: 200,

@@ -204,7 +204,7 @@ export const main_tab_metadata = {
           //                 const buttonName = await formState?.MessageBox({
           //                     messageTitle: "CONFIRM",
           //                     message: data[i]?.O_MESSAGE,
-          //                     buttonNames: ["No", "Yes"],
+          //                     buttonNames: ["Yes", "No"],
           //                     //   loadingBtnName: ["Yes"],
           //                 });
           //                 if (buttonName === "No") {

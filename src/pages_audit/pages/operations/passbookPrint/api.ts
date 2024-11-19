@@ -39,8 +39,6 @@ export const passbookAccountDetails = async (reqData: any) => {
     await AuthSDK.internalFetcher("GETPASSBOOKACCOUNTDETAILS", reqData);
   if (status === "0") {
     return data;
-  } else if (status === "999") {
-    return { status, messageDetails: messageDetails };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

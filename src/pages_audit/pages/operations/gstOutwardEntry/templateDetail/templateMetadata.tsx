@@ -58,6 +58,11 @@ export const TemplateDetailMetadata = {
         return APIrequest;
       },
       _optionsKey: "templatecode",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["TemplateRequire"] }],
+      },
       GridProps: {
         xs: 12,
         sm: 4,
@@ -71,7 +76,7 @@ export const TemplateDetailMetadata = {
       name: "TAXABLE_VALUE",
       sequence: 23,
       type: "text",
-      label: "Charge Amount",
+      label: "ChargeAmount",
       textFieldStyle: {
         "& .MuiInputBase-input": {
           textAlign: "right",
@@ -84,7 +89,9 @@ export const TemplateDetailMetadata = {
         auth,
         dependentFieldsValues
       ) => {
+        if (formState?.isSubmitting) return {};
         const res = await formState?.REFDATA?.current?.getFieldData();
+        formState.handleButtonDisable(true);
         const postData = await GeneralAPI.getCalGstAmountData({
           BRANCH_CD: res.BRANCH_CD,
           ACCT_TYPE: res.ACCT_TYPE,
@@ -95,13 +102,18 @@ export const TemplateDetailMetadata = {
           ASON_DT: auth?.workingDate,
           COMP_CD: auth?.companyID,
         });
-
+        formState.handleButtonDisable(false);
         return {
           TAX_AMOUNT: { value: postData?.[0]?.TAX_AMOUNT },
         };
       },
       autoComplete: "off",
       placeholder: "",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ChargeAmountrequired"] }],
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -115,7 +127,7 @@ export const TemplateDetailMetadata = {
       name: "TAX_AMOUNT",
       sequence: 23,
       type: "text",
-      label: "Tax Amount",
+      label: "taxAmount",
       maxLength: 14,
       textFieldStyle: {
         "& .MuiInputBase-input": {
@@ -166,6 +178,14 @@ export const TemplateDetailMetadata = {
 
           return true;
         },
+      },
+      isReadOnly: async (fieldValue, dependentFields, formState) => {
+        const field = await formState?.REFDATA?.current?.getFieldData();
+        if (field?.MODE === "C") {
+          return true;
+        } else {
+          return false;
+        }
       },
       postValidationSetCrossFieldValues: async (
         field,
@@ -259,7 +279,7 @@ export const TemplateDetailMetadata = {
       render: { componentType: "datePicker" },
       name: "CHEQUE_DT",
       sequence: 23,
-      label: "Chq.Date.",
+      label: "ChequeDate",
       maxLength: 14,
       isWorkingDate: true,
       ignoreInSubmit: true,
@@ -287,10 +307,15 @@ export const TemplateDetailMetadata = {
       sequence: 23,
       type: "text",
       txtTransform: "uppercase",
-      label: "Remarks.",
+      label: "Remarks",
       maxLength: 14,
       autoComplete: "off",
       placeholder: "",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["RemarksIsRequired"] }],
+      },
       GridProps: {
         xs: 12,
         sm: 6,
