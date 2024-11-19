@@ -128,6 +128,7 @@ const RelatedPersonDetails = () => {
           messageTitle: "Data Validation Failed",
           message: `In case of Minor KYC at least one Related Person should have as a 'Guardian of Minor'`,
           buttonNames: ["Ok"],
+          icon: "ERROR",
         });
         setFormStatus((old) => [...old, false]);
       } else {
