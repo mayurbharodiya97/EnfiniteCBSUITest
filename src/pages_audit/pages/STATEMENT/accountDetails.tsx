@@ -64,7 +64,7 @@ const AccountDetails = () => {
   useEffect(() => {
     const checkLocalStorage = () => {
       // Check if the key you're interested in is changed
-      if (!localStorage.getItem("tokenchecksum")) {
+      if (!sessionStorage.getItem("tokenchecksum")) {
         console.log("logout-due-to account details page");
         window.location.reload();
         logout();
@@ -77,7 +77,7 @@ const AccountDetails = () => {
     return () => {
       window.removeEventListener("storage", checkLocalStorage);
     };
-  }, [localStorage]);
+  }, [sessionStorage]);
 
   const { data, isLoading, isFetching, error, isError } = useQuery<any, any>(
     ["StatementDetailsData"],

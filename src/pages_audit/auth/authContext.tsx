@@ -193,7 +193,7 @@ export const AuthProvider = ({ children }) => {
     [dispatch, navigate, comingFromRoute]
   );
   const logout = useCallback(() => {
-    let result = localStorage.getItem("authDetails");
+    let result = sessionStorage.getItem("authDetails");
     if (result !== null && Boolean(result)) {
       let localStorageAuthState: any = JSON.parse(result);
       if (
@@ -203,11 +203,11 @@ export const AuthProvider = ({ children }) => {
         API.LogoutAPI({ userID: localStorageAuthState?.user?.id });
       }
     }
-    localStorage.removeItem("authDetails");
-    localStorage.removeItem("tokenchecksum");
+    sessionStorage.removeItem("authDetails");
+    sessionStorage.removeItem("tokenchecksum");
     localStorage.removeItem("token_status");
-    localStorage.removeItem("charchecksum");
-    localStorage.removeItem("specialChar");
+    sessionStorage.removeItem("charchecksum");
+    sessionStorage.removeItem("specialChar");
     CloseMessageBox();
     dispatch({
       type: "logout",
@@ -235,25 +235,25 @@ export const AuthProvider = ({ children }) => {
 
   const setLoginDatainLocalStorage = async (payload) => {
     let payloadStr = JSON.stringify(payload);
-    localStorage.setItem("tokenchecksum", await GenerateCRC32(payloadStr));
-    localStorage.setItem("authDetails", payloadStr);
+    sessionStorage.setItem("tokenchecksum", await GenerateCRC32(payloadStr));
+    sessionStorage.setItem("authDetails", payloadStr);
   };
-  window.addEventListener("storage", async () => {
+  window.addEventListener("storage", async (e) => {
     let localStorageKeys = ["authDetails", "specialChar"];
     localStorageKeys.forEach(async (keyNm) => {
-      let result = localStorage.getItem(keyNm);
+      let result = sessionStorage.getItem(keyNm);
       if (result === null) {
         logout();
       } else {
         let checksumdata: any;
-        if (keyNm === "specialChar") {
-          checksumdata = localStorage.getItem("charchecksum");
+        if (keyNm === "specialChar" || keyNm === "specialChar") {
+          checksumdata = sessionStorage.getItem("charchecksum");
         } else if (keyNm === "authDetails") {
           // localStorage.getItem("tokenchecksum");
-          checksumdata = localStorage.getItem("tokenchecksum");
+          checksumdata = sessionStorage.getItem("tokenchecksum");
         }
         let genChecksum = await GenerateCRC32(
-          localStorage.getItem(keyNm) || ""
+          sessionStorage.getItem(keyNm) || ""
         );
         if (checksumdata !== genChecksum) {
           if (Boolean(timeoutLogout)) {
@@ -280,7 +280,7 @@ export const AuthProvider = ({ children }) => {
   //   GeneralAPI.putOpenWindowName(window.location.pathname);
   // }, [window.location.pathname]);
   useEffect(() => {
-    let result = localStorage.getItem("authDetails");
+    let result = sessionStorage.getItem("authDetails");
     if (result !== null) {
       let localStorageAuthState: AuthStateType = JSON.parse(result);
       // if (Boolean(localStorageAuthState?.token ?? "")) {
@@ -333,7 +333,7 @@ export const AuthProvider = ({ children }) => {
   };
   const setnewToken = (access_token) => {
     if (!Boolean(access_token)) return;
-    let result = localStorage.getItem("authDetails");
+    let result = sessionStorage.getItem("authDetails");
     if (result !== null) {
       let localStorageAuthState: AuthStateType = JSON.parse(result);
       localStorageAuthState = {
