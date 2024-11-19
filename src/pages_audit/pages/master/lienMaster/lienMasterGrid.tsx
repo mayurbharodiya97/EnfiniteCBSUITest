@@ -136,7 +136,6 @@ const LienMasterGrid = () => {
         actions={actions}
         loading={isLoading || isFetching}
         setAction={setCurrentAction}
-        refetchData={() => refetch()}
         defaultSortOrder={[{ id: "LEAN_CD", desc: false }]}
       />
       <Routes>

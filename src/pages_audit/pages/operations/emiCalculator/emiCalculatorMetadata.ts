@@ -1,7 +1,5 @@
 import { t } from "i18next";
 import * as API from "./api";
-import i18n from "components/multiLanguage/languagesConfiguration";
-import { format, isValid } from "date-fns";
 
 export const EmiCalculatorFormMetadata = {
   form: {
@@ -58,6 +56,7 @@ export const EmiCalculatorFormMetadata = {
         "INST_PERIOD",
         "INSTALLMENT_NO",
         "DATA_VAL",
+        "LOAN_AMT_MAIN",
       ],
       postValidationSetCrossFieldValues: async (
         currentField,
@@ -71,6 +70,7 @@ export const EmiCalculatorFormMetadata = {
           INST_PERIOD: dependentFieldValues?.INST_PERIOD?.value ?? "",
           INSTALLMENT_NO: dependentFieldValues?.INSTALLMENT_NO?.value ?? "",
           DATA_VAL: dependentFieldValues?.DATA_VAL?.value ?? "",
+          LOAN_AMT_MAIN: dependentFieldValues?.LOAN_AMT_MAIN?.value ?? "",
         });
         formState.setDataOnFieldChange("RESET_DATA", { RESET_DATA: false });
       },
@@ -108,11 +108,11 @@ export const EmiCalculatorFormMetadata = {
           },
         };
       },
-      GridProps: { xs: 12, sm: 4.5, md: 3, lg: 2.5, xl: 2 },
+      GridProps: { xs: 12, sm: 4.5, md: 3, lg: 1.8, xl: 1.8 },
     },
     {
       render: {
-        componentType: "rateOfIntWithoutValidation",
+        componentType: "rateOfInt",
       },
       name: "INT_RATE",
       label: "Interest Rate",
@@ -157,7 +157,7 @@ export const EmiCalculatorFormMetadata = {
         type: "string",
         rules: [{ name: "required", params: [t("InterestRateisrequired")] }],
       },
-      GridProps: { xs: 6, sm: 3, md: 1.5, lg: 1.25, xl: 2 },
+      GridProps: { xs: 6, sm: 3, md: 1.5, lg: 1, xl: 1 },
     },
     {
       render: { componentType: "autocomplete" },
@@ -228,7 +228,7 @@ export const EmiCalculatorFormMetadata = {
         });
         formState.setDataOnFieldChange("RESET_DATA", { RESET_DATA: false });
       },
-      GridProps: { xs: 6, sm: 4, md: 2.5, lg: 2, xl: 2 },
+      GridProps: { xs: 6, sm: 4, md: 2.5, lg: 1.8, xl: 1.8 },
     },
     {
       render: { componentType: "numberFormat" },
@@ -272,7 +272,7 @@ export const EmiCalculatorFormMetadata = {
         });
         formState.setDataOnFieldChange("RESET_DATA", { RESET_DATA: true });
       },
-      GridProps: { xs: 6, sm: 4, md: 2, lg: 1.3, xl: 1.3 },
+      GridProps: { xs: 6, sm: 4, md: 2, lg: 1, xl: 1 },
     },
     {
       render: {
@@ -280,24 +280,6 @@ export const EmiCalculatorFormMetadata = {
       },
       name: "spacer",
       GridProps: { xs: 4, sm: 8, md: 6.8, lg: 8.3, xl: 9.3 },
-    },
-    {
-      render: {
-        componentType: "formbutton",
-      },
-      name: "CALCULATE",
-      label: "Calculate",
-      type: "text",
-      GridProps: { xs: 4, sm: 2, md: 1.5, lg: 1.5, xl: 1 },
-    },
-    {
-      render: {
-        componentType: "formbutton",
-      },
-      name: "CLEAR",
-      label: "Clear",
-      type: "text",
-      GridProps: { xs: 4, sm: 2, md: 1.5, lg: 1.5, xl: 1 },
     },
   ],
 };

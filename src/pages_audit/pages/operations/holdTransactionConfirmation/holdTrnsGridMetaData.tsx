@@ -14,7 +14,7 @@ export const holdTrnsGridMetaData: GridMetaDataType = {
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
-    enablePagination: true,
+    enablePagination: false,
     pageSizes: [15, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
@@ -92,7 +92,7 @@ export const holdTrnsGridMetaData: GridMetaDataType = {
 
     {
       accessor: "PAID",
-      columnName: "Paid Waive",
+      columnName: "Paid/Waive",
       sequence: 7,
       alignment: "left",
       componentType: "default",
