@@ -49,18 +49,11 @@ export const OrnamentTypeMasterGrid = () => {
   const { t } = useTranslation();
 
   const deleteMutation = useMutation(API.ornamentTypeMasterDML, {
-    onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
+    onError: async (error: any) => {
       CloseMessageBox();
     },
     onSuccess: () => {
-      enqueueSnackbar(t("RecordsDeletedMsg"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -77,6 +70,7 @@ export const OrnamentTypeMasterGrid = () => {
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           deleteMutation.mutate({
@@ -102,8 +96,8 @@ export const OrnamentTypeMasterGrid = () => {
     any
   >(["getOrnamentTypeMasterGirdData", authState?.user?.branchCode], () =>
     API.getOrnamentTypeMasterGirdData({
-      companyID: authState?.companyID,
-      branchCode: authState?.user?.branchCode,
+      companyID: authState?.companyID ?? "",
+      branchCode: authState?.user?.branchCode ?? "",
     })
   );
 
@@ -132,11 +126,17 @@ export const OrnamentTypeMasterGrid = () => {
 
   return (
     <>
-      {isError && (
+      {(isError || deleteMutation.isError) && (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
-          errorDetail={error?.error_detail}
+          errorMsg={
+            error?.error_msg ||
+            deleteMutation?.error?.error_msg ||
+            t("Somethingwenttowrong")
+          }
+          errorDetail={
+            error?.error_detail || deleteMutation?.error?.error_detail || ""
+          }
           color="error"
         />
       )}

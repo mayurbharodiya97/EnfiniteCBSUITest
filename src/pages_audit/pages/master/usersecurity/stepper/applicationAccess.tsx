@@ -11,13 +11,13 @@ import * as API from "./api/api";
 import { applicationAccess } from "./metaData/metaDataGrid";
 import { useNavigate } from "react-router-dom";
 import { SecurityContext } from "../context/SecuityForm";
-import { Alert } from "reactstrap";
 
 import {
   extractGridMetaData,
   GridWrapper,
   GridMetaDataType,
   ActionTypes,
+  Alert,
 } from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
@@ -74,18 +74,18 @@ const NewApplicationAccess = forwardRef<any, any>(
         }
       },
       onSuccess: (data) => {
-        const updatedGrid1Data = data.map((gridItem) => ({
+        const updatedGrid1Data = data?.map((gridItem) => ({
           ...gridItem,
-          APP_TRAN_CD: gridItem.TRAN_CD,
-          LOGIN_ACCESS: gridItem.LOGIN_ACCESS === "Y" ? true : false,
+          APP_TRAN_CD: gridItem?.TRAN_CD,
+          LOGIN_ACCESS: gridItem?.LOGIN_ACCESS === "Y" ? true : false,
         }));
-        let filteredGrid1Data = updatedGrid1Data.filter(
+        let filteredGrid1Data = updatedGrid1Data?.filter(
           (gridItem) =>
-            !applicationData.some(
+            !applicationData?.some(
               (dataItem) => dataItem.APP_NM === gridItem.APP_NM
             )
         );
-        const last = filteredGrid1Data.map((row) => ({
+        const last = filteredGrid1Data?.map((row) => ({
           ...row,
           _isNewRow: true,
         }));

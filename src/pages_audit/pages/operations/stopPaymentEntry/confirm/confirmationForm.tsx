@@ -130,7 +130,7 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
                     let buttonName = await MessageBox({
                       messageTitle: "confirmation",
                       message: "AreYouSureToConfirm",
-                      buttonNames: ["No", "Yes"],
+                      buttonNames: ["Yes", "No"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: ["Yes"],
                     });

@@ -118,16 +118,11 @@ export const FixDepositDetailFormMetadata = {
       name: "ADDNEWROW",
       label: "AddRow",
       placeholder: "",
-      // type: "text",
-      // tabIndex: "-1",
       iconStyle: {
         fontSize: "25px !important",
       },
-      __VIEW__: {
-        shouldExclude: () => {
-          return true;
-        },
-        GridProps: { xs: 0, sm: 0, md: 0, lg: 0, xl: 0 },
+      shouldExclude: () => {
+        return false;
       },
       GridProps: { xs: 2.2, sm: 2, md: 1.8, lg: 1, xl: 1 },
     },
@@ -163,306 +158,23 @@ export const FixDepositDetailFormMetadata = {
       _fields: [
         {
           render: { componentType: "_accountNumber" },
-          __NEW__: {
-            branchCodeMetadata: {
-              name: "BRANCH_CD",
-              runPostValidationHookAlways: true,
-              validationRun: "onChange",
-              isFieldFocused: true,
-              postValidationSetCrossFieldValues: async (
-                currentField,
-                formState,
-                authState,
-                dependentFieldValues
-              ) => {
-                if (formState?.isSubmitting) return {};
-                return {
-                  ACCT_TYPE: { value: "" },
-                  ACCT_CD: { value: "" },
-                };
-              },
-              GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
-            },
-            accountTypeMetadata: {
-              name: "ACCT_TYPE",
-              runPostValidationHookAlways: true,
-              validationRun: "onChange",
-              dependentFields: ["BRANCH_CD"],
-              isFieldFocused: true,
-              postValidationSetCrossFieldValues: async (
-                currentField,
-                formState,
-                authState,
-                dependentFieldsValues
-              ) => {
-                if (formState?.isSubmitting) return {};
-
-                if (
-                  currentField?.value &&
-                  dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value?.length ===
-                    0
-                ) {
-                  let buttonName = await formState?.MessageBox({
-                    messageTitle: "Alert",
-                    message: "Enter Account Branch.",
-                    buttonNames: ["Ok"],
-                    icon: "WARNING",
-                  });
-
-                  if (buttonName === "Ok") {
-                    return {
-                      ACCT_TYPE: {
-                        value: "",
-                        isFieldFocused: false,
-                        ignoreUpdate: true,
-                      },
-                      BRANCH_CD: {
-                        value: "",
-                        isFieldFocused: true,
-                        ignoreUpdate: true,
-                      },
-                    };
-                  }
-                } else if (
-                  currentField?.value &&
-                  dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value
-                ) {
-                  const reqParameters = {
-                    COMP_CD: authState?.companyID ?? "",
-                    BRANCH_CD:
-                      dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value ?? "",
-                    ACCT_TYPE: currentField?.value ?? "",
-                    SCREEN_REF: "RPT/401",
-                  };
-                  const postData = await API.getFDParaDetail(reqParameters);
-                  const tenorData = await API.getPeriodDDWData(reqParameters);
-
-                  return {
-                    FD_NO_DISABLED: {
-                      value: postData?.[0]?.FD_NO_DISABLED ?? "",
-                    },
-                    INT_RATE_DISABLED: {
-                      value: postData?.[0]?.INT_RATE_DISABLED ?? "",
-                    },
-                    MATURITY_AMT_DISABLED: {
-                      value: postData?.[0]?.MATURITY_AMT_DISABLED ?? "",
-                    },
-                    TERM_CD_DISABLED: {
-                      value: postData?.[0]?.TERM_CD_DISABLED ?? "",
-                    },
-                    TRAN_DT_DISABLED: {
-                      value: postData?.[0]?.TRAN_DT_DISABLED ?? "",
-                    },
-                    FD_NO: {
-                      value: postData?.[0]?.FD_NO ?? "",
-                    },
-                    TERM_CD: {
-                      value: postData?.[0]?.TERM_CD ?? "",
-                    },
-                    SPL_AMT: {
-                      value: postData?.[0]?.SPL_AMT ?? "",
-                    },
-                    DOUBLE_TRAN: {
-                      value: postData?.[0]?.DOUBLE_TRAN ?? "",
-                    },
-                    COMP_CD: {
-                      value: authState?.companyID ?? "",
-                    },
-                    PERIOD_CD: {
-                      value: tenorData?.[0]?.defaultVal ?? "",
-                      ignoreUpdate: true,
-                    },
-                  };
-                }
-                return {
-                  ACCT_CD: { value: "" },
-                  FD_NO_DISABLED: { value: "" },
-                  INT_RATE_DISABLED: { value: "" },
-                  MATURITY_AMT_DISABLED: { value: "" },
-                  TERM_CD_DISABLED: { value: "" },
-                  TRAN_DT_DISABLED: { value: "" },
-                  FD_NO: { value: "" },
-                  TERM_CD: { value: "" },
-                  SPL_AMT: { value: "" },
-                };
-              },
-              GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
-            },
-            accountCodeMetadata: {
-              name: "ACCT_CD",
-              autoComplete: "off",
-              dependentFields: [
-                "ACCT_TYPE",
-                "BRANCH_CD",
-                "DOUBLE_FAC",
-                "TRAN_CD",
-              ],
-              runPostValidationHookAlways: true,
-              postValidationSetCrossFieldValues: async (
-                currentField,
-                formState,
-                authState,
-                dependentFieldsValues
-              ) => {
-                if (formState?.isSubmitting) return {};
-                if (
-                  currentField.value &&
-                  dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value?.length ===
-                    0
-                ) {
-                  let buttonName = await formState?.MessageBox({
-                    messageTitle: "Alert",
-                    message: "Enter Account Type.",
-                    buttonNames: ["Ok"],
-                    icon: "WARNING",
-                  });
-
-                  if (buttonName === "Ok") {
-                    return {
-                      ACCT_CD: {
-                        value: "",
-                        isFieldFocused: false,
-                        ignoreUpdate: true,
-                      },
-                      ACCT_TYPE: {
-                        value: "",
-                        isFieldFocused: true,
-                        ignoreUpdate: true,
-                      },
-                    };
-                  }
-                } else if (
-                  currentField?.value &&
-                  dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value &&
-                  dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value
-                ) {
-                  const reqParameters = {
-                    COMP_CD: authState?.companyID ?? "",
-                    BRANCH_CD:
-                      dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value ?? "",
-                    ACCT_TYPE:
-                      dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value ?? "",
-                    ACCT_CD:
-                      utilFunction.getPadAccountNumber(
-                        currentField?.value,
-                        dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.optionData
-                      ) ?? "",
-                    SCREEN_REF: "RPT/401",
-                    TRAN_CD: dependentFieldsValues?.TRAN_CD?.value ?? "",
-                    DOUBLE_FAC: dependentFieldsValues?.DOUBLE_FAC?.value ?? "",
-                  };
-                  const postData = await API.validateAcctDtl(reqParameters);
-                  let btn99, returnVal;
-                  const getButtonName = async (obj) => {
-                    let btnName = await formState.MessageBox(obj);
-                    return { btnName, obj };
-                  };
-
-                  for (let i = 0; i < postData?.[0]?.MSG?.length; i++) {
-                    if (postData?.[0]?.MSG?.[i]?.O_STATUS === "999") {
-                      const { btnName, obj } = await getButtonName({
-                        messageTitle: "ValidationFailed",
-                        message: postData?.[0]?.MSG?.[i]?.O_MESSAGE ?? "",
-                        icon: "ERROR",
-                      });
-                      returnVal = "";
-                    } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "9") {
-                      if (btn99 !== "No") {
-                        const { btnName, obj } = await getButtonName({
-                          messageTitle: "Alert",
-                          message: postData?.[0]?.MSG?.[i]?.O_MESSAGE ?? "",
-                          icon: "WARNING",
-                        });
-                      }
-                      returnVal = postData?.[0];
-                    } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "99") {
-                      const { btnName, obj } = await getButtonName({
-                        messageTitle: "Confirmation",
-                        message: postData?.[0]?.MSG?.[i]?.O_MESSAGE ?? "",
-                        buttonNames: ["Yes", "No"],
-                      });
-
-                      btn99 = btnName;
-                      if (btnName === "No") {
-                        returnVal = "";
-                      }
-                    } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "0") {
-                      if (btn99 !== "No") {
-                        returnVal = postData?.[0];
-                      } else {
-                        returnVal = "";
-                      }
-                    }
-                  }
-                  btn99 = 0;
-
-                  return {
-                    ACCT_CD:
-                      returnVal !== ""
-                        ? {
-                            value: utilFunction.getPadAccountNumber(
-                              currentField?.value,
-                              dependentFieldsValues?.["FDDTL.ACCT_TYPE"]
-                                ?.optionData
-                            ),
-                            isFieldFocused: false,
-                            ignoreUpdate: true,
-                          }
-                        : {
-                            value: "",
-                            isFieldFocused: true,
-                            ignoreUpdate: true,
-                          },
-                    CATEG_CD: {
-                      value: returnVal?.CATEG_CD ?? "",
-                    },
-                    AGG_DEP_CUSTID: {
-                      value: returnVal?.AGG_DEP_CUSTID ?? "",
-                    },
-                    DEP_FAC: {
-                      value: returnVal?.DEP_FAC ?? "",
-                    },
-                    COMP_CD: {
-                      value: authState?.companyID ?? "",
-                    },
-                  };
-                } else if (!currentField?.value) {
-                  return {
-                    CATEG_CD: { value: "" },
-                    AGG_DEP_CUSTID: { value: "" },
-                    DEP_FAC: { value: "" },
-                  };
-                }
-                return {};
-              },
-              fullWidth: true,
-              GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
-            },
+          branchCodeMetadata: {
+            isReadOnly: true,
+            options: () => {},
+            _optionsKey: "",
+            GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
           },
-          __VIEW__: {
-            branchCodeMetadata: {
-              name: "BRANCH_CD",
-              isReadOnly: true,
-              schemaValidation: {},
-              postValidationSetCrossFieldValues: () => {},
-              GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
-            },
-            accountTypeMetadata: {
-              name: "ACCT_TYPE",
-              options: () => {},
-              isReadOnly: true,
-              _optionsKey: "",
-              schemaValidation: {},
-              postValidationSetCrossFieldValues: () => {},
-              GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
-            },
-            accountCodeMetadata: {
-              name: "ACCT_CD",
-              isReadOnly: true,
-              schemaValidation: {},
-              postValidationSetCrossFieldValues: () => {},
-              GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
-            },
+          accountTypeMetadata: {
+            options: () => {},
+            _optionsKey: "",
+            isReadOnly: true,
+            GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
+          },
+          accountCodeMetadata: {
+            postValidationSetCrossFieldValues: () => {},
+            isReadOnly: true,
+            fullWidth: true,
+            GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
           },
         },
 
@@ -474,6 +186,7 @@ export const FixDepositDetailFormMetadata = {
           label: "FD Number",
           className: "textInputFromRight",
           placeholder: "",
+          autoComplete: "off",
           maxLength: 10,
           dependentFields: ["FD_NO_DISABLED"],
           isReadOnly(_, dependentFieldsValues, formState) {
@@ -496,236 +209,11 @@ export const FixDepositDetailFormMetadata = {
               }
               return true;
             },
-            isValidation: "no",
           },
           __VIEW__: { isReadOnly: true },
-          GridProps: { xs: 12, sm: 4, md: 2.2, lg: 2, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
         },
 
-        {
-          render: {
-            componentType: "amountField",
-          },
-          name: "CASH_AMT",
-          label: "Cash",
-          placeholder: "",
-          type: "text",
-          dependentFields: [
-            "BRANCH_CD",
-            "ACCT_TYPE",
-            "ACCT_CD",
-            "CATEG_CD",
-            "MATURITY_DT",
-            "TRAN_DT",
-            "PERIOD_CD",
-            "PERIOD_NO",
-            "SPL_AMT",
-            "DEP_FAC",
-            "TRSF_AMT",
-            "AGG_DEP_CUSTID",
-          ],
-          postValidationSetCrossFieldValues: async (
-            currentField,
-            formState,
-            authState,
-            dependentFieldsValues
-          ) => {
-            if (formState?.isSubmitting) return {};
-
-            if (
-              Number(dependentFieldsValues?.["FDDTL.AGG_DEP_CUSTID"]?.value) >
-                0 ||
-              dependentFieldsValues?.["FDDTL.SPL_AMT"]?.value?.trim() === "Y"
-            ) {
-              if (
-                dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value &&
-                dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value &&
-                dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value &&
-                currentField?.value
-              ) {
-                const reqParameters = {
-                  A_COMP_CD: authState?.companyID ?? "",
-                  A_BRANCH_CD:
-                    dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value ?? "",
-                  A_ACCT_TYPE:
-                    dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value ?? "",
-                  A_ACCT_CD:
-                    dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value ?? "",
-                  A_BASE_BRANCH: authState?.user?.branchCode ?? "",
-                  A_CATEG_CD:
-                    dependentFieldsValues?.["FDDTL.CATEG_CD"]?.value ?? "",
-                  A_MATURITY_DT: dependentFieldsValues?.["FDDTL.MATURITY_DT"]
-                    ?.value
-                    ? format(
-                        dependentFieldsValues?.["FDDTL.MATURITY_DT"]?.value,
-                        "dd-MMM-yyyy"
-                      )
-                    : "",
-                  A_TRAN_DT: dependentFieldsValues?.["FDDTL.TRAN_DT"]?.value
-                    ? format(
-                        dependentFieldsValues?.["FDDTL.TRAN_DT"]?.value,
-                        "dd-MMM-yyyy"
-                      )
-                    : "",
-                  A_PERIOD_CD:
-                    dependentFieldsValues?.["FDDTL.PERIOD_CD"]?.value ?? "",
-                  A_PERIOD_NO:
-                    dependentFieldsValues?.["FDDTL.PERIOD_NO"]?.value ?? "",
-                  A_CASH_AMT: currentField?.value ?? "",
-                  A_TRSF_AMT:
-                    dependentFieldsValues?.["FDDTL.TRSF_AMT"]?.value ?? "",
-                  A_SPL_AMT:
-                    dependentFieldsValues?.["FDDTL.SPL_AMT"]?.value ?? "",
-                  A_DEP_FAC:
-                    dependentFieldsValues?.["FDDTL.DEP_FAC"]?.value ?? "",
-                  A_AGG_DEP_CUSTID:
-                    dependentFieldsValues?.["FDDTL.AGG_DEP_CUSTID"]?.value ??
-                    "",
-                  WORKING_DATE: authState?.workingDate,
-                };
-                const postData = await API.validateFDDepAmt(reqParameters);
-                if (postData?.[0]?.O_STATUS === "999") {
-                  return {
-                    INT_RATE: { value: "" },
-                    CASH_AMT: {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
-                  };
-                } else if (postData?.[0]?.O_STATUS === "0") {
-                  return {
-                    INT_RATE: {
-                      value: postData?.[0]?.INT_RATE ?? "",
-                    },
-                    CASH_AMT: {
-                      value: currentField?.value,
-                      isFieldFocused: false,
-                      ignoreUpdate: true,
-                    },
-                  };
-                }
-              }
-            }
-            return {};
-          },
-          __VIEW__: { isReadOnly: true },
-          GridProps: { xs: 12, sm: 4, md: 2.6, lg: 2, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "amountField",
-          },
-          name: "TRSF_AMT",
-          label: "Transfer Amount",
-          placeholder: "",
-          type: "text",
-          dependentFields: [
-            "BRANCH_CD",
-            "ACCT_TYPE",
-            "ACCT_CD",
-            "CATEG_CD",
-            "MATURITY_DT",
-            "TRAN_DT",
-            "PERIOD_CD",
-            "PERIOD_NO",
-            "SPL_AMT",
-            "DEP_FAC",
-            "CASH_AMT",
-            "AGG_DEP_CUSTID",
-          ],
-          postValidationSetCrossFieldValues: async (
-            currentField,
-            formState,
-            authState,
-            dependentFieldsValues
-          ) => {
-            if (formState?.isSubmitting) return {};
-
-            if (
-              Number(dependentFieldsValues?.["FDDTL.AGG_DEP_CUSTID"]?.value) >
-                0 ||
-              dependentFieldsValues?.["FDDTL.SPL_AMT"]?.value?.trim() === "Y"
-            ) {
-              if (
-                currentField?.value &&
-                dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value &&
-                dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value &&
-                dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value
-              ) {
-                const reqParameters = {
-                  A_COMP_CD: authState?.companyID ?? "",
-                  A_BRANCH_CD:
-                    dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value ?? "",
-                  A_ACCT_TYPE:
-                    dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value ?? "",
-                  A_ACCT_CD:
-                    dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value ?? "",
-                  A_BASE_BRANCH: authState?.user?.branchCode ?? "",
-                  A_CATEG_CD:
-                    dependentFieldsValues?.["FDDTL.CATEG_CD"]?.value ?? "",
-                  A_MATURITY_DT: dependentFieldsValues?.["FDDTL.MATURITY_DT"]
-                    ?.value
-                    ? format(
-                        dependentFieldsValues?.["FDDTL.MATURITY_DT"]?.value,
-                        "dd-MMM-yyyy"
-                      )
-                    : "",
-                  A_TRAN_DT: dependentFieldsValues?.["FDDTL.TRAN_DT"]?.value
-                    ? format(
-                        dependentFieldsValues?.["FDDTL.TRAN_DT"]?.value,
-                        "dd-MMM-yyyy"
-                      )
-                    : "",
-                  A_PERIOD_CD:
-                    dependentFieldsValues?.["FDDTL.PERIOD_CD"]?.value ?? "",
-                  A_PERIOD_NO:
-                    dependentFieldsValues?.["FDDTL.PERIOD_NO"]?.value ?? "",
-                  A_CASH_AMT:
-                    dependentFieldsValues?.["FDDTL.CASH_AMT"]?.value ?? "",
-                  A_TRSF_AMT: currentField?.value ?? "",
-                  A_SPL_AMT:
-                    dependentFieldsValues?.["FDDTL.SPL_AMT"]?.value ?? "",
-                  A_DEP_FAC:
-                    dependentFieldsValues?.["FDDTL.DEP_FAC"]?.value ?? "",
-                  A_AGG_DEP_CUSTID:
-                    dependentFieldsValues?.["FDDTL.AGG_DEP_CUSTID"]?.value ??
-                    "",
-                  WORKING_DATE: authState?.workingDate,
-                };
-                const postData = await API.validateFDDepAmt(reqParameters);
-                if (postData?.[0]?.O_STATUS === "999") {
-                  return {
-                    INT_RATE: { value: "" },
-                    TRSF_AMT: {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
-                  };
-                } else if (postData?.[0]?.O_STATUS === "0") {
-                  return {
-                    INT_RATE: {
-                      value: postData?.[0]?.INT_RATE ?? "",
-                      ignoreUpdate: true,
-                    },
-                    TRSF_AMT: {
-                      value: currentField?.value,
-                      isFieldFocused: false,
-                      ignoreUpdate: true,
-                    },
-                  };
-                }
-              }
-            }
-            return {};
-          },
-          FormatProps: {
-            allowNegative: false,
-          },
-          __VIEW__: { isReadOnly: true },
-          GridProps: { xs: 12, sm: 4, md: 2.6, lg: 2, xl: 1.5 },
-        },
         {
           render: {
             componentType: "datePicker",
@@ -734,11 +222,11 @@ export const FixDepositDetailFormMetadata = {
           label: "AsOn Date",
           placeholder: "",
           type: "text",
+          autoComplete: "off",
           format: "dd/MM/yyyy",
           defaultValue: new Date(),
           fullWidth: true,
           maxDate: new Date(),
-          // defaultfocus: true,
           required: true,
           dependentFields: [
             "BRANCH_CD",
@@ -815,7 +303,6 @@ export const FixDepositDetailFormMetadata = {
           },
           name: "PERIOD_CD",
           label: "Period/Tenor",
-          disableCaching: true,
           dependentFields: [
             "BRANCH_CD",
             "ACCT_TYPE",
@@ -827,20 +314,8 @@ export const FixDepositDetailFormMetadata = {
             "MATURITY_DT",
             "CASH_AMT",
           ],
-          options: (...arg) => {
-            if (
-              Boolean(arg?.[3]?.companyID) &&
-              Boolean(arg?.[3]?.user?.baseBranchCode) &&
-              Boolean(arg?.[2]?.["FDDTL.ACCT_TYPE"]?.value)
-            ) {
-              return API.getPeriodDDWData({
-                COMP_CD: arg?.[3]?.companyID ?? "",
-                BRANCH_CD: arg?.[3]?.user?.baseBranchCode ?? "",
-                ACCT_TYPE: arg?.[2]?.["FDDTL.ACCT_TYPE"]?.value ?? "",
-              });
-            } else {
-              return [];
-            }
+          options: (dependentValue, formState, _, authState) => {
+            return formState?.tenorDDWData;
           },
           _optionsKey: "getPeriodDDWData",
           required: true,
@@ -870,7 +345,7 @@ export const FixDepositDetailFormMetadata = {
             schemaValidation: {},
             postValidationSetCrossFieldValues: () => {},
           },
-          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 2.1, xl: 1.5 },
         },
         {
           render: {
@@ -880,6 +355,7 @@ export const FixDepositDetailFormMetadata = {
           label: "Tenor",
           className: "textInputFromRight",
           placeholder: "Enter Tenor",
+          autoComplete: "off",
           maxLength: 5,
           FormatProps: {
             isAllowed: (values) => {
@@ -923,7 +399,7 @@ export const FixDepositDetailFormMetadata = {
             rules: [{ name: "required", params: ["Tenor is Required."] }],
           },
           __VIEW__: { isReadOnly: true },
-          GridProps: { xs: 12, sm: 4, md: 2.3, lg: 1.4, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.2, xl: 1.5 },
         },
         {
           render: {
@@ -931,9 +407,9 @@ export const FixDepositDetailFormMetadata = {
           },
           name: "INT_RATE",
           label: "Interest Rate",
-          placeholder: "",
           required: true,
           type: "text",
+          autoComplete: "off",
           dependentFields: [
             "INT_RATE_DISABLED",
             "BRANCH_CD",
@@ -977,8 +453,20 @@ export const FixDepositDetailFormMetadata = {
               { name: "required", params: ["Interest Rate is Required."] },
             ],
           },
+          FormatProps: {
+            placeholder: "0.00",
+            isAllowed: (values) => {
+              if (values?.floatValue > 100) {
+                return false;
+              }
+              if (values?.value?.length > 6) {
+                return false;
+              }
+              return true;
+            },
+          },
           __VIEW__: { isReadOnly: true },
-          GridProps: { xs: 12, sm: 4, md: 2.3, lg: 1.4, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.7, xl: 1.5 },
         },
         {
           render: {
@@ -1038,7 +526,7 @@ export const FixDepositDetailFormMetadata = {
             schemaValidation: {},
             postValidationSetCrossFieldValues: () => {},
           },
-          GridProps: { xs: 12, sm: 4, md: 2.3, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.7, xl: 1.5 },
         },
         {
           render: {
@@ -1046,8 +534,31 @@ export const FixDepositDetailFormMetadata = {
           },
           name: "MONTHLY_INT",
           label: "Month Interest",
+          dependentFields: ["TERM_CD"],
           isReadOnly: true,
-          GridProps: { xs: 12, sm: 4, md: 2.6, lg: 1.9, xl: 1.5 },
+          shouldExclude: (_, dependentFieldsValues, formState) => {
+            if (dependentFieldsValues?.["FDDTL.TERM_CD"]?.value === "M") {
+              return false;
+            } else {
+              return true;
+            }
+          },
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.9, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "spacer",
+          },
+          name: "MONTHLY_INT_EXCLUDE",
+          dependentFields: ["TERM_CD"],
+          shouldExclude: (_, dependentFieldsValues, formState) => {
+            if (dependentFieldsValues?.["FDDTL.TERM_CD"]?.value === "M") {
+              return true;
+            } else {
+              return false;
+            }
+          },
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.9, xl: 1.5 },
         },
         {
           render: {
@@ -1059,7 +570,237 @@ export const FixDepositDetailFormMetadata = {
           format: "dd/MM/yyyy",
           isReadOnly: true,
           fullWidth: true,
-          GridProps: { xs: 12, sm: 4, md: 2.3, lg: 1.9, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.9, xl: 1.5 },
+        },
+
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "CASH_AMT",
+          label: "Cash",
+          placeholder: "",
+          type: "text",
+          autoComplete: "off",
+          dependentFields: [
+            "BRANCH_CD",
+            "ACCT_TYPE",
+            "ACCT_CD",
+            "CATEG_CD",
+            "MATURITY_DT",
+            "TRAN_DT",
+            "PERIOD_CD",
+            "PERIOD_NO",
+            "SPL_AMT",
+            "DEP_FAC",
+            "TRSF_AMT",
+            "AGG_DEP_CUSTID",
+          ],
+          postValidationSetCrossFieldValues: async (
+            currentField,
+            formState,
+            authState,
+            dependentFieldsValues
+          ) => {
+            if (formState?.isSubmitting) return {};
+
+            if (
+              Number(dependentFieldsValues?.["FDDTL.AGG_DEP_CUSTID"]?.value) >
+                0 ||
+              dependentFieldsValues?.["FDDTL.SPL_AMT"]?.value?.trim() === "Y"
+            ) {
+              if (
+                dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value &&
+                dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value &&
+                dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value
+              ) {
+                const reqParameters = {
+                  A_COMP_CD: authState?.companyID ?? "",
+                  A_BRANCH_CD:
+                    dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value ?? "",
+                  A_ACCT_TYPE:
+                    dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value ?? "",
+                  A_ACCT_CD:
+                    dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value ?? "",
+                  A_BASE_BRANCH: authState?.user?.branchCode ?? "",
+                  A_CATEG_CD:
+                    dependentFieldsValues?.["FDDTL.CATEG_CD"]?.value ?? "",
+                  A_MATURITY_DT: dependentFieldsValues?.["FDDTL.MATURITY_DT"]
+                    ?.value
+                    ? format(
+                        dependentFieldsValues?.["FDDTL.MATURITY_DT"]?.value,
+                        "dd-MMM-yyyy"
+                      )
+                    : "",
+                  A_TRAN_DT: dependentFieldsValues?.["FDDTL.TRAN_DT"]?.value
+                    ? format(
+                        dependentFieldsValues?.["FDDTL.TRAN_DT"]?.value,
+                        "dd-MMM-yyyy"
+                      )
+                    : "",
+                  A_PERIOD_CD:
+                    dependentFieldsValues?.["FDDTL.PERIOD_CD"]?.value ?? "",
+                  A_PERIOD_NO:
+                    dependentFieldsValues?.["FDDTL.PERIOD_NO"]?.value ?? "",
+                  A_CASH_AMT: currentField?.value ?? "",
+                  A_TRSF_AMT:
+                    dependentFieldsValues?.["FDDTL.TRSF_AMT"]?.value ?? "",
+                  A_SPL_AMT:
+                    dependentFieldsValues?.["FDDTL.SPL_AMT"]?.value ?? "",
+                  A_DEP_FAC:
+                    dependentFieldsValues?.["FDDTL.DEP_FAC"]?.value ?? "",
+                  A_AGG_DEP_CUSTID:
+                    dependentFieldsValues?.["FDDTL.AGG_DEP_CUSTID"]?.value ??
+                    "",
+                  WORKING_DATE: authState?.workingDate,
+                };
+                const postData = await API.validateFDDepAmt(reqParameters);
+                if (postData?.[0]?.O_STATUS === "999") {
+                  return {
+                    INT_RATE: { value: "" },
+                    CASH_AMT: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                } else if (postData?.[0]?.O_STATUS === "0") {
+                  return {
+                    INT_RATE: {
+                      value: postData?.[0]?.INT_RATE ?? "",
+                    },
+                    CASH_AMT: {
+                      value: currentField?.value,
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
+            }
+            return {};
+          },
+          isReadOnly(_, dependentFieldsValues, formState) {
+            return Boolean(formState?.openDepositForRenew) ? true : false;
+          },
+          __VIEW__: { isReadOnly: true },
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.8, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "TRSF_AMT",
+          label: "Transfer Amount",
+          placeholder: "",
+          autoComplete: "off",
+          type: "text",
+          dependentFields: [
+            "BRANCH_CD",
+            "ACCT_TYPE",
+            "ACCT_CD",
+            "CATEG_CD",
+            "MATURITY_DT",
+            "TRAN_DT",
+            "PERIOD_CD",
+            "PERIOD_NO",
+            "SPL_AMT",
+            "DEP_FAC",
+            "CASH_AMT",
+            "AGG_DEP_CUSTID",
+          ],
+          postValidationSetCrossFieldValues: async (
+            currentField,
+            formState,
+            authState,
+            dependentFieldsValues
+          ) => {
+            if (formState?.isSubmitting) return {};
+
+            if (
+              Number(dependentFieldsValues?.["FDDTL.AGG_DEP_CUSTID"]?.value) >
+                0 ||
+              dependentFieldsValues?.["FDDTL.SPL_AMT"]?.value?.trim() === "Y"
+            ) {
+              if (
+                dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value &&
+                dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value &&
+                dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value
+              ) {
+                const reqParameters = {
+                  A_COMP_CD: authState?.companyID ?? "",
+                  A_BRANCH_CD:
+                    dependentFieldsValues?.["FDDTL.BRANCH_CD"]?.value ?? "",
+                  A_ACCT_TYPE:
+                    dependentFieldsValues?.["FDDTL.ACCT_TYPE"]?.value ?? "",
+                  A_ACCT_CD:
+                    dependentFieldsValues?.["FDDTL.ACCT_CD"]?.value ?? "",
+                  A_BASE_BRANCH: authState?.user?.branchCode ?? "",
+                  A_CATEG_CD:
+                    dependentFieldsValues?.["FDDTL.CATEG_CD"]?.value ?? "",
+                  A_MATURITY_DT: dependentFieldsValues?.["FDDTL.MATURITY_DT"]
+                    ?.value
+                    ? format(
+                        dependentFieldsValues?.["FDDTL.MATURITY_DT"]?.value,
+                        "dd-MMM-yyyy"
+                      )
+                    : "",
+                  A_TRAN_DT: dependentFieldsValues?.["FDDTL.TRAN_DT"]?.value
+                    ? format(
+                        dependentFieldsValues?.["FDDTL.TRAN_DT"]?.value,
+                        "dd-MMM-yyyy"
+                      )
+                    : "",
+                  A_PERIOD_CD:
+                    dependentFieldsValues?.["FDDTL.PERIOD_CD"]?.value ?? "",
+                  A_PERIOD_NO:
+                    dependentFieldsValues?.["FDDTL.PERIOD_NO"]?.value ?? "",
+                  A_CASH_AMT:
+                    dependentFieldsValues?.["FDDTL.CASH_AMT"]?.value ?? "",
+                  A_TRSF_AMT: currentField?.value ?? "",
+                  A_SPL_AMT:
+                    dependentFieldsValues?.["FDDTL.SPL_AMT"]?.value ?? "",
+                  A_DEP_FAC:
+                    dependentFieldsValues?.["FDDTL.DEP_FAC"]?.value ?? "",
+                  A_AGG_DEP_CUSTID:
+                    dependentFieldsValues?.["FDDTL.AGG_DEP_CUSTID"]?.value ??
+                    "",
+                  WORKING_DATE: authState?.workingDate,
+                };
+                const postData = await API.validateFDDepAmt(reqParameters);
+                if (postData?.[0]?.O_STATUS === "999") {
+                  return {
+                    INT_RATE: { value: "" },
+                    TRSF_AMT: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                } else if (postData?.[0]?.O_STATUS === "0") {
+                  return {
+                    INT_RATE: {
+                      value: postData?.[0]?.INT_RATE ?? "",
+                    },
+                    TRSF_AMT: {
+                      value: currentField?.value,
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
+            }
+            return {};
+          },
+          FormatProps: {
+            allowNegative: false,
+          },
+          isReadOnly(_, dependentFieldsValues, formState) {
+            return Boolean(formState?.openDepositForRenew) ? true : false;
+          },
+          __VIEW__: { isReadOnly: true },
+          GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.8, xl: 1.5 },
         },
 
         {
@@ -1071,7 +812,7 @@ export const FixDepositDetailFormMetadata = {
             label: "Credit A/c Branch",
             required: false,
             schemaValidation: {},
-            dependentFields: ["MATURE_INST"],
+            validationRun: "onChange",
             runPostValidationHookAlways: true,
             postValidationSetCrossFieldValues: (
               currentField,
@@ -1082,7 +823,7 @@ export const FixDepositDetailFormMetadata = {
               if (formState?.isSubmitting) return {};
               return {
                 CR_ACCT_TYPE: { value: "" },
-                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_CD: { value: "", ignoreUpdate: false },
                 CR_ACCT_NM: { value: "" },
               };
             },
@@ -1099,7 +840,7 @@ export const FixDepositDetailFormMetadata = {
             name: "CR_ACCT_TYPE",
             label: "Credit A/c Type",
             required: false,
-            dependentFields: ["MATURE_INST", "CR_BRANCH_CD"],
+            validationRun: "onChange",
             schemaValidation: {},
             options: (dependentValue, formState, _, authState) => {
               return GeneralAPI.get_Account_Type({
@@ -1111,7 +852,7 @@ export const FixDepositDetailFormMetadata = {
             },
             _optionsKey: "getCreditAccountType",
             runPostValidationHookAlways: true,
-            validationRun: "onChange",
+            dependentFields: ["CR_BRANCH_CD"],
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -1119,8 +860,35 @@ export const FixDepositDetailFormMetadata = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              if (
+                currentField?.value &&
+                dependentFieldValues?.["FDDTL.CR_BRANCH_CD"]?.value?.length ===
+                  0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: "Enter Account Branch.",
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    CR_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    CR_BRANCH_CD: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
               return {
-                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_CD: { value: "", ignoreUpdate: false },
                 CR_ACCT_NM: { value: "" },
               };
             },
@@ -1138,7 +906,8 @@ export const FixDepositDetailFormMetadata = {
             label: "Credit A/c No.",
             required: false,
             schemaValidation: {},
-            dependentFields: ["CR_BRANCH_CD", "CR_ACCT_TYPE", "MATURE_INST"],
+            autoComplete: "off",
+            dependentFields: ["CR_BRANCH_CD", "CR_ACCT_TYPE"],
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -1146,8 +915,33 @@ export const FixDepositDetailFormMetadata = {
               dependentFieldsValues
             ) => {
               if (formState?.isSubmitting) return {};
-
               if (
+                currentField?.value &&
+                dependentFieldsValues?.["FDDTL.CR_ACCT_TYPE"]?.value?.length ===
+                  0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: "Enter Account Type.",
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    CR_ACCT_CD: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: false,
+                    },
+                    CR_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (
                 currentField?.value &&
                 dependentFieldsValues?.["FDDTL.CR_BRANCH_CD"]?.value &&
                 dependentFieldsValues?.["FDDTL.CR_ACCT_TYPE"]?.value
@@ -1177,7 +971,9 @@ export const FixDepositDetailFormMetadata = {
                 for (let i = 0; i < postData?.[0]?.MSG?.length; i++) {
                   if (postData?.[0]?.MSG?.[i]?.O_STATUS === "999") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "ValidationFailed",
+                      messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                        : "ValidationFailed",
                       message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                       icon: "ERROR",
                     });
@@ -1185,7 +981,10 @@ export const FixDepositDetailFormMetadata = {
                   } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "9") {
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
+                        messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                          ?.length
+                          ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                          : "Alert",
                         message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                         icon: "WARNING",
                       });
@@ -1193,9 +992,12 @@ export const FixDepositDetailFormMetadata = {
                     returnVal = postData[0];
                   } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "99") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Confirmation",
+                      messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                        : "Confirmation",
                       message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
 
                     btn99 = btnName;
@@ -1225,7 +1027,7 @@ export const FixDepositDetailFormMetadata = {
                       : {
                           value: "",
                           isFieldFocused: true,
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                         },
                   CR_ACCT_NM: {
                     value: returnVal?.ACCT_NM ?? "",
@@ -1266,6 +1068,7 @@ export const FixDepositDetailFormMetadata = {
           name: "MATURITY_AMT",
           label: "Maturity Amount",
           type: "text",
+          autoComplete: "off",
           required: true,
           FormatProps: {
             allowNegative: false,
@@ -1299,11 +1102,10 @@ export const FixDepositDetailFormMetadata = {
           },
           name: "MATURE_INST",
           label: "Mature Instruction",
-          type: "text",
-          dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
-          disableCaching: true,
-          defaultValue: "NO",
-          options: "getMatureInstDetail",
+          options: (dependentValue, formState, _, authState) => {
+            return formState?.matureInstDDWData;
+          },
+          _optionsKey: "getMatureInstDDWData",
           fullWidth: true,
           schemaValidation: {
             type: "string",
@@ -1334,6 +1136,7 @@ export const FixDepositDetailFormMetadata = {
           name: "FD_REMARK",
           label: "FD Remark",
           type: "text",
+          autoComplete: "off",
           placeholder: "Enter FD Remark",
           isReadOnly(fieldData, dependentFieldsValues, formState) {
             if (formState?.screenFlag === "openLienForm") {
@@ -1363,7 +1166,8 @@ export const FixDepositDetailFormMetadata = {
           type: "text",
           placeholder: "Enter Nominee Name",
           fullWidth: true,
-          GridProps: { xs: 12, sm: 8, md: 4, lg: 4, xl: 2 },
+          autoComplete: "off",
+          GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 2 },
         },
         {
           render: {
@@ -1555,7 +1359,7 @@ export const FixDepositDetailFormMetadata = {
 
         {
           render: { componentType: "select" },
-          name: "LIEN",
+          name: "LIEN_FLAG",
           label: "Lien",
           options: [
             { label: "No", value: "V" },
@@ -1580,6 +1384,7 @@ export const FixDepositDetailFormMetadata = {
           label: "Remark",
           type: "text",
           fullWidth: true,
+          autoComplete: "off",
           shouldExclude: (_, dependentFieldsValues, formState) => {
             if (formState?.screenFlag === "openLienForm") {
               return false;
@@ -1597,6 +1402,7 @@ export const FixDepositDetailFormMetadata = {
           label: "Bank Code",
           type: "text",
           isReadOnly: true,
+          autoComplete: "off",
           shouldExclude: (_, dependentFieldsValues, formState) => {
             if (formState?.screenFlag === "openLienForm") {
               return false;
@@ -1614,7 +1420,7 @@ export const FixDepositDetailFormMetadata = {
             isFieldFocused: true,
             runPostValidationHookAlways: true,
             validationRun: "onChange",
-            dependentFields: ["LIEN"],
+            dependentFields: ["LIEN_FLAG"],
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -1624,7 +1430,7 @@ export const FixDepositDetailFormMetadata = {
               if (formState?.isSubmitting) return {};
               return {
                 LEAN_ACCT_TYPE: { value: "" },
-                LEAN_ACCT_CD: { value: "" },
+                LEAN_ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -1637,8 +1443,8 @@ export const FixDepositDetailFormMetadata = {
             },
             isReadOnly(fieldData, dependentFieldsValues, formState) {
               if (
-                dependentFieldsValues?.["FDDTL.LIEN"]?.value === "V" ||
-                dependentFieldsValues?.["FDDTL.LIEN"]?.value === "Y"
+                dependentFieldsValues?.["FDDTL.LIEN_FLAG"]?.value === "V" ||
+                dependentFieldsValues?.["FDDTL.LIEN_FLAG"]?.value === "Y"
               ) {
                 return true;
               } else {
@@ -1649,7 +1455,7 @@ export const FixDepositDetailFormMetadata = {
           },
           accountTypeMetadata: {
             name: "LEAN_ACCT_TYPE",
-            dependentFields: ["LEAN_BRANCH_CD", "LIEN"],
+            dependentFields: ["LEAN_BRANCH_CD", "LIEN_FLAG"],
             options: (dependentValue, formState, _, authState) => {
               return GeneralAPI.get_Account_Type({
                 COMP_CD: authState?.companyID ?? "",
@@ -1668,8 +1474,35 @@ export const FixDepositDetailFormMetadata = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              if (
+                currentField?.value &&
+                dependentFieldValues?.["FDDTL.LEAN_BRANCH_CD"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: "Enter Account Branch.",
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    LEAN_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    LEAN_BRANCH_CD: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
               return {
-                LEAN_ACCT_CD: { value: "" },
+                LEAN_ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -1683,8 +1516,8 @@ export const FixDepositDetailFormMetadata = {
             },
             isReadOnly(fieldData, dependentFieldsValues, formState) {
               if (
-                dependentFieldsValues?.["FDDTL.LIEN"]?.value === "V" ||
-                dependentFieldsValues?.["FDDTL.LIEN"]?.value === "Y"
+                dependentFieldsValues?.["FDDTL.LIEN_FLAG"]?.value === "V" ||
+                dependentFieldsValues?.["FDDTL.LIEN_FLAG"]?.value === "Y"
               ) {
                 return true;
               } else {
@@ -1696,7 +1529,7 @@ export const FixDepositDetailFormMetadata = {
           accountCodeMetadata: {
             name: "LEAN_ACCT_CD",
             autoComplete: "off",
-            dependentFields: ["LEAN_ACCT_TYPE", "LEAN_BRANCH_CD", "LIEN"],
+            dependentFields: ["LEAN_ACCT_TYPE", "LEAN_BRANCH_CD", "LIEN_FLAG"],
             runPostValidationHookAlways: true,
             postValidationSetCrossFieldValues: async (
               currentField,
@@ -1705,7 +1538,34 @@ export const FixDepositDetailFormMetadata = {
               dependentFieldsValues
             ) => {
               if (formState?.isSubmitting) return {};
+
               if (
+                currentField.value &&
+                dependentFieldsValues?.["FDDTL.LEAN_ACCT_TYPE"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: "Enter Account Type.",
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    LEAN_ACCT_CD: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: false,
+                    },
+                    LEAN_ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (
                 currentField?.value &&
                 dependentFieldsValues?.["FDDTL.LEAN_BRANCH_CD"]?.value &&
                 dependentFieldsValues?.["FDDTL.LEAN_ACCT_TYPE"]?.value
@@ -1736,7 +1596,9 @@ export const FixDepositDetailFormMetadata = {
                 for (let i = 0; i < postData?.MSG?.length; i++) {
                   if (postData?.MSG?.[i]?.O_STATUS === "999") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "ValidationFailed",
+                      messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.MSG?.[i]?.O_MSG_TITLE
+                        : "ValidationFailed",
                       message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                       icon: "ERROR",
                     });
@@ -1744,7 +1606,9 @@ export const FixDepositDetailFormMetadata = {
                   } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
+                        messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                          ? postData?.MSG?.[i]?.O_MSG_TITLE
+                          : "Alert",
                         message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                         icon: "WARNING",
                       });
@@ -1752,9 +1616,12 @@ export const FixDepositDetailFormMetadata = {
                     returnVal = postData;
                   } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Confirmation",
+                      messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.MSG?.[i]?.O_MSG_TITLE
+                        : "Confirmation",
                       message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
 
                     btn99 = btnName;
@@ -1785,7 +1652,7 @@ export const FixDepositDetailFormMetadata = {
                       : {
                           value: "",
                           isFieldFocused: true,
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                         },
                   LEAN_ACCT_NM: {
                     value: returnVal?.ACCT_NM ?? "",
@@ -1808,8 +1675,8 @@ export const FixDepositDetailFormMetadata = {
             },
             isReadOnly(fieldData, dependentFieldsValues, formState) {
               if (
-                dependentFieldsValues?.["FDDTL.LIEN"]?.value === "V" ||
-                dependentFieldsValues?.["FDDTL.LIEN"]?.value === "Y"
+                dependentFieldsValues?.["FDDTL.LIEN_FLAG"]?.value === "V" ||
+                dependentFieldsValues?.["FDDTL.LIEN_FLAG"]?.value === "Y"
               ) {
                 return true;
               } else {

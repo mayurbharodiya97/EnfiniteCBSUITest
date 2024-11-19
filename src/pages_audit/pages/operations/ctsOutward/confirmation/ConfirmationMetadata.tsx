@@ -232,9 +232,9 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       alignment: "left",
       componentType: "default",
       placeholder: "",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 150,
+      width: 80,
+      minWidth: 70,
+      maxWidth: 100,
     },
     {
       accessor: "CHQ_CNT",
@@ -243,7 +243,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       alignment: "right",
       componentType: "default",
       placeholder: "",
-      width: 100,
+      width: 120,
       minWidth: 100,
       maxWidth: 150,
     },
@@ -254,9 +254,14 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       alignment: "right",
       componentType: "default",
       placeholder: "",
-      width: 100,
+      width: 120,
       minWidth: 100,
       maxWidth: 150,
+      isDisplayTotal: true,
+      footerLabel: "Total Cheque List",
+      setFooterValue(total, rows) {
+        return [rows.length ?? 0];
+      },
     },
     {
       accessor: "CHQ_AMT_LIST",
@@ -268,17 +273,35 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       width: 200,
       minWidth: 150,
       maxWidth: 500,
+      isDisplayTotal: true,
+      footerLabel: "Total Cheque Amount",
+      setFooterValue(total, rows) {
+        const filteredRows = rows?.filter(
+          ({ original }) => original.CHQ_AMT_LIST
+        );
+        const sum =
+          filteredRows?.reduce((acc, { original }) => {
+            // Split the CHQ_AMT_LIST by commas, convert each to a number, and sum them
+            const chqAmtListSum = original.CHQ_AMT_LIST.split(",")
+              .map(Number) // Convert to numbers
+              .reduce((a, b) => a + b, 0); // Sum the numbers in this row
+            return acc + chqAmtListSum; // Add to the accumulator
+          }, 0) ?? 0;
+        const formattedSum = sum.toFixed(2);
+
+        return [formattedSum];
+      },
     },
     {
       accessor: "TRAN_DT",
       columnName: "CLGDate",
       sequence: 6,
-      alignment: "left",
+      alignment: "center",
       componentType: "date",
       placeholder: "",
-      width: 200,
-      minWidth: 150,
-      maxWidth: 250,
+      width: 110,
+      minWidth: 100,
+      maxWidth: 180,
     },
 
     {
@@ -319,7 +342,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       accessor: "ENTERED_DATE",
       columnName: "EnteredDate",
       sequence: 10,
-      alignment: "left",
+      alignment: "center",
       componentType: "date",
       placeholder: "",
       width: 150,
@@ -342,7 +365,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       accessor: "VERIFIED_DATE",
       columnName: "VerifiedDate",
       sequence: 12,
-      alignment: "left",
+      alignment: "center",
       componentType: "date",
       placeholder: "",
       width: 150,
@@ -1017,7 +1040,7 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
           render: {
             componentType: "textField",
           },
-          name: "REASON_DESCRIPTION",
+          name: "REASON_CODE_DESCRIPTION",
           label: "Reason",
           GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
         },

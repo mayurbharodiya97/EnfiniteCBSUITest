@@ -19,6 +19,7 @@ import { DateRetrievalDialog } from "components/common/custom/dateRetrievalPara"
 import { format } from "date-fns";
 import { ChequeSignImage } from "pages_audit/pages/operations/inwardClearing/inwardClearingForm/chequeSignImage";
 import { getInwardChequeSignFormData } from "pages_audit/pages/operations/inwardClearing/api";
+import i18n from "components/multiLanguage/languagesConfiguration";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -43,11 +44,32 @@ export const SnapShot = ({ reqData }) => {
   const reqDataRef = useRef<any>();
   const [imgData, setImgData] = useState();
   const [isopenReport, setIsopenReport] = useState(false);
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getSnapShotList", { reqData }], () => API.getSnapShotList(reqData));
+  >(["getSnapShotList", { reqData }], () =>
+    API.getSnapShotList({
+      A_COMP_CD: reqData.COMP_CD ?? "",
+      A_BRANCH_CD: reqData.BRANCH_CD ?? "",
+      A_ACCT_TYPE: reqData.ACCT_TYPE ?? "",
+      A_FROM_ACCT: reqData.ACCT_CD ?? "",
+      A_FR_DT: reqData?.FROM_DATE
+        ? reqData?.FROM_DATE
+        : format(oneMonthAgo, "dd-MMM-yyyy"),
+      A_TO_DT: reqData?.TO_DATE
+        ? reqData?.TO_DATE
+        : format(new Date(), "dd-MMM-yyyy"),
+      A_BASE_BRANCH: authState?.user?.baseBranchCode ?? "",
+      A_USER_NM: authState?.user?.id ?? "",
+      A_GD_DATE: authState?.workingDate ?? "",
+      A_USER_LEVEL: authState?.role ?? "",
+      A_SCREEN_REF: reqData?.SCREEN_REF ?? "",
+      A_LANG: i18n.resolvedLanguage,
+    })
+  );
 
   const getChequeImg: any = useMutation(getInwardChequeSignFormData, {
     onError: (error: any) => {},

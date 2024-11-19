@@ -18,6 +18,7 @@ export const getDocTemplateList = async (reqData) => {
     responseData.map((a, i) => {
       a.index = i;
       a.sr = i + 1;
+      a.DESCRIPTION = a.TEMPLATE_CD + " - " + a.DESCRIPTION;
     });
     return responseData;
   } else {

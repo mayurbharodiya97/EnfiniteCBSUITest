@@ -45,6 +45,10 @@ const InsuranceEntryForm = lazy(() => import("./insuranceEntry"));
 const DailyTransactionImportForm = lazy(
   () => import("./dailyTransactionImport")
 );
+const BeneficiaryEnrtyForm = lazy(() => import("./beneficiaryEntry"));
+const BeneficiAccountConfGrid = lazy(
+  () => import("./beneficiaryEntry/confirmation")
+);
 const TellerScreen = lazy(
   () => import("./denomination/tellerTransaction/cashReceipt/tellerScreen")
 );
@@ -122,6 +126,7 @@ const RecInterestPaymentForm = lazy(() => import("./recInterestPayment"));
 const RecInterestPaymentConf = lazy(() => import("./recInterestPaymentConf"));
 const Trn001 = lazy(() => import("./DailyTransaction/TRN001"));
 const Trn002 = lazy(() => import("./DailyTransaction/TRN002"));
+const LockerOperationTrnsMain = lazy(() => import("./LockerOperationTrns"));
 const CashPaymentEntry = lazy(
   () => import("./denomination/tellerTransaction/cashPayment/cashPayment")
 );
@@ -135,6 +140,10 @@ export const OperationsMenu = () => (
     />
     <Route path="owreturn-chqsearch/*" element={<OutwardChequeSearch />} />
     <Route path="limit-entry/*" element={<LimitEntry />} />
+    <Route
+      path="locker-operation-entry/*"
+      element={<LockerOperationTrnsMain />}
+    />
     <Route path="stock-entry/*" element={<StockEntry />} />
     <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
@@ -269,7 +278,11 @@ export const OperationsMenu = () => (
       path="daily-transaction-import/*"
       element={<DailyTransactionImportForm />}
     />
-
+    <Route path="beneficiary-entry/*" element={<BeneficiaryEnrtyForm />} />
+    <Route
+      path="beneficiary-confirmation/*"
+      element={<BeneficiAccountConfGrid />}
+    />
     {/* <Route
       path="fix-deposit/*"
       element={

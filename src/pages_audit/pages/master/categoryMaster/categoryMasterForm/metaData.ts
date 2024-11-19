@@ -2,6 +2,7 @@ import { GeneralAPI } from "registry/fns/functions";
 import { getPMISCData } from "../api";
 import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 export const CategoryMasterFormMetaData = {
   form: {
@@ -154,11 +155,10 @@ export const CategoryMasterFormMetaData = {
         allowLeadingZeros: false,
         allowNegative: true,
         isAllowed: (values) => {
-          //@ts-ignore
           if (values?.value?.length > 9) {
             return false;
           }
-          if (values.floatValue === 0) {
+          if (values?.floatValue === 0) {
             return false;
           }
           return true;
@@ -204,21 +204,14 @@ export const CategoryMasterFormMetaData = {
       name: "TDS_RATE",
       label: "Rate",
       autoComplete: "off",
-      maxLength: 5,
       FormatProps: {
-        allowLeadingZeros: false,
         isAllowed: (values) => {
-          //@ts-ignore
-          if (values.floatValue > 99.99) {
-            return false;
-          }
-          if (values.floatValue === 0) {
+          if (values?.value?.length > 5) {
             return false;
           }
           return true;
         },
       },
-
       GridProps: {
         xs: 12,
         sm: 4,
@@ -243,7 +236,7 @@ export const CategoryMasterFormMetaData = {
           if (formState?.isSubmitting) return {};
           return {
             TDS_ACCT_TYPE: { value: "" },
-            TDS_ACCT_CD: { value: "" },
+            TDS_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_ACCT_NM: { value: "" },
           };
         },
@@ -266,10 +259,10 @@ export const CategoryMasterFormMetaData = {
             dependentFieldValues?.TDS_BRANCH_CD?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Branch.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -288,7 +281,7 @@ export const CategoryMasterFormMetaData = {
             }
           }
           return {
-            TDS_ACCT_CD: { value: "" },
+            TDS_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_ACCT_NM: { value: "" },
           };
         },
@@ -299,10 +292,6 @@ export const CategoryMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["TDS_ACCT_TYPE", "TDS_BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -325,10 +314,10 @@ export const CategoryMasterFormMetaData = {
             dependentFieldsValues?.TDS_ACCT_TYPE?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Type.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -336,7 +325,7 @@ export const CategoryMasterFormMetaData = {
                 TDS_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 TDS_ACCT_TYPE: {
                   value: "",
@@ -372,8 +361,10 @@ export const CategoryMasterFormMetaData = {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
                 returnVal = "";
@@ -381,8 +372,10 @@ export const CategoryMasterFormMetaData = {
                 formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
-                    message: postData?.MSG?.[i]?.O_MESSAGE,
+                    messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                      ? postData?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
+                    message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                     icon: "WARNING",
                   });
                 }
@@ -390,9 +383,12 @@ export const CategoryMasterFormMetaData = {
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -423,7 +419,7 @@ export const CategoryMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               TDS_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -471,15 +467,9 @@ export const CategoryMasterFormMetaData = {
       name: "TDS_SURCHARGE",
       label: "Rate",
       autoComplete: "off",
-      maxLength: 5,
       FormatProps: {
-        allowLeadingZeros: false,
         isAllowed: (values) => {
-          //@ts-ignore
-          if (values.floatValue > 99.99) {
-            return false;
-          }
-          if (values.floatValue === 0) {
+          if (values?.value?.length > 5) {
             return false;
           }
           return true;
@@ -519,7 +509,7 @@ export const CategoryMasterFormMetaData = {
       ) => {
         if (formState?.isSubmitting) return {};
         return {
-          TDS_SUR_ACCT_CD: { value: "" },
+          TDS_SUR_ACCT_CD: { value: "", ignoreUpdate: false },
         };
       },
       type: "text",
@@ -535,16 +525,12 @@ export const CategoryMasterFormMetaData = {
       render: {
         componentType: "numberFormat",
       },
-      label: "AccountNumber",
+      label: "AccountNum",
       name: "TDS_SUR_ACCT_CD",
-      placeholder: "AccountNumberPlaceHolder",
+      placeholder: "EnterAccountNum",
       autoComplete: "off",
       dependentFields: ["TDS_SUR_ACCT_TYPE", "BRANCH_CD"],
       runPostValidationHookAlways: true,
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -559,10 +545,10 @@ export const CategoryMasterFormMetaData = {
           dependentFieldsValues?.TDS_SUR_ACCT_TYPE?.value?.length === 0
         ) {
           let buttonName = await formState?.MessageBox({
-            messageTitle: "Alert",
+            messageTitle: "ValidationFailed",
             message: "Enter Account Type.",
             buttonNames: ["Ok"],
-            icon: "WARNING",
+            icon: "ERROR",
           });
 
           if (buttonName === "Ok") {
@@ -570,7 +556,7 @@ export const CategoryMasterFormMetaData = {
               TDS_SUR_ACCT_CD: {
                 value: "",
                 isFieldFocused: false,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
               TDS_SUR_ACCT_TYPE: {
                 value: "",
@@ -606,8 +592,10 @@ export const CategoryMasterFormMetaData = {
             if (postData?.MSG?.[i]?.O_STATUS === "999") {
               formState?.handleButtonDisable(false);
               const { btnName, obj } = await getButtonName({
-                messageTitle: "ValidationFailed",
-                message: postData?.MSG?.[i]?.O_MESSAGE,
+                messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                  ? postData?.MSG?.[i]?.O_MSG_TITLE
+                  : "ValidationFailed",
+                message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
               returnVal = "";
@@ -615,8 +603,10 @@ export const CategoryMasterFormMetaData = {
               formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Alert",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Alert",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   icon: "WARNING",
                 });
               }
@@ -624,9 +614,12 @@ export const CategoryMasterFormMetaData = {
             } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
               formState?.handleButtonDisable(false);
               const { btnName, obj } = await getButtonName({
-                messageTitle: "Confirmation",
-                message: postData?.MSG?.[i]?.O_MESSAGE,
+                messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                  ? postData?.MSG?.[i]?.O_MSG_TITLE
+                  : "Confirmation",
+                message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
 
               btn99 = btnName;
@@ -657,7 +650,7 @@ export const CategoryMasterFormMetaData = {
                 : {
                     value: "",
                     isFieldFocused: true,
-                    ignoreUpdate: true,
+                    ignoreUpdate: false,
                   },
           };
         }
@@ -709,7 +702,7 @@ export const CategoryMasterFormMetaData = {
 
           return {
             TDS_REC_ACCT_TYPE: { value: "" },
-            TDS_REC_ACCT_CD: { value: "" },
+            TDS_REC_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_REC_ACCT_NM: { value: "" },
           };
         },
@@ -732,10 +725,10 @@ export const CategoryMasterFormMetaData = {
             dependentFieldValues?.TDS_REC_BRANCH_CD?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Branch.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -754,7 +747,7 @@ export const CategoryMasterFormMetaData = {
             }
           }
           return {
-            TDS_REC_ACCT_CD: { value: "" },
+            TDS_REC_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_REC_ACCT_NM: { value: "" },
           };
         },
@@ -765,10 +758,6 @@ export const CategoryMasterFormMetaData = {
         autoComplete: "off",
         dependentFields: ["TDS_REC_ACCT_TYPE", "TDS_REC_BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -791,10 +780,10 @@ export const CategoryMasterFormMetaData = {
             dependentFieldsValues?.TDS_REC_ACCT_TYPE?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Type.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -802,7 +791,7 @@ export const CategoryMasterFormMetaData = {
                 TDS_REC_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 TDS_REC_ACCT_TYPE: {
                   value: "",
@@ -838,8 +827,10 @@ export const CategoryMasterFormMetaData = {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
                 returnVal = "";
@@ -847,8 +838,10 @@ export const CategoryMasterFormMetaData = {
                 formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
-                    message: postData?.MSG?.[i]?.O_MESSAGE,
+                    messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                      ? postData?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
+                    message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                     icon: "WARNING",
                   });
                 }
@@ -856,9 +849,12 @@ export const CategoryMasterFormMetaData = {
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 formState?.handleButtonDisable(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
-                  message: postData?.MSG?.[i]?.O_MESSAGE,
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
+                  message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -889,7 +885,7 @@ export const CategoryMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               TDS_REC_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",

@@ -182,6 +182,9 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       label: "AccountInformation",
       name: "AccountInformation",
+      DividerProps: {
+        sx: { color: "var(--theme-color1)", fontWeight: "500" },
+      },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
@@ -207,6 +210,7 @@ export const RecurringPaymentEntryFormMetaData = {
               },
               ACCT_CD: {
                 value: "",
+                ignoreUpdate: false,
               },
             };
           },
@@ -239,10 +243,10 @@ export const RecurringPaymentEntryFormMetaData = {
               dependentFieldValues?.BRANCH_CD?.value?.length === 0
             ) {
               let buttonName = await formState?.MessageBox({
-                messageTitle: "Alert",
+                messageTitle: "ValidationFailed",
                 message: "Enter Account Branch.",
                 buttonNames: ["Ok"],
-                icon: "WARNING",
+                icon: "ERROR",
               });
 
               if (buttonName === "Ok") {
@@ -264,6 +268,7 @@ export const RecurringPaymentEntryFormMetaData = {
               ...resetFields,
               ACCT_CD: {
                 value: "",
+                ignoreUpdate: false,
               },
             };
           },
@@ -275,10 +280,6 @@ export const RecurringPaymentEntryFormMetaData = {
           maxLength: 20,
           dependentFields: ["ACCT_TYPE", "BRANCH_CD", "INT_RATE"],
           runPostValidationHookAlways: true,
-          AlwaysRunPostValidationSetCrossFieldValues: {
-            alwaysRun: true,
-            touchAndValidate: true,
-          },
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
@@ -291,10 +292,10 @@ export const RecurringPaymentEntryFormMetaData = {
               dependentFieldsValues?.ACCT_TYPE?.value?.length === 0
             ) {
               let buttonName = await formState?.MessageBox({
-                messageTitle: "Alert",
+                messageTitle: "ValidationFailed",
                 message: "Enter Account Type.",
                 buttonNames: ["Ok"],
-                icon: "WARNING",
+                icon: "ERROR",
               });
 
               if (buttonName === "Ok") {
@@ -302,7 +303,7 @@ export const RecurringPaymentEntryFormMetaData = {
                   ACCT_CD: {
                     value: "",
                     isFieldFocused: false,
-                    ignoreUpdate: true,
+                    ignoreUpdate: false,
                   },
                   ACCT_TYPE: {
                     value: "",
@@ -333,14 +334,17 @@ export const RecurringPaymentEntryFormMetaData = {
               if (postData?.status === "999") {
                 let btnName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: postData?.messageDetails ?? "Somethingwenttowrong",
+                  message: postData?.messageDetails?.length
+                    ? postData?.messageDetails
+                    : "Somethingwenttowrong",
+                  icon: "ERROR",
                 });
                 if (btnName === "Ok") {
                   formState?.handleDisableButton(false);
                   return {
                     ACCT_CD: {
                       value: "",
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                       isFieldFocused: true,
                     },
                     ACCT_NM: { value: "" },
@@ -361,8 +365,11 @@ export const RecurringPaymentEntryFormMetaData = {
               for (let i = 0; i < postData.length; i++) {
                 if (postData[i]?.O_STATUS === "999") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "ValidationFailed",
+                    messageTitle: postData[i]?.O_MSG_TITLE?.length
+                      ? postData[i]?.O_MSG_TITLE
+                      : "ValidationFailed",
                     message: postData[i]?.O_MESSAGE ?? "",
+                    icon: "ERROR",
                   });
 
                   if (btnName === "Ok") {
@@ -387,17 +394,23 @@ export const RecurringPaymentEntryFormMetaData = {
                 } else if (postData[i]?.O_STATUS === "9") {
                   if (btn99 !== "No") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Alert",
+                      messageTitle: postData[i]?.O_MSG_TITLE?.length
+                        ? postData[i]?.O_MSG_TITLE
+                        : "Alert",
                       message: postData[i]?.O_MESSAGE ?? "",
+                      icon: "WARNING",
                     });
                   }
 
                   returnVal = "";
                 } else if (postData[i]?.O_STATUS === "99") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Confirmation",
+                    messageTitle: postData[i]?.O_MSG_TITLE?.length
+                      ? postData[i]?.O_MSG_TITLE
+                      : "Confirmation",
                     message: postData[i]?.O_MESSAGE ?? "",
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
 
                   btn99 = btnName;
@@ -451,16 +464,54 @@ export const RecurringPaymentEntryFormMetaData = {
                         getRecurAcctAllData?.messageDetails ??
                         "Somethingwenttowrong",
                       buttonNames: ["Ok"],
+                      icon: "ERROR",
                     });
                     if (btnName === "Ok") {
                       formState?.handleDisableButton(false);
                       return {
-                        ACCT_CD: { value: "" },
+                        ACCT_CD: {
+                          value: "",
+                          ignoreUpdate: false,
+                          isFieldFocused: true,
+                        },
                         ACCT_NM: { value: "" },
                       };
                     }
-                  } else {
-                    returnVal = getRecurAcctAllData?.[0];
+                  }
+
+                  for (const obj of getRecurAcctAllData?.[0]?.MSG ?? []) {
+                    if (obj?.O_STATUS === "999") {
+                      await formState?.MessageBox({
+                        messageTitle: obj?.O_MSG_TITLE?.length
+                          ? obj?.O_MSG_TITLE
+                          : "ValidationFailed",
+                        message: obj?.O_MESSAGE ?? "",
+                        icon: "ERROR",
+                      });
+                    } else if (obj?.O_STATUS === "9") {
+                      await formState?.MessageBox({
+                        messageTitle: obj?.O_MSG_TITLE?.length
+                          ? obj?.O_MSG_TITLE
+                          : "VouchersConfirmation",
+                        message: obj?.O_MESSAGE ?? "",
+                        icon: "WARNING",
+                      });
+                    } else if (obj?.O_STATUS === "99") {
+                      const buttonName = await formState?.MessageBox({
+                        messageTitle: obj?.O_MSG_TITLE?.length
+                          ? obj?.O_MSG_TITLE
+                          : "Confirmation",
+                        message: obj?.O_MESSAGE ?? "",
+                        buttonNames: ["Yes", "No"],
+                        defFocusBtnName: "Yes",
+                        icon: "CONFIRM",
+                      });
+                      if (buttonName === "No") {
+                        break;
+                      }
+                    } else if (obj?.O_STATUS === "0") {
+                      returnVal = getRecurAcctAllData?.[0];
+                    }
                   }
 
                   formState?.setDataOnFieldChange("GET_ACCT_DATA", {
@@ -485,7 +536,7 @@ export const RecurringPaymentEntryFormMetaData = {
                     : {
                         value: "",
                         isFieldFocused: true,
-                        ignoreUpdate: true,
+                        ignoreUpdate: false,
                       },
                 ACCT_NM: {
                   value: returnVal?.ACCT_NM ?? "",
@@ -590,16 +641,14 @@ export const RecurringPaymentEntryFormMetaData = {
                   value: returnVal?.TYPE_CD ?? "",
                 },
                 FORM_60: {
-                  __NEW__: {
-                    value:
-                      returnVal?.FORM_60 === "Y"
-                        ? "FORM 60 Submitted"
-                        : returnVal?.FORM_60 === "F"
-                        ? "FORM 61 Submitted"
-                        : returnVal?.FORM_60 === "N"
-                        ? "N"
-                        : "",
-                  },
+                  value:
+                    returnVal?.FORM_60 === "Y"
+                      ? "FORM 60 Submitted"
+                      : returnVal?.FORM_60 === "F"
+                      ? "FORM 61 Submitted"
+                      : returnVal?.FORM_60 === "N"
+                      ? "N"
+                      : "",
                 },
                 PREMATURE_VAL: { value: getRecurValidAcctDtl?.PREMATURE ?? "" },
                 STATUS: { value: getRecurValidAcctDtl?.STATUS ?? "" },
@@ -729,6 +778,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "INST_RS",
       label: "InstallmentAmount",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -745,6 +798,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "DUE_AMT",
       label: "DueAmount",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -774,6 +831,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "TRAN_BAL",
       label: "Balance",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -790,6 +851,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "CR_AMT",
       label: "InstallmentDepositedAmount",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -806,6 +871,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "DEPOSITED_INST",
       label: "DepositedInstallment",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -822,6 +891,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "CR_INT_AMT",
       label: "Interest",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -838,6 +911,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "TOTAL",
       label: "Total",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       dependentFields: ["CR_AMT", "CR_INT_AMT"],
       setValueOnDependentFieldsChange: (dependentFieldsValues) => {
         let value =
@@ -860,6 +937,9 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       label: "InterestDetail",
       name: "TDSPayable",
+      DividerProps: {
+        sx: { color: "var(--theme-color1)", fontWeight: "500" },
+      },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
@@ -908,6 +988,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "PROV_INT_AMT",
       label: "ProvisionalAmount",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -924,6 +1008,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "LEAN_AMT",
       label: "LienAmount",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 2,
@@ -998,6 +1086,10 @@ export const RecurringPaymentEntryFormMetaData = {
           }
         },
       },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 2.5,
@@ -1025,6 +1117,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "TDS_TILL_AMT",
       label: "TDSAmount",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -1041,6 +1137,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "AFT_MATURE_INT",
       label: "AfterMatureInterest",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -1056,6 +1156,7 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       name: "TDS_AMT",
       label: "CalculatedTDS",
+      autoComplete: "off",
       __NEW__: {
         isReadOnly(_, dependentFieldsValues, formState) {
           if (formState?.entryScreenFlagDataForm?.TDS_AMT_DIS === "Y") {
@@ -1092,6 +1193,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "FIN_INT_AMT",
       label: "FinancialInterestAmount",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -1108,6 +1213,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "FIN_TDS",
       label: "PaidTDS",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -1123,7 +1232,12 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       name: "TOTAL_AMOUNT",
       label: "TotalAmount",
+      autoComplete: "off",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       dependentFields: ["TRAN_BAL", "PROV_INT_AMT", "INT_AMOUNT", "TDS_AMT"],
       setValueOnDependentFieldsChange: (dependentFieldsValues) => {
         let value =
@@ -1135,11 +1249,9 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       textFieldStyle: {
         "& .MuiInputBase-input": {
-          "&.Mui-disabled": {
-            color: "var(--theme-color1) !important",
-            fontWeight: "bold",
-            "-webkit-text-fill-color": "var(--theme-color1) !important",
-          },
+          color: "var(--theme-color1) !important",
+          fontWeight: "bold",
+          "-webkit-text-fill-color": "var(--theme-color1) !important",
         },
       },
       GridProps: {
@@ -1158,6 +1270,16 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "REC_PENALTY_AMT",
       label: "PenalInterest",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          color: "rgb(255, 0, 0)  !important",
+          "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
+        },
+      },
       GridProps: {
         xs: 12,
         sm: 3,
@@ -1192,7 +1314,7 @@ export const RecurringPaymentEntryFormMetaData = {
         componentType: "rateOfInt",
       },
       name: "PENAL_RATE",
-      label: "PenalRate",
+      label: "PenalRt",
       __NEW__: { isReadOnly: true },
       GridProps: {
         xs: 12,
@@ -1223,6 +1345,7 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       TypographyProps: {
         variant: "subtitle2",
+        color: "rgb(255, 0, 0) !important",
         style: {
           marginTop: "33px",
           fontSize: "14px",
@@ -1241,6 +1364,7 @@ export const RecurringPaymentEntryFormMetaData = {
       label: "PAN",
       type: "text",
       required: false,
+      placeholder: "AAAAA1111A",
       __NEW__: { isReadOnly: true },
       schemaValidation: {},
       dependentFields: ["FORM_60"],
@@ -1254,6 +1378,15 @@ export const RecurringPaymentEntryFormMetaData = {
           return true;
         }
       },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          color: "rgb(255, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(255, 0, 0) !important",
+        },
+        "& .MuiInputLabel-root": {
+          color: "rgb(255, 0, 0) !important",
+        },
+      },
       GridProps: { xs: 12, sm: 2.5, md: 2.25, lg: 3, xl: 3 },
     },
 
@@ -1265,6 +1398,12 @@ export const RecurringPaymentEntryFormMetaData = {
       label: "ExplicitDeductTDS",
       type: "text",
       __NEW__: { isReadOnly: true },
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          color: "rgb(168, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(168, 0, 0) !important",
+        },
+      },
       GridProps: { xs: 12, sm: 1.5, md: 2.25, lg: 2.4, xl: 3 },
     },
 
@@ -1274,6 +1413,9 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       label: "PaymentDetail",
       name: "PaymentDetail",
+      DividerProps: {
+        sx: { color: "var(--theme-color1)", fontWeight: "500" },
+      },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
 
@@ -1284,6 +1426,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "TDS_LIMIT_NEW",
       label: "TDSLimit",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       GridProps: {
         xs: 12,
         sm: 2.5,
@@ -1480,15 +1626,21 @@ export const RecurringPaymentEntryFormMetaData = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "ValidationFailed",
+                messageTitle: postData[i]?.O_MSG_TITLE?.length
+                  ? postData[i]?.O_MSG_TITLE
+                  : "ValidationFailed",
                 message: postData[i]?.O_MESSAGE ?? "",
+                icon: "ERROR",
               });
               returnVal = "";
             } else if (postData[i]?.O_STATUS === "99") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "Confirmation",
+                messageTitle: postData[i]?.O_MSG_TITLE?.length
+                  ? postData[i]?.O_MSG_TITLE
+                  : "Confirmation",
                 message: postData[i]?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               btn99 = btnName;
               if (btnName === "No") {
@@ -1497,8 +1649,11 @@ export const RecurringPaymentEntryFormMetaData = {
             } else if (postData[i]?.O_STATUS === "9") {
               if (btn99 !== "No") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Alert",
+                  messageTitle: postData[i]?.O_MSG_TITLE?.length
+                    ? postData[i]?.O_MSG_TITLE
+                    : "Alert",
                   message: postData[i]?.O_MESSAGE ?? "",
+                  icon: "WARNING",
                 });
               }
               returnVal = "";
@@ -1628,9 +1783,13 @@ export const RecurringPaymentEntryFormMetaData = {
       },
       name: "PAYSLIP_NO",
       label: "payslipNumber",
+      dependentFields: ["PAYSLIP"],
       type: "text",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "recurringPmtConf") {
+        if (
+          formState?.screenFlag === "recurringPmtConf" &&
+          Boolean(dependentFieldsValues?.PAYSLIP?.value)
+        ) {
           return false;
         } else {
           return true;
@@ -1643,6 +1802,25 @@ export const RecurringPaymentEntryFormMetaData = {
         lg: 3,
         xl: 3,
       },
+    },
+
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER_PAYSLIP_NO",
+      dependentFields: ["PAYSLIP"],
+      shouldExclude: (_, dependentFieldsValues, formState) => {
+        if (
+          formState?.screenFlag === "recurringPmtConf" &&
+          !Boolean(dependentFieldsValues?.PAYSLIP?.value)
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 2.375, md: 2.375, lg: 3, xl: 3 },
     },
 
     {
@@ -1700,6 +1878,26 @@ export const RecurringPaymentEntryFormMetaData = {
         lg: 3,
         xl: 3,
       },
+    },
+
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER_DD_NEFT_AMT",
+      dependentFields: ["PAYSLIP", "RTGS_NEFT"],
+      shouldExclude: (_, dependentFieldsValues, formState) => {
+        if (
+          formState?.screenFlag === "recurringPmtConf" &&
+          !Boolean(dependentFieldsValues?.PAYSLIP?.value) &&
+          !Boolean(dependentFieldsValues?.RTGS_NEFT?.value)
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: { xs: 12, sm: 2.375, md: 2.375, lg: 3, xl: 3 },
     },
 
     {
@@ -1817,6 +2015,10 @@ export const RecurringPaymentEntryFormMetaData = {
       name: "PAYMENT_AMT",
       label: "PaymentAmount",
       __NEW__: { isReadOnly: true },
+      FormatProps: {
+        allowNegative: true,
+        allowLeadingZeros: true,
+      },
       dependentFields: ["TRF_AMT", "CASH_AMT"],
       setValueOnDependentFieldsChange: (dependentFieldsValues) => {
         let value =

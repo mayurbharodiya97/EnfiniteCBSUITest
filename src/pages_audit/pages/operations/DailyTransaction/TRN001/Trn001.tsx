@@ -409,7 +409,7 @@ export const Trn001 = () => {
               );
               return {
                 ...row,
-                accNo: paddedAcctNo?.trim(),
+                accNo: paddedAcctNo,
                 bugMsgAccNo: "",
                 bugAccNo: false,
                 acctNoFlag: { [unqID]: false },

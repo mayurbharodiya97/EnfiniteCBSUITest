@@ -256,7 +256,7 @@ export const FixDepositForm = () => {
         messageTitle: "Confirmation",
         message:
           "Debit Amount less than Total FD Amount.\nAre you sure to add new row?",
-        buttonNames: ["No", "Yes"],
+        buttonNames: ["Yes", "No"],
         defFocusBtnName: "Yes",
       });
       if (buttonName === "Yes") {
@@ -267,7 +267,7 @@ export const FixDepositForm = () => {
       const buttonName = await MessageBox({
         messageTitle: "Confirmation",
         message: "Are you sure create FD?",
-        buttonNames: ["No", "Yes"],
+        buttonNames: ["Yes", "No"],
         defFocusBtnName: "Yes",
       });
       if (buttonName === "Yes") {

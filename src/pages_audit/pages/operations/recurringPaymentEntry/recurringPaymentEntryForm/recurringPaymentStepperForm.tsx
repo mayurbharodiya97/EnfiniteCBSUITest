@@ -22,6 +22,7 @@ import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
 import {
+  Alert,
   ColorlibConnector,
   ColorlibStepIconRoot,
 } from "@acuteinfo/common-base";
@@ -253,14 +254,6 @@ const RecurringPaymentStepperForm = ({
     API?.recurringPaymentEntryDML,
     {
       onError: async (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        await MessageBox({
-          messageTitle: "Error",
-          message: errorMsg ?? "",
-        });
         CloseMessageBox();
       },
       onSuccess: async (data) => {
@@ -269,20 +262,29 @@ const RecurringPaymentStepperForm = ({
             for (const ddNeftObj of data[0][obj] ?? []) {
               if (ddNeftObj?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: ddNeftObj?.O_MSG_TITLE?.length
+                    ? ddNeftObj?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: ddNeftObj?.O_MESSAGE ?? "",
+                  icon: "ERROR",
                 });
               } else if (ddNeftObj?.O_STATUS === "9") {
                 await MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: ddNeftObj?.O_MSG_TITLE?.length
+                    ? ddNeftObj?.O_MSG_TITLE
+                    : "Alert",
                   message: ddNeftObj?.O_MESSAGE ?? "",
+                  icon: "WARNING",
                 });
               } else if (ddNeftObj?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: ddNeftObj?.O_MSG_TITLE?.length
+                    ? ddNeftObj?.O_MSG_TITLE
+                    : "Confirmation",
                   message: ddNeftObj?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
+                  icon: "CONFIRM",
                 });
                 if (buttonName === "No") {
                   break;
@@ -293,20 +295,29 @@ const RecurringPaymentStepperForm = ({
             for (const voucherMsg of data[0][obj] ?? []) {
               if (voucherMsg?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: voucherMsg?.O_MSG_TITLE?.length
+                    ? voucherMsg?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: voucherMsg?.O_MESSAGE ?? "",
+                  icon: "ERROR",
                 });
               } else if (voucherMsg?.O_STATUS === "9") {
                 await MessageBox({
-                  messageTitle: "VouchersConfirmation",
+                  messageTitle: voucherMsg?.O_MSG_TITLE?.length
+                    ? voucherMsg?.O_MSG_TITLE
+                    : "VouchersConfirmation",
                   message: voucherMsg?.O_MESSAGE ?? "",
+                  icon: "WARNING",
                 });
               } else if (voucherMsg?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: voucherMsg?.O_MSG_TITLE?.length
+                    ? voucherMsg?.O_MSG_TITLE
+                    : "Confirmation",
                   message: voucherMsg?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
+                  icon: "CONFIRM",
                 });
                 if (buttonName === "Yes") {
                   let reqParam = {
@@ -347,20 +358,13 @@ const RecurringPaymentStepperForm = ({
     }
   );
 
-  //Mutation for Validation mutation for Entry form handler
+  //Mutation for Validate Entry form handler
   const onSaveValidationMutation: any = useMutation(
     "onSaveRecurValueValidation",
     API.onSaveRecurValueValidation,
     {
       onSuccess: () => {},
       onError: async (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
         CloseMessageBox();
       },
     }
@@ -427,6 +431,7 @@ const RecurringPaymentStepperForm = ({
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",
                   loadingBtnName: ["Yes"],
+                  icon: "CONFIRM",
                 });
                 if (buttonName === "Yes") {
                   recurringPaymentEntrySaveMutation.mutate({
@@ -446,14 +451,20 @@ const RecurringPaymentStepperForm = ({
               }
             } else if (obj?.O_STATUS === "9") {
               await MessageBox({
-                messageTitle: "validationAlert",
-                message: obj?.O_MESSAGE,
+                messageTitle: obj?.O_MSG_TITLE?.length
+                  ? obj?.O_MSG_TITLE
+                  : "validationAlert",
+                message: obj?.O_MESSAGE ?? "",
+                icon: "WARNING",
               });
             } else if (obj?.O_STATUS === "99") {
               const buttonName = await MessageBox({
-                messageTitle: "Confirmation",
-                message: obj?.O_MESSAGE,
+                messageTitle: obj?.O_MSG_TITLE?.length
+                  ? obj?.O_MSG_TITLE
+                  : "Confirmation",
+                message: obj?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               if (buttonName === "Yes") {
                 updateSaveValidationData({
@@ -503,8 +514,11 @@ const RecurringPaymentStepperForm = ({
               }
             } else if (obj?.O_STATUS === "999") {
               await MessageBox({
-                messageTitle: "ValidationFailed",
-                message: obj?.O_MESSAGE,
+                messageTitle: obj?.O_MSG_TITLE?.length
+                  ? obj?.O_MSG_TITLE
+                  : "ValidationFailed",
+                message: obj?.O_MESSAGE ?? "",
+                icon: "ERROR",
               });
             }
           }
@@ -527,6 +541,7 @@ const RecurringPaymentStepperForm = ({
         await MessageBox({
           messageTitle: "PaymentAmountNotTally",
           message: "PayslipAmountShouldTallyWithPaymentAmount",
+          icon: "WARNING",
         });
         return;
       } else {
@@ -536,6 +551,7 @@ const RecurringPaymentStepperForm = ({
           buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           updatePayslipAndDDData([...data?.PAYSLIPDD]);
@@ -558,6 +574,7 @@ const RecurringPaymentStepperForm = ({
         await MessageBox({
           message: "NEFTAmountShouldTallyWithPaymentAmount",
           messageTitle: "PaymentAmountNotTally",
+          icon: "WARNING",
         });
         return;
       } else {
@@ -567,6 +584,7 @@ const RecurringPaymentStepperForm = ({
           buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           updateBeneficiaryAcctData([...data?.BENEFIACCTDTL]);
@@ -669,6 +687,23 @@ const RecurringPaymentStepperForm = ({
         maxWidth="xl"
       >
         <>
+          {(recurringPaymentEntrySaveMutation.isError ||
+            onSaveValidationMutation?.isError) && (
+            <Alert
+              severity="error"
+              errorMsg={
+                recurringPaymentEntrySaveMutation?.error?.error_msg ||
+                onSaveValidationMutation?.error?.error_msg ||
+                t("Somethingwenttowrong")
+              }
+              errorDetail={
+                recurringPaymentEntrySaveMutation?.error?.error_detail ||
+                onSaveValidationMutation?.error?.error_detail ||
+                ""
+              }
+              color="error"
+            />
+          )}
           <AppBar position="relative" style={{ marginBottom: "10px" }}>
             <Toolbar variant="dense" className={headerClasses.root}>
               <Typography

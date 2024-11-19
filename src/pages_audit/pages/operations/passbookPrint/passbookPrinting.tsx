@@ -221,7 +221,7 @@ export const PassbookPrint: React.FC<PassbookPrintingCustomProps> = ({
           if (accountDetailsDate?.PASS_BOOK_DT > parameterDate?.PASS_BOOK_DT) {
             const account = `${authState?.companyID?.trim()}-${parameterRef?.current?.BRANCH_CD?.trim()}-${parameterRef?.current?.ACCT_TYPE?.trim()}-${parameterRef?.current?.ACCT_CD?.trim()}`;
             const btnName = await MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "Confirmation",
               message: `${t(`PassbookUpdateMessage`, {
                 account: account,
                 date: accountDetailsDate?.PASS_BOOK_DT,
@@ -264,7 +264,7 @@ export const PassbookPrint: React.FC<PassbookPrintingCustomProps> = ({
           } else {
             const btnName = await MessageBox({
               messageTitle: "Confirmation",
-              message: "Passbook Print successfully.?",
+              message: "PassbookPrintsuccessfully",
               buttonNames: ["Yes", "No"],
               icon: "CONFIRM",
             });

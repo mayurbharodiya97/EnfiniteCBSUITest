@@ -171,6 +171,7 @@ function PayslipConfirmationForm({
                       await MessageBox({
                         messageTitle: t("ValidationFailed"),
                         message: rows?.RESTRICT_CNFIRM_MSG,
+                        icon: "ERROR",
                         buttonNames: ["Ok"],
                       });
                     } else if (
@@ -180,12 +181,16 @@ function PayslipConfirmationForm({
                         messageTitle: t("ValidationFailed"),
                         message: t("ConfirmRestrictMsg"),
                         buttonNames: ["Ok"],
+                        icon: "ERROR",
                       });
                     } else {
                       const buttonName = await MessageBox({
                         messageTitle: t("Confirmation"),
-                        message: t("DoYouWantToAllowTheTransaction"),
+                        message: `${t("DoYouWantToAllowPayslipDD")}Slip No. ${
+                          rows?.[0]?.data?.SLIP_CD
+                        }`,
                         buttonNames: ["Yes", "No"],
+                        icon: "CONFIRM",
                         loadingBtnName: ["Yes"],
                       });
                       if (buttonName === "Yes") {
@@ -279,7 +284,7 @@ function PayslipConfirmationForm({
                 if (id === `PAYSLIP_MST_DTL[${btnIndex}].SIGN`) {
                   const retrievedObject = acctDtlData
                     ? acctDtlData[btnIndex]
-                    : [];
+                    : [{}];
                   setSignData(retrievedObject);
                   setIsPhotoSign(true);
                 }
@@ -345,13 +350,14 @@ function PayslipConfirmationForm({
             onClose={async (result) => {
               setjointDtl(result);
             }}
+            hideHeader={false}
           />
         </Dialog>
       </Dialog>
       {isDeleteRemark ? (
         <RemarksAPIWrapper
           TitleText={
-            "Enter Removal Remarks For PAYSLP ISSUE CONFIRMATION RPT/15"
+            "Enter Removal Remarks For PAYSLP ISSUE CONFIRMATION (RPT/15) Confirmation"
           }
           onActionNo={() => {
             SetDeleteRemark(false);

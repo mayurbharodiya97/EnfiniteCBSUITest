@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { FdInterestPaymentFormMetaData } from "./metaData";
@@ -92,6 +92,7 @@ const FdInterestPaymentForm = ({
         message: "SaveData",
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         updateAndCheck(currentNewData, currentOldData);
@@ -138,6 +139,7 @@ const FdInterestPaymentForm = ({
           CARRYFORWARD_FD_NO: carryForwardData?.FD_NO,
         })}`,
         buttonNames: ["Yes", "No"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         updateAndCheck(carryForwardData, nextRowData);
@@ -148,11 +150,18 @@ const FdInterestPaymentForm = ({
   const handleButtonDisable = (disable) => {
     setDisableButton(disable);
   };
+  useEffect(() => {
+    console.log("abcd");
 
-  FdInterestPaymentFormMetaData.form.label =
-    utilFunction.getDynamicLabel(currentPath, authState?.menulistdata, false) +
-    " " +
-    rows?.[0]?.data?.FD_NO;
+    FdInterestPaymentFormMetaData.form.label =
+      utilFunction?.getDynamicLabel(
+        currentPath,
+        authState?.menulistdata,
+        false
+      ) +
+      " " +
+      rows?.[0]?.data?.FD_NO;
+  }, [rows?.[0]?.data]);
 
   return (
     <>
@@ -168,6 +177,16 @@ const FdInterestPaymentForm = ({
         onSubmitHandler={onSubmitHandler}
         initialValues={{
           ...(rows?.[0]?.data ?? {}),
+          NEFT_FORM_HIDDEN:
+            rows?.[0]?.data?.PAYMENT_MODE === "NEFT" ||
+            rows?.[0]?.data?.PAYMENT_MODE === ""
+              ? "SHOW"
+              : "HIDE",
+          BANK_FORM_HIDDEN:
+            rows?.[0]?.data?.PAYMENT_MODE === "BANKACCT" ||
+            rows?.[0]?.data?.PAYMENT_MODE === ""
+              ? "SHOW"
+              : "HIDE",
         }}
         formStyle={{
           background: "white",
@@ -188,88 +207,70 @@ const FdInterestPaymentForm = ({
           <>
             {formMode === "edit" ? (
               <>
-                <Box display="flex" gap={2}>
-                  {!isLastRow() && (
-                    <GradientButton
-                      onClick={(event) => {
-                        handleSubmit(event, "CarryForward");
-                      }}
-                      disabled={isSubmitting || disableButton}
-                      color={"primary"}
-                    >
-                      {t("Carry Forward")}
-                    </GradientButton>
-                  )}
+                {!isLastRow() && (
                   <GradientButton
                     onClick={(event) => {
-                      handleSubmit(event, "Save");
+                      handleSubmit(event, "CarryForward");
                     }}
                     disabled={isSubmitting || disableButton}
-                    endIcon={
-                      isSubmitting ? <CircularProgress size={20} /> : null
-                    }
                     color={"primary"}
                   >
-                    {t("Save")}
+                    {t("CarryForward")}
                   </GradientButton>
-                  <GradientButton
-                    onClick={closeDialog}
-                    disabled={isSubmitting || disableButton}
-                    color={"primary"}
-                  >
-                    {t("Close")}
-                  </GradientButton>
-                </Box>
+                )}
+                <GradientButton
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
+                  disabled={isSubmitting || disableButton}
+                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                  color={"primary"}
+                >
+                  {t("Save")}
+                </GradientButton>
+                <GradientButton onClick={closeDialog} color={"primary"}>
+                  {t("Close")}
+                </GradientButton>
               </>
             ) : formMode === "new" ? (
               <>
-                <Box display="flex" gap={2}>
-                  <GradientButton
-                    onClick={(event) => {
-                      handleSubmit(event, "Save");
-                    }}
-                    disabled={isSubmitting || disableButton}
-                    endIcon={
-                      isSubmitting ? <CircularProgress size={20} /> : null
-                    }
-                    color={"primary"}
-                  >
-                    {t("Save")}
-                  </GradientButton>
-                  <GradientButton
-                    onClick={closeDialog}
-                    disabled={isSubmitting || disableButton}
-                    color={"primary"}
-                  >
-                    {t("Close")}
-                  </GradientButton>
-                </Box>
+                <GradientButton
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
+                  disabled={isSubmitting || disableButton}
+                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                  color={"primary"}
+                >
+                  {t("Save")}
+                </GradientButton>
+                <GradientButton onClick={closeDialog} color={"primary"}>
+                  {t("Close")}
+                </GradientButton>
               </>
             ) : (
               <>
-                <Box display="flex" gap={2}>
-                  {!isLastRow() && (
-                    <GradientButton
-                      onClick={(event) => {
-                        handleSubmit(event, "CarryForward");
-                      }}
-                      color={"primary"}
-                    >
-                      {t("Carry Forward")}
-                    </GradientButton>
-                  )}
+                {!isLastRow() && (
                   <GradientButton
-                    onClick={() => {
-                      setFormMode("edit");
+                    onClick={(event) => {
+                      handleSubmit(event, "CarryForward");
                     }}
                     color={"primary"}
                   >
-                    {t("Edit")}
+                    {t("CarryForward")}
                   </GradientButton>
-                  <GradientButton onClick={closeDialog} color={"primary"}>
-                    {t("Close")}
-                  </GradientButton>
-                </Box>
+                )}
+                <GradientButton
+                  onClick={() => {
+                    setFormMode("edit");
+                  }}
+                  color={"primary"}
+                >
+                  {t("Edit")}
+                </GradientButton>
+                <GradientButton onClick={closeDialog} color={"primary"}>
+                  {t("Close")}
+                </GradientButton>
               </>
             )}
           </>

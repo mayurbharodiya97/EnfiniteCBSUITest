@@ -143,7 +143,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
       },
       name: "BENEFIACCTDTL",
       isScreenStyle: true,
-      displayCountName: "BeneficiaryACDetails",
+      displayCountName: "Record",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       addRowFn: (data) => {
         const dataArray = Array.isArray(data?.BENEFIACCTDTL)
@@ -223,6 +223,7 @@ export const BeneficiaryAcctDetailsFormMetaData = {
                   ? dependentValue?.ACCT_CD?.value ?? ""
                   : "",
               FLAG: formState?.NEFTFlagsData?.[0]?.PARA_BNFCRY ?? "",
+              WORKING_DATE: authState?.workingDate ?? "",
             });
           },
 
@@ -247,8 +248,10 @@ export const BeneficiaryAcctDetailsFormMetaData = {
               if (validateIFSC?.[0]?.O_STATUS === "999") {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: validateIFSC?.[0]?.O_MESSAGE,
+                  message:
+                    validateIFSC?.[0]?.O_MESSAGE ?? "Somethingwenttowrong",
                   buttonNames: ["Ok"],
+                  icon: "ERROR",
                 });
                 if (buttonName === "Ok") {
                   return {

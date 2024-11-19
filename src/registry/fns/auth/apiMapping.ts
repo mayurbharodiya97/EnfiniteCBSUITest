@@ -770,8 +770,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNCHQRTNBTN",
     packageName: "",
   },
-  GETSANPSHOTDTL: {
-    url: "/transactionServiceAPI/GETSANPSHOTDTL",
+  GETSNAPSHOTDTLF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSNAPSHOTDTLF1",
     packageName: "",
   },
   GETSEARCHDTL: {
@@ -1099,7 +1099,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETPOSITIVEPAYDTL: {
-    url: "chequeServiceAPI/GETPOSITIVEPAYDTL",
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPOSITIVEPAYDTL",
     packageName: "",
   },
   DOPOSTDML: {
@@ -1136,10 +1136,6 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCONFIMEDHISTORY: {
     url: "chequeServiceAPI/GETCONFIMEDHISTORY",
-    packageName: "",
-  },
-  GETINWZONEDDW: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWZONEDDW",
     packageName: "",
   },
   GETINWREASONMSTDDW: {
@@ -2905,12 +2901,48 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDPRINTCONFIGDTL",
     packageName: "",
   },
+  GETFDRENEWDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDRENEWDATA",
+    packageName: "",
+  },
+  DOSAVEPAYMENTANDFDDEPOSITEDTL: {
+    url: "/enfinityFDServiceAPI/DOSAVEPAYMENTANDFDDEPOSITEDTL",
+    packageName: "",
+  },
+  SAVELIENENTRYDTL: {
+    url: "/enfinityFDServiceAPI/SAVELIENENTRYDTL",
+    packageName: "",
+  },
+  GETFDBUTTONS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFDBUTTONS",
+    packageName: "",
+  },
   GETOTHERCASHRECEIPT: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETOTHERCASHRECEIPT",
     packageName: "",
   },
   VALIDATEACCOUNTDTL: {
     url: "/accountServiceAPI/VALIDATEACCOUNTDTL",
+    packageName: "",
+  },
+  GETLOCKERSIZEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERSIZEDDDW",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONDDDW",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONTRN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONTRN",
+    packageName: "",
+  },
+  GETLOCKERVIEWMST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERVIEWMST",
+    packageName: "",
+  },
+  GETLOCKERTRXDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERTRXDDDW",
     packageName: "",
   },
 };

@@ -15,6 +15,7 @@ import {
   ActionTypes,
   queryClient,
 } from "@acuteinfo/common-base";
+import { t } from "i18next";
 
 const actions: ActionTypes[] = [
   {
@@ -36,7 +37,6 @@ const actions: ActionTypes[] = [
 const Securityuser = () => {
   const navigate = useNavigate();
   const { getEntries } = useContext(ClearCacheContext);
-  const [rowData, setRowsData] = useState<any>([]);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -46,7 +46,6 @@ const Securityuser = () => {
       if (data.name === "add") {
         navigate(data.name);
       } else if (data.name === "edit") {
-        setRowsData(data?.rows);
         navigate(data.name, {
           state: data?.rows,
         });
@@ -69,6 +68,14 @@ const Securityuser = () => {
   }, [getEntries]);
   return (
     <Fragment>
+      {isError && (
+        <Alert
+          severity="error"
+          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
+          errorDetail={error?.error_detail}
+          color="error"
+        />
+      )}
       <GridWrapper
         key={`UserGroupGrid`}
         finalMetaData={UserSecurity as GridMetaDataType}
@@ -79,17 +86,6 @@ const Securityuser = () => {
         setAction={setCurrentAction}
         refetchData={() => refetch()}
       />
-      <Typography
-        sx={{
-          fontWeight: "bold",
-          color: "rgb(152 59 70 / 61%)",
-          marginLeft: "630px",
-          marginTop: "-43.2px",
-        }}
-        variant="subtitle1"
-      >
-        Double click or right click for Edit-Detail.
-      </Typography>
     </Fragment>
   );
 };

@@ -84,6 +84,7 @@ export const AddNewBeneficiaryDetail: FC<{
       ACCT_CD:
         isBenAuditTrailData?.ACCT_CD.padStart(6, "0")?.padEnd(20, " ") ?? "",
       FLAG: "D",
+      WORKING_DATE: authState?.workingDate,
     })
   );
   useEffect(() => {
@@ -217,16 +218,12 @@ export const AddNewBeneficiaryDetail: FC<{
     }
   };
 
-  AddNewBenfiDetailGridMetadata.gridConfig.gridLabel =
-    t("ListOfBeneficiaryAcOrdering") +
-    t("ACNo") +
-    ".: " +
-    authState?.companyID +
-    isBenAuditTrailData?.BRANCH_CD +
-    " / " +
-    isBenAuditTrailData?.ACCT_TYPE +
-    " / " +
-    isBenAuditTrailData?.ACCT_CD;
+  AddNewBenfiDetailGridMetadata.gridConfig.gridLabel = `${t(
+    "ListOfBeneficiaryAcOrdering"
+  )} ${t(
+    "ACNo"
+  )}: ${authState?.companyID?.trim()}-${isBenAuditTrailData?.BRANCH_CD?.trim()}-${isBenAuditTrailData?.ACCT_TYPE?.trim()}-${isBenAuditTrailData?.ACCT_CD?.trim()}`;
+
   return (
     <>
       <Dialog

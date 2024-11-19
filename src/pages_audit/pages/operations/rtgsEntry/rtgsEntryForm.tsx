@@ -205,21 +205,38 @@ const RtgsEntryForm: FC<{}> = () => {
           variant: "success",
         });
       } else {
-        const message = ` ${t("RTGSNEFTTransNo")}.:- ${data?.[0]?.FD_NO}\n${
-          data?.[0]?.TRAN_CD
-        } ${t("ACNo")}:- ${data?.[0]?.BRANCH_CD}-${
-          data?.[0]?.ACCT_TYPE
-        }-${data?.[0]?.ACCT_CD.trim()}  ${t("Trx")}:- ${data?.[0]?.TYPE_CD} ${t(
-          "Amount"
-        )}:- ${data?.[0]?.AMOUNT}.\n${data?.[1]?.TRAN_CD} ${t("ACNo")}:- ${
-          data?.[1]?.BRANCH_CD
-        }-${data?.[1]?.ACCT_TYPE}-${data?.[1]?.ACCT_CD.trim()}  ${t("Trx")}:- ${
-          data?.[1]?.TYPE_CD
-        } ${t("Amount")}:- ${data?.[1]?.AMOUNT}`;
-        await MessageBox({
-          messageTitle: t("VoucherConfirmation"),
-          message: message,
-        });
+        for (let i = 0; i < data.length; i++) {
+          if (data[i]?.RTGS_ENTRY) {
+            const message = ` ${t("RTGSNEFTTransNo")}.:- ${
+              data?.[0]?.RTGS_ENTRY?.[0]?.FD_NO
+            }\n${data?.[0]?.RTGS_ENTRY?.[0]?.TRAN_CD} ${t("ACNo")}:- ${
+              data?.[0]?.RTGS_ENTRY?.[0]?.BRANCH_CD
+            }-${
+              data?.[0]?.RTGS_ENTRY?.[0]?.ACCT_TYPE
+            }-${data?.[0]?.RTGS_ENTRY?.[0]?.ACCT_CD.trim()}  ${t("Trx")}:- ${
+              data?.[0]?.RTGS_ENTRY?.[0]?.TYPE_CD
+            } ${t("Amount")}:- ${data?.[0]?.RTGS_ENTRY?.[0]?.AMOUNT}.\n${
+              data?.[0]?.RTGS_ENTRY?.[1]?.TRAN_CD
+            } ${t("ACNo")}:- ${data?.[0]?.RTGS_ENTRY?.[1]?.BRANCH_CD}-${
+              data?.[0]?.RTGS_ENTRY?.[1]?.ACCT_TYPE
+            }-${data?.[0]?.RTGS_ENTRY?.[1]?.ACCT_CD.trim()}  ${t("Trx")}:- ${
+              data?.[0]?.RTGS_ENTRY?.[1]?.TYPE_CD
+            } ${t("Amount")}:- ${data?.[0]?.RTGS_ENTRY?.[1]?.AMOUNT}`;
+            await MessageBox({
+              messageTitle: t("VoucherConfirmation"),
+              message: message,
+            });
+          }
+          if (data[i]?.UTR_MSG) {
+            const message = ` ${t("RTGSNEFTTransNo")}.:- ${
+              data?.[0]?.RTGS_ENTRY?.[0]?.FD_NO
+            }\n${data[i]?.UTR_MSG?.[0]}`;
+            await MessageBox({
+              messageTitle: t("UTRConfirmation"),
+              message: message,
+            });
+          }
+        }
       }
       setState((old) => ({
         ...old,

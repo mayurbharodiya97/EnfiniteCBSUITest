@@ -17,6 +17,7 @@ import {
   utilFunction,
   FormWrapper,
   MetaDataType,
+  Alert,
 } from "@acuteinfo/common-base";
 
 const CategoryMasterForm = ({
@@ -35,21 +36,17 @@ const CategoryMasterForm = ({
 
   const mutation = useMutation(API.categoryMasterDML, {
     onError: async (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      await MessageBox({
-        messageTitle: "Error",
-        message: errorMsg ?? "",
-        icon: "ERROR",
-      });
       CloseMessageBox();
     },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
+    onSuccess: (msg, data) => {
+      enqueueSnackbar(
+        Boolean(data?._isNewRow)
+          ? t("RecordInsertedMsg")
+          : t("RecordUpdatedMsg"),
+        {
+          variant: "success",
+        }
+      );
       isDataChangedRef.current = true;
       CloseMessageBox();
       closeDialog();
@@ -100,6 +97,7 @@ const CategoryMasterForm = ({
           messageTitle: "Confirmation",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (btnName === "Yes") {
           mutation.mutate({
@@ -118,6 +116,14 @@ const CategoryMasterForm = ({
 
   return (
     <>
+      {mutation.isError && (
+        <Alert
+          severity="error"
+          errorMsg={mutation?.error?.error_msg || t("Somethingwenttowrong")}
+          errorDetail={mutation?.error?.error_detail ?? ""}
+          color="error"
+        />
+      )}
       {gridData ? (
         <FormWrapper
           key={"categoryMasterForm" + formMode}

@@ -204,7 +204,7 @@ export const Document: React.FC<DocumentProps> = ({
         // onlySingleSelectionAllow={true}
         // isNewRowStyle={true}
         // disableMultipleRowSelect={true}
-        variant={"standard"}
+        // variant={"standard"}
         // defaultSelectedRowId={1}
         //  controlsAtBottom={true}
       />

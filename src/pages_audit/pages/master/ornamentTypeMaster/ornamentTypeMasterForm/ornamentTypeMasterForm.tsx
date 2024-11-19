@@ -6,7 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "@acuteinfo/common-base";
+import { Alert, LoaderPaperComponent } from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
 import {
   usePopupContext,
@@ -33,20 +33,18 @@ const OrnamentTypeMasterForm = ({
   const { t } = useTranslation();
 
   const mutation = useMutation(API.ornamentTypeMasterDML, {
-    onError: (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
+    onError: async (error: any) => {
       CloseMessageBox();
     },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
+    onSuccess: (msg, data) => {
+      enqueueSnackbar(
+        Boolean(data?._isNewRow)
+          ? t("RecordInsertedMsg")
+          : t("RecordUpdatedMsg"),
+        {
+          variant: "success",
+        }
+      );
       isDataChangedRef.current = true;
       CloseMessageBox();
       closeDialog();
@@ -66,15 +64,15 @@ const OrnamentTypeMasterForm = ({
     };
     let oldData = {
       ...rows?.[0]?.data,
-      ORN_MARGIN: Number(rows?.[0]?.data?.ORN_MARGIN ?? 0).toFixed(2),
     };
+
     let upd = utilFunction.transformDetailsData(newData, oldData);
     isErrorFuncRef.current = {
       data: {
         ...newData,
         ...upd,
-        COMP_CD: authState?.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
         _isNewRow: defaultView === "new" ? true : false,
       },
       displayData,
@@ -90,6 +88,7 @@ const OrnamentTypeMasterForm = ({
         messageTitle: "Confirmation",
         buttonNames: ["Yes", "No"],
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
       if (btnName === "Yes") {
         mutation.mutate({
@@ -101,6 +100,14 @@ const OrnamentTypeMasterForm = ({
 
   return (
     <>
+      {mutation.isError && (
+        <Alert
+          severity="error"
+          errorMsg={mutation?.error?.error_msg || t("Somethingwenttowrong")}
+          errorDetail={mutation?.error?.error_detail ?? ""}
+          color="error"
+        />
+      )}
       {gridData ? (
         <FormWrapper
           key={"ornamentTypeMasterFormMetaData" + formMode}

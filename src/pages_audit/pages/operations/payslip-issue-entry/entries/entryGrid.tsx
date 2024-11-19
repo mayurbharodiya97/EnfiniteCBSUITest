@@ -182,23 +182,13 @@ export const RetriveGridForm: FC<{
             fullScreen
             maxWidth="xl"
           >
-            <AppBar position="relative" color="secondary">
-              <Toolbar
-                className={headerClasses.root}
-                variant="dense"
-                sx={{ display: "flex", justifyContent: "end" }}
-              >
-                <GradientButton
-                  onClick={(event) => {
-                    close();
-                  }}
-                  color={"primary"}
-                >
-                  {t("close")}
-                </GradientButton>
-              </Toolbar>
-            </AppBar>
-            {<Payslipissueconfirmation />}
+            {
+              <Payslipissueconfirmation
+                onClose={() => {
+                  close();
+                }}
+              />
+            }
           </Dialog>
         ) : apiReqFlag === "RPT/14" ? (
           <Dialog
@@ -212,7 +202,7 @@ export const RetriveGridForm: FC<{
             fullScreen
             maxWidth="xl"
           >
-            <AppBar position="relative" color="secondary">
+            {/* <AppBar position="relative" color="secondary">
               <Toolbar
                 className={headerClasses.root}
                 variant="dense"
@@ -227,8 +217,14 @@ export const RetriveGridForm: FC<{
                   {t("close")}
                 </GradientButton>
               </Toolbar>
-            </AppBar>
-            {<PaySlipIssueEntry />}
+            </AppBar> */}
+            {
+              <PaySlipIssueEntry
+                onClose={() => {
+                  close();
+                }}
+              />
+            }
           </Dialog>
         ) : (
           <Dialog

@@ -59,7 +59,7 @@ export const PaymentRenewBtnsMetadata = {
 export const FDPaymentMetadata = {
   form: {
     name: "FDPayment",
-    label: "",
+    label: "FD Details",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -124,7 +124,9 @@ export const FDPaymentMetadata = {
           fontSize: "14px",
           width: "100%",
           textAlign: "center",
-          background: "lightblue",
+          background: "rgb(238, 238, 238)",
+          borderRadius: "5px",
+          padding: "6px 0",
         },
       },
       fullWidth: true,
@@ -144,7 +146,9 @@ export const FDPaymentMetadata = {
           fontSize: "14px",
           width: "100%",
           textAlign: "center",
-          background: "lightblue",
+          background: "rgb(238, 238, 238)",
+          borderRadius: "5px",
+          padding: "6px 0",
         },
       },
       fullWidth: true,
@@ -164,7 +168,9 @@ export const FDPaymentMetadata = {
           fontSize: "14px",
           width: "100%",
           textAlign: "center",
-          background: "lightblue",
+          background: "rgb(238, 238, 238)",
+          borderRadius: "5px",
+          padding: "6px 0",
         },
       },
       fullWidth: true,
@@ -184,7 +190,9 @@ export const FDPaymentMetadata = {
           fontSize: "14px",
           width: "100%",
           textAlign: "center",
-          background: "lightblue",
+          background: "rgb(238, 238, 238)",
+          borderRadius: "5px",
+          padding: "6px 0",
         },
       },
       fullWidth: true,
@@ -204,7 +212,9 @@ export const FDPaymentMetadata = {
           fontSize: "14px",
           width: "100%",
           textAlign: "center",
-          background: "lightblue",
+          background: "rgb(238, 238, 238)",
+          borderRadius: "5px",
+          padding: "6px 0",
         },
       },
       fullWidth: true,
@@ -220,14 +230,21 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          marginTop: "33px",
+          margin: "33px 0 0 30px",
           fontSize: "14px",
           width: "100%",
-          textAlign: "center",
+          textAlign: "left",
         },
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -240,7 +257,14 @@ export const FDPaymentMetadata = {
       format: "dd/MM/yyyy",
       isReadOnly: true,
       fullWidth: true,
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -257,7 +281,14 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -278,7 +309,14 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -292,7 +330,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
+      GridProps: {
+        xs: 1.6,
+        sm: 1.6,
+        md: 1.6,
+        lg: 1.6,
+        xl: 1.6,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -309,7 +354,14 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
     {
       render: {
@@ -330,7 +382,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -347,7 +406,14 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -375,7 +441,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -392,7 +465,14 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
     {
       render: {
@@ -419,7 +499,14 @@ export const FDPaymentMetadata = {
         allowNegative: true,
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -440,7 +527,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -452,14 +546,21 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          marginTop: "33px",
+          margin: "33px 0 0 30px",
           fontSize: "14px",
           width: "100%",
-          textAlign: "center",
+          textAlign: "left",
         },
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -473,7 +574,14 @@ export const FDPaymentMetadata = {
       format: "dd/MM/yyyy",
       isReadOnly: true,
       fullWidth: true,
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -482,7 +590,14 @@ export const FDPaymentMetadata = {
       },
       name: "SPACE_INT_PAID_ONE",
       fullWidth: true,
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -496,7 +611,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
+      GridProps: {
+        xs: 1.6,
+        sm: 1.6,
+        md: 1.6,
+        lg: 1.6,
+        xl: 1.6,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -515,7 +637,14 @@ export const FDPaymentMetadata = {
         },
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -534,7 +663,14 @@ export const FDPaymentMetadata = {
         },
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -548,7 +684,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -560,14 +703,21 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          marginTop: "33px",
+          margin: "33px 0 0 30px",
           fontSize: "14px",
           width: "100%",
-          textAlign: "center",
+          textAlign: "left",
         },
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -580,7 +730,14 @@ export const FDPaymentMetadata = {
       format: "dd/MM/yyyy",
       isReadOnly: true,
       fullWidth: true,
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -594,7 +751,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -608,7 +772,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
+      GridProps: {
+        xs: 1.6,
+        sm: 1.6,
+        md: 1.6,
+        lg: 1.6,
+        xl: 1.6,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -619,10 +790,6 @@ export const FDPaymentMetadata = {
       label: "",
       dependentFields: ["PROV_INT_AMT"],
       runPostValidationHookAlways: true,
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -678,7 +845,14 @@ export const FDPaymentMetadata = {
         allowNegative: true,
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -689,10 +863,6 @@ export const FDPaymentMetadata = {
       label: "",
       dependentFields: ["PROV_INT_AMT"],
       runPostValidationHookAlways: true,
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -767,7 +937,14 @@ export const FDPaymentMetadata = {
         allowNegative: true,
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -788,7 +965,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -800,14 +984,21 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          marginTop: "33px",
+          margin: "33px 0 0 30px",
           fontSize: "14px",
           width: "100%",
-          textAlign: "center",
+          textAlign: "left",
         },
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -820,7 +1011,14 @@ export const FDPaymentMetadata = {
       format: "dd/MM/yyyy",
       isReadOnly: true,
       fullWidth: true,
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -831,7 +1029,7 @@ export const FDPaymentMetadata = {
       label: "",
       placeholder: "",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -839,7 +1037,14 @@ export const FDPaymentMetadata = {
       },
       isReadOnly: true,
       fullWidth: true,
-      GridProps: { xs: 2.7, sm: 2.7, md: 2.7, lg: 2.7, xl: 2.7 },
+      GridProps: {
+        xs: 2.7,
+        sm: 2.7,
+        md: 2.7,
+        lg: 2.7,
+        xl: 2.7,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -848,13 +1053,20 @@ export const FDPaymentMetadata = {
       },
       name: "SPACER_DAYS_DTL",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return false;
         } else {
           return true;
         }
       },
-      GridProps: { xs: 2.7, sm: 2.7, md: 2.7, lg: 2.7, xl: 2.7 },
+      GridProps: {
+        xs: 2.7,
+        sm: 2.7,
+        md: 2.7,
+        lg: 2.7,
+        xl: 2.7,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -864,7 +1076,7 @@ export const FDPaymentMetadata = {
       name: "AFT_MAT_INT_TYPE",
       label: "",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -872,7 +1084,14 @@ export const FDPaymentMetadata = {
       },
       isReadOnly: true,
       fullWidth: true,
-      GridProps: { xs: 1.4, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
+      GridProps: {
+        xs: 1.4,
+        sm: 1.4,
+        md: 1.4,
+        lg: 1.4,
+        xl: 1.4,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -881,13 +1100,20 @@ export const FDPaymentMetadata = {
       },
       name: "SPACER_AFT_MAT_INT_TYPE",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return false;
         } else {
           return true;
         }
       },
-      GridProps: { xs: 1.4, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
+      GridProps: {
+        xs: 1.4,
+        sm: 1.4,
+        md: 1.4,
+        lg: 1.4,
+        xl: 1.4,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -897,7 +1123,7 @@ export const FDPaymentMetadata = {
       name: "MAT_INT_RATE",
       label: "Mat Int Rate :",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -913,7 +1139,14 @@ export const FDPaymentMetadata = {
         },
       },
       fullWidth: true,
-      GridProps: { xs: 1.3, sm: 1.3, md: 1.3, lg: 1.3, xl: 1.3 },
+      GridProps: {
+        xs: 1.3,
+        sm: 1.3,
+        md: 1.3,
+        lg: 1.3,
+        xl: 1.3,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -922,13 +1155,20 @@ export const FDPaymentMetadata = {
       },
       name: "SPACER_MAT_INT_RATE",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return false;
         } else {
           return true;
         }
       },
-      GridProps: { xs: 1.3, sm: 1.3, md: 1.3, lg: 1.3, xl: 1.3 },
+      GridProps: {
+        xs: 1.3,
+        sm: 1.3,
+        md: 1.3,
+        lg: 1.3,
+        xl: 1.3,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -938,7 +1178,7 @@ export const FDPaymentMetadata = {
       name: "AFT_MAT_INT_RATE",
       label: "",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -949,7 +1189,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -958,13 +1205,20 @@ export const FDPaymentMetadata = {
       },
       name: "SPACER_AFT_MAT_INT_RATE",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return false;
         } else {
           return true;
         }
       },
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -974,7 +1228,7 @@ export const FDPaymentMetadata = {
       name: "AFT_MAT_INT_AMT",
       label: "",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -985,7 +1239,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -994,13 +1255,20 @@ export const FDPaymentMetadata = {
       },
       name: "SPACER_AFT_MAT_INT_AMT",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return false;
         } else {
           return true;
         }
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1012,14 +1280,21 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          marginTop: "33px",
+          margin: "33px 0 0 30px",
           fontSize: "14px",
           width: "100%",
-          textAlign: "center",
+          textAlign: "left",
         },
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1041,6 +1316,8 @@ export const FDPaymentMetadata = {
         "IS_PREMATURE",
         "SPL_AMT",
         "TDS_METHOD",
+        "INT_PAID_DT",
+        "PROV_DT",
       ],
       runPostValidationHookAlways: true,
       postValidationSetCrossFieldValues: async (
@@ -1063,10 +1340,7 @@ export const FDPaymentMetadata = {
           formattedCurField === formattedFormStVal &&
           !formState.isChangePaidDate
         ) {
-          if (!formState.isChangePaidDate) {
-            formState.isChangePaidDate = true;
-            return {};
-          }
+          return {};
         }
 
         if (currentField?.value) {
@@ -1093,40 +1367,70 @@ export const FDPaymentMetadata = {
               : "",
           };
           const postData = await API.getFDPaymentDtl(reqParameters);
+          formState.isChangePaidDate = true;
 
           for (const response of postData?.[0]?.MSG ?? []) {
             if (response?.O_STATUS === "999") {
               await formState?.MessageBox({
-                messageTitle: "ValidationFailed",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "ValidationFailed",
                 message: response?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
             } else if (response?.O_STATUS === "9") {
               await formState?.MessageBox({
-                messageTitle: "Alert",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Alert",
                 message: response?.O_MESSAGE ?? "",
                 icon: "WARNING",
               });
             } else if (response?.O_STATUS === "99") {
               const buttonName = await formState?.MessageBox({
-                messageTitle: "Confirmation",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Confirmation",
                 message: response?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
                 defFocusBtnName: "Yes",
+                icon: "CONFIRM",
               });
               if (buttonName === "No") {
                 break;
               }
             } else if (response?.O_STATUS === "0") {
-              return Object.keys(postData?.[0] || {}).reduce((acc, key) => {
-                if (key !== "PAID_DT") {
-                  acc[key] = {
-                    value: postData[0][key] ?? "",
-                    ignoreUpdate: true,
-                  };
-                }
-                return acc;
-              }, {});
+              if (Boolean(formState?.openIntPayment)) {
+                return Object.keys(postData?.[0] || {}).reduce((acc, key) => {
+                  if (
+                    key !== "PAID_DT" &&
+                    key !== "BAL_AMT" &&
+                    key !== "PAY_CASH" &&
+                    key !== "PAY_TRF" &&
+                    key !== "DAYS_DTL" &&
+                    key !== "AFT_MAT_INT_TYPE" &&
+                    key !== "AFT_MAT_INT_RATE" &&
+                    key !== "AFT_MAT_INT_AMT" &&
+                    key !== "FD_REMARK"
+                  ) {
+                    acc[key] = {
+                      value: postData[0][key] ?? "",
+                      ignoreUpdate: true,
+                    };
+                  }
+                  return acc;
+                }, {});
+              } else {
+                return Object.keys(postData?.[0] || {}).reduce((acc, key) => {
+                  if (key !== "PAID_DT") {
+                    acc[key] = {
+                      value: postData[0][key] ?? "",
+                      ignoreUpdate: true,
+                    };
+                  }
+                  return acc;
+                }, {});
+              }
             }
           }
         }
@@ -1140,7 +1444,14 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1159,7 +1470,14 @@ export const FDPaymentMetadata = {
         },
       },
       fullWidth: true,
-      GridProps: { xs: 0.8, sm: 0.8, md: 0.8, lg: 0.8, xl: 0.8 },
+      GridProps: {
+        xs: 0.8,
+        sm: 0.8,
+        md: 0.8,
+        lg: 0.8,
+        xl: 0.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1234,6 +1552,7 @@ export const FDPaymentMetadata = {
             message: "Ason Calculation Required?",
             buttonNames: ["Yes", "No"],
             defFocusBtnName: "Yes",
+            icon: "CONFIRM",
           });
           if (buttonName === "Yes") {
             reqParameters = { ...reqParameters, A_IS_PREMATURE: "Y" };
@@ -1246,36 +1565,65 @@ export const FDPaymentMetadata = {
           for (const response of postData?.[0]?.MSG ?? []) {
             if (response?.O_STATUS === "999") {
               await formState?.MessageBox({
-                messageTitle: "ValidationFailed",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "ValidationFailed",
                 message: response?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
             } else if (response?.O_STATUS === "9") {
               await formState?.MessageBox({
-                messageTitle: "Alert",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Alert",
                 message: response?.O_MESSAGE ?? "",
                 icon: "WARNING",
               });
             } else if (response?.O_STATUS === "99") {
               const buttonName = await formState?.MessageBox({
-                messageTitle: "Confirmation",
+                messageTitle: response?.O_MSG_TITLE?.length
+                  ? response?.O_MSG_TITLE
+                  : "Confirmation",
                 message: response?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
                 defFocusBtnName: "Yes",
+                icon: "CONFIRM",
               });
               if (buttonName === "No") {
                 break;
               }
             } else if (response?.O_STATUS === "0") {
-              return Object.keys(postData?.[0] || {}).reduce((acc, key) => {
-                if (key !== "INT_RATE_REST") {
-                  acc[key] = {
-                    value: postData[0][key] ?? "",
-                    ignoreUpdate: true,
-                  };
-                }
-                return acc;
-              }, {});
+              if (Boolean(formState?.openIntPayment)) {
+                return Object.keys(postData?.[0] || {}).reduce((acc, key) => {
+                  if (
+                    key !== "INT_RATE_REST" &&
+                    key !== "BAL_AMT" &&
+                    key !== "PAY_CASH" &&
+                    key !== "PAY_TRF" &&
+                    key !== "DAYS_DTL" &&
+                    key !== "AFT_MAT_INT_TYPE" &&
+                    key !== "AFT_MAT_INT_RATE" &&
+                    key !== "AFT_MAT_INT_AMT" &&
+                    key !== "FD_REMARK"
+                  ) {
+                    acc[key] = {
+                      value: postData[0][key] ?? "",
+                      ignoreUpdate: true,
+                    };
+                  }
+                  return acc;
+                }, {});
+              } else {
+                return Object.keys(postData?.[0] || {}).reduce((acc, key) => {
+                  if (key !== "INT_RATE_REST") {
+                    acc[key] = {
+                      value: postData[0][key] ?? "",
+                      ignoreUpdate: true,
+                    };
+                  }
+                  return acc;
+                }, {});
+              }
             }
           }
           return {};
@@ -1296,6 +1644,7 @@ export const FDPaymentMetadata = {
         md: 1,
         lg: 1,
         xl: 1,
+        sx: { paddingTop: "0px !important" },
       },
     },
 
@@ -1317,7 +1666,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
+      GridProps: {
+        xs: 1.6,
+        sm: 1.6,
+        md: 1.6,
+        lg: 1.6,
+        xl: 1.6,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1328,10 +1684,6 @@ export const FDPaymentMetadata = {
       label: "",
       dependentFields: ["INT_REST"],
       runPostValidationHookAlways: true,
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -1387,7 +1739,14 @@ export const FDPaymentMetadata = {
         allowNegative: true,
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1398,10 +1757,6 @@ export const FDPaymentMetadata = {
       label: "",
       dependentFields: ["INT_REST"],
       runPostValidationHookAlways: true,
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -1457,7 +1812,14 @@ export const FDPaymentMetadata = {
         allowNegative: true,
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1478,7 +1840,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1488,7 +1857,7 @@ export const FDPaymentMetadata = {
       name: "BALANCE_TYPO",
       label: "Balance :",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -1497,14 +1866,21 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          marginTop: "33px",
+          margin: "33px 0 0 30px",
           fontSize: "14px",
           width: "100%",
-          textAlign: "center",
+          textAlign: "left",
         },
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1513,13 +1889,20 @@ export const FDPaymentMetadata = {
       },
       name: "SPACER_BALANCE_TYPO",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
         }
       },
-      GridProps: { xs: 3.6, sm: 3.6, md: 3.6, lg: 3.6, xl: 3.6 },
+      GridProps: {
+        xs: 3.6,
+        sm: 3.6,
+        md: 3.6,
+        lg: 3.6,
+        xl: 3.6,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1529,7 +1912,7 @@ export const FDPaymentMetadata = {
       name: "BAL_AMT",
       label: "",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -1540,22 +1923,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
-    },
-
-    {
-      render: {
-        componentType: "spacer",
+      GridProps: {
+        xs: 1.6,
+        sm: 1.6,
+        md: 1.6,
+        lg: 1.6,
+        xl: 1.6,
+        sx: { paddingTop: "0px !important" },
       },
-      name: "SPACER_BAL_AMT",
-      shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
 
     {
@@ -1566,10 +1941,6 @@ export const FDPaymentMetadata = {
       label: "",
       dependentFields: ["BAL_AMT"],
       runPostValidationHookAlways: true,
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -1622,7 +1993,7 @@ export const FDPaymentMetadata = {
         }
       },
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -1632,22 +2003,14 @@ export const FDPaymentMetadata = {
         allowNegative: true,
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-
-    {
-      render: {
-        componentType: "spacer",
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
       },
-      name: "SPACER_PAY_CASH",
-      shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
     },
 
     {
@@ -1658,10 +2021,6 @@ export const FDPaymentMetadata = {
       label: "",
       dependentFields: ["BAL_AMT"],
       runPostValidationHookAlways: true,
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -1705,7 +2064,7 @@ export const FDPaymentMetadata = {
         return {};
       },
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -1715,22 +2074,14 @@ export const FDPaymentMetadata = {
         allowNegative: true,
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
-    },
-
-    {
-      render: {
-        componentType: "spacer",
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
       },
-      name: "SPACER_PAY_TRF",
-      shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
     },
 
     {
@@ -1748,7 +2099,7 @@ export const FDPaymentMetadata = {
         return value;
       },
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -1758,22 +2109,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
-    },
-
-    {
-      render: {
-        componentType: "spacer",
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
       },
-      name: "SPACER_BAL_TOTAL",
-      shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
 
     {
@@ -1785,14 +2128,21 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          marginTop: "33px",
+          margin: "33px 0 0 30px",
           fontSize: "14px",
           width: "100%",
-          textAlign: "center",
+          textAlign: "left",
         },
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1819,7 +2169,14 @@ export const FDPaymentMetadata = {
         },
       },
       fullWidth: true,
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
     {
       render: {
@@ -1834,7 +2191,14 @@ export const FDPaymentMetadata = {
           return false;
         }
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1859,10 +2223,6 @@ export const FDPaymentMetadata = {
         },
       },
       dependentFields: ["CASH_TOTAL", "ACCT_TYPE", "ACCT_CD", "BRANCH_CD"],
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: true,
-      },
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
@@ -1901,16 +2261,21 @@ export const FDPaymentMetadata = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "ValidationFailed",
+                messageTitle: postData[i]?.O_MSG_TITLE?.length
+                  ? postData[i]?.O_MSG_TITLE
+                  : "ValidationFailed",
                 message: postData[i]?.O_MESSAGE ?? "",
                 icon: "ERROR",
               });
               returnVal = "";
             } else if (postData[i]?.O_STATUS === "99") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "Confirmation",
+                messageTitle: postData[i]?.O_MSG_TITLE?.length
+                  ? postData[i]?.O_MSG_TITLE
+                  : "Confirmation",
                 message: postData[i]?.O_MESSAGE ?? "",
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
               });
               btn99 = btnName;
               if (btnName === "No") {
@@ -1919,8 +2284,11 @@ export const FDPaymentMetadata = {
             } else if (postData[i]?.O_STATUS === "9") {
               if (btn99 !== "No") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Alert",
+                  messageTitle: postData[i]?.O_MSG_TITLE?.length
+                    ? postData[i]?.O_MSG_TITLE
+                    : "Alert",
                   message: postData[i]?.O_MESSAGE ?? "",
+                  icon: "WARNING",
                 });
               }
               returnVal = "";
@@ -1954,7 +2322,14 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1970,7 +2345,14 @@ export const FDPaymentMetadata = {
           return false;
         }
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -1992,7 +2374,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
+      GridProps: {
+        xs: 1.6,
+        sm: 1.6,
+        md: 1.6,
+        lg: 1.6,
+        xl: 1.6,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -2030,7 +2419,14 @@ export const FDPaymentMetadata = {
         allowNegative: true,
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -2072,7 +2468,14 @@ export const FDPaymentMetadata = {
         allowNegative: true,
       },
       fullWidth: true,
-      GridProps: { xs: 2, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: {
+        xs: 2,
+        sm: 2,
+        md: 2,
+        lg: 2,
+        xl: 2,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -2093,7 +2496,14 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowNegative: true,
       },
-      GridProps: { xs: 1.8, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -2103,7 +2513,7 @@ export const FDPaymentMetadata = {
       name: "FD_REM_TYPO",
       label: "FD Remark :",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
@@ -2112,14 +2522,21 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          marginTop: "33px",
+          margin: "33px 0 0 30px",
           fontSize: "14px",
           width: "100%",
-          textAlign: "center",
+          textAlign: "left",
         },
       },
       fullWidth: true,
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -2128,13 +2545,20 @@ export const FDPaymentMetadata = {
       },
       name: "SPACER_FD_REM_TYPO",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return false;
         } else {
           return true;
         }
       },
-      GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
+      GridProps: {
+        xs: 1,
+        sm: 1,
+        md: 1,
+        lg: 1,
+        xl: 1,
+        sx: { paddingTop: "0px !important" },
+      },
     },
     {
       render: {
@@ -2143,14 +2567,42 @@ export const FDPaymentMetadata = {
       name: "FD_REMARK",
       label: "",
       shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (formState?.screenFlag === "intPayment") {
+        if (Boolean(formState?.openIntPayment)) {
           return true;
         } else {
           return false;
         }
       },
       fullWidth: true,
-      GridProps: { xs: 8, sm: 8, md: 8, lg: 8, xl: 8 },
+      GridProps: {
+        xs: 6.2,
+        sm: 6.2,
+        md: 6.2,
+        lg: 6.2,
+        xl: 6.2,
+        sx: { paddingTop: "0px !important" },
+      },
+    },
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER_FD_REMARK_TYPO",
+      shouldExclude: (_, dependentFieldsValues, formState) => {
+        if (Boolean(formState?.openIntPayment)) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 8,
+        sm: 8,
+        md: 8,
+        lg: 8,
+        xl: 8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -2181,7 +2633,38 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
-      GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+      GridProps: {
+        xs: 1.5,
+        sm: 1.5,
+        md: 1.5,
+        lg: 1.5,
+        xl: 1.5,
+      },
+    },
+
+    {
+      render: {
+        componentType: "spacer",
+      },
+      name: "SPACER_PAYSLIP",
+      dependentFields: ["RTGS_NEFT"],
+      shouldExclude: (_, dependentFieldsValues, formState) => {
+        if (
+          Boolean(dependentFieldsValues?.RTGS_NEFT?.value) ||
+          formState?.flag === "FDCNF"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 1.5,
+        sm: 1.5,
+        md: 1.5,
+        lg: 1.5,
+        xl: 1.5,
+      },
     },
 
     {
@@ -2212,23 +2695,13 @@ export const FDPaymentMetadata = {
         }
       },
       fullWidth: true,
-      GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
-    },
-
-    {
-      render: {
-        componentType: "spacer",
+      GridProps: {
+        xs: 1.5,
+        sm: 1.5,
+        md: 1.5,
+        lg: 1.5,
+        xl: 1.5,
       },
-      name: "SPACER_PAYSLIP",
-      dependentFields: ["RTGS_NEFT"],
-      shouldExclude: (_, dependentFieldsValues, formState) => {
-        if (Boolean(dependentFieldsValues?.RTGS_NEFT?.value)) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
 
     {
@@ -2244,7 +2717,42 @@ export const FDPaymentMetadata = {
           return true;
         }
       },
-      GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+      GridProps: {
+        xs: 1.5,
+        sm: 1.5,
+        md: 1.5,
+        lg: 1.5,
+        xl: 1.5,
+      },
+    },
+
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TRANSFER_TOTAL_FOR_NEXT_FORM",
+      label: "",
+      isReadOnly: true,
+      dependentFields: ["TDS_INT_TRF", "SUR_TDS_TRF", "TRANSFER_TOTAL"],
+      setValueOnDependentFieldsChange: (dependentFieldsValues) => {
+        let value =
+          Number(dependentFieldsValues?.TRANSFER_TOTAL?.value ?? 0) -
+          (Number(dependentFieldsValues?.TDS_INT_TRF?.value ?? 0) +
+            Number(dependentFieldsValues?.SUR_TDS_TRF?.value ?? 0));
+        return value;
+      },
+      FormatProps: {
+        allowNegative: true,
+      },
+      fullWidth: true,
+      GridProps: {
+        xs: 1.8,
+        sm: 1.8,
+        md: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+        sx: { paddingTop: "0px !important" },
+      },
     },
 
     {
@@ -2304,6 +2812,13 @@ export const FDPaymentMetadata = {
       render: {
         componentType: "hidden",
       },
+      name: "ACCT_NM",
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
       name: "FD_NO",
     },
     {
@@ -2347,6 +2862,96 @@ export const FDPaymentMetadata = {
         componentType: "hidden",
       },
       name: "MATURITY_AMT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "CUSTOMER_ID",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TDS_SUR_RATE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TDS_MSG",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "MATURE_MSG",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PROV_INT_DT",
+      dependentFields: ["PROV_DT"],
+      setValueOnDependentFieldsChange: (dependentFieldsValues) => {
+        return dependentFieldsValues?.PROV_DT?.value;
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "R_INT_AMT",
+      dependentFields: ["INT_REST", "AFT_MAT_INT_AMT"],
+      setValueOnDependentFieldsChange: (dependentFieldsValues) => {
+        let value =
+          Number(dependentFieldsValues?.INT_REST?.value) -
+          Number(dependentFieldsValues?.AFT_MAT_INT_AMT?.value);
+        return value;
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "LAST_TDS_AMT",
+      dependentFields: ["TDS_INT_TRF", "SUR_TDS_TRF"],
+      setValueOnDependentFieldsChange: (dependentFieldsValues) => {
+        let value =
+          Number(dependentFieldsValues?.TDS_INT_TRF?.value) +
+          Number(dependentFieldsValues?.SUR_TDS_TRF?.value);
+        return value;
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "LAST_RECOVERY",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PAN_NO",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "LIABLE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERIOD_NO",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PERIOD_CD",
     },
   ],
 };

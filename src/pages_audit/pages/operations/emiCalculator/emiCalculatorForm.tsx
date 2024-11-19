@@ -1,211 +1,99 @@
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { AuthContext } from "pages_audit/auth";
 import {
-  ClearCacheProvider,
+  FormWrapper,
+  utilFunction,
+  SubmitFnType,
+  usePopupContext,
+  MetaDataType,
   LoaderPaperComponent,
   PDFViewer,
-  SubmitFnType,
+  Alert,
+  GradientButton,
 } from "@acuteinfo/common-base";
-import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { extractMetaData, utilFunction } from "@acuteinfo/common-base";
-import { AuthContext } from "pages_audit/auth";
-import { useLocation } from "react-router-dom";
-import { GradientButton, usePopupContext } from "@acuteinfo/common-base";
-import { Dialog } from "@mui/material";
-import * as API from "./api";
-import {
-  EMICalculateMetaData,
-  EMICalculatorSecondPartMetaData,
-} from "./metaData";
-import { useMutation } from "react-query";
-import { t } from "i18next";
+
+import { CustomGridTable } from "./emiScheduleSection";
+import { CircularProgress, Dialog } from "@mui/material";
 import { format } from "date-fns";
-const EMICalculatorForm = () => {
-  const myMasterRef = useRef<any>(null);
-  const myMasterDisburseRef = useRef<any>(null);
-  const myMasterFromInstRef = useRef<any>(null);
-  const { authState } = useContext(AuthContext);
+import { useMutation } from "react-query";
+import { emiCalculateData, emiReportData } from "./api";
+import { EmiCalculatorFormMetadata } from "./emiCalculatorMetadata";
+import { CustomRowTable } from "./emiDisbursementSec";
+import { t } from "i18next";
+export const CounterContext = createContext<any>(null);
+
+export const EMICalculatorForm = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const [apiData, setApiData] = useState<any>(null);
-  const [formMode, setFormMode] = useState("add");
-  const isErrorFuncRef = useRef<any>(null);
+  const { authState } = useContext(AuthContext);
+  const emiCalRef = useRef<any>(null);
+  const dataRef = useRef<any>(null);
+  const emiHeaderRef = useRef<any>(null);
+  const [disburseData, setDisburseData] = useState<any>(null);
+  const [refreshForm, setRefreshForm] = useState<number>(0);
+  const [disbursementFlag, setDisbursementFlag] = useState<boolean>(false);
+  const scheduleDtlref = useRef<any>({});
+  const calculateData = useRef<any>({});
   const [open, setOpen] = useState(false);
+  const [mergedData, setMergedData] = useState<any>([]);
   const [fileBlob, setFileBlob] = useState<any>(null);
   const [openPrint, setOpenPrint] = useState<any>(null);
-  const [emiDetail, setEmiDetail] = useState<any>({
+  const [resetDaa, setResetData] = useState<any>(false);
+  const [emiCalFormIniVal, setEmiCalFormIniVal] = useState<any>({
     DISBURS_DTL: [
       {
         SR_NO: 1,
-        INST_START_DT: authState.workingDate,
-        DISBURSEMENT_DT: authState.workingDate,
-        SCHEDULE_DTL: [
-          {
-            SR_NO: 1,
-          },
-        ],
-      },
-    ],
-    SCHEDULE_DTL: [
-      {
-        SR_NO: 1,
+        INST_START_DT: authState.workingDate ?? "",
+        DISBURSEMENT_DT: authState.workingDate ?? "",
+        LOAN_AMT: "",
       },
     ],
   });
+
+  const dataref = useRef({
+    DISBURS_DTL: [
+      {
+        SR_NO: 1,
+        INST_START_DT: authState.workingDate ?? "",
+        DISBURSEMENT_DT: authState.workingDate ?? "",
+        LOAN_AMT: "",
+      },
+    ],
+  });
+
   let currentPath = useLocation().pathname;
-  let reqPara;
   const label = utilFunction.getDynamicLabel(
     currentPath,
     authState?.menulistdata,
     true
   );
-  EMICalculateMetaData.form.label = label;
-
+  EmiCalculatorFormMetadata.form.label = label;
+  const saveData = (values) => {
+    calculateData.current = values;
+  };
   const resetData = async () => {
     let event: any = { preventDefault: () => {} };
-    myMasterRef?.current?.handleFormReset(event, "Clear");
-    setApiData(null);
-  };
-  const previousData = async () => {
-    const formdata = await myMasterRef?.current?.getFieldData();
-    if (formdata?.DISBURS_DTL && Array.isArray(formdata.DISBURS_DTL)) {
-      let arrayIndex = formdata.DISBURS_DTL.length;
-      const selectedObject = formdata
-        ? formdata.DISBURS_DTL[arrayIndex - 2]
-        : [];
-      myMasterDisburseRef.current = selectedObject;
-    }
-    if (formdata?.SCHEDULE_DTL && Array.isArray(formdata.SCHEDULE_DTL)) {
-      let arrayIndex = formdata.SCHEDULE_DTL.length;
-      const selectedObject = formdata
-        ? formdata.SCHEDULE_DTL[arrayIndex - 2]
-        : [];
-      myMasterFromInstRef.current = selectedObject;
-    }
+    emiHeaderRef?.current?.handleFormReset(event, "Clear");
+    setEmiCalFormIniVal({
+      DISBURS_DTL: [
+        {
+          SR_NO: 1,
+          INST_START_DT: authState.workingDate ?? "",
+          DISBURSEMENT_DT: authState.workingDate ?? "",
+          LOAN_AMT: "",
+        },
+      ],
+    });
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      previousData();
-    }, 6000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const generateRequestParams = (data) => {
-    const filteredDisburseData: any[] = [];
-    const filteredInstallmentData: any[] = [];
-
-    for (let i = 0; i < data?.DISBURS_DTL.length; i++) {
-      const draft = data?.DISBURS_DTL[i];
-      if (draft && typeof draft === "object") {
-        if ("DISBURSEMENT_DT" in draft && draft.DISBURSEMENT_DT) {
-          const formattedDisburseDate = format(
-            new Date(draft.DISBURSEMENT_DT),
-            "dd/MMM/yyyy"
-          ).toUpperCase();
-          draft.DISBURSEMENT_DT = formattedDisburseDate;
-        }
-        if ("INST_START_DT" in draft && draft.INST_START_DT) {
-          const formattedInstStartDate = format(
-            new Date(draft.INST_START_DT),
-            "dd/MMM/yyyy"
-          ).toUpperCase();
-          draft.INST_START_DT = formattedInstStartDate;
-        }
-        if ("SR_NO" in draft) {
-          delete draft.SR_NO;
-        }
-
-        filteredDisburseData.push(draft);
-      }
-    }
-    for (let i = 0; i < data?.SCHEDULE_DTL.length; i++) {
-      const draft = data?.SCHEDULE_DTL[i];
-      if (draft && typeof draft === "object") {
-        if ("FROM_INST" in draft) {
-          delete draft.FROM_INST;
-        }
-        if ("TO_INST" in draft) {
-          delete draft.TO_INST;
-        }
-        if ("SR_NO" in draft) {
-          delete draft.SR_NO;
-        }
-
-        filteredInstallmentData.push(draft);
-      }
-    }
-
-    return {
-      A_INST_NO: data?.INSTALLMENT_NO,
-      INST_NO: data?.INSTALLMENT_NO,
-      DISBURSEMENT_DT: format(
-        new Date(data?.DISBURSE_DATE1),
-        "dd/MMM/yyyy"
-      ).toUpperCase(),
-      INST_START_DT: format(
-        new Date(data?.INST_START_DT1),
-        "dd/MMM/yyyy"
-      ).toUpperCase(),
-      LIMIT_AMOUNT: data?.LOAN_AMT_MAIN,
-      INT_RATE: data?.INT_RATE,
-      A_INST_PERIOD: data?.INST_PERIOD,
-      TYPE_CD: data?.INST_TYPE,
-      INT_SKIP_FLAG: data?.DATA_VAL,
-      DISBURS_DTL: data?.DISBURS_DTL,
-      SCHEDULE_DTL: data?.SCHEDULE_DTL,
-      SCREEN_REF: "RPT/1199",
-    };
-  };
-  const reqData = async () => {
-    const data = await myMasterRef?.current?.getFieldData();
-    reqPara = generateRequestParams(data);
-  };
-  const mutation = useMutation(API.emiCalculateData, {
-    onError: async (error: any) => {
-      const btnName = await MessageBox({
-        messageTitle: "ERROR",
-        message: error?.error_msg ?? "",
-        icon: "ERROR",
-      });
-      CloseMessageBox();
-    },
-    onSuccess: async (data) => {
-      let btn99;
-      for (let i = 0; i < data?.length; i++) {
-        if (data[i]?.O_STATUS === "999") {
-          const btnName = await MessageBox({
-            messageTitle: t("ValidationFailed"),
-            message: data[0]?.O_MESSAGE,
-          });
-          return {};
-        } else if (data[i]?.O_STATUS === "99") {
-          const btnName = await MessageBox({
-            messageTitle: t("Confirmation"),
-            message: data[i]?.O_MESSAGE,
-            buttonNames: ["Yes", "No"],
-          });
-          btn99 = btnName;
-          if (btnName === "No") {
-            return {};
-          }
-        } else if (data[i]?.O_STATUS === "9") {
-          if (btn99 !== "No") {
-            const btnName = await MessageBox({
-              messageTitle: t("Alert"),
-              message: data[i]?.O_MESSAGE,
-            });
-          }
-          return {};
-        } else if (data[0].V_MSG[0].O_STATUS === "0") {
-          ReportMutation?.mutate(reqPara);
-        }
-      }
-      CloseMessageBox();
-    },
+  const mutation = useMutation(emiCalculateData, {
+    onError: (error: any) => {},
+    onSuccess: (data, variables) => {},
   });
-  const ReportMutation = useMutation(API.emiReportData, {
+
+  const ReportMutation = useMutation(emiReportData, {
     onError: async (error: any) => {
-      const btnName = await MessageBox({
+      await MessageBox({
         messageTitle: "ERROR",
         message: error?.error_msg ?? "",
         icon: "ERROR",
@@ -220,65 +108,173 @@ const EMICalculatorForm = () => {
       }
     },
   });
-  const handleButtonClick = async (id: string) => {
-    let event: any = { preventDefault: () => {} };
-    if (id === "clear") {
-      resetData();
-    } else if (id === "UPDOWN") {
-      setOpen(true);
-    } else if (id === "calculate") {
-      let event: any = { preventDefault: () => {} };
-      myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
-      reqData();
-    }
-  };
+
   const onSubmitHandler: SubmitFnType = async (
     data: any,
-    displayData: any,
+    displayData,
     endSubmit,
-    setFieldError
+    setFieldError,
+    actionFlag
   ) => {
     endSubmit(true);
-
-    const reqPara = generateRequestParams(data);
-    isErrorFuncRef.current = {
-      data: reqPara,
-
-      displayData,
-      endSubmit,
-      setFieldError,
+    const requestData = {
+      LIMIT_AMOUNT: data?.LOAN_AMT_MAIN ?? "0",
+      A_INST_NO: data?.INSTALLMENT_NO ?? "0",
+      INST_NO: data?.INSTALLMENT_NO ?? "0",
+      INT_RATE: data?.INT_RATE ?? "",
+      A_INST_PERIOD: data?.INST_PERIOD ?? "",
+      TYPE_CD: data?.INST_TYPE ?? "",
+      INST_START_DT: Boolean(calculateData.current[0]?.INST_START_DT)
+        ? calculateData.current[0]?.INST_START_DT
+        : authState?.workingDate,
+      DISBURSEMENT_DT: Boolean(calculateData.current[0]?.DISBURSEMENT_DT)
+        ? calculateData.current[0]?.DISBURSEMENT_DT
+        : authState?.workingDate,
+      INT_SKIP_FLAG: data?.DATA_VAL ?? "",
+      DISBURS_DTL: calculateData.current[1] ?? [],
+      SCHEDULE_DTL:
+        calculateData.current[0]?.length === 1
+          ? [calculateData.current[3]]
+          : calculateData.current[0],
+      A_GD_DATE: authState?.workingDate ?? "",
+      SCREEN_REF: "RPT/1199",
     };
-
-    mutation.mutate({
-      ...isErrorFuncRef.current?.data,
+    mutation.mutate(requestData, {
+      onSuccess: async (data) => {
+        ReportMutation.mutate(requestData);
+        // for (let i = 0; i < data?.length; i++) {
+        //   if (data[i]?.O_STATUS === "999") {
+        //     const btnName = await MessageBox({
+        //       messageTitle: data[i]?.O_MSG_TITLE || "ValidationFailed",
+        //       message: data[i]?.O_MESSAGE,
+        //       buttonNames: ["Ok"],
+        //       icon: "ERROR",
+        //     });
+        //   } else if (data[i]?.O_STATUS === "9") {
+        //     const btnName = await MessageBox({
+        //       messageTitle: data[i]?.O_MSG_TITLE || "Alert",
+        //       message: data[i]?.O_MESSAGE,
+        //       icon: "WARNING",
+        //     });
+        //   } else if (data[i]?.O_STATUS === "99") {
+        //     const btnName = await MessageBox({
+        //       messageTitle: data[i]?.O_MSG_TITLE || "Confirmation",
+        //       message: data[i]?.O_MESSAGE,
+        //       buttonNames: ["Yes", "No"],
+        //       icon: "CONFIRM",
+        //     });
+        //     if (btnName === "No") {
+        //       break;
+        //     }
+        //   } else if (
+        //     Boolean(data[i]?.V_MSG) &&
+        //     data[i]?.V_MSG[0].O_STATUS === "0"
+        //   ) {
+        //     ReportMutation.mutate(requestData);
+        //   }
+        // }
+      },
+      onError: (data) => {},
     });
   };
+  const handleSetDisburseData = (payload: any) => {
+    setDisburseData(payload);
+  };
+  useEffect(() => {
+    if (disburseData) {
+      setRefreshForm((prevVal) => prevVal + 1);
+    }
+  }, [disburseData]);
+
   return (
-    <Fragment>
+    <>
+      {mutation.isError && (
+        <Alert
+          severity="error"
+          errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+          errorDetail={mutation.error?.error_detail}
+          color="error"
+        />
+      )}
       <FormWrapper
-        key={`EMICalculateMetaData${formMode}`}
-        metaData={
-          extractMetaData(EMICalculateMetaData, formMode) as MetaDataType
-        }
+        key={"EMICalculatorForm"}
+        metaData={EmiCalculatorFormMetadata as MetaDataType}
+        onSubmitHandler={onSubmitHandler}
+        initialValues={{}}
         formStyle={{
           background: "white",
         }}
-        onSubmitHandler={onSubmitHandler}
-        ref={myMasterRef}
-        initialValues={apiData || emiDetail}
         formState={{
           MessageBox: MessageBox,
-          docCd: "RPT/1199",
-          refID: myMasterDisburseRef,
-          fromRefId: myMasterFromInstRef,
         }}
-        // setDataOnFieldChange={(action, payload) => {
-        //   if (action === "EMI_SCHEDULE") {
-        //     previousData();
-        //   }
-        // }}
-        onFormButtonClickHandel={handleButtonClick}
-      ></FormWrapper>
+        ref={emiHeaderRef}
+        setDataOnFieldChange={async (action, payload) => {
+          if (action === "RESET_DATA" && Boolean(payload?.RESET_DATA)) {
+            let event: any = { preventDefault: () => {} };
+            // await emiCalRef?.current?.handleFormReset(event, "Clear");
+            // setEmiCalFormIniVal({
+            //   DISBURS_DTL: [
+            //     {
+            //       SR_NO: 1,
+            //       INST_START_DT: authState.workingDate ?? "",
+            //       DISBURSEMENT_DT: authState.workingDate ?? "",
+            //       LOAN_AMT: "",
+            //     },
+            //   ],
+            // });
+            // scheduleDtlref.current = {};
+            setResetData(true);
+            setTimeout(() => {
+              setResetData(false);
+            }, 1000);
+            // setRefreshForm((prevVal) => prevVal + 1);
+          } else if (action === "GET_DATA") {
+            handleSetDisburseData(payload);
+          }
+        }}
+      >
+        {({ isSubmitting, handleSubmit }) => (
+          <>
+            <GradientButton
+              onClick={() => {
+                let event: any = { preventDefault: () => {} };
+                emiHeaderRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+              }}
+              disabled={isSubmitting}
+              color={"primary"}
+              endIcon={
+                mutation?.isLoading || ReportMutation?.isLoading ? (
+                  <CircularProgress size={20} />
+                ) : null
+              }
+            >
+              {t("Calculate")}
+            </GradientButton>
+            <GradientButton
+              onClick={async (event) => {
+                await resetData();
+                setResetData(true);
+                setRefreshForm((prevVal) => prevVal + 1);
+
+                setTimeout(() => {
+                  setResetData(false);
+                }, 1000);
+              }}
+              disabled={isSubmitting}
+              color={"primary"}
+            >
+              {t("Clear")}
+            </GradientButton>
+          </>
+        )}
+      </FormWrapper>
+      <CounterContext.Provider value={{ mergedData, saveData }}>
+        <CustomRowTable
+          initialRows={[{ ...disburseData }]}
+          totalInstallment={0}
+          resetDaa={resetDaa}
+        />
+      </CounterContext.Provider>
       {ReportMutation?.isLoading ? (
         <Dialog
           open={true}
@@ -317,53 +313,6 @@ const EMICalculatorForm = () => {
           </Dialog>
         )
       )}
-      {/* <Dialog
-        open={open}
-        PaperProps={{
-          style: {
-            width: "100%",
-            overflow: "auto",
-          },
-        }}
-        maxWidth="lg"
-      >
-        <FormWrapper
-          key={"EMICalculateMetaData" + formMode}
-          metaData={
-            extractMetaData(
-              EMICalculatorSecondPartMetaData,
-              formMode
-            ) as MetaDataType
-          }
-          formStyle={{
-            background: "white",
-          }}
-          // ref={myMasterRef}
-          onSubmitHandler={() => {}}
-          initialValues={emiDetail}
-          formState={{
-            MessageBox: MessageBox,
-            docCd: "RPT/1199",
-          }}
-        >
-          <GradientButton
-            onClick={() => {
-              setOpen(false);
-            }}
-            color={"primary"}
-          >
-            Close
-          </GradientButton>
-        </FormWrapper>
-      </Dialog> */}
-    </Fragment>
-  );
-};
-
-export const EMICalculatorFormWrapper = () => {
-  return (
-    <ClearCacheProvider>
-      <EMICalculatorForm />
-    </ClearCacheProvider>
+    </>
   );
 };

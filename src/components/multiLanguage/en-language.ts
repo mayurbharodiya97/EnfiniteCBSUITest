@@ -242,6 +242,7 @@ export const en_language_data = {
   AccountBranch: "Account Branch",
   PrematurePayment: "Premature Payment",
   SelectPaymentmode: "Select Payment Mode",
+  PenalRt: "Penal Rate",
 
   // GridWrapper
   Search: "Search",
@@ -346,6 +347,8 @@ export const en_language_data = {
   PassbookUpdateMessage:
     "For A/c:{{account}}.\n Passbook Already printed till {{date}}. \n Do you want to consider as duplicate/Reprint? \n Yes - Duplicate \n No - Reprint",
   TemplateReqired: "Template Reqired",
+  SelectTemplate: "Select Template",
+  PassbookPrintsuccessfully: "Passbook Print successfully.?",
 
   //for priority master main
   ParentGroup: "Parent Group",
@@ -617,6 +620,7 @@ export const en_language_data = {
   EnterAccountType: "Enter Account Type.",
   EnterAccountBranch: "Enter Account Branch.",
   EnterAccountNumber: "Please Enter Accont Number.",
+  EnterAccountNum: "Enter Accont Number",
   ModeOfOperation: "Mode of Operation",
   GetDetails: "Get Details",
   EnterAcNo: "Enter A/c No.",
@@ -1491,6 +1495,10 @@ export const en_language_data = {
   AreYouSaveThisRecord: "Are you sure to save this record?",
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
+  UTRConfirmation: "UTR(s) Confirmation",
+  PleaseEnterAlphabeticValueSlipNumber:
+    "Please enter Alphabetic Value in Slip Number",
+  SelectRTGSNEFTTransactionType: "Select RTGS/NEFT Transaction",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1597,12 +1605,20 @@ export const en_language_data = {
   ThereAre: "There are",
   ChequeAvailableforClearingDateTransferAreYouSureContinue:
     "Cheque(s) available for clearing date transfer. Are you sure to Continue?",
+  ChequeAvailableforClearingDateTransfer:
+    "Cheque(s) available for clearing date transfer",
   FromZone: "From Zone",
   ToZone: "To Zone",
   Count: "Count",
   ClearingRetrieveGrid: "Clearing Retrieve Grid",
   SlipRetrieveGrid: "Slip Retrieve Grid",
-
+  FromClgDate: "From CLG Date",
+  ToClgDate: "To CLG Date",
+  SuccessfullyTransferedClearingDateZone:
+    "Successfully transfered clearing date/Zone",
+  SelectGrouping: "Select Grouping",
+  ToDateshouldbegreaterthantoFromDate:
+    "To Date should be greater than to From Date",
   // inward clearing
 
   ValidationSuccessful: "Validation Successful",
@@ -1669,6 +1685,7 @@ export const en_language_data = {
 
   //payslip issue entry
   branchCode: "Branch Code",
+  DoYouWantToAllowPayslipDD: "Do you want to allow Payslip/Draft Issue-",
   stopRemarksRequired: "stop remarks is required",
   issueBranch: "Issue Branch",
   entryStatus: "Entry Status",
@@ -1804,7 +1821,7 @@ export const en_language_data = {
   ConfirmationStatus: "Confirm Status",
   TotalIncomeValidateMessage:
     "This Customer is not eligible for {{formName}}.Total Income of this Financial Year exceeds {{interestAmtLimit}}.",
-
+  FormConfirmationMsg: "Form confirmed successfully.",
   // GST Outward Entry
   TranCd: "Tran Cd",
   taxAmount: "Tax Amount",
@@ -1817,6 +1834,8 @@ export const en_language_data = {
     "You have no rights to confirm this transaction.",
   ConfirmRecord: "Are you sure to confirm this record?",
   RejectDeleteRecord: "Are you sure to reject/delete this record?",
+  ChargeAmountrequired: "Charge Amount is required",
+  TemplateRequire: "Template is required",
   //Dayend process
   VerifyDayEndChecksums: "Verify DayEnd Checksums",
   PendingTransactions: "Pending Transactions",
@@ -1983,6 +2002,8 @@ export const en_language_data = {
   confirmSI: "Are you sure to confirm SI?",
 
   //Recurring Interest Calculator
+  notAllowed: "Not Allowed.",
+  noMoreRemainingInst: "No More Remaining Installment.",
   Categoryisrequired: "Category is required",
   IntType: "Interest Type",
   InstallmentType: "Installment Type",
@@ -1993,6 +2014,9 @@ export const en_language_data = {
   SelectInstallmentTypePlaceHolder: "Select Installment Type",
 
   //EMI Calculator
+  addRow: "Add Row",
+  loanRepaymentSchedule: "Loan Repayment Schedule",
+  StepUpDown: "step Up-Down",
   InterestFunded: "Interest Funded",
   LoanAmount: "Loan Amount",
   Calculate: "Calculate",
@@ -2190,6 +2214,7 @@ export const en_language_data = {
   ModifiedDateTime: "Modified Date-Time",
   ModifiedMachineName: "Modified Machine Name",
   VerifiedMachineName: "Verified Machine Name",
+  RightClickAcceptReject: "Right Click for Confirm/Reject Record.",
   //FD Interest Payment Confirmation
   CompanyCode: "Company Code",
   // Security User
@@ -2222,4 +2247,22 @@ export const en_language_data = {
   CreditCashLimit: "Credit Cash Limit",
   CreditClearingLimit: "Credit Clearing Limit",
   CreditTransferLimit: "Credit Transfer Limit",
+  DoubleClickForEditDetail: "Double click or right click for Edit-Detail.",
+  RDAC_NO: "RD A/c No.",
+  //locker Transaction Entry
+  lockerNumber: "Locker No.",
+  lockerSize: "Locker Size",
+  keyNumber: "Key No",
+  referenceAccountBalance: "Ref.A/c Balance",
+  totalRentPaid: "Total Rent Paid",
+  dueRent: "Due Rent",
+  keyEmboss: "Key Emboss",
+  operationStatus: "Operation Status",
+  inTime: "In Time",
+  timeIn: "Time In",
+  timeOut: "Time Out",
+  outTime: "Out Time",
+  chargeAmount: "Charge Amount",
+  debitFrom: "Debit From",
+  accompanyEmployeeName: "Accompany Employee Name",
 };

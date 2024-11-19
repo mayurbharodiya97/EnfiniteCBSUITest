@@ -53,7 +53,6 @@ export const ClosingAdviceGridMetaData: GridMetaDataType = {
       width: 200,
       minWidth: 180,
       maxWidth: 300,
-      isDisplayTotal: true,
     },
     {
       accessor: "DIFF",

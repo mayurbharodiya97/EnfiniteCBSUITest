@@ -15,10 +15,6 @@ import {
   styled,
 } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import SettingsIcon from "@mui/icons-material/Settings";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
-import VideoLabelIcon from "@mui/icons-material/VideoLabel";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "../api";
@@ -38,6 +34,7 @@ import {
   SubmitFnType,
 } from "@acuteinfo/common-base";
 import { format } from "date-fns";
+import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     background: "var(--theme-color5)",
@@ -90,9 +87,8 @@ export const FixDepositForm = ({
     const { active, completed, className } = props;
     // Object mapping step numbers to corresponding icons
     const icons: { [index: string]: React.ReactElement } = {
-      1: <SettingsIcon />,
-      2: <PersonAddIcon />,
-      3: <VideoLabelIcon />,
+      1: <CommonSvgIcons iconName={"LIEN"} />,
+      2: <CommonSvgIcons iconName={"ACHOW"} />,
     };
 
     return (
@@ -123,37 +119,37 @@ export const FixDepositForm = ({
       for (const response of data ?? []) {
         if (response?.O_STATUS === "999") {
           await MessageBox({
-            messageTitle: "ValidationFailed",
+            messageTitle: response?.O_MSG_TITLE?.length
+              ? response?.O_MSG_TITLE
+              : "ValidationFailed",
             message: response?.O_MESSAGE ?? "",
             icon: "ERROR",
           });
         } else if (response?.O_STATUS === "9") {
           await MessageBox({
-            messageTitle: "Alert",
+            messageTitle: response?.O_MSG_TITLE?.length
+              ? response?.O_MSG_TITLE
+              : "Alert",
             message: response?.O_MESSAGE ?? "",
             icon: "WARNING",
           });
         } else if (response?.O_STATUS === "99") {
           const buttonName = await MessageBox({
-            messageTitle: "Confirmation",
+            messageTitle: response?.O_MSG_TITLE?.length
+              ? response?.O_MSG_TITLE
+              : "Confirmation",
             message: response?.O_MESSAGE ?? "",
             buttonNames: ["Yes", "No"],
             defFocusBtnName: "Yes",
+            icon: "CONFIRM",
           });
           if (buttonName === "No") {
             break;
           }
         } else if (response?.O_STATUS === "0") {
-          const buttonName = await MessageBox({
-            messageTitle: "Voucher(s) Confirmation",
-            message: response?.VOUCHER_MSG ?? "",
-            buttonNames: ["Ok"],
-          });
-          if (buttonName === "Ok") {
-            isDataChangedRef.current = true;
-            CloseMessageBox();
-            handleDialogClose();
-          }
+          isDataChangedRef.current = true;
+          CloseMessageBox();
+          handleDialogClose();
         }
       }
     },
@@ -177,22 +173,29 @@ export const FixDepositForm = ({
       for (const response of data ?? []) {
         if (response?.O_STATUS === "999") {
           await MessageBox({
-            messageTitle: "ValidationFailed",
+            messageTitle: response?.O_MSG_TITLE?.length
+              ? response?.O_MSG_TITLE
+              : "ValidationFailed",
             message: response?.O_MESSAGE ?? "",
             icon: "ERROR",
           });
         } else if (response?.O_STATUS === "9") {
           await MessageBox({
-            messageTitle: "Alert",
+            messageTitle: response?.O_MSG_TITLE?.length
+              ? response?.O_MSG_TITLE
+              : "Alert",
             message: response?.O_MESSAGE ?? "",
             icon: "WARNING",
           });
         } else if (response?.O_STATUS === "99") {
           const buttonName = await MessageBox({
-            messageTitle: "Confirmation",
+            messageTitle: response?.O_MSG_TITLE?.length
+              ? response?.O_MSG_TITLE
+              : "Confirmation",
             message: response?.O_MESSAGE ?? "",
             buttonNames: ["Yes", "No"],
             defFocusBtnName: "Yes",
+            icon: "CONFIRM",
           });
           if (buttonName === "No") {
             break;
@@ -301,11 +304,20 @@ export const FixDepositForm = ({
         buttonNames: ["Yes", "No"],
         defFocusBtnName: "Yes",
         loadingBtnName: ["Yes"],
+        icon: "CONFIRM",
       });
+
+      const fdDetailData = FDState?.fdDetailFormData?.FDDTL || [];
+      const reorderedData = [...fdDetailData].sort((a, b) => {
+        if (a.cd && !b.cd) return 1;
+        if (!a.cd && b.cd) return -1;
+        return 0;
+      });
+
       if (buttonName === "Yes") {
         saveFDDetailsMutation.mutate({
           TRANSACTION_DTL: [...newData],
-          FD_DETAIL_DATA: [...FDState?.fdDetailFormData?.FDDTL],
+          FD_DETAIL_DATA: reorderedData,
           SCREEN_REF: "RPT/401",
         });
       }

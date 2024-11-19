@@ -119,14 +119,6 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
   //Mutation for delete recurring payment data
   const entryDeleteMutation = useMutation(API.recurringPaymentEntryDML, {
     onError: async (error: any) => {
-      let errorMsg = t("Unknownerroroccured");
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      await MessageBox({
-        messageTitle: "ValidationFailed",
-        message: errorMsg ?? "",
-      });
       CloseMessageBox();
     },
     onSuccess: async (data) => {
@@ -146,15 +138,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
     API.validateDeleteRecurData,
     {
       onSuccess: async (data) => {},
-      onError: (error: any) => {
-        setDeleteMessageBox(false);
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
+      onError: async (error: any) => {
         CloseMessageBox();
       },
     }
@@ -214,15 +198,25 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
 
   return (
     <>
-      {isError && (
+      {(isError ||
+        entryScreenFlagIsError ||
+        entryDeleteMutation?.isError ||
+        validateDeleteRecurMutation?.isError) && (
         <Alert
           severity="error"
           errorMsg={
-            (error?.error_msg || entryScreenFlagError?.error_msg) ??
+            error?.error_msg ||
+            entryScreenFlagError?.error_msg ||
+            entryDeleteMutation?.error?.error_msg ||
+            validateDeleteRecurMutation?.error?.error_msg ||
             t("Somethingwenttowrong")
           }
           errorDetail={
-            error?.error_detail || entryScreenFlagError?.error_detail
+            error?.error_detail ||
+            entryScreenFlagError?.error_detail ||
+            entryDeleteMutation?.error?.error_detail ||
+            validateDeleteRecurMutation?.error?.error_detail ||
+            ""
           }
           color="error"
         />
@@ -317,20 +311,29 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
                   for (const response of deletValidData ?? []) {
                     if (response?.O_STATUS === "999") {
                       await MessageBox({
-                        messageTitle: "ValidationFailed",
+                        messageTitle: response?.O_MSG_TITLE?.length
+                          ? response?.O_MSG_TITLE
+                          : "ValidationFailed",
                         message: response?.O_MESSAGE ?? "",
+                        icon: "ERROR",
                       });
                     } else if (response?.O_STATUS === "9") {
                       await MessageBox({
-                        messageTitle: "Alert",
+                        messageTitle: response?.O_MSG_TITLE?.length
+                          ? response?.O_MSG_TITLE
+                          : "Alert",
                         message: response?.O_MESSAGE ?? "",
+                        icon: "WARNING",
                       });
                     } else if (response?.O_STATUS === "99") {
                       const buttonName = await MessageBox({
-                        messageTitle: "Confirmation",
+                        messageTitle: response?.O_MSG_TITLE?.length
+                          ? response?.O_MSG_TITLE
+                          : "Confirmation",
                         message: response?.O_MESSAGE ?? "",
                         buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
+                        icon: "CONFIRM",
                       });
                       if (buttonName === "No") {
                         break;
@@ -342,6 +345,7 @@ export const RecurringPaymentEntryGrid = ({ screenFlag }) => {
                         buttonNames: ["Yes", "No"],
                         defFocusBtnName: "Yes",
                         loadingBtnName: ["Yes"],
+                        icon: "CONFIRM",
                       });
                       if (buttonName === "Yes") {
                         entryDeleteMutation.mutate({

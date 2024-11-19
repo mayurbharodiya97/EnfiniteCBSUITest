@@ -44,9 +44,10 @@ export const accountFindmetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
           return {
-            ACCT_NM: { value: "" },
             ACCT_TYPE: { value: "" },
             ACCT_CD: { value: "" },
+            ACCT_NM: { value: "" },
+            TRAN_BAL: { value: "" },
           };
         },
         GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
@@ -70,21 +71,36 @@ export const accountFindmetaData = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "Alert",
-              message: "Enter Account Branch.",
+              message: "EnterAccountBranch",
               buttonNames: ["Ok"],
               icon: "WARNING",
             });
 
             if (buttonName === "Ok") {
               return {
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
                 ACCT_TYPE: {
                   value: "",
                   isFieldFocused: false,
                   ignoreUpdate: true,
                 },
-                BRANCH_CD: {
+                ACCT_CD: {
                   value: "",
-                  isFieldFocused: true,
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                ACCT_NM: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                TRAN_BAL: {
+                  value: "",
+                  isFieldFocused: false,
                   ignoreUpdate: true,
                 },
               };
@@ -93,6 +109,7 @@ export const accountFindmetaData = {
           return {
             ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },
+            TRAN_BAL: { value: "" },
           };
         },
         GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
@@ -119,6 +136,7 @@ export const accountFindmetaData = {
           ) {
             return {
               ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
             };
           } else if (!Boolean(currentField?.displayValue)) {
             return {};
@@ -130,7 +148,7 @@ export const accountFindmetaData = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "Alert",
-              message: "Enter Account Type.",
+              message: "EnterAccountType",
               buttonNames: ["Ok"],
               icon: "WARNING",
             });
@@ -145,6 +163,11 @@ export const accountFindmetaData = {
                 ACCT_TYPE: {
                   value: "",
                   isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+                TRAN_BAL: {
+                  value: "",
+                  isFieldFocused: false,
                   ignoreUpdate: true,
                 },
               };
@@ -168,16 +191,18 @@ export const accountFindmetaData = {
             for (let i = 0; i < postData?.MSG.length; i++) {
               if (postData?.MSG[i]?.O_STATUS === "999") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle:
+                    postData?.MSG[i]?.O_MSG_TITLE ?? "ValidationFailed",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG[i]?.O_STATUS === "99") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE ?? "Confirmation",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
@@ -185,7 +210,7 @@ export const accountFindmetaData = {
                 }
               } else if (postData?.MSG[i]?.O_STATUS === "9") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE ?? "Alert",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   icon: "WARNING",
                 });
@@ -239,6 +264,7 @@ export const accountFindmetaData = {
           } else if (!currentField?.value) {
             return {
               ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
             };
           }
         },

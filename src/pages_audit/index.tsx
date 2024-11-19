@@ -91,7 +91,7 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
     schemaValidation: {
       type: "string",
       rules: [
-        { name: "required", params: ["Account code is required"] },
+        { name: "required", params: ["AccountNumberRequired"] },
         {
           name: "max",
           params: [20, "Account code should not exceed 20 digits"],

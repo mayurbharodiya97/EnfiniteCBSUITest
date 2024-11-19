@@ -241,14 +241,15 @@ const TRN001Provider = ({ children }) => {
 
   const handleAcctNoChange = useCallback(
     ({ updUnqId, value }) => {
-      if (value?.length <= 20) {
+      const sanitizedValue = value?.replace(/[^0-9 ]/g, "");
+      if (sanitizedValue?.length <= 20) {
         dispatch({
           type: "UPDATE_ROW",
           payload: {
             updUnqId,
             updateFn: (row) => ({
               ...row,
-              accNo: value ?? "",
+              accNo: sanitizedValue ?? "",
             }),
           },
         });
