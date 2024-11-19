@@ -13,6 +13,7 @@ import {
 } from "@acuteinfo/common-base";
 import { BranchSelectionGrid } from "./auth/branchSelection/branchSelectionGrid";
 import { GeneralAPI } from "registry/fns/functions";
+import TotpEnbaledDisabled from "./pages/profile/totp/totp-enabled-disable";
 
 const meta: ExtendedFieldMetaDataTypeOptional = {
   branchCode: {
@@ -175,6 +176,8 @@ const EntryPoint = () => (
       <AuthProvider>
         <Routes>
           <Route path="login" element={<AuthLoginController />} />
+
+          <Route path="totp-enable" element={<TotpEnbaledDisabled />} />
           <Route
             path="forgotpassword"
             element={<ForgotPasswordController screenFlag="password" />}

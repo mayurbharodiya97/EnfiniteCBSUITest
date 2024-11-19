@@ -140,7 +140,7 @@ export const EntryForm = (props) => {
               let buttonName = await btnName(
                 ["Yes", "No"],
                 "AreYouSureToProceed",
-                "ValidationSuccessfull",
+                "confirmation",
                 "INFO"
               );
               if (buttonName === "Yes") {

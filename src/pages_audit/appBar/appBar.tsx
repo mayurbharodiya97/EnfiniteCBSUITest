@@ -353,7 +353,8 @@ export const MyAppBar = ({
                   />
                 )}
                 <Quick_View />
-                <Notification_App />
+
+                {/* <Notification_App /> */}
 
                 <Tooltip title="Logout" placement="bottom" arrow>
                   <IconButton

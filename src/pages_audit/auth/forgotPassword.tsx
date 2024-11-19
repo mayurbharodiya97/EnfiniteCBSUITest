@@ -12,6 +12,7 @@ import { useQuery } from "react-query";
 import * as API from "./api";
 import { MultiLanguages } from "./multiLanguages";
 import { ForgotPasswordControllerWrapper } from "@acuteinfo/common-screens";
+import TotpEnbaledDisabled from "pages_audit/pages/profile/totp/totp-enabled-disable";
 
 export const ForgotPasswordController = ({ screenFlag }) => {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
             veirfyUsernameandMobileNo={veirfyUsernameandMobileNo}
             verifyOTPForPWDReset={verifyOTPForPWDReset}
             loginPageEndpoint="login"
+            TotpEnbaledDisabled={TotpEnbaledDisabled}
           />
         </>
       )}

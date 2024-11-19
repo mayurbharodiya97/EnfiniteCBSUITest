@@ -140,7 +140,15 @@ export const AuthProvider = ({ children }) => {
       if (stopNavigation) {
         return;
       }
-      if (comingFromRoute === "/cbsenfinity/login") {
+      if (payload?.totpReg === "Y") {
+        navigate("/cbsenfinity/totp-enable", {
+          state: {
+            secretTocken: payload?.secretTocken,
+            secretTockenQR: payload?.secretTockenQR,
+          },
+          replace: true,
+        });
+      } else if (comingFromRoute === "/cbsenfinity/login") {
         navigate("/cbsenfinity/branch-selection", {
           replace: true,
         });
