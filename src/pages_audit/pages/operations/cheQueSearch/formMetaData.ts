@@ -82,8 +82,6 @@ export const RetrievalParameterFormMetaData = {
       },
       dependentFields: ["FROM_DT"],
       validate: (currentField, dependentField) => {
-        console.log(currentField?.value);
-
         if (
           new Date(currentField?.value) <
           new Date(dependentField?.FROM_DT?.value)
@@ -303,8 +301,6 @@ export const returnChequeFormMetaData = {
       dependentFields: ["ZONE_TRAN_TYPE"],
       _optionsKey: "getClgZoneData",
       options: (dependentValue, formState, _, authState) => {
-        console.log(dependentValue);
-
         return getClgZoneData({
           COMP_CD: authState?.companyID,
           BRANCH_CD: authState?.user?.branchCode,

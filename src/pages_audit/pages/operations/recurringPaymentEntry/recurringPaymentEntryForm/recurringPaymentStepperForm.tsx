@@ -22,6 +22,7 @@ import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
 import {
+  Alert,
   ColorlibConnector,
   ColorlibStepIconRoot,
 } from "@acuteinfo/common-base";
@@ -253,15 +254,6 @@ const RecurringPaymentStepperForm = ({
     API?.recurringPaymentEntryDML,
     {
       onError: async (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        await MessageBox({
-          messageTitle: "Error",
-          message: errorMsg ?? "",
-          icon: "ERROR",
-        });
         CloseMessageBox();
       },
       onSuccess: async (data) => {
@@ -366,20 +358,13 @@ const RecurringPaymentStepperForm = ({
     }
   );
 
-  //Mutation for Validation mutation for Entry form handler
+  //Mutation for Validate Entry form handler
   const onSaveValidationMutation: any = useMutation(
     "onSaveRecurValueValidation",
     API.onSaveRecurValueValidation,
     {
       onSuccess: () => {},
       onError: async (error: any) => {
-        let errorMsg = t("Unknownerroroccured");
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
         CloseMessageBox();
       },
     }
@@ -702,6 +687,23 @@ const RecurringPaymentStepperForm = ({
         maxWidth="xl"
       >
         <>
+          {(recurringPaymentEntrySaveMutation.isError ||
+            onSaveValidationMutation?.isError) && (
+            <Alert
+              severity="error"
+              errorMsg={
+                recurringPaymentEntrySaveMutation?.error?.error_msg ||
+                onSaveValidationMutation?.error?.error_msg ||
+                t("Somethingwenttowrong")
+              }
+              errorDetail={
+                recurringPaymentEntrySaveMutation?.error?.error_detail ||
+                onSaveValidationMutation?.error?.error_detail ||
+                ""
+              }
+              color="error"
+            />
+          )}
           <AppBar position="relative" style={{ marginBottom: "10px" }}>
             <Toolbar variant="dense" className={headerClasses.root}>
               <Typography

@@ -1489,6 +1489,9 @@ export const en_language_data = {
   AreYouSureInactiveThisRecord: "Are You Sure to inactive this record?",
   ProceedGen: "Proceed ?",
   UTRConfirmation: "UTR(s) Confirmation",
+  PleaseEnterAlphabeticValueSlipNumber:
+    "Please enter Alphabetic Value in Slip Number",
+  SelectRTGSNEFTTransactionType: "Select RTGS/NEFT Transaction",
 
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
@@ -1595,12 +1598,20 @@ export const en_language_data = {
   ThereAre: "There are",
   ChequeAvailableforClearingDateTransferAreYouSureContinue:
     "Cheque(s) available for clearing date transfer. Are you sure to Continue?",
+  ChequeAvailableforClearingDateTransfer:
+    "Cheque(s) available for clearing date transfer",
   FromZone: "From Zone",
   ToZone: "To Zone",
   Count: "Count",
   ClearingRetrieveGrid: "Clearing Retrieve Grid",
   SlipRetrieveGrid: "Slip Retrieve Grid",
-
+  FromClgDate: "From CLG Date",
+  ToClgDate: "To CLG Date",
+  SuccessfullyTransferedClearingDateZone:
+    "Successfully transfered clearing date/Zone",
+  SelectGrouping: "Select Grouping",
+  ToDateshouldbegreaterthantoFromDate:
+    "To Date should be greater than to From Date",
   // inward clearing
 
   ValidationSuccessful: "Validation Successful",
@@ -1667,6 +1678,7 @@ export const en_language_data = {
 
   //payslip issue entry
   branchCode: "Branch Code",
+  DoYouWantToAllowPayslipDD: "Do you want to allow Payslip/Draft Issue-",
   stopRemarksRequired: "stop remarks is required",
   issueBranch: "Issue Branch",
   entryStatus: "Entry Status",
@@ -1983,6 +1995,8 @@ export const en_language_data = {
   confirmSI: "Are you sure to confirm SI?",
 
   //Recurring Interest Calculator
+  notAllowed: "Not Allowed.",
+  noMoreRemainingInst: "No More Remaining Installment.",
   Categoryisrequired: "Category is required",
   IntType: "Interest Type",
   InstallmentType: "Installment Type",
@@ -1993,6 +2007,9 @@ export const en_language_data = {
   SelectInstallmentTypePlaceHolder: "Select Installment Type",
 
   //EMI Calculator
+  addRow: "Add Row",
+  loanRepaymentSchedule: "Loan Repayment Schedule",
+  StepUpDown: "step Up-Down",
   InterestFunded: "Interest Funded",
   LoanAmount: "Loan Amount",
   Calculate: "Calculate",
@@ -2226,5 +2243,20 @@ export const en_language_data = {
   CreditTransferLimit: "Credit Transfer Limit",
   DoubleClickForEditDetail: "Double click or right click for Edit-Detail.",
   RDAC_NO: "RD A/c No.",
-  CarryForward: "Carry Forward",
+  //locker Transaction Entry
+  lockerNumber: "Locker No.",
+  lockerSize: "Locker Size",
+  keyNumber: "Key No",
+  referenceAccountBalance: "Ref.A/c Balance",
+  totalRentPaid: "Total Rent Paid",
+  dueRent: "Due Rent",
+  keyEmboss: "Key Emboss",
+  operationStatus: "Operation Status",
+  inTime: "In Time",
+  timeIn: "Time In",
+  timeOut: "Time Out",
+  outTime: "Out Time",
+  chargeAmount: "Charge Amount",
+  debitFrom: "Debit From",
+  accompanyEmployeeName: "Accompany Employee Name",
 };

@@ -2,6 +2,7 @@ import { GeneralAPI } from "registry/fns/functions";
 import { getPMISCData } from "../api";
 import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 export const CategoryMasterFormMetaData = {
   form: {
@@ -235,7 +236,7 @@ export const CategoryMasterFormMetaData = {
           if (formState?.isSubmitting) return {};
           return {
             TDS_ACCT_TYPE: { value: "" },
-            TDS_ACCT_CD: { value: "" },
+            TDS_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_ACCT_NM: { value: "" },
           };
         },
@@ -280,7 +281,7 @@ export const CategoryMasterFormMetaData = {
             }
           }
           return {
-            TDS_ACCT_CD: { value: "" },
+            TDS_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_ACCT_NM: { value: "" },
           };
         },
@@ -324,7 +325,7 @@ export const CategoryMasterFormMetaData = {
                 TDS_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 TDS_ACCT_TYPE: {
                   value: "",
@@ -418,7 +419,7 @@ export const CategoryMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               TDS_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -508,7 +509,7 @@ export const CategoryMasterFormMetaData = {
       ) => {
         if (formState?.isSubmitting) return {};
         return {
-          TDS_SUR_ACCT_CD: { value: "" },
+          TDS_SUR_ACCT_CD: { value: "", ignoreUpdate: false },
         };
       },
       type: "text",
@@ -555,7 +556,7 @@ export const CategoryMasterFormMetaData = {
               TDS_SUR_ACCT_CD: {
                 value: "",
                 isFieldFocused: false,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
               TDS_SUR_ACCT_TYPE: {
                 value: "",
@@ -649,7 +650,7 @@ export const CategoryMasterFormMetaData = {
                 : {
                     value: "",
                     isFieldFocused: true,
-                    ignoreUpdate: true,
+                    ignoreUpdate: false,
                   },
           };
         }
@@ -701,7 +702,7 @@ export const CategoryMasterFormMetaData = {
 
           return {
             TDS_REC_ACCT_TYPE: { value: "" },
-            TDS_REC_ACCT_CD: { value: "" },
+            TDS_REC_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_REC_ACCT_NM: { value: "" },
           };
         },
@@ -746,7 +747,7 @@ export const CategoryMasterFormMetaData = {
             }
           }
           return {
-            TDS_REC_ACCT_CD: { value: "" },
+            TDS_REC_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_REC_ACCT_NM: { value: "" },
           };
         },
@@ -790,7 +791,7 @@ export const CategoryMasterFormMetaData = {
                 TDS_REC_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 TDS_REC_ACCT_TYPE: {
                   value: "",
@@ -884,7 +885,7 @@ export const CategoryMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               TDS_REC_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
