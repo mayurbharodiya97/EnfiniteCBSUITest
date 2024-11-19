@@ -269,7 +269,6 @@ export const VerifyDayendChecksums = ({
 
     return "continue";
   };
-  console.log(warningsObjRef);
 
   const processRecords = async (records: Item[]) => {
     for (let i = 0; i < records.length; i++) {
@@ -502,7 +501,6 @@ export const VerifyDayendChecksums = ({
               close();
             } else if (buttonName === "Yes") {
               const branchList = data[0]?.BRANCH_LIST;
-              console.log(currentBranch.current, "BRANCH");
 
               if (branchList.length > 0) {
                 if (switchBranchPara) {

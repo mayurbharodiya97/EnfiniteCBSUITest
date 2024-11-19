@@ -36,13 +36,15 @@ export const gettypeDDWdata = async ({ COMP_CD, BRANCH_CD, USER_NAME }) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ TYPE_NM, ACCT_TYPE, ...others }) => {
-        return {
-          value: ACCT_TYPE,
-          label: TYPE_NM,
-          ...others,
-        };
-      });
+      responseData = responseData.map(
+        ({ CONCDESCRIPTION, ACCT_TYPE, ...others }) => {
+          return {
+            value: ACCT_TYPE,
+            label: CONCDESCRIPTION,
+            ...others,
+          };
+        }
+      );
     }
     return responseData;
   } else {

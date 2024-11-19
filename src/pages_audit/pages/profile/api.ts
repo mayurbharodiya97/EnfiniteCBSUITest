@@ -190,14 +190,12 @@ export const updateTOTPAuthVerify = async ({
   secretToken,
   otpNumber,
 }) => {
-  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "VERIFYTOTP",
-    {
+  const { status, message, messageDetails } =
+    await AuthSDK.internalFetcherPreLogin("VERIFYTOTP", {
       USER_ID: userID,
       SECRET: secretToken,
       OTP: otpNumber,
-    }
-  );
+    });
   if (status === "0") {
     return message;
   } else {

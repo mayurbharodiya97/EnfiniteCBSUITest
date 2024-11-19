@@ -134,7 +134,7 @@ export const PagesAudit = (props, { columns }) => {
                     element={<AllScreensGridWrapper />}
                   />
                   <Route path="configuration/*" element={<Configuration />} />
-                  <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
+                  <Route path="dynamicgrid/:id/*" element={<DynamicGrids />} />
 
                   {/* <Route
                   path="branch-selection/*"

@@ -44,6 +44,9 @@ export const PayslipDDTrnsConfirmation = () => {
       navigate("/cbsenfinity/dashboard");
     }
   }, []);
+  useEffect(() => {
+    navigate("./");
+  }, []);
 
   const close = () => {
     setScreenOpen(false);

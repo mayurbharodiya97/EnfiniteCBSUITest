@@ -132,7 +132,7 @@ const StockEntryCustom = ({ screenFlag, reqData }) => {
             let res = await MessageBox({
               messageTitle: t("confirmation"),
               message: t("insertMessage"),
-              buttonNames: ["No", "Yes"],
+              buttonNames: ["Yes", "No"],
               defFocusBtnName: "Yes",
               loadingBtnName: ["Yes"],
             });

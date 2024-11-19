@@ -29,7 +29,7 @@ export const FixDepositDetailForm = forwardRef<any, any>(
         const buttonName = await MessageBox({
           messageTitle: "Confirmation",
           message: "Are you sure create FD?",
-          buttonNames: ["No", "Yes"],
+          buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
         });
         if (buttonName === "Yes") {

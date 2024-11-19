@@ -13,7 +13,9 @@ import {
   queryClient,
   GradientButton,
   usePopupContext,
+  utilFunction,
 } from "@acuteinfo/common-base";
+import { useLocation } from "react-router-dom";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -30,6 +32,7 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
 }));
 
 const DayEndProcess = () => {
+  let currentPath = useLocation().pathname;
   const headerClasses = useTypeStyles();
   const { authState } = useContext(AuthContext);
   const [openPendingTrns, setOpenPendingTrns] = useState(false);
@@ -78,10 +81,6 @@ const DayEndProcess = () => {
     authState?.user?.branchCode === authState?.user?.baseBranchCode
       ? true
       : false;
-  console.log(isHOLoggined, "isHOLoggined");
-  console.log(
-    data && data[0]?.EOD_FLAG === "H" ? t("DayHandover") : t("DayEnd")
-  );
 
   return (
     <>
@@ -93,7 +92,11 @@ const DayEndProcess = () => {
             variant="h6"
             component="div"
           >
-            {"Day End Process (TRN/399)"}
+            {utilFunction.getDynamicLabel(
+              currentPath,
+              authState?.menulistdata,
+              true
+            )}
           </Typography>
           <GradientButton onClick={handleOpenPendingTrns} color={"primary"}>
             {t("PendingTransactions")}
@@ -123,12 +126,11 @@ const DayEndProcess = () => {
           open={openDayendProcess}
           close={() => {
             setOpenDayendProcess(false);
-
-            API.updateEodRunningStatus({
-              COMP_CD: authState?.companyID,
-              BRANCH_CD: authState?.user?.branchCode,
-              FLAG: "N",
-            }).catch((err) => console.error("Error updating EOD status:", err));
+            // API.updateEodRunningStatus({
+            //   COMP_CD: authState?.companyID,
+            //   BRANCH_CD: authState?.user?.branchCode,
+            //   FLAG: "N",
+            // }).catch((err) => console.error("Error updating EOD status:", err));
           }}
           flag={"D"}
           processFlag={
@@ -142,12 +144,11 @@ const DayEndProcess = () => {
           open={openVerifyChecksums}
           close={() => {
             setOpenVerifyChecksums(false);
-
-            API.updateEodRunningStatus({
-              COMP_CD: authState?.companyID,
-              BRANCH_CD: authState?.user?.branchCode,
-              FLAG: "N",
-            }).catch((err) => console.error("Error updating EOD status:", err));
+            // API.updateEodRunningStatus({
+            //   COMP_CD: authState?.companyID,
+            //   BRANCH_CD: authState?.user?.branchCode,
+            //   FLAG: "N",
+            // }).catch((err) => console.error("Error updating EOD status:", err));
           }}
           flag={"C"}
           processFlag={
