@@ -1548,6 +1548,8 @@ export const ddTransactionFormMetaData = {
       type: "text",
       dependentFields: ["SCREENFLAG"],
       required: "true",
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
+
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["stopRemarksRequired"] }],

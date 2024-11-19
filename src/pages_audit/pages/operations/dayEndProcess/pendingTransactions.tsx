@@ -73,7 +73,6 @@ export const PendinGTrns = ({ open, close }) => {
       });
     },
     onSuccess: async (data) => {
-      console.log("Doc URL data:", data);
       setDocData(data);
 
       // Ensure URL is valid
@@ -145,7 +144,6 @@ export const PendinGTrns = ({ open, close }) => {
             setOpenReport(true);
           }
           if (id === "OPEN") {
-            console.log("Opening document:", currentData);
             docurlMutation.mutate({
               BASE_COMP: authState?.baseCompanyID,
               BASE_BRANCH: authState?.user?.baseBranchCode,

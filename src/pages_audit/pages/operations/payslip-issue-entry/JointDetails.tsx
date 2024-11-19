@@ -17,7 +17,7 @@ const actions: ActionTypes[] = [
   },
 ];
 
-function JointDetails({ data, onClose, loading }) {
+function JointDetails({ data, onClose, loading, hideHeader }) {
   const setCurrentAction = useCallback(async (data) => {
     if (data.name === "Close") {
       onClose(false);
@@ -31,6 +31,7 @@ function JointDetails({ data, onClose, loading }) {
           finalMetaData={SlipJoinDetailGridMetaData as GridMetaDataType}
           data={data ?? []}
           setData={() => null}
+          hideHeader={hideHeader}
           loading={loading}
           setAction={setCurrentAction}
           actions={actions}
