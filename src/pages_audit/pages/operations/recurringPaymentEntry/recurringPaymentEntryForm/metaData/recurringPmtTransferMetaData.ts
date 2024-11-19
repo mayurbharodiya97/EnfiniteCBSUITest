@@ -1,4 +1,5 @@
 import { utilFunction } from "@acuteinfo/common-base";
+import { validateHOBranch } from "components/utilFunction/function";
 import { GeneralAPI } from "registry/fns/functions";
 
 export const RecurringPaymentTransferFormMetaData = {
@@ -212,9 +213,24 @@ export const RecurringPaymentTransferFormMetaData = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+
+              const isHOBranch = await validateHOBranch(
+                currentField,
+                formState?.MessageBox,
+                authState
+              );
+              if (isHOBranch) {
+                return {
+                  DC_BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: false,
+                  },
+                };
+              }
               return {
                 DC_ACCT_TYPE: { value: "" },
-                DC_ACCT_CD: { value: "" },
+                DC_ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -260,7 +276,7 @@ export const RecurringPaymentTransferFormMetaData = {
                 }
               }
               return {
-                DC_ACCT_CD: { value: "" },
+                DC_ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -272,10 +288,6 @@ export const RecurringPaymentTransferFormMetaData = {
             autoComplete: "off",
             dependentFields: ["DC_ACCT_TYPE", "DC_BRANCH_CD"],
             runPostValidationHookAlways: true,
-            AlwaysRunPostValidationSetCrossFieldValues: {
-              alwaysRun: true,
-              touchAndValidate: true,
-            },
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -300,7 +312,7 @@ export const RecurringPaymentTransferFormMetaData = {
                     DC_ACCT_CD: {
                       value: "",
                       isFieldFocused: false,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
                     DC_ACCT_TYPE: {
                       value: "",
@@ -404,7 +416,7 @@ export const RecurringPaymentTransferFormMetaData = {
                       : {
                           value: "",
                           isFieldFocused: true,
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                         },
                   ACCT_NM: {
                     value: returnVal?.ACCT_NM ?? "",

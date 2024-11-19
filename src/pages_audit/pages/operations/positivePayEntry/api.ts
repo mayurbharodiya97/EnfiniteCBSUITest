@@ -108,8 +108,8 @@ export const positivePayConfirmation = async (formData) => {
 export const GetPositivePayImportDdwn = async (...reqData: any) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETBANKIFSCIMPORTDDDW", {
-      COMP_CD: reqData?.[1]?.companyID,
-      BRANCH_CD: reqData?.[1]?.user?.branchCode,
+      COMP_CD: reqData?.[0]?.COMP_CD,
+      BRANCH_CD: reqData?.[0]?.BRANCH_CD,
       TABLE_NM: "RBI_POSITIVE_PAY_DATA",
     });
 
@@ -120,7 +120,7 @@ export const GetPositivePayImportDdwn = async (...reqData: any) => {
         ({ DESCRIPTION, FILE_FORMAT, TRAN_CD, ...other }) => {
           return {
             ...other,
-            value: [FILE_FORMAT, TRAN_CD],
+            value: `${FILE_FORMAT},${TRAN_CD}`,
             label: DESCRIPTION,
           };
         }

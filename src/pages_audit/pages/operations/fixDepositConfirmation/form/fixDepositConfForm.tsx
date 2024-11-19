@@ -255,20 +255,26 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
         for (let i = 0; i < data?.length; i++) {
           if (data[i]?.O_STATUS === "999") {
             const btnName = await MessageBox({
-              messageTitle: "ValidationFailed",
+              messageTitle: data[i]?.O_MSG_TITLE
+                ? data[i]?.O_MSG_TITLE
+                : "ValidationFailed",
               message: data[i]?.O_MESSAGE,
               buttonNames: ["Ok"],
               icon: "ERROR",
             });
           } else if (data[i]?.O_STATUS === "9") {
             const btnName = await MessageBox({
-              messageTitle: "Alert",
+              messageTitle: data[i]?.O_MSG_TITLE
+                ? data[i]?.O_MSG_TITLE
+                : "Alert",
               message: data[i]?.O_MESSAGE,
               icon: "WARNING",
             });
           } else if (data[i]?.O_STATUS === "99") {
             const btnName = await MessageBox({
-              messageTitle: "Confirmation",
+              messageTitle: data[i]?.O_MSG_TITLE
+                ? data[i]?.O_MSG_TITLE
+                : "Confirmation",
               message: data[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
               icon: "CONFIRM",
@@ -299,20 +305,26 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
           for (let i = 0; i < data?.length; i++) {
             if (data[i]?.O_STATUS === "999") {
               const btnName = await MessageBox({
-                messageTitle: "ValidationFailed",
+                messageTitle: data[i]?.O_MSG_TITLE
+                  ? data[i]?.O_MSG_TITLE
+                  : "ValidationFailed",
                 message: data[i]?.O_MESSAGE,
                 buttonNames: ["Ok"],
                 icon: "ERROR",
               });
             } else if (data[i]?.O_STATUS === "9") {
               const btnName = await MessageBox({
-                messageTitle: "Alert",
+                messageTitle: data[i]?.O_MSG_TITLE
+                  ? data[i]?.O_MSG_TITLE
+                  : "Alert",
                 message: data[i]?.O_MESSAGE,
                 icon: "WARNING",
               });
             } else if (data[i]?.O_STATUS === "99") {
               const btnName = await MessageBox({
-                messageTitle: "Confirmation",
+                messageTitle: data[i]?.O_MSG_TITLE
+                  ? data[i]?.O_MSG_TITLE
+                  : "Confirmation",
                 message: data[i]?.O_MESSAGE,
                 buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
@@ -336,20 +348,26 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                   for (let i = 0; i < confirmdata?.length; i++) {
                     if (confirmdata[i]?.O_STATUS === "999") {
                       const btnName = await MessageBox({
-                        messageTitle: "ValidationFailed",
+                        messageTitle: confirmdata[i]?.O_MSG_TITLE
+                          ? confirmdata[i]?.O_MSG_TITLE
+                          : "ValidationFailed",
                         message: confirmdata[i]?.O_MESSAGE,
                         buttonNames: ["Ok"],
                         icon: "ERROR",
                       });
                     } else if (confirmdata[i]?.O_STATUS === "9") {
                       const btnName = await MessageBox({
-                        messageTitle: "Alert",
+                        messageTitle: confirmdata[i]?.O_MSG_TITLE
+                          ? confirmdata[i]?.O_MSG_TITLE
+                          : "Alert",
                         message: confirmdata[i]?.O_MESSAGE,
                         icon: "WARNING",
                       });
                     } else if (confirmdata[i]?.O_STATUS === "99") {
                       const btnName = await MessageBox({
-                        messageTitle: "Confirmation",
+                        messageTitle: confirmdata[i]?.O_MSG_TITLE
+                          ? confirmdata[i]?.O_MSG_TITLE
+                          : "Confirmation",
                         message: confirmdata[i]?.O_MESSAGE,
                         buttonNames: ["Yes", "No"],
                         icon: "CONFIRM",
@@ -803,20 +821,26 @@ export const FDConfirmationForm = ({ isDataChangedRef, closeDialog }) => {
                     for (let i = 0; i < deleteData?.length; i++) {
                       if (deleteData[i]?.O_STATUS === "999") {
                         const btnName = await MessageBox({
-                          messageTitle: "ValidationFailed",
+                          messageTitle: deleteData[i]?.O_MSG_TITLE
+                            ? deleteData[i]?.O_MSG_TITLE
+                            : "ValidationFailed",
                           message: deleteData[i]?.O_MESSAGE,
                           buttonNames: ["Ok"],
                           icon: "ERROR",
                         });
                       } else if (deleteData[i]?.O_STATUS === "9") {
                         const btnName = await MessageBox({
-                          messageTitle: "Alert",
+                          messageTitle: deleteData[i]?.O_MSG_TITLE
+                            ? deleteData[i]?.O_MSG_TITLE
+                            : "Alert",
                           message: deleteData[i]?.O_MESSAGE,
                           icon: "WARNING",
                         });
                       } else if (deleteData[i]?.O_STATUS === "99") {
                         const btnName = await MessageBox({
-                          messageTitle: "Confirmation",
+                          messageTitle: deleteData[i]?.O_MSG_TITLE
+                            ? deleteData[i]?.O_MSG_TITLE
+                            : "Confirmation",
                           message: deleteData[i]?.O_MESSAGE,
                           buttonNames: ["Yes", "No"],
                           icon: "CONFIRM",

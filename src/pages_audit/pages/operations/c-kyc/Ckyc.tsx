@@ -239,7 +239,6 @@ export const Ckyc = () => {
                 // handleFormModalOpenctx("I")
                 navigate("new-entry", {
                   state: {
-                    isFormModalOpen: true,
                     entityType: "I",
                     isFreshEntry: true,
                   },
@@ -270,7 +269,6 @@ export const Ckyc = () => {
                 // handleFormModalOpenctx("C")
                 navigate("new-entry", {
                   state: {
-                    isFormModalOpen: true,
                     entityType: "C",
                     isFreshEntry: true,
                   },

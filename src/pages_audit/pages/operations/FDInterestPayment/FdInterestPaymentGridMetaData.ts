@@ -71,7 +71,7 @@ export const accountFindmetaData = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "Alert",
-              message: "Enter Account Branch.",
+              message: "EnterAccountBranch",
               buttonNames: ["Ok"],
               icon: "WARNING",
             });
@@ -148,7 +148,7 @@ export const accountFindmetaData = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "Alert",
-              message: "Enter Account Type.",
+              message: "EnterAccountType",
               buttonNames: ["Ok"],
               icon: "WARNING",
             });
@@ -191,16 +191,18 @@ export const accountFindmetaData = {
             for (let i = 0; i < postData?.MSG.length; i++) {
               if (postData?.MSG[i]?.O_STATUS === "999") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle:
+                    postData?.MSG[i]?.O_MSG_TITLE ?? "ValidationFailed",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG[i]?.O_STATUS === "99") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE ?? "Confirmation",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
@@ -208,7 +210,7 @@ export const accountFindmetaData = {
                 }
               } else if (postData?.MSG[i]?.O_STATUS === "9") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE ?? "Alert",
                   message: postData?.MSG[i]?.O_MESSAGE,
                   icon: "WARNING",
                 });

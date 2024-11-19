@@ -160,6 +160,7 @@ const AttestationDetails = ({ onFormClose, onUpdateForm }) => {
           message: data?.[0]?.MESSAGE,
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "WARNING",
         });
         if (buttonName === "Yes") {
           onSave();

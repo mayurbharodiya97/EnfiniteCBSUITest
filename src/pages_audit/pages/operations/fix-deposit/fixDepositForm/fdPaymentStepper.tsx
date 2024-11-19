@@ -265,19 +265,25 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
         for (const response of data?.[0]?.MSG ?? []) {
           if (response?.O_STATUS === "999") {
             await MessageBox({
-              messageTitle: "ValidationFailed",
+              messageTitle: response?.O_MSG_TITLE?.length
+                ? response?.O_MSG_TITLE
+                : "ValidationFailed",
               message: response?.O_MESSAGE ?? "",
               icon: "ERROR",
             });
           } else if (response?.O_STATUS === "9") {
             await MessageBox({
-              messageTitle: "Alert",
+              messageTitle: response?.O_MSG_TITLE?.length
+                ? response?.O_MSG_TITLE
+                : "Alert",
               message: response?.O_MESSAGE ?? "",
               icon: "WARNING",
             });
           } else if (response?.O_STATUS === "99") {
             const buttonName = await MessageBox({
-              messageTitle: "Confirmation",
+              messageTitle: response?.O_MSG_TITLE?.length
+                ? response?.O_MSG_TITLE
+                : "Confirmation",
               message: response?.O_MESSAGE ?? "",
               buttonNames: ["Yes", "No"],
               defFocusBtnName: "Yes",
@@ -346,19 +352,25 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
       for (const response of data ?? []) {
         if (response?.O_STATUS === "999") {
           await MessageBox({
-            messageTitle: "ValidationFailed",
+            messageTitle: response?.O_MSG_TITLE?.length
+              ? response?.O_MSG_TITLE
+              : "ValidationFailed",
             message: response?.O_MESSAGE ?? "",
             icon: "ERROR",
           });
         } else if (response?.O_STATUS === "9") {
           await MessageBox({
-            messageTitle: "VouchersConfirmation",
+            messageTitle: response?.O_MSG_TITLE?.length
+              ? response?.O_MSG_TITLE
+              : "VouchersConfirmation",
             message: response?.O_MESSAGE ?? "",
             icon: "WARNING",
           });
         } else if (response?.O_STATUS === "99") {
           const buttonName = await MessageBox({
-            messageTitle: "Confirmation",
+            messageTitle: response?.O_MSG_TITLE?.length
+              ? response?.O_MSG_TITLE
+              : "Confirmation",
             message: response?.O_MESSAGE ?? "",
             buttonNames: ["Yes", "No"],
             defFocusBtnName: "Yes",
@@ -501,19 +513,25 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
             for (const response of data ?? []) {
               if (response?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: response?.O_MSG_TITLE?.length
+                    ? response?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: response?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
               } else if (response?.O_STATUS === "9") {
                 await MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: response?.O_MSG_TITLE?.length
+                    ? response?.O_MSG_TITLE
+                    : "Alert",
                   message: response?.O_MESSAGE ?? "",
                   icon: "WARNING",
                 });
               } else if (response?.O_STATUS === "99") {
                 const buttonName = await MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: response?.O_MSG_TITLE?.length
+                    ? response?.O_MSG_TITLE
+                    : "Confirmation",
                   message: response?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
                   defFocusBtnName: "Yes",

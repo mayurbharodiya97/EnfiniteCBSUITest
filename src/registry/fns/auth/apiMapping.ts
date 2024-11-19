@@ -2925,6 +2925,30 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/VALIDATEACCOUNTDTL",
     packageName: "",
   },
+  GETBRANCHDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHDDDW",
+    packageName: "",
+  },
+  GETLOCKERSIZEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERSIZEDDDW",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONDDDW",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONTRN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONTRN",
+    packageName: "",
+  },
+  GETLOCKERVIEWMST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERVIEWMST",
+    packageName: "",
+  },
+  GETLOCKERTRXDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERTRXDDDW",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

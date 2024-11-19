@@ -1,6 +1,7 @@
 import { GeneralAPI } from "registry/fns/functions";
 import { utilFunction } from "@acuteinfo/common-base";
 import * as API from "../../api";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const FDRetriveMetadata = {
   form: {
@@ -60,10 +61,25 @@ export const FDRetriveMetadata = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             ACCT_NM: { value: "" },
             ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
           };
         },
         GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
@@ -87,10 +103,10 @@ export const FDRetriveMetadata = {
             dependentFieldsValues?.BRANCH_CD?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Branch.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -121,7 +137,9 @@ export const FDRetriveMetadata = {
             if (postData?.status === "999") {
               let btnName = await formState.MessageBox({
                 messageTitle: "ValidationFailed",
-                message: postData?.messageDetails ?? "Somethingwenttowrong",
+                message: postData?.messageDetails?.length
+                  ? postData?.messageDetails
+                  : "Somethingwenttowrong",
                 icon: "ERROR",
               });
               if (btnName === "Ok") {
@@ -131,11 +149,11 @@ export const FDRetriveMetadata = {
                     isFieldFocused: true,
                     ignoreUpdate: true,
                   },
-                  ACCT_CD: { value: "" },
+                  ACCT_CD: { value: "", ignoreUpdate: false },
                   ACCT_NM: { value: "" },
                 };
               }
-            } else if (postData?.length) {
+            } else if (postData) {
               formState.setDataOnFieldChange("GET_PARA_DATA", postData?.[0]);
               return {
                 DOUBLE_FAC: { value: postData?.[0]?.DOUBLE_FAC ?? "" },
@@ -143,13 +161,13 @@ export const FDRetriveMetadata = {
                 ACCT_CD: {
                   value: "",
                   isFieldFocused: true,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
               };
             }
           }
           return {
-            ACCT_CD: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
             ACCT_NM: { value: "" },
           };
         },
@@ -172,10 +190,10 @@ export const FDRetriveMetadata = {
             dependentFieldsValues?.ACCT_TYPE?.value?.length === 0
           ) {
             let buttonName = await formState?.MessageBox({
-              messageTitle: "Alert",
+              messageTitle: "ValidationFailed",
               message: "Enter Account Type.",
               buttonNames: ["Ok"],
-              icon: "WARNING",
+              icon: "ERROR",
             });
 
             if (buttonName === "Ok") {
@@ -183,7 +201,7 @@ export const FDRetriveMetadata = {
                 ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 ACCT_TYPE: {
                   value: "",
@@ -227,7 +245,9 @@ export const FDRetriveMetadata = {
               if (postData?.[0]?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleDisableButton(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: postData?.[0]?.MSG?.[i]?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -236,7 +256,9 @@ export const FDRetriveMetadata = {
                 formState?.handleDisableButton(false);
                 if (btn99 !== "No") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
+                    messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE?.length
+                      ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
                     message: postData?.[0]?.MSG?.[i]?.O_MESSAGE ?? "",
                     icon: "WARNING",
                   });
@@ -245,9 +267,12 @@ export const FDRetriveMetadata = {
               } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "99") {
                 formState?.handleDisableButton(false);
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE?.length
+                    ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
                   message: postData?.[0]?.MSG?.[i]?.O_MESSAGE ?? "",
                   buttonNames: ["Yes", "No"],
+                  icon: "CONFIRM",
                 });
 
                 btn99 = btnName;
@@ -279,7 +304,7 @@ export const FDRetriveMetadata = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",

@@ -1,6 +1,7 @@
 import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../../api";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const TransferAcctDetailFormMetadata = {
   form: {
@@ -175,7 +176,6 @@ export const TransferAcctDetailFormMetadata = {
       isRemoveButton: false,
       isScreenStyle: false,
       displayCountName: "Record",
-      removeRowFn: "deleteFormArrayFieldData",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       addRowFn: (data) => {
         const dataArray = Array.isArray(data?.TRNDTLS) ? data?.TRNDTLS : [];
@@ -217,9 +217,23 @@ export const TransferAcctDetailFormMetadata = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              const isHOBranch = await validateHOBranch(
+                currentField,
+                formState?.MessageBox,
+                authState
+              );
+              if (isHOBranch) {
+                return {
+                  BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: false,
+                  },
+                };
+              }
               return {
                 ACCT_TYPE: { value: "" },
-                ACCT_CD: { value: "" },
+                ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -243,10 +257,10 @@ export const TransferAcctDetailFormMetadata = {
                 dependentFieldValues?.["TRNDTLS.BRANCH_CD"]?.value?.length === 0
               ) {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: "ValidationFailed",
                   message: "Enter Account Branch.",
                   buttonNames: ["Ok"],
-                  icon: "WARNING",
+                  icon: "ERROR",
                 });
 
                 if (buttonName === "Ok") {
@@ -265,7 +279,7 @@ export const TransferAcctDetailFormMetadata = {
                 }
               }
               return {
-                ACCT_CD: { value: "" },
+                ACCT_CD: { value: "", ignoreUpdate: false },
                 ACCT_NM: { value: "" },
               };
             },
@@ -276,6 +290,7 @@ export const TransferAcctDetailFormMetadata = {
             name: "ACCT_CD",
             dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
             runPostValidationHookAlways: true,
+            autoComplete: "off",
             postValidationSetCrossFieldValues: async (
               currentField,
               formState,
@@ -290,10 +305,10 @@ export const TransferAcctDetailFormMetadata = {
                   0
               ) {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: "ValidationFailed",
                   message: "Enter Account Type.",
                   buttonNames: ["Ok"],
-                  icon: "WARNING",
+                  icon: "ERROR",
                 });
 
                 if (buttonName === "Ok") {
@@ -301,7 +316,7 @@ export const TransferAcctDetailFormMetadata = {
                     ACCT_CD: {
                       value: "",
                       isFieldFocused: false,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
                     ACCT_TYPE: {
                       value: "",
@@ -339,7 +354,9 @@ export const TransferAcctDetailFormMetadata = {
                 for (let i = 0; i < postData?.[0]?.MSG?.length; i++) {
                   if (postData?.[0]?.MSG?.[i]?.O_STATUS === "999") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "ValidationFailed",
+                      messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                        : "ValidationFailed",
                       message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                       icon: "ERROR",
                     });
@@ -347,7 +364,10 @@ export const TransferAcctDetailFormMetadata = {
                   } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "9") {
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
+                        messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                          ?.length
+                          ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                          : "Alert",
                         message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                         icon: "WARNING",
                       });
@@ -355,9 +375,12 @@ export const TransferAcctDetailFormMetadata = {
                     returnVal = postData?.[0];
                   } else if (postData?.[0]?.MSG?.[i]?.O_STATUS === "99") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Confirmation",
+                      messageTitle: postData?.[0]?.MSG?.[i]?.O_MSG_TITLE?.length
+                        ? postData?.[0]?.MSG?.[i]?.O_MSG_TITLE
+                        : "Confirmation",
                       message: postData?.[0]?.MSG?.[i]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
+                      icon: "CONFIRM",
                     });
 
                     btn99 = btnName;
@@ -387,7 +410,7 @@ export const TransferAcctDetailFormMetadata = {
                       : {
                           value: "",
                           isFieldFocused: true,
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                         },
                   ACCT_NM: {
                     value: returnVal?.ACCT_NM ?? "",
@@ -432,7 +455,6 @@ export const TransferAcctDetailFormMetadata = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
-
           GridProps: { xs: 12, sm: 4.5, md: 4.5, lg: 4.5, xl: 2.6 },
         },
         {
@@ -470,10 +492,10 @@ export const TransferAcctDetailFormMetadata = {
               dependentFieldsValues?.["TRNDTLS.ACCT_CD"]?.value.length === 0
             ) {
               let buttonName = await formState?.MessageBox({
-                messageTitle: "Alert",
+                messageTitle: "ValidationFailed",
                 message: "Enter Account Information.",
                 buttonNames: ["Ok"],
-                icon: "WARNING",
+                icon: "ERROR",
               });
               if (buttonName === "Ok") {
                 return {
@@ -514,7 +536,9 @@ export const TransferAcctDetailFormMetadata = {
               for (let i = 0; i < postData.length; i++) {
                 if (postData[i]?.ERR_CODE === "999") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Validation Failed",
+                    messageTitle: postData[i]?.O_MSG_TITLE?.length
+                      ? postData[i]?.O_MSG_TITLE
+                      : "ValidationFailed",
                     message: postData[i]?.ERR_MSG,
                     icon: "ERROR",
                   });
@@ -530,16 +554,21 @@ export const TransferAcctDetailFormMetadata = {
                 } else if (postData[i]?.ERR_CODE === "9") {
                   if (btn99 !== "No") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Alert",
+                      messageTitle: postData[i]?.O_MSG_TITLE?.length
+                        ? postData[i]?.O_MSG_TITLE
+                        : "Alert",
                       message: postData[i]?.ERR_MSG,
                       icon: "WARNING",
                     });
                   }
                 } else if (postData[i]?.ERR_CODE === "99") {
                   const { btnName, obj } = await getButtonName({
-                    messageTitle: "Confirmation",
+                    messageTitle: postData[i]?.O_MSG_TITLE?.length
+                      ? postData[i]?.O_MSG_TITLE
+                      : "Confirmation",
                     message: postData[i]?.ERR_MSG,
                     buttonNames: ["Yes", "No"],
+                    icon: "CONFIRM",
                   });
 
                   btn99 = btnName;
@@ -618,6 +647,7 @@ export const TransferAcctDetailFormMetadata = {
           label: "",
           placeholder: "",
           type: "text",
+          autoComplete: "off",
           dependentFields: [
             "TRAN_BAL",
             "STATUS",

@@ -26,6 +26,9 @@ export interface AuthStateType {
   };
   hoLogin: string;
   idealTimer: string;
+  totpReg?: string;
+  secretTocken?: string;
+  secretTockenQR?: string;
 }
 
 export interface BranchSelectData {

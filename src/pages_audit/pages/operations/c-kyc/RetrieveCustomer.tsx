@@ -232,6 +232,7 @@ const RetrieveCustomer = () => {
               Boolean(colomnValue[key])
             );
             if (newArr && newArr.length === 0) {
+              mutation.reset();
               return;
             } else {
               newArr.forEach((key) => {

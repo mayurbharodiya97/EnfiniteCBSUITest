@@ -19,7 +19,7 @@ import {
   Alert,
   ClearCacheContext,
   queryClient,
-  PopupMessageAPIWrapper,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
@@ -41,13 +41,10 @@ const ParameterConfirmGridWrapper = () => {
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
   const navigate = useNavigate();
-  const [rowData, setRowData] = useState([]);
-  const [isOpenAccept, setIsOpenAccept] = useState(false);
-  const [isOpenReject, setIsOpenReject] = useState(false);
   const { authState } = useContext(AuthContext);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const setCurrentAction = useCallback(
-    (data) => {
-      setRowData(data?.rows);
+    async (data) => {
       let check = data?.rows[0]?.data?.LAST_ENTERED_BY;
       if (data.name === "accept") {
         if (
@@ -58,7 +55,21 @@ const ParameterConfirmGridWrapper = () => {
             variant: "warning",
           });
         } else {
-          setIsOpenAccept(true);
+          const Accept = await MessageBox({
+            messageTitle: "Confirmation",
+            message: "AreYouSureToConfirm",
+            icon: "CONFIRM",
+            buttonNames: ["Yes", "No"],
+          });
+          if (Accept === "Yes") {
+            result.mutate({
+              confirmed: "Y",
+              comp_cd: data?.rows?.[0]?.data?.COMP_CD ?? "",
+              remarks: data?.rows?.[0]?.data?.REMARKS ?? "",
+              para_cd: data?.rows?.[0]?.data?.PARA_CD ?? "",
+              branch_cd: data?.rows?.[0]?.data?.BRANCH_CD ?? "",
+            });
+          }
         }
       } else if (data.name === "reject") {
         if (
@@ -69,7 +80,21 @@ const ParameterConfirmGridWrapper = () => {
             variant: "warning",
           });
         } else {
-          setIsOpenReject(true);
+          const Accept = await MessageBox({
+            messageTitle: "Confirmation",
+            message: "AreYouSureToReject",
+            icon: "CONFIRM",
+            buttonNames: ["Yes", "No"],
+          });
+          if (Accept === "Yes") {
+            result.mutate({
+              confirmed: "R",
+              comp_cd: data?.rows?.[0]?.data?.COMP_CD ?? "",
+              remarks: data?.rows?.[0]?.data?.REMARKS ?? "",
+              para_cd: data?.rows?.[0]?.data?.PARA_CD ?? "",
+              branch_cd: data?.rows?.[0]?.data?.BRANCH_CD ?? "",
+            });
+          }
         }
       } else {
         navigate(data?.name, {
@@ -99,34 +124,11 @@ const ParameterConfirmGridWrapper = () => {
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg ?? "error", { variant: "error" });
-      console.log(">>>", error?.error_msg);
     },
     onSettled: () => {
-      onActionCancel();
+      CloseMessageBox();
     },
   });
-  const onActionCancel = () => {
-    setIsOpenAccept(false);
-    setIsOpenReject(false);
-  };
-  const onRejectPopupYes = (rows) => {
-    result.mutate({
-      confirmed: "R",
-      comp_cd: rows[0]?.data?.COMP_CD ?? "",
-      remarks: rows[0]?.data?.REMARKS ?? "",
-      para_cd: rows[0]?.data?.PARA_CD ?? "",
-      branch_cd: rows[0]?.data?.BRANCH_CD ?? "",
-    });
-  };
-  const onAcceptPopupYes = (rows) => {
-    result.mutate({
-      confirmed: "Y",
-      comp_cd: rows[0]?.data?.COMP_CD ?? "",
-      remarks: rows[0]?.data?.REMARKS ?? "",
-      para_cd: rows[0]?.data?.PARA_CD ?? "",
-      branch_cd: rows[0]?.data?.BRANCH_CD ?? "",
-    });
-  };
   useEffect(() => {
     return () => {
       let entries = getEntries() as any[];
@@ -160,28 +162,6 @@ const ParameterConfirmGridWrapper = () => {
         refetchData={() => refetch()}
         ref={myGridRef}
       />
-      {isOpenAccept ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Confirmation"
-          Message="Do you want to accept this Request?"
-          onActionYes={(rowVal) => onAcceptPopupYes(rowVal)}
-          onActionNo={() => onActionCancel()}
-          rows={rowData}
-          open={isOpenAccept}
-          loading={result.isLoading}
-        />
-      ) : null}
-      {isOpenReject ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Confirmation"
-          Message="Do you want to reject this Request?"
-          onActionYes={(rowVal) => onRejectPopupYes(rowVal)}
-          onActionNo={() => onActionCancel()}
-          rows={rowData}
-          open={isOpenReject}
-          loading={result.isLoading}
-        />
-      ) : null}
     </Fragment>
   );
 };

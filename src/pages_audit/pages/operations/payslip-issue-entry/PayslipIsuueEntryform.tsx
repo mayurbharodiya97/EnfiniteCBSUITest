@@ -79,6 +79,7 @@ const PayslipIsuueEntryform = ({
   closeDialog,
   slipdataRefetch,
 }) => {
+  let currentPath = useLocation().pathname;
   const { state: rows } = useLocation();
   const myChequeFormRef = useRef<any>(null);
   const isErrorFuncRef = useRef<any>(null);
@@ -607,7 +608,11 @@ const PayslipIsuueEntryform = ({
               variant="h6"
               component="div"
             >
-              {"Payslip Issue Entry RPT/14"}
+              {utilFunction.getDynamicLabel(
+                currentPath,
+                authState?.menulistdata,
+                true
+              )}
               <Chip
                 style={{ color: "white", marginLeft: "8px" }}
                 variant="outlined"
@@ -942,6 +947,7 @@ const PayslipIsuueEntryform = ({
             onClose={async (result) => {
               setjointDtl(result);
             }}
+            hideHeader={false}
           />
         </Dialog>
         <Dialog

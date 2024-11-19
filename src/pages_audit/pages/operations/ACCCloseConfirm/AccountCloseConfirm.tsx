@@ -97,32 +97,32 @@ export const AccountCloseConfirm = () => {
         for (let i = 0; i < ConfirmMSG.length; i++) {
           if (ConfirmMSG?.[i]?.O_STATUS === "999") {
             const btnName = await MessageBox({
-              messageTitle: "ValidationFailed",
+              messageTitle: ConfirmMSG?.[i]?.O_MSG_TITLE ?? "ValidationFailed",
               message: ConfirmMSG?.[i]?.O_MESSAGE,
               icon: "ERROR",
             });
           } else if (ConfirmMSG?.[i]?.O_STATUS === "99") {
             const { btnName, obj } = await MessageBox({
-              messageTitle: "Confirmation",
+              messageTitle: ConfirmMSG?.[i]?.O_MSG_TITLE ?? "Confirmation",
               message: ConfirmMSG?.[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
               icon: "CONFIRM",
             });
           } else if (ConfirmMSG?.[i]?.O_STATUS === "9") {
             const { btnName, obj } = await MessageBox({
-              messageTitle: "Alert",
+              messageTitle: ConfirmMSG?.[i]?.O_MSG_TITLE ?? "Alert",
               message: ConfirmMSG?.[i]?.O_MESSAGE,
               icon: "WARNING",
             });
           } else if (ConfirmMSG?.[i]?.O_STATUS === "0") {
             const { btnName, obj } = await MessageBox({
-              messageTitle: "Success",
+              messageTitle: ConfirmMSG?.[i]?.O_MSG_TITLE ?? "Success",
               message: ConfirmMSG?.[i]?.O_MESSAGE,
               icon: "SUCCESS",
               buttonNames: ["Ok"],
             });
             if (btnName === "Ok") {
-              window.location.reload();
+              refetchConfData();
             }
             refetchConfData();
           }
