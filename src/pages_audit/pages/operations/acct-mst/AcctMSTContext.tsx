@@ -398,27 +398,21 @@ const AcctMSTProvider = ({ children }) => {
     });
   }, []);
 
-  const handleFormModalOpenOnEditctx = (recordData: any[]) => {
-    if (
-      Array.isArray(recordData) &&
-      recordData?.[0]?.data
-      // && Boolean(recordData?.[0]?.data?.REQUEST_ID)
-    ) {
-      let payload = {
-        req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID))
-          ? parseInt(recordData[0]?.data?.REQUEST_ID)
-          : "",
-        acctNumberctx: recordData[0].data?.ACCT_CD ?? "",
-        accTypeValuectx: recordData[0].data?.ACCT_TYPE ?? "",
-        isFormModalOpenctx: true,
-        isFreshEntryctx: false,
-        confirmFlagctx: recordData[0]?.data?.CONFIRMED,
-      };
-      dispatch({
-        type: "handleCategoryChangectx",
-        payload: payload,
-      });
-    }
+  const handleFormModalOpenOnEditctx = (row: any) => {
+    let payload = {
+      req_cd_ctx: !isNaN(parseInt(row?.REQUEST_ID))
+        ? parseInt(row?.REQUEST_ID)
+        : "",
+      acctNumberctx: row?.ACCT_CD ?? "",
+      accTypeValuectx: row?.ACCT_TYPE ?? "",
+      isFormModalOpenctx: true,
+      isFreshEntryctx: false,
+      confirmFlagctx: row?.CONFIRMED,
+    };
+    dispatch({
+      type: "handleCategoryChangectx",
+      payload: payload,
+    });
   };
 
   const handleFormLoading = useCallback((isloading: boolean) => {
