@@ -1,6 +1,7 @@
 import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../../api";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const TransferAcctDetailFormMetadata = {
   form: {
@@ -216,6 +217,20 @@ export const TransferAcctDetailFormMetadata = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              const isHOBranch = await validateHOBranch(
+                currentField,
+                formState?.MessageBox,
+                authState
+              );
+              if (isHOBranch) {
+                return {
+                  BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: false,
+                  },
+                };
+              }
               return {
                 ACCT_TYPE: { value: "" },
                 ACCT_CD: { value: "", ignoreUpdate: false },

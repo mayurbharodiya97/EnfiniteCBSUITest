@@ -1051,6 +1051,8 @@ export const en_language_data = {
   RecordInsertedMsg: "Record Inserted Successfully.",
   RecordUpdatedMsg: "Record Updated Successfully.",
   RecordRemovedMsg: "Record Removed Successfully.",
+  HOBranchValidMessage: "HO Branch can't be Access by Anyone.",
+  HOBranchValidMessageTitle: "Data Validation Failed.",
 
   // cheque book
 

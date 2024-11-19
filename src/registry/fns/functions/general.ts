@@ -226,10 +226,8 @@ const GeneralAPISDK = () => {
   };
   const getBranchCodeList = async (...reqData) => {
     const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETBRACCESSLST", {
-        USER_NAME: reqData?.[3]?.user.id
-          ? reqData?.[3]?.user.id
-          : reqData?.[1]?.user.id ?? "",
+      await AuthSDK.internalFetcher("GETBRANCHDDDW", {
+        COMP_CD: reqData?.[3]?.companyID ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -238,7 +236,7 @@ const GeneralAPISDK = () => {
           ({ BRANCH_CD, BRANCH_NM, ...other }) => {
             return {
               value: BRANCH_CD,
-              label: BRANCH_CD + " - " + BRANCH_NM,
+              label: BRANCH_CD?.trim() + " - " + BRANCH_NM?.trim(),
             };
           }
         );

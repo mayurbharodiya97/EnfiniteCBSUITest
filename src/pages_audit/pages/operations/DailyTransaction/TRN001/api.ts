@@ -33,8 +33,8 @@ export const getSDCList = async (reqData) => {
 };
 export const getBranchList = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETBRACCESSLST", {
-      USER_NAME: reqData?.USER_ID ?? "",
+    await AuthSDK.internalFetcher("GETBRANCHDDDW", {
+      COMP_CD: reqData?.[3]?.companyID ?? "",
     });
   if (status === "0") {
     let responseData = data;
