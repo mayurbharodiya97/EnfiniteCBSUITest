@@ -94,7 +94,9 @@ export const form15GHEntryMetaData = {
               let returnVal;
               if (postData?.[0]?.O_STATUS === "999") {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: postData?.[0]?.O_MSG_TITLE
+                    ? postData?.[0]?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: postData?.[0]?.O_MESSAGE,
                   buttonNames: ["Ok"],
                   icon: "ERROR",
@@ -117,7 +119,9 @@ export const form15GHEntryMetaData = {
                 }
               } else if (postData?.[0]?.O_STATUS === "99") {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData?.[0]?.O_MSG_TITLE
+                    ? postData?.[0]?.O_MSG_TITLE
+                    : "Confirmation",
                   message: postData?.[0]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "CONFIRM",
@@ -140,7 +144,9 @@ export const form15GHEntryMetaData = {
                 }
               } else if (postData?.[0]?.O_STATUS === "9") {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: postData?.[0]?.O_MSG_TITLE
+                    ? postData?.[0]?.O_MSG_TITLE
+                    : "Alert",
                   message: postData?.[0]?.O_MESSAGE,
                   buttonNames: ["Ok"],
                   icon: "WARNING",
@@ -162,7 +168,9 @@ export const form15GHEntryMetaData = {
                 for (let j = 0; j < postData2.length; j++) {
                   if (postData2[j]?.O_STATUS === "999") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "ValidationFailed",
+                      messageTitle: postData2[j]?.O_MSG_TITLE
+                        ? postData2[j]?.O_MSG_TITLE
+                        : "ValidationFailed",
                       message: postData2[j]?.O_MESSAGE.startsWith("\n")
                         ? postData2[j]?.O_MESSAGE?.slice(1)
                         : postData2[j]?.O_MESSAGE,
@@ -172,14 +180,18 @@ export const form15GHEntryMetaData = {
                   } else if (postData2[j]?.O_STATUS === "9") {
                     if (btn99 !== "No") {
                       const { btnName, obj } = await getButtonName({
-                        messageTitle: "Alert",
+                        messageTitle: postData2[j]?.O_MSG_TITLE
+                          ? postData2[j]?.O_MSG_TITLE
+                          : "Alert",
                         message: postData2[j]?.O_MESSAGE,
                         icon: "WARNING",
                       });
                     }
                   } else if (postData2[j]?.O_STATUS === "99") {
                     const { btnName, obj } = await getButtonName({
-                      messageTitle: "Confirmation",
+                      messageTitle: postData2[j]?.O_MSG_TITLE
+                        ? postData2[j]?.O_MSG_TITLE
+                        : "Confirmation",
                       message: postData2[j]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
                       icon: "CONFIRM",
