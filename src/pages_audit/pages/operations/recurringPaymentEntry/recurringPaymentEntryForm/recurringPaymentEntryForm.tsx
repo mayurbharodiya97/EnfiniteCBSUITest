@@ -51,28 +51,6 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
     let currentPath = useLocation().pathname;
     const [openClosingAdvice, setOpenClosingAdvice] = useState(false);
 
-    //Mutation for Closing Advice
-    const closingAdviceDtlMutation = useMutation(
-      "getRecurAdviceDtl",
-      API?.getRecurAdviceDtl,
-      {
-        onError: (error: any) => {
-          let errorMsg = "Unknownerroroccured";
-          if (typeof error === "object") {
-            errorMsg = error?.error_msg ?? errorMsg;
-          }
-          enqueueSnackbar(errorMsg, {
-            variant: "error",
-          });
-          CloseMessageBox();
-        },
-        onSuccess: (data) => {
-          updateClosingAdviceData(data);
-          CloseMessageBox();
-        },
-      }
-    );
-
     //Close Lien component
     const handleCloseLienDialog = () => {
       setOpenLienGrid(false);
@@ -195,7 +173,6 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
                     };
                     setOpenClosingAdvice(true);
                     updateDataForJasperParam(reqParam);
-                    closingAdviceDtlMutation?.mutate(reqParam);
                   }
                 }
               }}
@@ -251,7 +228,6 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
                   };
                   setOpenClosingAdvice(true);
                   updateDataForJasperParam(reqParam);
-                  closingAdviceDtlMutation?.mutate(reqParam);
                 }
               }
             }}
@@ -297,29 +273,14 @@ export const RecurringPaymentEntryForm = forwardRef<any, any>(
             PaperProps={{
               style: {
                 width: "100%",
-                overflow: "auto",
-                padding: "10px 0",
               },
             }}
             maxWidth="xl"
-            PaperComponent={(props) => (
-              <Draggable
-                handle="#draggable-dialog-title"
-                cancel={'[class*="MuiDialogContent-root"]'}
-              >
-                <Paper {...props} />
-              </Draggable>
-            )}
           >
-            {closingAdviceDtlMutation?.isLoading ? (
-              <LoaderPaperComponent />
-            ) : (
-              <div id="draggable-dialog-title">
-                <ClosingAdvice
-                  handleCloseAdviceDetails={handleCloseAdviceDetails}
-                />
-              </div>
-            )}
+            <ClosingAdvice
+              handleCloseAdviceDetails={handleCloseAdviceDetails}
+              setOpenClosingAdvice={setOpenClosingAdvice}
+            />
           </Dialog>
         ) : null}
       </>
