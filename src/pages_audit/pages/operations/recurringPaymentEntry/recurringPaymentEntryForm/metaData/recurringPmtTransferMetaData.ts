@@ -1,4 +1,5 @@
 import { utilFunction } from "@acuteinfo/common-base";
+import { validateHOBranch } from "components/utilFunction/function";
 import { GeneralAPI } from "registry/fns/functions";
 
 export const RecurringPaymentTransferFormMetaData = {
@@ -212,6 +213,21 @@ export const RecurringPaymentTransferFormMetaData = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+
+              const isHOBranch = await validateHOBranch(
+                currentField,
+                formState?.MessageBox,
+                authState
+              );
+              if (isHOBranch) {
+                return {
+                  DC_BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: false,
+                  },
+                };
+              }
               return {
                 DC_ACCT_TYPE: { value: "" },
                 DC_ACCT_CD: { value: "", ignoreUpdate: false },

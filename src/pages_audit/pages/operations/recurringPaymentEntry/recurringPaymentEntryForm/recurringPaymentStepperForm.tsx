@@ -227,28 +227,6 @@ const RecurringPaymentStepperForm = ({
     },
   };
 
-  //Mutation for Closing Advice
-  const closingAdviceDtlMutation = useMutation(
-    "getRecurAdviceDtl",
-    API?.getRecurAdviceDtl,
-    {
-      onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-        CloseMessageBox();
-      },
-      onSuccess: (data) => {
-        updateClosingAdviceData(data);
-        CloseMessageBox();
-      },
-    }
-  );
-
   //Mutation for Insert Data
   const recurringPaymentEntrySaveMutation = useMutation(
     API?.recurringPaymentEntryDML,
@@ -337,7 +315,6 @@ const RecurringPaymentStepperForm = ({
                   isDataChangedRef.current = true;
                   updateDataForJasperParam(reqParam);
                   setOpenClosingAdvice(true);
-                  closingAdviceDtlMutation.mutate(reqParam);
                   break;
                 } else {
                   isDataChangedRef.current = true;
@@ -982,25 +959,10 @@ const RecurringPaymentStepperForm = ({
 
       {/*Open Closing Advice component */}
       {openClosingAdvice ? (
-        <Dialog
-          open={true}
-          fullWidth={true}
-          PaperProps={{
-            style: {
-              width: "100%",
-              padding: "10px 0",
-            },
-          }}
-          maxWidth="xl"
-        >
-          {closingAdviceDtlMutation?.isLoading ? (
-            <LoaderPaperComponent />
-          ) : (
-            <ClosingAdvice
-              handleCloseAdviceDetails={handleCloseAdviceDetails}
-            />
-          )}
-        </Dialog>
+        <ClosingAdvice
+          handleCloseAdviceDetails={handleCloseAdviceDetails}
+          setOpenClosingAdvice={setOpenClosingAdvice}
+        />
       ) : null}
     </>
   );
