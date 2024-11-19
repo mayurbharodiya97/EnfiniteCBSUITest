@@ -608,7 +608,7 @@ export const en_language_data = {
   FrontPage: "Front Page",
   FirstPage: "First Page",
   Detail: "Detail",
-  ThisFieldisrequired: "This field is required",
+  ThisFieldisrequired: "This field is required.",
   newPasswordCantbeSameasOldPassword:
     "The new password cannot be the same as the old password",
   NewPasswordandConfirmPassworddidnotmatched:
@@ -849,6 +849,7 @@ export const en_language_data = {
   EnterEmailID: "Enter Email ID",
   InvalidEmailID: "Invalid Email ID.",
   MobileNumberValidation: " Mobile Number should be of minimum 10 digit.",
+  SpecialCharacterNotAllowed: "Special character is not allowed.",
 
   // Clearing bank master
   ClearingBankMaster: "Clearing Bank Master",
@@ -1759,7 +1760,6 @@ export const en_language_data = {
   TransactionDate: "Transaction Date",
   UploadImage: "Upload Image",
   ResponseParameters: "Response Parameters",
-  SelectCofiguration: "Select Cofiguration",
   EnterPayeeName: "Enter Payee Name",
   ChequeNumberIsRequired: "Cheque Number is Required.",
   ChequeDateIsRequired: "Cheque Date is Required.",
@@ -2033,6 +2033,8 @@ export const en_language_data = {
   NoofInstallmentisrequired: "No. of Installment is required",
   InstallmentPeriodisrequired: "Installment Period is required",
   DisburseAmountisrequired: "Disburse Amount is required",
+  loanRepaymentSchedule: "Loan Repayment Schedule",
+  StepUpDown: "Step Up/Down",
 
   //fd interest calculator
   rateRequired: "Rate is required",
