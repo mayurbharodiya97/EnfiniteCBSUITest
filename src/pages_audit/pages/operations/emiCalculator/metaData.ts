@@ -84,7 +84,7 @@ export const EMICalculateMetaData = {
         type: "string",
         rules: [{ name: "required", params: [t("LoanAmountisrequired")] }],
       },
-      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 1, xl: 1 },
     },
     {
       render: {
@@ -197,15 +197,6 @@ export const EMICalculateMetaData = {
       type: "text",
       GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
     },
-    // {
-    //   render: {
-    //     componentType: "divider",
-    //   },
-    //   name: "total",
-    //   label: "",
-    //   GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-    // },
-
     {
       render: {
         componentType: "arrayField",

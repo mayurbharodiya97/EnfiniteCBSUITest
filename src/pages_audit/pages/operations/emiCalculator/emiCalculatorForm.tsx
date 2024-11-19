@@ -10,15 +10,17 @@ import {
   LoaderPaperComponent,
   PDFViewer,
   Alert,
+  GradientButton,
 } from "@acuteinfo/common-base";
 
 import { CustomGridTable } from "./emiScheduleSection";
-import { Dialog } from "@mui/material";
+import { CircularProgress, Dialog } from "@mui/material";
 import { format } from "date-fns";
 import { useMutation } from "react-query";
 import { emiCalculateData, emiReportData } from "./api";
 import { EmiCalculatorFormMetadata } from "./emiCalculatorMetadata";
 import { CustomRowTable } from "./emiDisbursementSec";
+import { t } from "i18next";
 export const CounterContext = createContext<any>(null);
 
 export const EMICalculatorForm = () => {
@@ -206,21 +208,6 @@ export const EMICalculatorForm = () => {
           MessageBox: MessageBox,
         }}
         ref={emiHeaderRef}
-        onFormButtonClickHandel={async (id) => {
-          if (id === "CLEAR") {
-            await resetData();
-            setResetData(true);
-            setRefreshForm((prevVal) => prevVal + 1);
-
-            setTimeout(() => {
-              setResetData(false);
-            }, 1000);
-          }
-          if (id === "CALCULATE") {
-            let event: any = { preventDefault: () => {} };
-            emiHeaderRef?.current?.handleSubmit(event, "BUTTON_CLICK");
-          }
-        }}
         setDataOnFieldChange={async (action, payload) => {
           if (action === "RESET_DATA" && Boolean(payload?.RESET_DATA)) {
             let event: any = { preventDefault: () => {} };
@@ -245,7 +232,42 @@ export const EMICalculatorForm = () => {
             handleSetDisburseData(payload);
           }
         }}
-      ></FormWrapper>
+      >
+        {({ isSubmitting, handleSubmit }) => (
+          <>
+            <GradientButton
+              onClick={() => {
+                let event: any = { preventDefault: () => {} };
+                emiHeaderRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+              }}
+              disabled={isSubmitting}
+              color={"primary"}
+              endIcon={
+                mutation?.isLoading || ReportMutation?.isLoading ? (
+                  <CircularProgress size={20} />
+                ) : null
+              }
+            >
+              {t("Calculate")}
+            </GradientButton>
+            <GradientButton
+              onClick={async (event) => {
+                await resetData();
+                setResetData(true);
+                setRefreshForm((prevVal) => prevVal + 1);
+
+                setTimeout(() => {
+                  setResetData(false);
+                }, 1000);
+              }}
+              disabled={isSubmitting}
+              color={"primary"}
+            >
+              {t("Clear")}
+            </GradientButton>
+          </>
+        )}
+      </FormWrapper>
       <CounterContext.Provider value={{ mergedData, saveData }}>
         <CustomRowTable
           initialRows={[{ ...disburseData }]}

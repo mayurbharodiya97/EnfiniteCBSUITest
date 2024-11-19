@@ -359,6 +359,9 @@ export const CustomGridTable = ({
                   <GradientButton
                     onClick={() => handleDeleteRow(index)}
                     disabled={index === 0}
+                    style={{
+                      transform: "translateY(11px)",
+                    }}
                   >
                     {t("Remove")}
                   </GradientButton>

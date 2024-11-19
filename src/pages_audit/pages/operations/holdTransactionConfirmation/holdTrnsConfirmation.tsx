@@ -54,8 +54,6 @@ const HoldTrnsConfirmation = () => {
     API.getTransactionConfmReject,
     {
       onSuccess: async (data) => {
-        console.log(data);
-
         const responses = Array.isArray(data) ? data : [data];
 
         for (const response of responses) {
