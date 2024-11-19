@@ -1,6 +1,6 @@
 {
   "software_version": "24.04.00.00.13",
-  "date": "16/11/2024",
+  "date": "19/11/2024",
   "Microservice_Name": "EnfiniteCBS_UI",
   "version_information": {
     "major_release_aa": "24",
@@ -13,7 +13,7 @@
     "feature_addition": "Description of new features added in this version.",
     "bug_fixes": "List of bugs fixed in this version.",
     "improvements": "Description of improvements or optimizations made.",
-    "other_changes": "SSL configured",
+    "other_changes": "Deployed on 19th Nov",
     "internal_build_update": "For Internal and development purpose"
   },
   "version_information_detailed": {
