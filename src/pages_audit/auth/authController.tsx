@@ -32,6 +32,10 @@ export const AuthLoginController = () => {
     GeneralAPI.setDocumentName("Enfinity");
   }, []);
 
+  useEffect(() => {
+    setSpecialChar(sessionStorage.getItem("specialChar") || "");
+  }, [imageData]);
+
   return (
     <>
       {isLoading || isFetching ? (

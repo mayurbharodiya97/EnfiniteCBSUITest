@@ -655,8 +655,8 @@ const processImageData = async () => {
       return String(CRC32C.str((str || "") + fingerprint));
     };
     if (
-      !Boolean(localStorage.getItem("specialChar")) &&
-      !Boolean(localStorage.getItem("charchecksum"))
+      !Boolean(sessionStorage.getItem("specialChar")) &&
+      !Boolean(sessionStorage.getItem("charchecksum"))
     ) {
       sessionStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
       sessionStorage.setItem(
