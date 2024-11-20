@@ -96,7 +96,7 @@ export const Trn001 = () => {
       queryKey: ["getBranchList"],
       queryFn: () =>
         API.getBranchList({
-          USER_ID: userId ?? "",
+          COMP_CD: companyID ?? "",
         }),
     },
     {
