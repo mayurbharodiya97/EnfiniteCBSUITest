@@ -1,6 +1,7 @@
 import { GeneralAPI } from "registry/fns/functions";
 import { utilFunction } from "@acuteinfo/common-base";
 import * as API from "../../api";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const FDRetriveMetadata = {
   form: {
@@ -60,6 +61,21 @@ export const FDRetriveMetadata = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             ACCT_NM: { value: "" },
             ACCT_TYPE: { value: "" },

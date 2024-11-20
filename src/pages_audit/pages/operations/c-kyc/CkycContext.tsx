@@ -6,7 +6,6 @@ import { DefaultErrorObject, utilFunction } from "@acuteinfo/common-base";
 import _ from "lodash";
 
 const initialState: any = {
-  isFormModalOpenctx: false,
   handleFormModalOpenctx: () => {},
   handleFormModalClosectx: () => {},
 
@@ -228,7 +227,6 @@ const CkycProvider = ({ children }) => {
     dispatch({
       type: "handleFormModalOpen",
       payload: {
-        isFormModalOpenctx: true,
         entityTypectx: entityType,
         isFreshEntryctx: true,
       },
@@ -258,7 +256,6 @@ const CkycProvider = ({ children }) => {
         categConstitutionValuectx: categConstitutionValue,
         categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
         constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
-        isFormModalOpenctx: true,
         entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE,
         isCustActivectx: recordData[0]?.data?.ACTIVE,
         isFreshEntryctx: false,
@@ -291,13 +288,13 @@ const CkycProvider = ({ children }) => {
         //     // categConstitutionValuectx: categConstitutionValue,
         //     // categoryValuectx: "05  ",
         //     // constitutionValuectx: "01",
-        //     // isFormModalOpenctx: true, entityTypectx: "I", isFreshEntryctx: false,
+        //     // entityTypectx: "I", isFreshEntryctx: false,
         //     // customerIDctx: "2",
 
         //     categConstitutionValuectx: categConstitutionValue,
         //     categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
         //     constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
-        //     isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
+        //     entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
         //     customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
         //     req_cd_ctx: recordData[0]?.data?.REQUEST_ID ?? "",
         //     // retrieveFormDataApiRes: retrieveFormdata,
@@ -305,7 +302,7 @@ const CkycProvider = ({ children }) => {
         //     // categConstitutionValuectx: "kuashd",
         //     // categoryValuectx: "kub",
         //     // constitutionValuectx: "yuu",
-        //     // isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false
+        //     // entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false
 
         //     // categoryValuectx: value?.value,
         //     // constitutionValuectx: value?.CONSTITUTION_TYPE,
@@ -329,7 +326,6 @@ const CkycProvider = ({ children }) => {
     dispatch({
       type: "handleFormModalClose",
       payload: {
-        isFormModalOpenctx: false,
         entityTypectx: null,
         colTabValuectx: false,
         categConstitutionValuectx: null,
@@ -561,7 +557,7 @@ const CkycProvider = ({ children }) => {
     // categConstitutionValuectx: categConstitutionValue,
     // categoryValuectx: recordData[0]?.data?.CATEGORY_CODE, // 05
     // constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE, // 01
-    // isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE // I,
+    // entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE // I,
     // isFreshEntryctx: false,
 
     // let apiRes = {...data[0]}

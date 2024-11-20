@@ -33,7 +33,6 @@ const pendingActions: ActionTypes[] = [
 const PendingAcct = () => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [formMode, setFormMode] = useState("new");
 
   const {
     data: PendingAcct,
@@ -73,17 +72,16 @@ const PendingAcct = () => {
       const confirmed = data?.rows?.[0]?.data?.CONFIRMED ?? "";
       const maker = data?.rows?.[0]?.data?.MAKER ?? "";
       const loggedinUser = authState?.user?.id;
+      let formmode = "edit";
       if (Boolean(confirmed)) {
         if (confirmed.includes("P")) {
           if (maker === loggedinUser) {
-            setFormMode("edit");
           } else {
-            setFormMode("view");
+            formmode = "view";
           }
         } else if (confirmed.includes("M")) {
-          setFormMode("edit");
         } else {
-          setFormMode("view");
+          formmode = "view";
         }
       }
       if (data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
@@ -93,7 +91,11 @@ const PendingAcct = () => {
       } else {
         // setRowsData(data?.rows);
         navigate(data?.name, {
-          state: data?.rows,
+          state: {
+            rows: data?.rows ?? [{ data: null }],
+            formmode: formmode,
+            from: "pending-entry",
+          },
         });
       }
     },
@@ -126,13 +128,7 @@ const PendingAcct = () => {
       <Routes>
         <Route
           path="view-detail/*"
-          element={
-            <AcctModal
-              onClose={() => navigate(".")}
-              formmode={formMode ?? "edit"}
-              from={"pending-entry"}
-            />
-          }
+          element={<AcctModal onClose={() => navigate(".")} />}
         />
         {/* <Route
           path="photo-signature/*"

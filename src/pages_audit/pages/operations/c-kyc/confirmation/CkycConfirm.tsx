@@ -65,6 +65,7 @@ export const CkycConfirm = () => {
           messageTitle: "Alert",
           message: "You can not confirm your own posted transaction",
           buttonNames: ["Ok"],
+          icon: "WARNING",
         });
       } else {
         // console.log("iuwefhiuwehfiweuhfiuwhe", data.rows?.[0]?.data?.UPD_TAB_FLAG_NM)
@@ -112,7 +113,7 @@ export const CkycConfirm = () => {
   // }, [location])
 
   ckyc_pending_req_meta_data.gridConfig.gridLabel =
-    "Confirmation Pending Request";
+    "C-KYC Customer Confirmation (MST/710)";
   ckyc_pending_req_meta_data.gridConfig["containerHeight"] = {
     min: "42vh",
     max: "65vh",
