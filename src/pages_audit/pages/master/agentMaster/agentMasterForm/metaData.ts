@@ -60,7 +60,7 @@ export const AgentMasterFormMetaData = {
       isFieldFocused: true,
       autoComplete: "off",
       required: true,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CodeisRequired"] }],
@@ -103,7 +103,7 @@ export const AgentMasterFormMetaData = {
       required: true,
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CategoryNameisrequired"] }],
