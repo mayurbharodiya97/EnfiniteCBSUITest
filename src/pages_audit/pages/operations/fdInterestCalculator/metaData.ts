@@ -515,7 +515,7 @@ export const metaData = {
       },
       name: "PERIOD_NO_D",
       label: "",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
@@ -1519,7 +1519,7 @@ export const metaData = {
       fullWidth: true,
 
       isReadOnly: true,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: ["CALCSWITCH"],
 
@@ -2245,7 +2245,7 @@ export const metaData = {
       name: "PERIOD_NO_S",
       label: "",
       GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1, xl: 1 },
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       dependentFields: ["CALCSWITCH", "PERIOD_NO_DISP_S"],
       setFieldLabel: (dependentFields, currVal) => {
         let duration = dependentFields.PERIOD_NO_DISP_S?.value;

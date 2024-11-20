@@ -49,7 +49,7 @@ export const AreaMasterMetaData = {
       type: "text",
       required: true,
       maxLength: 4,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["codeisRequired"] }],
