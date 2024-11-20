@@ -306,3 +306,15 @@ export const BioCapture = async () => {
   const content = await rawResponse.json();
   return content;
 };
+
+export const validateMobileNo = async ({ request }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETMOBILESTATUS", {
+      ...request,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

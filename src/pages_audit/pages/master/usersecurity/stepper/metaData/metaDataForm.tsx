@@ -1,8 +1,9 @@
+import { icon } from "@fortawesome/fontawesome-svg-core";
 import * as API from "../api/api";
 export const UserOnboardform = {
   form: {
     name: "AddSecurityUser",
-    label: "User Onboarding",
+    label: "UserOnboarding",
     resetFieldOnUnmount: false,
     readonly: true,
     validationRun: "onBlur",
@@ -45,15 +46,17 @@ export const UserOnboardform = {
       sequence: 1,
       type: "text",
       label: "UserID",
-      placeholder: "User ID",
+      placeholder: "EnterUserId",
       autoComplete: "off",
       txtTransform: "lowercase",
       maxLength: 16,
       isFieldFocused: true,
-      __EDIT__: { isReadOnly: true },
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      __EDIT__: { isReadOnly: true, required: true },
       __NEW__: {
         required: true,
-        postValidationSetCrossFieldValues: async (currentField) => {
+        postValidationSetCrossFieldValues: async (currentField, formState) => {
+          if (formState?.isSubmitting) return {};
           if (currentField?.value !== undefined) {
             return API.checkUsername(currentField, {
               USER_NM: currentField?.value,
@@ -86,34 +89,59 @@ export const UserOnboardform = {
       allowToggleVisiblity: false,
       fullWidth: true,
       dependentFields: ["USER_NAME"],
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
         authState,
         dependentFields
       ) => {
-        let request = {
-          USER_ID: dependentFields?.USER_NAME?.value,
-          PASSWORD: currentField?.value,
-          SCREEN_REF: "MST/131",
-        };
-        let postData = await API.validatePasswords({ request });
-        if (postData.length > 0) {
-          if (postData?.[0]?.O_STATUS === "999") {
-            let buttonName = await formState.MessageBox({
-              messageTitle: "ValidationFailed",
-              message: postData?.[0]?.O_MESSAGE,
-              buttonNames: ["Ok"],
-            });
-            if (buttonName === "Ok") {
-              return {
-                USER_PASSWORD: {
-                  value: "",
-                  isFieldFocused: true,
-                  ignoreUpdate: true,
-                },
-              };
+        if (formState?.isSubmitting) return {};
+        if (dependentFields?.USER_NAME?.value.length > 0) {
+          let request = {
+            USER_ID: dependentFields?.USER_NAME?.value,
+            PASSWORD: currentField?.value,
+            SCREEN_REF: "MST/131",
+          };
+          let postData = await API.validatePasswords({ request });
+          if (postData.length > 0) {
+            if (postData?.[0]?.O_STATUS === "999") {
+              let buttonName = await formState.MessageBox({
+                messageTitle: "ValidationFailed",
+                message: postData?.[0]?.O_MESSAGE,
+                icon: "ERROR",
+                buttonNames: ["Ok"],
+              });
+              if (buttonName === "Ok") {
+                return {
+                  USER_PASSWORD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                };
+              }
             }
+          }
+        } else {
+          const btnName = await formState?.MessageBox({
+            messageTitle: "ValidationFailed",
+            message: "EnterUserName",
+            icon: "ERROR",
+            buttonNames: ["Ok"],
+          });
+          if (btnName === "Ok") {
+            return {
+              USER_PASSWORD: {
+                value: "",
+                ignoreUpdate: true,
+              },
+              USER_NAME: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+            };
           }
         }
       },
@@ -150,7 +178,9 @@ export const UserOnboardform = {
       placeholder: "EnterConfirmPassword",
       allowToggleVisiblity: false,
       ignoreInSubmit: false,
+      maxLength: 16,
       fullWidth: true,
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Confirmpasswordisrequired"] }],
@@ -194,6 +224,7 @@ export const UserOnboardform = {
       maxLength: 32,
       placeholder: "EnterUsernames",
       autoComplete: "off",
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["UsernameRequired"] }],
@@ -217,7 +248,7 @@ export const UserOnboardform = {
     },
     {
       render: {
-        componentType: "select",
+        componentType: "autocomplete",
       },
       name: "GROUP_NAME",
       label: "GroupName",
@@ -246,11 +277,37 @@ export const UserOnboardform = {
       StartAdornment: "+91",
       placeholder: "EnterMobileNo",
       autoComplete: "off",
-      validate: (columnValue, allField, flag) => {
-        if (columnValue.value.length <= 9) {
-          return "MobileNumberValidation";
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFields
+      ) => {
+        if (formState?.isSubmitting) return {};
+        let request = {
+          MOBILE_NO: currentField?.value,
+          SCREEN: "MST/131",
+          STD_CD: "91",
+          FLAG: "Y",
+        };
+        let postData = await API.validateMobileNo({ request });
+        if (postData?.[0]?.MOBILE_STATUS.length > 0) {
+          let buttonName = await formState.MessageBox({
+            messageTitle: "ValidationFailed",
+            message: postData?.[0]?.MOBILE_STATUS,
+            icon: "ERROR",
+            buttonNames: ["Ok"],
+          });
+          if (buttonName === "Ok") {
+            return {
+              CONTACT2: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: true,
+              },
+            };
+          }
         }
-        return "";
       },
       GridProps: {
         xs: 12,
@@ -308,9 +365,10 @@ export const UserOnboardform = {
               },
             };
           } else {
-            let btnName = formState?.MessageBox({
-              message: "SaveData",
-              messageTitle: CustomerIdAPI?.[0]?.CUST_STATUS,
+            const btnName = await formState?.MessageBox({
+              message: CustomerIdAPI?.[0]?.CUST_STATUS,
+              messageTitle: "ValidationFailed",
+              icon: "ERROR",
               buttonNames: ["Ok"],
             });
             if (btnName === "Ok") {
@@ -332,6 +390,7 @@ export const UserOnboardform = {
             }
           }
         }
+        return {};
       },
       GridProps: {
         xs: 12,
@@ -364,7 +423,8 @@ export const UserOnboardform = {
       type: "text",
       maxLength: 100,
       label: "ReportingName",
-      placeholer: "EnterReportingName",
+      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      placeholder: "EnterReportingName",
       GridProps: {
         xs: 12,
         sm: 2,
@@ -388,7 +448,7 @@ export const UserOnboardform = {
         { label: "MANAGER", value: "3" },
         { label: "ADMIN", value: "4" },
       ],
-      placeholder: "EnterUserLevel",
+      placeholder: "SelectUserLevel",
       __NEW__: { defaultValue: "1" },
       schemaValidation: {
         type: "string",
@@ -461,9 +521,10 @@ export const UserOnboardform = {
       type: "text",
       maxLength: 5,
       label: "ClgSlipNoStartFrom",
-      placeholder: "",
+      placeholder: "EnterClearingSlipNumberStartFrom",
       autoComplete: "off",
       FormatProps: {
+        allowNegative: false,
         isAllowed: (values) => {
           if (values?.value?.length > 5) {
             return false;
@@ -545,7 +606,7 @@ export const UserOnboardform = {
           authState?.user?.baseBranchCode
         ),
       _optionsKey: "GetDigitalSignConfig",
-      placeholder: "",
+      placeholder: "EnterDigitalSignConfig",
       type: "text",
       __EDIT__: {
         GridProps: {
@@ -968,7 +1029,7 @@ export const UserOnboardform = {
 export const loginShift = {
   form: {
     name: "LoginShift",
-    label: "Login Shift",
+    label: "LoginShift",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -1067,7 +1128,7 @@ export const loginShift = {
       enableGrid: true,
       changeRowOrder: true,
       hideRemoveIconOnSingleRecord: false,
-      removeRowFn: "deleteFormArrayFieldData",
+      // removeRowFn: "deleteFormArrayFieldData",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
@@ -1157,7 +1218,7 @@ export const loginShift = {
 export const editloginShift = {
   form: {
     name: "EDITLoginShift",
-    label: "Edit Login Shift",
+    label: "LoginShift",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -1256,14 +1317,29 @@ export const editloginShift = {
       enableGrid: true,
       changeRowOrder: true,
       hideRemoveIconOnSingleRecord: false,
-      removeRowFn: "deleteFormArrayFieldData",
+      // removeRowFn: "deleteFormArrayFieldData",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
           render: {
             componentType: "hidden",
           },
-          name: "SR_CD",
+          name: "DESCRIPTION",
+          dependentFields: ["SHIFT_TRAN_CD"],
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "DATA",
+          dependentFields: ["SHIFT_TRAN_CD"],
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            const fieldKey =
+              dependentFields["EDITLOGINSHIFT.SHIFT_TRAN_CD"]?.fieldKey;
+            const match = fieldKey.match(/\[(\d+)\]/);
+            const newNumber = parseInt(match[1]) + 1;
+            return newNumber;
+          },
         },
         {
           render: {
@@ -1280,12 +1356,11 @@ export const editloginShift = {
           placeholder: "",
           type: "text",
           GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
-          postValidationSetCrossFieldValues: async (
-            currentFieldState,
-            formState,
-            dependentFieldState
-          ) => {
-            return { DEMO: { value: currentFieldState.value } };
+          postValidationSetCrossFieldValues: async (currentFieldState) => {
+            return {
+              DEMO: { value: currentFieldState.value },
+              DESCRIPTION: { value: currentFieldState?.optionData?.[0]?.label },
+            };
           },
         },
         {
@@ -1354,7 +1429,7 @@ export const editloginShift = {
 export const LoginBiometricForm = {
   form: {
     name: "LoginBoimetrics",
-    label: "Login Biometric",
+    label: "LoginBiometric",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",

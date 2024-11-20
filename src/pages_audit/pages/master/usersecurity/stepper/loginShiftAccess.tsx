@@ -81,11 +81,11 @@ const LoginShift = forwardRef<any, any>(
       } else if (defaultView === "edit") {
         const newData = Array.isArray(data?.EDITLOGINSHIFT)
           ? data.EDITLOGINSHIFT.map((item) => ({
-              USER_NAME: Username,
+              USER_NAME: Usernames,
               COMP_CD: authState?.companyID,
               SHIFT_TRAN_CD: item?.SHIFT_TRAN_CD,
-              SR_CD: item?.SR_CD,
-              // DESCRIPTION: item?.DESCRIPTION,
+              SR_CD: item?.DATA,
+              DESCRIPTION: item?.DESCRIPTION,
               ACTIVE: item?.ACTIVE ? "Y" : "N",
             }))
           : [];
@@ -95,7 +95,7 @@ const LoginShift = forwardRef<any, any>(
               COMP_CD: item.COMP_CD,
               SHIFT_TRAN_CD: item.SHIFT_TRAN_CD,
               SR_CD: item.SR_CD,
-              // DESCRIPTION: item.DESCRIPTION,
+              DESCRIPTION: item.DESCRIPTION,
               ACTIVE: item.ACTIVE ? "Y" : "N",
             }))
           : [];
@@ -105,7 +105,7 @@ const LoginShift = forwardRef<any, any>(
           ["SR_CD"]
         );
         dispatchCommon("commonType", {
-          grid4: { DETAILS_DATA: upd },
+          grid4: upd,
         });
         dispatchCommon("commonType", {
           oldData4: upd,
