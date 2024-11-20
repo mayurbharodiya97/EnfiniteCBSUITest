@@ -6,6 +6,7 @@ import {
   utilFunction,
   lessThanInclusiveDate,
 } from "@acuteinfo/common-base";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const FixDepositDetailFormMetadata = {
   form: {
@@ -814,13 +815,27 @@ export const FixDepositDetailFormMetadata = {
             schemaValidation: {},
             validationRun: "onChange",
             runPostValidationHookAlways: true,
-            postValidationSetCrossFieldValues: (
+            postValidationSetCrossFieldValues: async (
               currentField,
               formState,
               authState,
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              const isHOBranch = await validateHOBranch(
+                currentField,
+                formState?.MessageBox,
+                authState
+              );
+              if (isHOBranch) {
+                return {
+                  CR_BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: false,
+                  },
+                };
+              }
               return {
                 CR_ACCT_TYPE: { value: "" },
                 CR_ACCT_CD: { value: "", ignoreUpdate: false },
@@ -1428,6 +1443,20 @@ export const FixDepositDetailFormMetadata = {
               dependentFieldValues
             ) => {
               if (formState?.isSubmitting) return {};
+              const isHOBranch = await validateHOBranch(
+                currentField,
+                formState?.MessageBox,
+                authState
+              );
+              if (isHOBranch) {
+                return {
+                  LEAN_BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: false,
+                  },
+                };
+              }
               return {
                 LEAN_ACCT_TYPE: { value: "" },
                 LEAN_ACCT_CD: { value: "", ignoreUpdate: false },

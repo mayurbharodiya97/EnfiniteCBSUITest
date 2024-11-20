@@ -156,7 +156,7 @@ export function TabPanel(props: TabPanelProps) {
 }
 
 export default function FormModal({
-  // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
+  // handleFormModalOpen, handleFormModalClose,
   // isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
   // colTabValue, setColTabValue, handleColTabChange,
   onClose,
@@ -400,6 +400,7 @@ export default function FormModal({
                 messageTitle: "Alert",
                 message: "You have not made any changes yet.",
                 buttonNames: ["Ok"],
+                icon: "WARNING",
               });
               if (buttonName === "Ok") {
                 handleCurrFormctx({
@@ -416,6 +417,7 @@ export default function FormModal({
                 message: "Are you sure you want to apply changes and update ?",
                 buttonNames: ["Yes", "No"],
                 loadingBtnName: ["Yes"],
+                icon: "WARNING",
               });
               if (buttonName === "Yes") {
                 const payload = {
@@ -458,8 +460,8 @@ export default function FormModal({
   ]);
 
   // useEffect(() => {
-  //   console.log("asdasdasdsasdasdas.", state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx)
-  // }, [state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx])
+  //   console.log("asdasdasdsasdasdas.", state?.entityTypectx, state?.isFreshEntryctx)
+  // }, [state?.entityTypectx, state?.isFreshEntryctx])
 
   // useEffect(() => {
   //   if(!isAccTypeLoading && AccTypeOptions) {
@@ -702,7 +704,7 @@ export default function FormModal({
           messageTitle: "Alert",
           message: "Your changes will be Lost. Are you Sure?",
           buttonNames: ["Yes", "No"],
-          loadingBtnName: ["Yes"],
+          icon: "WARNING",
         });
         if (buttonName === "Yes") {
           closeForm();
@@ -719,35 +721,42 @@ export default function FormModal({
     return state?.formmodectx == "view"
       ? state?.fromctx && state?.fromctx === "confirmation-entry" && (
           <React.Fragment>
-            <Button
+            <GradientButton
               onClick={() => openActionDialog("Y")}
               color="primary"
+              style={{ minWidth: "fit-content" }}
               // disabled={mutation.isLoading}
             >
               {t("Confirm")}
-            </Button>
+            </GradientButton>
             {!Boolean(state?.customerIDctx) && (
-              <Button
+              <GradientButton
                 onClick={() => openActionDialog("M")}
                 color="primary"
+                style={{ minWidth: "fit-content" }}
                 // disabled={mutation.isLoading}
               >
                 {t("Raise Query")}
-              </Button>
+              </GradientButton>
             )}
-            <Button
+            <GradientButton
               onClick={() => openActionDialog("R")}
               color="primary"
+              style={{ minWidth: "fit-content" }}
               // disabled={mutation.isLoading}
             >
               {t("Reject")}
-            </Button>
+            </GradientButton>
           </React.Fragment>
         )
       : state?.formmodectx == "edit" && state?.fromctx !== "new-draft" && (
-          <Button onClick={onUpdateForm} color="primary">
+          <GradientButton
+            onClick={onUpdateForm}
+            color="primary"
+            style={{ minWidth: "fit-content" }}
+          >
             {t("Update")}
-          </Button>
+          </GradientButton>
         );
   }, [
     state?.currentFormctx.currentFormRefctx,
@@ -823,11 +832,7 @@ export default function FormModal({
   return (
     // <div>
     //   <Button onClick={handleFormModalOpen}>Open modal</Button>
-    <Dialog
-      fullScreen={true}
-      open={true}
-      // open={state?.isFormModalOpenctx}
-    >
+    <Dialog fullScreen={true} open={true}>
       <ExtractedHeader />
       <AppBar
         position="sticky"
@@ -892,13 +897,14 @@ export default function FormModal({
 
           {/* for checker, view-only */}
           {ActionBTNs}
-          <Button
+          <GradientButton
             onClick={onCancelForm}
             color="primary"
+            style={{ minWidth: "fit-content" }}
             // disabled={mutation.isLoading}
           >
             {t("Close")}
-          </Button>
+          </GradientButton>
         </Toolbar>
       </AppBar>
       <HeaderForm />
@@ -1042,7 +1048,13 @@ export default function FormModal({
       </Grid>
 
       <RemarksAPIWrapper
-        TitleText={"Confirmation"}
+        TitleText={
+          confirmAction === "Y"
+            ? "Confirm"
+            : confirmAction === "M"
+            ? "Raise Query"
+            : confirmAction === "R" && "Rejection Reason"
+        }
         onActionNo={() => {
           setIsOpen(false);
           setConfirmAction(null);

@@ -29,7 +29,7 @@ spec:
       # - Each init container must complete successfully before the next one starts.
       containers:
       - name: cbs-gateway-microservice-container
-        image: actdocker123/cbs-micro-service:enfinity-cbsui-V1.0.44
+        image: actdocker123/cbs-micro-service:EnfiniteCBS_UI-24.04.00.00.12
         imagePullPolicy: IfNotPresent
         lifecycle:
           preStop:
@@ -86,16 +86,16 @@ spec:
         volumeMounts: #bind mount with host
         # - mountPath: /opt/API_LOGS/EnfintyCBS-UI ##mount path from container
         #   name: apilogs
-        # - name: ssl-config
-        #   mountPath: /opt/ssl
-        #   readOnly: true
+       # - name: ssl-config
+        #  mountPath: /opt/ssl
+        #  readOnly: true
       volumes:
       # - name: apilogs  ##pass the same name as container mount name
       #   hostPath:
       #     path: /opt/API_LOGS/EnfintyCBS-UI ##path from host machine
-      # - name: ssl-config
-      #   hostPath:
-      #     path: /opt/ssl
+      #- name: ssl-config
+      #  hostPath:
+       #   path: /opt/ssl
       imagePullSecrets:
       - name: cbs-enfinity
       terminationGracePeriodSeconds: 150

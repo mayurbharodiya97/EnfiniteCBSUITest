@@ -6,6 +6,7 @@ import {
 } from "../api";
 import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const AgentMasterFormMetaData = {
   form: {
@@ -142,6 +143,20 @@ export const AgentMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              AGENT_BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             ACCT_NM: { value: "" },
             AGENT_TYPE_CD: { value: "" },
@@ -795,6 +810,20 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                OTH_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               OTH_ACCT_TYPE: { value: "" },
               OTH_ACCT_CD: { value: "", ignoreUpdate: false },
@@ -818,6 +847,20 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                OTH_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               OTH_ACCT_TYPE: { value: "" },
               OTH_ACCT_CD: { value: "", ignoreUpdate: false },
@@ -1066,6 +1109,20 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                PTAX_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               PTAX_ACCT_TYPE: { value: "" },
               PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
@@ -1114,6 +1171,20 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                PTAX_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               PTAX_ACCT_TYPE: { value: "" },
               PTAX_ACCT_CD: { value: "", ignoreUpdate: false },

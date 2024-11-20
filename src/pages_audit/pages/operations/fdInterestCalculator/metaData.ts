@@ -534,6 +534,17 @@ export const metaData = {
         "PRE_INT_FLG_D",
         "PRINCIPAL_AMT_D",
       ],
+      FormatProps: {
+        isAllowed: (values) => {
+          if (values?.value?.length > 10) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
+      },
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -612,7 +623,10 @@ export const metaData = {
       },
 
       shouldExclude: (val1, dependent) => {
-        if (dependent?.CALCSWITCH?.value === "D") {
+        if (
+          dependent?.CALCSWITCH?.value === "D" &&
+          dependent?.PERIOD_CD_D?.value === "D"
+        ) {
           return false;
         }
         return true;
@@ -835,6 +849,7 @@ export const metaData = {
       },
       defaultValue: "M",
       fullWidth: true,
+      required: true,
       GridProps: { xs: 1.5, sm: 1.5, md: 2, lg: 2, xl: 2 },
       dependentFields: [
         "CALCSWITCH",
@@ -2416,6 +2431,7 @@ export const metaData = {
       label: "asonDate",
       defaultValue: new Date(),
       fullWidth: true,
+      required: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: ["CALCSWITCH"],

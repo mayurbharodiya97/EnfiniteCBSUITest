@@ -96,7 +96,7 @@ export const Trn001 = () => {
       queryKey: ["getBranchList"],
       queryFn: () =>
         API.getBranchList({
-          USER_ID: userId ?? "",
+          COMP_CD: companyID ?? "",
         }),
     },
     {
@@ -409,7 +409,7 @@ export const Trn001 = () => {
               );
               return {
                 ...row,
-                accNo: paddedAcctNo?.trim(),
+                accNo: paddedAcctNo,
                 bugMsgAccNo: "",
                 bugAccNo: false,
                 acctNoFlag: { [unqID]: false },

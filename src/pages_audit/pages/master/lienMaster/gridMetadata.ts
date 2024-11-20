@@ -21,8 +21,8 @@ export const gridMetadata: GridMetaDataType = {
       max: "67vh",
     },
     allowFilter: false,
-    allowColumnHiding: true,
-    allowRowSelection: true,
+    allowColumnHiding: false,
+    allowRowSelection: false,
     isCusrsorFocused: true,
   },
   columns: [

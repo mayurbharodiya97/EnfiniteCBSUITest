@@ -53,13 +53,14 @@ export const DeactivateCustomer = ({ rowdata, onClose }) => {
 
   const msgBox = async (status, msg) => {
     const buttonName = await MessageBox({
-      messageTitle: "Confirmation",
+      messageTitle: status === "999" ? "ValidationFailed" : "SUCCESS",
       message:
         status === "999"
           ? msg
           : `Customer Deactivated Successfully : ${data?.[0]?.data?.CUSTOMER_ID}`,
       buttonNames: ["Ok"],
-      loadingBtnName: ["Yes"],
+      // loadingBtnName: ["Yes"],
+      icon: status === "999" ? "ERROR" : "SUCCESS",
     });
     if (buttonName === "Ok") {
       if (status === "999") {

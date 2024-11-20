@@ -2,7 +2,8 @@ import { GeneralAPI } from "registry/fns/functions";
 import { getPMISCData } from "../api";
 import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
-import { faL } from "@fortawesome/free-solid-svg-icons";
+import * as API from "../api";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const CategoryMasterFormMetaData = {
   form: {
@@ -234,6 +235,22 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              TDS_BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
+
           return {
             TDS_ACCT_TYPE: { value: "" },
             TDS_ACCT_CD: { value: "", ignoreUpdate: false },
@@ -700,6 +717,20 @@ export const CategoryMasterFormMetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
 
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              TDS_REC_BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             TDS_REC_ACCT_TYPE: { value: "" },
             TDS_REC_ACCT_CD: { value: "", ignoreUpdate: false },

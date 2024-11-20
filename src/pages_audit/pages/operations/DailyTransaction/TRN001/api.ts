@@ -21,6 +21,7 @@ export const getSDCList = async (reqData) => {
         return {
           value: row.CODE,
           label: row.DISLAY_STANDARD,
+          actLabel: row.DESCRIPTION,
           info: row,
         };
       });
@@ -32,8 +33,8 @@ export const getSDCList = async (reqData) => {
 };
 export const getBranchList = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETBRACCESSLST", {
-      USER_NAME: reqData?.USER_ID ?? "",
+    await AuthSDK.internalFetcher("GETBRANCHDDDW", {
+      COMP_CD: reqData?.COMP_CD ?? "",
     });
   if (status === "0") {
     let responseData = data;
@@ -41,7 +42,8 @@ export const getBranchList = async (reqData) => {
       responseData = responseData.map((row) => {
         return {
           value: row.BRANCH_CD,
-          label: row.BRANCH_CD + "-" + row.BRANCH_NM,
+          label: row?.BRANCH_CD?.trim() + " - " + row.BRANCH_NM?.trim(),
+          actLabel: row.BRANCH_NM,
           info: row,
         };
       });
@@ -63,6 +65,7 @@ export const getAccTypeList = async (reqData) => {
         return {
           value: row.ACCT_TYPE,
           label: row.CONCDESCRIPTION,
+          actLabel: row.TYPE_NM,
           info: row,
         };
       });
@@ -86,6 +89,7 @@ export const getTRXList = async (reqData) => {
           value: row.CODE,
           code: row.CODE,
           label: row.CODE + "-" + row.DESCRIPTION,
+          actLabel: row.DESCRIPTION,
           info: row,
         };
       });

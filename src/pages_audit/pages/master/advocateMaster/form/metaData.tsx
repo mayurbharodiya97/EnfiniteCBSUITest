@@ -53,7 +53,7 @@ export const AdvocateMstFormMetaData = {
       validate: (columnValue, ...rest) => {
         let regex = /^[^~`!@#$%^&*()\-+_=\\"';:?/<>,.{}[\]|]+$/;
         if (columnValue.value && !regex.test(columnValue.value)) {
-          return "Specialcharacterisnotallowed";
+          return `${t(`SpecialCharacterNotAllowed`)}`;
         }
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();

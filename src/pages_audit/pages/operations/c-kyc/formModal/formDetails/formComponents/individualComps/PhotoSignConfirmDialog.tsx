@@ -268,6 +268,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
       message: `Are you sure you want to ${state ?? "confirm"} Request?`,
       buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],
+      icon: "CONFIRM",
     });
     if (buttonName === "Yes") {
       confirmPhotoMutation.mutate({
