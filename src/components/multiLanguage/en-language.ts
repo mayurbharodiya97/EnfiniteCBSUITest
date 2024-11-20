@@ -2033,8 +2033,6 @@ export const en_language_data = {
   NoofInstallmentisrequired: "No. of Installment is required",
   InstallmentPeriodisrequired: "Installment Period is required",
   DisburseAmountisrequired: "Disburse Amount is required",
-  loanRepaymentSchedule: "Loan Repayment Schedule",
-  StepUpDown: "Step Up/Down",
 
   //fd interest calculator
   rateRequired: "Rate is required",
