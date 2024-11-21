@@ -49,7 +49,7 @@ export const NpaCategoryMasterFormMetadata = {
       required: true,
       maxLength: 4,
       placeholder: "EnterCode",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       __EDIT__: { isReadOnly: true },
       __NEW__: { isFieldFocused: true },
 
@@ -132,7 +132,7 @@ export const NpaCategoryMasterFormMetadata = {
       maxLength: 100,
       placeholder: "EnterName",
       txtTransform: "uppercase",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       __EDIT__: { isFieldFocused: true },
       validate: (columnValue, ...rest) => {
         // Duplication validation
