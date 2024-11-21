@@ -129,6 +129,31 @@ export const getNEFTFlags = async (reqData) => {
   }
 };
 
+export const getCommTypeList = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCOMMTYPEDDDW", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ DESCRIPTION, TRAN_CD, DEFAULT_COMM_TYPE, ...other }) => {
+          return {
+            value: TRAN_CD,
+            label: DESCRIPTION,
+            billTypeDefaultVal: DEFAULT_COMM_TYPE,
+            ...other,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 // For NEFT
 export const getRtgsBenfDtlList = async (reqData) => {
   const { data, status, message, messageDetails } =

@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import * as API from "../api";
 
 export const BeneficiaryAcctDetailsFormMetaData = {
@@ -156,7 +157,9 @@ export const BeneficiaryAcctDetailsFormMetaData = {
               return true;
             }
           }
-          return false;
+          return {
+            reason: t("recurringNEFTFormRequiredMsgForArrayfield"),
+          };
         } else {
           return true;
         }

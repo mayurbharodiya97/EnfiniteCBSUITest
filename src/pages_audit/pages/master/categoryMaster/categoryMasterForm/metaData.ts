@@ -508,7 +508,6 @@ export const CategoryMasterFormMetaData = {
       placeholder: "AccountTypePlaceHolder",
       validationRun: "onChange",
       runPostValidationHookAlways: true,
-      disableCaching: true,
       options: (dependentValue, formState, _, authState) => {
         return GeneralAPI.get_Account_Type({
           COMP_CD: authState?.companyID ?? "",

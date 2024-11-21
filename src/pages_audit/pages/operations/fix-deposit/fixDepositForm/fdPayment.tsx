@@ -8,7 +8,6 @@ import {
   MetaDataType,
   usePopupContext,
 } from "@acuteinfo/common-base";
-import { useTranslation } from "react-i18next";
 
 export const FDPayment = forwardRef<any, any>(
   (
@@ -24,13 +23,13 @@ export const FDPayment = forwardRef<any, any>(
     const { FDState, handleDisableButton } = useContext(FDContext);
     const { MessageBox, CloseMessageBox } = usePopupContext();
     const { state: rows }: any = useLocation();
-    const { t } = useTranslation();
 
     return (
       <FormWrapper
         key={"fdpayment"}
         metaData={FDPaymentMetadata as MetaDataType}
         onSubmitHandler={paymentFormSubmitHandler}
+        hideHeader={true}
         initialValues={
           Object.keys(FDState?.fdSavedPaymentData).length
             ? { ...FDState?.fdSavedPaymentData }
@@ -94,7 +93,7 @@ export const FDPayment = forwardRef<any, any>(
         ref={ref}
         formStyle={{
           background: "white",
-          minWidth: "1200px",
+          width: "100%",
         }}
       />
     );
