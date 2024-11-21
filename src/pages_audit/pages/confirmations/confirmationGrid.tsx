@@ -60,9 +60,10 @@ export const Confirmations = ({ screenFlag }) => {
     (data) => {
       if (data?.rows?.[0]?.data?.LAST_ENTERED_BY === authState?.user?.id) {
         MessageBox({
-          messageTitle: t("Alert"),
+          messageTitle: t("InvalidConfirmation"),
           message: t("ConfirmRestrictMsg"),
           buttonNames: ["Ok"],
+          icon: "WARNING",
         });
       } else if (data?.name === "retrieve") {
         setIsOpen(true);

@@ -818,8 +818,8 @@ export const AtmEntryMetaData946 = {
             CHEQUE_TO: {
               value:
                 parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
-                  parseInt(field?.value) -
-                  1 ?? "",
+                parseInt(field?.value) -
+                1,
             },
           };
         }
@@ -899,8 +899,8 @@ export const AtmEntryMetaData946 = {
             CHEQUE_TO: {
               value:
                 parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
-                  parseInt(field?.value) -
-                  1 ?? "",
+                parseInt(field?.value) -
+                1,
             },
           };
         }
@@ -997,7 +997,7 @@ export const AtmEntryMetaData946 = {
                     ) ?? ""
                   : (parseInt(field?.value) *
                       parseInt(dependentFields?.GST?.value)) /
-                      100 ?? "",
+                    100,
             },
           };
         } else if (!field.value) {
@@ -1012,7 +1012,7 @@ export const AtmEntryMetaData946 = {
         componentType: "amountField",
       },
       name: "SERVICE_TAX",
-      label: "GSTAmount",
+      label: "GST",
       FormatProps: {
         allowNegative: false,
       },
