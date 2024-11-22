@@ -184,7 +184,7 @@ export const returnChequeFormMetaData = {
         componentType: "textField",
       },
       name: "COMP_CD",
-      label: "",
+      label: "ACNo",
       type: "text",
       isReadOnly: true,
       fullWidth: true,
@@ -267,9 +267,9 @@ export const returnChequeFormMetaData = {
     },
     {
       render: {
-        componentType: "numberFormat",
+        componentType: "textField",
       },
-      name: "BANK_CD",
+      name: "BANK_NM",
       label: "Bank",
       type: "text",
       isReadOnly: true,
