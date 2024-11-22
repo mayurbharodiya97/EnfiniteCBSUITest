@@ -2949,6 +2949,26 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERTRXDDDW",
     packageName: "",
   },
+  INTERESTCALCULATIONFORSINGLEACCOUNTREPORT: {
+    url: "/enfinityReportServiceAPI/INTERESTCALCULATIONFORSINGLEACCOUNTREPORT",
+    packageName: "",
+  },
+  GETHEADERDETAILS: {
+    url: "/enfinityReportServiceAPI/GETHEADERDETAILS",
+    packageName: "",
+  },
+  APPLYACCTINT: {
+    url: "/transactionServiceAPI/APPLYACCTINT",
+    packageName: "",
+  },
+  REVERTBUTTONCTRI: {
+    url: "/transactionServiceAPI/REVERTBUTTONCTRI",
+    packageName: "",
+  },
+  GETDLYSCROLLREGF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYSCROLLREGF1",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

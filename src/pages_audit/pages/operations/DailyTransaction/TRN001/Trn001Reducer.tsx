@@ -286,7 +286,7 @@ const TRN001Provider = ({ children }) => {
             const chequeNo = data?.CHEQUE_NO ?? "";
             if (status === "999") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "ValidationFailed",
+                messageTitle: data?.MSG[i]?.O_MSG_TITLE ?? "ValidationFailed",
                 message,
                 icon: "ERROR",
               });
@@ -321,7 +321,7 @@ const TRN001Provider = ({ children }) => {
               }
             } else if (status === "99") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "Confirmation",
+                messageTitle: data?.MSG[i]?.O_MSG_TITLE ?? "Confirmation",
                 message,
                 buttonNames: ["Yes", "No"],
                 icon: "CONFIRM",
@@ -385,7 +385,7 @@ const TRN001Provider = ({ children }) => {
               }
             } else if (status === "9") {
               const { btnNm, msgObj } = await getBtnName({
-                messageTitle: "Alert",
+                messageTitle: data?.MSG[i]?.O_MSG_TITLE ?? "Alert",
                 message,
                 icon: "WARNING",
               });
@@ -426,6 +426,7 @@ const TRN001Provider = ({ children }) => {
                   updateFn: (row) => ({
                     ...row,
                     accNo: variables?.ACCT_CD,
+                    NPA_CD: data?.NPA_CD ?? "",
                     bugMsgAccNo: "",
                     trx: { label: "", value: "", code: "" },
                     bugMsgTrx: "",
@@ -553,19 +554,22 @@ const TRN001Provider = ({ children }) => {
     },
     [state?.rows]
   );
-
   const handleScrollCtx = useCallback(
     ({ updUnqId, value }) => {
-      dispatch({
-        type: "UPDATE_ROW",
-        payload: {
-          updUnqId,
-          updateFn: (row) => ({
-            ...row,
-            scroll: value ?? "",
-          }),
-        },
-      });
+      const numericValue = value?.replace(/\D/g, "");
+      const validValue = numericValue?.slice(0, 6);
+      if (validValue) {
+        dispatch({
+          type: "UPDATE_ROW",
+          payload: {
+            updUnqId,
+            updateFn: (row) => ({
+              ...row,
+              scroll: validValue,
+            }),
+          },
+        });
+      }
     },
     [state?.rows]
   );
