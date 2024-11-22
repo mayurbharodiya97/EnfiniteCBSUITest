@@ -746,9 +746,9 @@ export const FdInterestPaymentFormMetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
           return {
-            CR_ACCT_TYPE: { value: "", ignoreUpdate: true },
-            CR_ACCT_CD: { value: "", ignoreUpdate: true },
-            CR_ACCT_NM: { value: "", ignoreUpdate: true },
+            CR_ACCT_TYPE: { value: "", ignoreUpdate: false },
+            CR_ACCT_CD: { value: "", ignoreUpdate: false },
+            CR_ACCT_NM: { value: "", ignoreUpdate: false },
           };
         },
         isReadOnly: (fieldValue, dependentFields, formState) => {
@@ -785,8 +785,8 @@ export const FdInterestPaymentFormMetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
           return {
-            CR_ACCT_CD: { value: "" },
-            CR_ACCT_NM: { value: "", ignoreUpdate: true },
+            CR_ACCT_CD: { value: "", ignoreUpdate: false },
+            CR_ACCT_NM: { value: "", ignoreUpdate: false },
           };
         },
         isReadOnly: (fieldValue, dependentFields, formState) => {
