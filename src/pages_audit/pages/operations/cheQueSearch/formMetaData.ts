@@ -100,6 +100,16 @@ export const RetrievalParameterFormMetaData = {
       name: "CHEQUE_NO",
       label: "Chequeno",
       required: true,
+      FormatProps: {
+        allowNegative: false,
+        allowLeadingZeros: true,
+        isAllowed: (values) => {
+          if (values?.value?.length > 9) {
+            return false;
+          }
+          return true;
+        },
+      },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ChequeNorequired"] }],
@@ -300,6 +310,7 @@ export const returnChequeFormMetaData = {
       label: "Zone",
       dependentFields: ["ZONE_TRAN_TYPE"],
       _optionsKey: "getClgZoneData",
+      placeholder: "enterZone",
       options: (dependentValue, formState, _, authState) => {
         return getClgZoneData({
           COMP_CD: authState?.companyID,
@@ -314,6 +325,7 @@ export const returnChequeFormMetaData = {
       render: { componentType: "autocomplete" },
       name: "REASON",
       label: "Reason",
+      placeholder: "enterReason",
       _optionsKey: "getReasonDdwData",
       options: (dependentValue, formState, _, authState) => {
         return getReasonDdwData({

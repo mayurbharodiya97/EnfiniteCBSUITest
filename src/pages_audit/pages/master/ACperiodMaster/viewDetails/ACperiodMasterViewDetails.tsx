@@ -44,7 +44,7 @@ const AcPeriodMasterForm = ({
         CloseMessageBox();
       },
       onSuccess: (data) => {
-        enqueueSnackbar(t("insertSuccessfully"), {
+        enqueueSnackbar(t("RecordInsertedMsg"), {
           variant: "success",
         });
         isDataChangedRef.current = true;

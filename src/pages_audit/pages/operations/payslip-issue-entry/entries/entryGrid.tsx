@@ -24,6 +24,7 @@ import {
   FormWrapper,
   MetaDataType,
   ClearCacheProvider,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "components/multiLanguage/languagesConfiguration";
@@ -67,6 +68,7 @@ export const RetriveGridForm: FC<{
   const indexRef = useRef(0);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const retrievalParaRef = useRef<any>(null);
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
@@ -82,7 +84,14 @@ export const RetriveGridForm: FC<{
   }, []);
   const mutation: any = useMutation("retRiveGridData", API.retRiveGridData, {
     onSuccess: (data) => {},
-    onError: (error: any) => {},
+    onError: async (error: any) => {
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
+      });
+    },
   });
 
   const handlePrev = useCallback(() => {
@@ -202,22 +211,6 @@ export const RetriveGridForm: FC<{
             fullScreen
             maxWidth="xl"
           >
-            {/* <AppBar position="relative" color="secondary">
-              <Toolbar
-                className={headerClasses.root}
-                variant="dense"
-                sx={{ display: "flex", justifyContent: "end" }}
-              >
-                <GradientButton
-                  onClick={(event) => {
-                    close();
-                  }}
-                  color={"primary"}
-                >
-                  {t("close")}
-                </GradientButton>
-              </Toolbar>
-            </AppBar> */}
             {
               <PaySlipIssueEntry
                 onClose={() => {

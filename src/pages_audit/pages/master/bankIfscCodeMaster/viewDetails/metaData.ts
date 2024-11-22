@@ -1,4 +1,5 @@
 import { textTransform } from "@mui/system";
+import { GetBankIfscImportDdwn } from "../api";
 
 export const metaData = {
   form: {
@@ -51,7 +52,6 @@ export const metaData = {
       name: "IFSC_CODE",
       label: "IFSCCode",
       placeholder: "IFSCCode",
-
       txtTransform: "uppercase",
       type: "text",
       required: true,
@@ -142,7 +142,7 @@ export const metaData = {
     },
     {
       render: {
-        componentType: "phoneNumber",
+        componentType: "textField",
       },
       name: "CONTACT_DTL",
       label: "ContactDetail",
@@ -187,6 +187,67 @@ export const metaData = {
       maxLength: 50,
       type: "text",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 3 },
+    },
+  ],
+};
+export const selectConfigGridMetaData = {
+  form: {
+    name: "selectConfigGridMetaData",
+    label: "Parameters",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 1,
+        },
+      },
+    },
+  },
+  fields: [
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "DESCRIPTION",
+      label: "SelectConfiguration",
+      fullWidth: true,
+      placeholder: "SelectConfiguration",
+      options: (dependentValue, formState, _, authState) => {
+        return GetBankIfscImportDdwn({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+        });
+      },
+      _optionsKey: "GetPositivePayImportDdwn",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Field is Required."] }],
+      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      dependentFields: ["DESCRIPTION"],
+      name: "TRAN_CD",
+      label: "TRAN_CD",
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        console.log(dependentFields);
+
+        return dependentFields?.DESCRIPTION?.optionData?.[0]?.DESCRIPTION ?? "";
+      },
     },
   ],
 };

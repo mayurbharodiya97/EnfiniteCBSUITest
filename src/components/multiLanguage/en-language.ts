@@ -1688,6 +1688,11 @@ export const en_language_data = {
 
   //payslip issue entry
   branchCode: "Branch Code",
+  addRegionMSG: "Are you sure to add region ?",
+  confirmEntryRestrictionMsg: "Cannot make changes in confirmed entry",
+  delete: "Delete",
+  amountCheckMsg: "Please Check Amount.",
+  voucherConfirmationMSG: "Vouchers Confirmation",
   DoYouWantToAllowPayslipDD: "Do you want to allow Payslip/Draft Issue-",
   stopRemarksRequired: "stop remarks is required",
   issueBranch: "Issue Branch",
@@ -1843,7 +1848,10 @@ export const en_language_data = {
   PendingTransactions: "Pending Transactions",
   PendingTrnsProceed: "Do you want to proceed pending transactions?",
   DayEnd: "Day End",
+  eodChecksomWarningMsg: "EOD CheckSum having Warning(s)",
+  dayendWarningShowMsg: "Would you like to see warnings of this Checksum?",
   TotalNoofrecords: "Total No. of records: ",
+  eodCheckumsCompletedMsg: "EOD CheckSum completed successfully.",
   DayHandover: "Day Handover",
   VersionNo: "Version No.",
   openNewSession: "Open New Session",
@@ -1859,6 +1867,8 @@ export const en_language_data = {
   from: "From",
   GenerateOutwardReturnEntry: "Are You Sure to Generate Outward Return Entry ?",
   enteredBranch: "Entered Branch",
+  enterZone: "Enter Zone",
+  enterReason: "Enter Reason",
 
   // str ac level branch entry
 
@@ -2253,6 +2263,7 @@ export const en_language_data = {
   RDAC_NO: "RD A/c No.",
   //locker Transaction Entry
   lockerNumber: "Locker No.",
+  selectOPerationMsg: "Please Select an Operation",
   lockerSize: "Locker Size",
   keyNumber: "Key No",
   referenceAccountBalance: "Ref.A/c Balance",

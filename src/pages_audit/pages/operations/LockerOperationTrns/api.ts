@@ -1,4 +1,5 @@
 import { DefaultErrorObject } from "@acuteinfo/common-base";
+import i18n from "components/multiLanguage/languagesConfiguration";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getLockerOperationTrnsData = async ({
@@ -123,6 +124,75 @@ export const getLockerTrxDDWdata = async () => {
       });
     }
     return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const validateLockerNo = async ({
+  COMP_CD,
+  BRANCH_CD,
+  LOCKER_NO,
+  ACCT_TYPE,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATELOCKERNO", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      ACCT_TYPE: ACCT_TYPE,
+      LOCKER_NO: LOCKER_NO,
+      DISPLAY_LANGUAGE: i18n.resolvedLanguage,
+      DOC_CD: "RPT/49",
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const validateLockerOperation = async ({
+  COMP_CD,
+  BRANCH_CD,
+  ACCT_TYPE,
+  ACCT_CD,
+  OPER_STATUS,
+  WORKING_DT,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATELOCKEROPERATION", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      ACCT_TYPE: ACCT_TYPE,
+      ACCT_CD: ACCT_CD,
+      OPER_STATUS: OPER_STATUS,
+      WORKING_DATE: WORKING_DT,
+      DISPLAY_LANGUAGE: i18n.resolvedLanguage,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getLockerTrnsReciept = async ({
+  COMP_CD,
+  BRANCH_CD,
+  ACCT_TYPE,
+  ACCT_CD,
+  WORKING_DT,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETLOCKEROPERATIONRECEIPT", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      ACCT_TYPE: ACCT_TYPE,
+      ACCT_CD: ACCT_CD,
+      WORKING_DT: WORKING_DT,
+    });
+
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

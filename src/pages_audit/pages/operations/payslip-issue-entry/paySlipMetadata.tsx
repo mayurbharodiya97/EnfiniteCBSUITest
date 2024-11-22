@@ -13,6 +13,7 @@ import {
   geTrxDdw,
 } from "./api";
 import { MasterDetailsMetaData, utilFunction } from "@acuteinfo/common-base";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const RetrieveGridMetaData = {
   gridConfig: {
@@ -473,10 +474,79 @@ export const AccdetailsFormMetaData = {
           branchCodeMetadata: {
             name: "BRANCH_CD",
             GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-            // isReadOnly: true,
+            validationRun: "onChange",
+            postValidationSetCrossFieldValues: async (
+              currentField,
+              formState,
+              authState,
+              dependentFieldValues
+            ) => {
+              if (formState?.isSubmitting) return {};
+
+              const isHOBranch = await validateHOBranch(
+                currentField,
+                formState?.MessageBox,
+                authState
+              );
+              if (isHOBranch) {
+                return {
+                  BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: false,
+                  },
+                };
+              }
+              return {
+                ACCT_TYPE: { value: "" },
+                ACCT_CD: { value: "", ignoreUpdate: false },
+                ACCT_NM: { value: "" },
+              };
+            },
           },
           accountTypeMetadata: {
+            validationRun: "onChange",
             name: "ACCT_TYPE",
+            dependentFields: ["PAYSLIP_MST_DTL", "ACCT_TYPE", "BRANCH_CD"],
+            postValidationSetCrossFieldValues: async (
+              currentField,
+              formState,
+              authState,
+              dependentFieldValues
+            ) => {
+              if (formState?.isSubmitting) return {};
+              if (
+                currentField?.value &&
+                dependentFieldValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: "Enter Account Branch.",
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    BRANCH_CD: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
+              return {
+                ACCT_CD: { value: "", ignoreUpdate: false },
+                ACCT_NM: { value: "" },
+              };
+            },
             GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           },
           accountCodeMetadata: {
@@ -497,6 +567,32 @@ export const AccdetailsFormMetaData = {
             ) => {
               if (formState?.isSubmitting) return {};
               if (
+                currentField.value &&
+                dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: "Enter Account Type.",
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    ACCT_CD: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: false,
+                    },
+                    ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (
                 currentField?.value &&
                 dependentFieldValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value &&
                 dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value
@@ -527,14 +623,16 @@ export const AccdetailsFormMetaData = {
                 for (let i = 0; i < postData?.MSG.length; i++) {
                   if (postData?.MSG[i]?.O_STATUS === "999") {
                     const btnName = await formState.MessageBox({
-                      messageTitle: "ValidationFailed",
+                      messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
                       message: postData?.MSG[i]?.O_MESSAGE,
+                      icon: "CONFIRM",
                     });
                     returnVal = "";
                   } else if (postData?.MSG[i]?.O_STATUS === "99") {
                     const btnName = await formState.MessageBox({
-                      messageTitle: "Confirmation",
+                      messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
                       message: postData?.MSG[i]?.O_MESSAGE,
+                      icon: "CONFIRM",
                       buttonNames: ["Yes", "No"],
                     });
                     btn99 = btnName;
@@ -543,8 +641,9 @@ export const AccdetailsFormMetaData = {
                     }
                   } else if (postData?.MSG[i]?.O_STATUS === "9") {
                     const btnName = await formState.MessageBox({
-                      messageTitle: "Alert",
+                      messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
                       message: postData?.MSG[i]?.O_MESSAGE,
+                      icon: "WARNING",
                     });
                   } else if (postData?.MSG[i]?.O_STATUS === "0") {
                     if (btn99 !== "No") {
@@ -569,7 +668,7 @@ export const AccdetailsFormMetaData = {
                       : {
                           value: "",
                           isFieldFocused: true,
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                         },
                   ACCT_NM: {
                     value: postData?.ACCT_NM ?? "",
@@ -1466,7 +1565,7 @@ export const DraftdetailsFormMetaData = {
                 AMOUNT: currentField?.value,
                 TYPE_CD: refID.current.paylod.TYPE_CD,
                 DEF_TRAN_CD: refID.current.paylod.BILL_TYPE_CD,
-                SCREEN_REF: "Rpt/14",
+                SCREEN_REF: "RPT/14",
               };
 
               if (

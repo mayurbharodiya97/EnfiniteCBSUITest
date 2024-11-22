@@ -8,6 +8,8 @@ import {
 } from "date-fns";
 import * as API from "./api";
 import { Label, Placeholder } from "reactstrap";
+import { first } from "lodash";
+import { utilFunction } from "@acuteinfo/common-base";
 export const metaData = {
   form: {
     name: "",
@@ -87,6 +89,7 @@ export const metaData = {
       name: "COMP_CD",
       label: "",
     },
+
     {
       render: {
         componentType: "hidden",
@@ -95,6 +98,297 @@ export const metaData = {
       label: "",
     },
     // ------------Date-----------------//
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      label: "",
+      name: "COMMON",
+      dependentFields: [
+        "FLAG",
+        "PERIOD_CD_D",
+        "PERIOD_NO_D",
+        "MATURITY_DT_D",
+        "CATEG_CD_D",
+        "ACCT_TYPE_D",
+        "TRAN_DT_D",
+        "COMP_CD",
+        "BRANCH_CD",
+        "PRE_INT_FLG_D",
+        "PRINCIPAL_AMT_D",
+      ],
+      validationRun: "onChange",
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        if (
+          dependentFields.PERIOD_NO_D?.value &&
+          dependentFields.PERIOD_CD_D?.value &&
+          dependentFields.PRE_INT_FLG_D?.value &&
+          dependentFields.PRINCIPAL_AMT_D?.value &&
+          dependentFields.ACCT_TYPE_D?.value &&
+          dependentFields.BRANCH_CD?.value &&
+          dependentFields.COMP_CD?.value &&
+          dependentFields.TRAN_DT_D?.value &&
+          dependentFields.CATEG_CD_D?.value
+        ) {
+          const requestData = {
+            COMP_CD: dependentFields.COMP_CD?.value,
+            BRANCH_CD: dependentFields.BRANCH_CD?.value,
+            ACCT_TYPE: dependentFields.ACCT_TYPE_D?.value,
+            CATEG_CD: dependentFields.CATEG_CD_D?.value,
+            MATURITY_DT: dependentFields.MATURITY_DT_D?.value
+              ? format(
+                  new Date(dependentFields.MATURITY_DT_D?.value),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            TRAN_DT: dependentFields.TRAN_DT_D?.value
+              ? format(
+                  new Date(dependentFields.TRAN_DT_D?.value),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            PERIOD_CD: dependentFields.PERIOD_CD_D?.value,
+            PERIOD_NO: dependentFields.PERIOD_NO_D?.value,
+            PRE_INT_FLAG: dependentFields.PRE_INT_FLG_D?.value,
+            PRINCIPAL_AMT: dependentFields.PRINCIPAL_AMT_D?.value,
+          };
+
+          const postData = await API.getFdinterest(requestData);
+
+          return {
+            INT_RATE_D: {
+              value: postData[0]?.INT_RATE,
+              isFieldFocused: false,
+              ignoreUpdate: true,
+            },
+          };
+        }
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      label: "",
+      name: "COMMONAMT",
+      dependentFields: [
+        "CALCSWITCH",
+        "PERIOD_CD_D",
+        "PERIOD_NO_D",
+        "MATURITY_DT_D",
+        "CATEG_CD_D",
+        "ACCT_TYPE_D",
+        "TRAN_DT_D",
+        "COMP_CD",
+        "BRANCH_CD",
+        "PRE_INT_FLG_D",
+        "PRINCIPAL_AMT_D",
+        "INT_RATE_D",
+        "TERM_CD_D",
+      ],
+      validationRun: "onChange",
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        auth,
+        dependentFields
+      ) => {
+        const postData = await API.getFdMaturityAmount({
+          COMP_CD: dependentFields?.COMP_CD?.value ?? "",
+          BRANCH_CD: dependentFields?.BRANCH_CD?.value ?? "",
+          ACCT_TYPE: dependentFields?.ACCT_TYPE_D?.value ?? "",
+          CATEG_CD: dependentFields?.CATEG_CD_D?.value ?? "",
+          MATURITY_DT:
+            dependentFields?.MATURITY_DT_D?.value ?? ""
+              ? format(
+                  new Date(dependentFields?.MATURITY_DT_D?.value),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+          TRAN_DT: dependentFields?.TRAN_DT_D?.value
+            ? format(new Date(dependentFields?.TRAN_DT_D?.value), "dd/MMM/yyyy")
+            : "",
+          PERIOD_CD: dependentFields?.PERIOD_CD_D?.value ?? "",
+          PERIOD_NO: dependentFields?.PERIOD_NO_D?.value ?? "",
+          PRE_INT_FLAG: dependentFields?.PRE_INT_FLG_D?.value ?? "",
+          PRINCIPAL_AMT: dependentFields?.PRINCIPAL_AMT_D?.value ?? "",
+          INT_RATE: dependentFields?.INT_RATE_D?.value ?? "", // Rate from dependent fields
+          TERM_CD: dependentFields?.INT_RATE_D?.value ?? "", // Term code from field directly
+        });
+
+        return postData?.[0]?.MATURITY_AMT
+          ? {
+              MATURITY_AMT_D: {
+                value: postData[0].MATURITY_AMT,
+                isFieldFocused: false,
+                ignoreUpdate: true,
+              },
+            }
+          : {}; // Return empty object if no MATURITY_AMT
+      },
+    },
+    // -------------------
+    {
+      render: {
+        componentType: "hidden",
+      },
+      label: "",
+      name: "PERIODRATEAPI",
+      validationRun: "onChange",
+      dependentFields: [
+        "CALCSWITCH",
+        "PERIOD_CD_P",
+        "PERIOD_NO_P",
+        "MATURITY_DT_P",
+        "CATEG_CD_P",
+        "ACCT_TYPE_P",
+        "TRAN_DT_P",
+        "COMP_CD",
+        "BRANCH_CD",
+        "PRE_INT_FLG_P",
+        "PRINCIPAL_AMT_P",
+      ],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        auth,
+        dependentFields
+      ) => {
+        //@ts-nocheck
+
+        if (
+          dependentFields?.COMP_CD?.value &&
+          dependentFields?.BRANCH_CD?.value &&
+          dependentFields?.CATEG_CD_P?.value &&
+          dependentFields?.MATURITY_DT_P?.value &&
+          dependentFields?.TRAN_DT_P?.value &&
+          dependentFields?.PERIOD_NO_P?.value &&
+          dependentFields?.PRE_INT_FLG_P?.value &&
+          dependentFields?.PRINCIPAL_AMT_P?.value &&
+          dependentFields?.ACCT_TYPE_P?.value
+        ) {
+          const {
+            COMP_CD,
+            BRANCH_CD,
+            CATEG_CD_P,
+            MATURITY_DT_P,
+            TRAN_DT_P,
+            PERIOD_NO_P,
+            PRE_INT_FLG_P,
+            PRINCIPAL_AMT_P,
+            ACCT_TYPE_P,
+          } = dependentFields;
+
+          const params = {
+            COMP_CD: COMP_CD?.value,
+            BRANCH_CD: BRANCH_CD?.value,
+            ACCT_TYPE: ACCT_TYPE_P?.value,
+            CATEG_CD: CATEG_CD_P?.value,
+            MATURITY_DT: MATURITY_DT_P?.value
+              ? format(new Date(MATURITY_DT_P?.value), "dd/MMM/yyyy")
+              : "",
+            TRAN_DT: TRAN_DT_P?.value
+              ? format(new Date(TRAN_DT_P?.value), "dd/MMM/yyyy")
+              : "",
+            PERIOD_CD: "D",
+            PERIOD_NO: `${PERIOD_NO_P?.value}`,
+            PRE_INT_FLAG: PRE_INT_FLG_P?.value,
+            PRINCIPAL_AMT: PRINCIPAL_AMT_P?.value,
+          };
+
+          const postData = await API.getFdinterest(params);
+
+          return {
+            INT_RATE_P: {
+              value: postData[0]?.INT_RATE,
+              isFieldFocused: false,
+              ignoreUpdate: true,
+            },
+          };
+        }
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      label: "",
+      name: "PERIODAMTAPI",
+      validationRun: "onChange",
+      dependentFields: [
+        "CALCSWITCH",
+        "PERIOD_CD_P",
+        "PERIOD_NO_P",
+        "MATURITY_DT_P",
+        "CATEG_CD_P",
+        "ACCT_TYPE_P",
+        "TRAN_DT_P",
+        "COMP_CD",
+        "BRANCH_CD",
+        "PRE_INT_FLG_P",
+        "PRINCIPAL_AMT_P",
+        "INT_RATE_P",
+        "TERM_CD_P",
+      ],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        auth,
+        dependentFields
+      ) => {
+        if (
+          dependentFields?.COMP_CD?.value &&
+          dependentFields?.BRANCH_CD?.value &&
+          dependentFields?.CATEG_CD_P?.value &&
+          dependentFields?.MATURITY_DT_P?.value &&
+          dependentFields?.TRAN_DT_P?.value &&
+          dependentFields?.PERIOD_NO_P?.value &&
+          dependentFields?.PRE_INT_FLG_P?.value &&
+          dependentFields?.PRINCIPAL_AMT_P?.value &&
+          dependentFields?.TERM_CD_P?.value &&
+          dependentFields?.INT_RATE_P?.value
+        ) {
+          const postData = await API.getFdMaturityAmount({
+            COMP_CD: dependentFields?.COMP_CD?.value,
+            BRANCH_CD: dependentFields?.BRANCH_CD?.value,
+            ACCT_TYPE: dependentFields?.ACCT_TYPE_P?.value,
+            CATEG_CD: dependentFields?.CATEG_CD_P?.value,
+            MATURITY_DT: dependentFields?.MATURITY_DT_P?.value
+              ? format(
+                  new Date(dependentFields?.MATURITY_DT_P?.value),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            TRAN_DT: dependentFields?.TRAN_DT_P?.value
+              ? format(
+                  new Date(dependentFields?.TRAN_DT_P?.value),
+                  "dd/MMM/yyyy"
+                )
+              : "",
+            PERIOD_CD: "D", // Fixed value
+            PERIOD_NO: `${dependentFields?.PERIOD_NO_P?.value}`,
+            PRE_INT_FLAG: dependentFields?.PRE_INT_FLG_P?.value,
+            PRINCIPAL_AMT: dependentFields?.PRINCIPAL_AMT_P?.value,
+            INT_RATE: dependentFields?.INT_RATE_P?.value,
+            TERM_CD: dependentFields?.TERM_CD_P?.value,
+          });
+
+          return {
+            MATURITY_AMT_P: {
+              value: postData[0]?.MATURITY_AMT,
+              isFieldFocused: false,
+              ignoreUpdate: true,
+            },
+          };
+        }
+      },
+    },
     {
       render: { componentType: "autocomplete" },
       name: "PRE_INT_FLG_D",
@@ -135,87 +429,22 @@ export const metaData = {
         });
       },
       fullWidth: true,
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_D",
-        "PERIOD_NO_D",
-        "MATURITY_DT_D",
-        "CATEG_CD_D",
-        "ACCT_TYPE_D",
-        "TRAN_DT_D",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_D",
-        "PRINCIPAL_AMT_D",
-      ],
-
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFields
-      ) => {
-        let duration = dependentFields?.PERIOD_NO_D?.value;
-        let period = dependentFields?.PERIOD_CD_D?.value;
-        let fdflag = dependentFields?.PRE_INT_FLG_D?.value;
-        let principalAmount = dependentFields?.PRINCIPAL_AMT_D?.value;
-        let acctType = field?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = dependentFields?.CATEG_CD_D?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = dependentFields?.MATURITY_DT_D?.value
-          ? format(
-              new Date(dependentFields?.MATURITY_DT_D?.value),
-              "dd/MMM/yyyy"
-            )
-          : "";
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          maturityDate,
-        };
-        const areAllValuesPresent = (values) => {
-          return (value) => value !== "" && value != null;
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: period,
-            PERIOD_NO: duration,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-          });
-
-          return {
-            INT_RATE_D: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
-      },
+      dependentFields: ["CALCSWITCH"],
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "D") {
           return false;
         }
         return true;
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        return {
+          COMMON: { value: Date.now() },
+        };
       },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
     },
@@ -232,88 +461,23 @@ export const metaData = {
       },
       fullWidth: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_D",
-        "PERIOD_NO_D",
-        "MATURITY_DT_D",
-        "CATEG_CD_D",
-        "ACCT_TYPE_D",
-        "TRAN_DT_D",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_D",
-        "PRINCIPAL_AMT_D",
-      ],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFields
-      ) => {
-        let duration = dependentFields?.PERIOD_NO_D?.value;
-        let period = dependentFields?.PERIOD_CD_D?.value;
-        let fdflag = dependentFields?.PRE_INT_FLG_D?.value;
-        let principalAmount = dependentFields?.PRINCIPAL_AMT_D?.value;
-        let acctType = dependentFields?.ACCT_TYPE_D?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = field?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = dependentFields?.MATURITY_DT_D?.value
-          ? format(
-              new Date(dependentFields?.MATURITY_DT_D?.value),
-              "dd/MMM/yyyy"
-            )
-          : "";
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          maturityDate,
-        };
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: period,
-            PERIOD_NO: duration,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-          });
+      dependentFields: ["CALCSWITCH"],
 
-          return {
-            INT_RATE_D: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
-      },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "D") {
           return false;
         }
         return true;
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        return {
+          COMMON: { value: Date.now() },
+        };
       },
     },
     {
@@ -327,85 +491,23 @@ export const metaData = {
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_D",
-        "PERIOD_NO_D",
-        "MATURITY_DT_D",
-        "CATEG_CD_D",
-        "ACCT_TYPE_D",
-        "TRAN_DT_D",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_D",
-        "PRINCIPAL_AMT_D",
-      ],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFields
-      ) => {
-        let duration = dependentFields?.PERIOD_NO_D?.value;
-        let period = dependentFields?.PERIOD_CD_D?.value;
-        let fdflag = dependentFields?.PRE_INT_FLG_D?.value;
-        let principalAmount = dependentFields?.PRINCIPAL_AMT_D?.value;
-        let acctType = dependentFields?.ACCT_TYPE_D?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = dependentFields?.CATEG_CD_D?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(new Date(field?.value), "dd/MMM/yyyy");
-        let maturityDate = dependentFields?.MATURITY_DT_D?.value
-          ? format(
-              new Date(dependentFields?.MATURITY_DT_D?.value),
-              "dd/MMM/yyyy"
-            )
-          : "";
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          maturityDate,
-        };
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: period,
-            PERIOD_NO: duration,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-          });
+      dependentFields: ["CALCSWITCH"],
 
-          return {
-            INT_RATE_D: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
-      },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "D") {
           return false;
         }
         return true;
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        return {
+          COMMON: { value: Date.now() },
+        };
       },
     },
     {
@@ -425,88 +527,23 @@ export const metaData = {
       defaultValue: "D",
       fullWidth: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 1, xl: 1 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_D",
-        "PERIOD_NO_D",
-        "MATURITY_DT_D",
-        "CATEG_CD_D",
-        "ACCT_TYPE_D",
-        "TRAN_DT_D",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_D",
-        "PRINCIPAL_AMT_D",
-      ],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFields
-      ) => {
-        let duration = dependentFields?.PERIOD_NO_D?.value;
-        let period = field?.value;
-        let fdflag = dependentFields?.PRE_INT_FLG_D?.value;
-        let principalAmount = dependentFields?.PRINCIPAL_AMT_D?.value;
-        let acctType = dependentFields?.ACCT_TYPE_D?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = dependentFields?.CATEG_CD_D?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = dependentFields?.MATURITY_DT_D?.value
-          ? format(
-              new Date(dependentFields?.MATURITY_DT_D?.value),
-              "dd/MMM/yyyy"
-            )
-          : "";
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          maturityDate,
-        };
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: period,
-            PERIOD_NO: duration,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-          });
+      dependentFields: ["CALCSWITCH"],
 
-          return {
-            INT_RATE_D: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
-      },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "D") {
           return false;
         }
         return true;
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        return {
+          COMMON: { value: Date.now() },
+        };
       },
     },
     {
@@ -521,19 +558,7 @@ export const metaData = {
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1, xl: 1 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_D",
-        "PERIOD_NO_D",
-        "MATURITY_DT_D",
-        "CATEG_CD_D",
-        "ACCT_TYPE_D",
-        "TRAN_DT_D",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_D",
-        "PRINCIPAL_AMT_D",
-      ],
+      dependentFields: ["CALCSWITCH"],
       FormatProps: {
         isAllowed: (values) => {
           if (values?.value?.length > 10) {
@@ -545,70 +570,7 @@ export const metaData = {
           return true;
         },
       },
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFields
-      ) => {
-        let duration = field?.value;
-        let period = dependentFields?.PERIOD_CD_D?.value;
-        let fdflag = dependentFields?.PRE_INT_FLG_D?.value;
-        let principalAmount = dependentFields?.PRINCIPAL_AMT_D?.value;
-        let acctType = dependentFields?.ACCT_TYPE_D?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = dependentFields?.CATEG_CD_D?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = dependentFields?.MATURITY_DT_D?.value
-          ? format(
-              new Date(dependentFields?.MATURITY_DT_D?.value),
-              "dd/MMM/yyyy"
-            )
-          : "";
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          maturityDate,
-        };
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: period,
-            PERIOD_NO: duration,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-          });
 
-          return {
-            INT_RATE_D: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
-      },
       setFieldLabel: (dependentFields, currVal) => {
         let duration = dependentFields.PERIOD_CD_D?.value;
         console.log(duration);
@@ -621,12 +583,18 @@ export const metaData = {
           ? { label: "Year(s)" }
           : { label: "Day(s)" };
       },
-
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        return {
+          COMMON: { value: Date.now() },
+        };
+      },
       shouldExclude: (val1, dependent) => {
-        if (
-          dependent?.CALCSWITCH?.value === "D" &&
-          dependent?.PERIOD_CD_D?.value === "D"
-        ) {
+        if (dependent?.CALCSWITCH?.value === "D") {
           return false;
         }
         return true;
@@ -644,88 +612,22 @@ export const metaData = {
         rules: [{ name: "required", params: ["principleAmtrequire"] }],
       },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_D",
-        "PERIOD_NO_D",
-        "MATURITY_DT_D",
-        "CATEG_CD_D",
-        "ACCT_TYPE_D",
-        "TRAN_DT_D",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_D",
-        "PRINCIPAL_AMT_D",
-      ],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFields
-      ) => {
-        let duration = dependentFields?.PERIOD_NO_D?.value;
-        let period = dependentFields?.PERIOD_CD_D?.value;
-        let fdflag = dependentFields?.PRE_INT_FLG_D?.value;
-        let principalAmount = field?.value;
-        let acctType = dependentFields?.ACCT_TYPE_D?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = dependentFields?.CATEG_CD_D?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_D?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = dependentFields?.MATURITY_DT_D?.value
-          ? format(
-              new Date(dependentFields?.MATURITY_DT_D?.value),
-              "dd/MMM/yyyy"
-            )
-          : "";
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          maturityDate,
-        };
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: period,
-            PERIOD_NO: duration,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-          });
-
-          return {
-            INT_RATE_D: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
-      },
+      dependentFields: ["CALCSWITCH"],
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "D") {
           return false;
         }
         return true;
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        return {
+          COMMON: { value: Date.now() },
+        };
       },
     },
     {
@@ -742,89 +644,16 @@ export const metaData = {
         type: "string",
         rules: [{ name: "required", params: ["rateRequired"] }],
       },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_D",
-        "PERIOD_NO_D",
-        "MATURITY_DT_D",
-        "CATEG_CD_D",
-        "ACCT_TYPE_D",
-        "TRAN_DT_D",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_D",
-        "PRINCIPAL_AMT_D",
-        "INT_RATE_D",
-        "TERM_CD_D",
-      ],
+      dependentFields: ["CALCSWITCH"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
-        auth,
+        _,
         dependentFields
       ) => {
-        let duration = dependentFields?.PERIOD_NO_D?.value;
-        let termcd = dependentFields?.TERM_CD_D?.value;
-        let rate = field?.value;
-        let period = dependentFields?.PERIOD_CD_D?.value;
-        let fdflag = dependentFields?.PRE_INT_FLG_D?.value;
-        let principalAmount = dependentFields?.PRINCIPAL_AMT_D?.value;
-        let acctType = dependentFields?.ACCT_TYPE_D?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = dependentFields?.CATEG_CD_D?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = dependentFields?.TRAN_DT_D?.value
-          ? format(new Date(dependentFields?.TRAN_DT_D?.value), "dd/MMM/yyyy")
-          : "";
-        let maturityDate = dependentFields?.MATURITY_DT_D?.value
-          ? format(
-              new Date(dependentFields?.MATURITY_DT_D?.value),
-              "dd/MMM/yyyy"
-            )
-          : "";
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          termcd,
-          rate,
+        return {
+          COMMONAMT: { value: Date.now() },
         };
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdMaturityAmount({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: period,
-            PERIOD_NO: duration,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-            INT_RATE: rate,
-            TERM_CD: termcd,
-          });
-
-          // return postData[0]?.MATURITY_AMT;
-          return {
-            MATURITY_AMT_D: {
-              value: postData[0]?.MATURITY_AMT,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
       },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "D") {
@@ -851,95 +680,23 @@ export const metaData = {
       fullWidth: true,
       required: true,
       GridProps: { xs: 1.5, sm: 1.5, md: 2, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_D",
-        "PERIOD_NO_D",
-        "MATURITY_DT_D",
-        "CATEG_CD_D",
-        "ACCT_TYPE_D",
-        "TRAN_DT_D",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_D",
-        "PRINCIPAL_AMT_D",
-        "INT_RATE_D",
-        "TERM_CD_D",
-      ],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFields
-      ) => {
-        let duration = dependentFields?.PERIOD_NO_D?.value;
-        let termcd = field?.value;
-        let rate = dependentFields?.INT_RATE_D?.value;
-        let period = dependentFields?.PERIOD_CD_D?.value;
-        let fdflag = dependentFields?.PRE_INT_FLG_D?.value;
-        let principalAmount = dependentFields?.PRINCIPAL_AMT_D?.value;
-        let acctType = dependentFields?.ACCT_TYPE_D?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = dependentFields?.CATEG_CD_D?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = dependentFields?.TRAN_DT_D?.value
-          ? format(new Date(dependentFields?.TRAN_DT_D?.value), "dd/MMM/yyyy")
-          : "";
-        let maturityDate = dependentFields?.MATURITY_DT_D?.value
-          ? format(
-              new Date(dependentFields?.MATURITY_DT_D?.value),
-              "dd/MMM/yyyy"
-            )
-          : "";
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          termcd,
-          rate,
-        };
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdMaturityAmount({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: period,
-            PERIOD_NO: duration,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-            INT_RATE: rate,
-            TERM_CD: termcd,
-          });
+      dependentFields: ["CALCSWITCH"],
 
-          // return postData[0]?.MATURITY_AMT;
-          return {
-            MATURITY_AMT_D: {
-              value: postData[0]?.MATURITY_AMT,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
-      },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "D") {
           return false;
         }
         return true;
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        _,
+        dependentFields
+      ) => {
+        return {
+          COMMONAMT: { value: Date.now() },
+        };
       },
     },
     {
@@ -949,7 +706,6 @@ export const metaData = {
       name: "MATURITY_DT_D",
       label: "maturityDate",
       isReadOnly: true,
-      defaultValue: new Date(),
       fullWidth: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: [
@@ -959,54 +715,40 @@ export const metaData = {
         "PERIOD_NO_D",
       ],
       setValueOnDependentFieldsChange: (dependentFields) => {
-        let duration = dependentFields.PERIOD_CD_D?.value;
-        let periodNumber = parseInt(dependentFields.PERIOD_NO_D?.value, 10);
-        let tranDateValue = dependentFields?.TRAN_DT_D?.value;
-
-        let newDate = "";
+        const duration = dependentFields.PERIOD_CD_D?.value;
+        const periodNumber = parseInt(
+          dependentFields.PERIOD_NO_D?.value ?? "",
+          10
+        );
+        const tranDateValue = dependentFields.TRAN_DT_D?.value;
+        // If any of the required fields are missing, return undefined early
+        if (!tranDateValue || isNaN(periodNumber) || !duration) {
+          console.error("Missing or invalid required fields.");
+          return undefined;
+        }
 
         try {
-          if (tranDateValue) {
-            // Convert tranDateValue to a Date object
-            const tranDate = new Date(tranDateValue);
+          const tranDate = new Date(tranDateValue);
 
-            // Check if tranDate is a valid date
-            if (!isNaN(tranDate.getTime())) {
-              // Adjust the date based on the duration
-              switch (duration) {
-                case "D":
-                  newDate = format(
-                    addDays(tranDate, periodNumber),
-                    "dd/MMM/yyyy"
-                  );
-                  break;
-                case "M":
-                  newDate = format(
-                    addMonths(tranDate, periodNumber),
-                    "dd/MMM/yyyy"
-                  );
-                  break;
-                case "Y":
-                  newDate = format(
-                    addYears(tranDate, periodNumber),
-                    "dd/MMM/yyyy"
-                  );
-                  break;
-                default:
-                  console.error("Invalid duration");
-                  break;
-              }
-            } else {
-              console.error("Invalid date value");
-            }
-          } else {
-            console.error("Transaction date value is missing");
+          if (isNaN(tranDate.getTime())) {
+            return "";
+          }
+
+          switch (duration) {
+            case "D":
+              return format(addDays(tranDate, periodNumber), "dd/MMM/yyyy");
+            case "M":
+              return format(addMonths(tranDate, periodNumber), "dd/MMM/yyyy");
+            case "Y":
+              return format(addYears(tranDate, periodNumber), "dd/MMM/yyyy");
+            default:
+              console.error("Invalid duration:", duration);
+              return undefined;
           }
         } catch (error) {
           console.error("Error processing date:", error);
+          return undefined;
         }
-
-        return newDate;
       },
 
       shouldExclude: (val1, dependent) => {
@@ -1050,21 +792,7 @@ export const metaData = {
       isReadOnly: true,
       label: "MaturityAmount",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_D",
-        "PERIOD_NO_D",
-        "MATURITY_DT_D",
-        "CATEG_CD_D",
-        "ACCT_TYPE_D",
-        "TRAN_DT_D",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_D",
-        "PRINCIPAL_AMT_D",
-        "INT_RATE_D",
-        "TERM_CD_D",
-      ],
+      dependentFields: ["CALCSWITCH"],
 
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "D") {
@@ -1132,82 +860,16 @@ export const metaData = {
         type: "string",
         rules: [{ name: "required", params: ["typeRequired"] }],
       },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_P",
-        "PERIOD_NO_P",
-        "MATURITY_DT_P",
-        "CATEG_CD_P",
-        "ACCT_TYPE_P",
-        "TRAN_DT_P",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_P",
-        "PRINCIPAL_AMT_P",
-      ],
+      dependentFields: ["CALCSWITCH"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
-        auth,
+        _,
         dependentFields
       ) => {
-        let period_cd = "D";
-        // let period_cd = dependentFields.PERIOD_CD_P?.value;
-        let period_no = `${dependentFields?.PERIOD_NO_P?.value}`;
-        let maturity_date = format(
-          new Date(dependentFields?.MATURITY_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let category_cd = dependentFields?.CATEG_CD_P?.value;
-        let acct_cd = field?.value;
-        let tran_date = format(
-          new Date(dependentFields?.TRAN_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let comp_cd = dependentFields?.COMP_CD?.value;
-        let branch_cd = dependentFields?.BRANCH_CD?.value;
-        let pre_int_flag = dependentFields?.PRE_INT_FLG_P?.value;
-        let principal_amt = dependentFields?.PRINCIPAL_AMT_P?.value;
-
-        const params = {
-          comp_cd,
-          branch_cd,
-          period_cd,
-          period_no,
-          maturity_date,
-          category_cd,
-          acct_cd,
-          tran_date,
-          pre_int_flag,
-          principal_amt,
+        return {
+          PERIODRATEAPI: { value: Date.now() },
         };
-
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(params)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: comp_cd,
-            BRANCH_CD: branch_cd,
-            ACCT_TYPE: acct_cd,
-            CATEG_CD: category_cd,
-            MATURITY_DT: maturity_date,
-            TRAN_DT: tran_date,
-            PERIOD_CD: period_cd,
-            PERIOD_NO: period_no,
-            PRE_INT_FLAG: pre_int_flag,
-            PRINCIPAL_AMT: principal_amt,
-          });
-          return {
-            INT_RATE_P: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
       },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
@@ -1217,7 +879,6 @@ export const metaData = {
       },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
     },
-
     {
       render: { componentType: "autocomplete" },
       name: "CATEG_CD_P",
@@ -1231,82 +892,16 @@ export const metaData = {
       },
       fullWidth: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_P",
-        "PERIOD_NO_P",
-        "MATURITY_DT_P",
-        "CATEG_CD_P",
-        "ACCT_TYPE_P",
-        "TRAN_DT_P",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_P",
-        "PRINCIPAL_AMT_P",
-      ],
+      dependentFields: ["CALCSWITCH"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
-        auth,
+        _,
         dependentFields
       ) => {
-        let period_cd = "D";
-        // let period_cd = dependentFields.PERIOD_CD_P?.value;
-        let period_no = `${dependentFields?.PERIOD_NO_P?.value}`;
-        let maturity_date = format(
-          new Date(dependentFields?.MATURITY_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let category_cd = field.value;
-        let acct_cd = dependentFields?.ACCT_TYPE_P?.value;
-        let tran_date = format(
-          new Date(dependentFields?.TRAN_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let comp_cd = dependentFields?.COMP_CD?.value;
-        let branch_cd = dependentFields?.BRANCH_CD?.value;
-        let pre_int_flag = dependentFields?.PRE_INT_FLG_P?.value;
-        let principal_amt = dependentFields?.PRINCIPAL_AMT_P?.value;
-
-        const params = {
-          comp_cd,
-          branch_cd,
-          period_cd,
-          period_no,
-          maturity_date,
-          category_cd,
-          acct_cd,
-          tran_date,
-          pre_int_flag,
-          principal_amt,
+        return {
+          PERIODRATEAPI: { value: Date.now() },
         };
-
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(params)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: comp_cd,
-            BRANCH_CD: branch_cd,
-            ACCT_TYPE: acct_cd,
-            CATEG_CD: category_cd,
-            MATURITY_DT: maturity_date,
-            TRAN_DT: tran_date,
-            PERIOD_CD: period_cd,
-            PERIOD_NO: period_no,
-            PRE_INT_FLAG: pre_int_flag,
-            PRINCIPAL_AMT: principal_amt,
-          });
-          return {
-            INT_RATE_P: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
       },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
@@ -1326,80 +921,18 @@ export const metaData = {
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_P",
-        "PERIOD_NO_P",
-        "MATURITY_DT_P",
-        "CATEG_CD_P",
-        "ACCT_TYPE_P",
-        "TRAN_DT_P",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_P",
-        "PRINCIPAL_AMT_P",
-      ],
+      dependentFields: ["CALCSWITCH"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
-        auth,
+        _,
         dependentFields
       ) => {
-        let period_cd = "D";
-        // let period_cd = dependentFields.PERIOD_CD_P?.value;
-        let period_no = `${dependentFields?.PERIOD_NO_P?.value}`;
-        let maturity_date = format(
-          new Date(dependentFields?.MATURITY_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let category_cd = dependentFields?.CATEG_CD_P?.value;
-        let acct_cd = dependentFields?.ACCT_TYPE_P?.value;
-        let tran_date = format(new Date(field?.value), "dd/MMM/yyyy");
-        let comp_cd = dependentFields?.COMP_CD?.value;
-        let branch_cd = dependentFields?.BRANCH_CD?.value;
-        let pre_int_flag = dependentFields?.PRE_INT_FLG_P?.value;
-        let principal_amt = dependentFields?.PRINCIPAL_AMT_P?.value;
-
-        const params = {
-          comp_cd,
-          branch_cd,
-          period_cd,
-          period_no,
-          maturity_date,
-          category_cd,
-          acct_cd,
-          tran_date,
-          pre_int_flag,
-          principal_amt,
+        return {
+          PERIODRATEAPI: { value: Date.now() },
         };
-
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(params)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: comp_cd,
-            BRANCH_CD: branch_cd,
-            ACCT_TYPE: acct_cd,
-            CATEG_CD: category_cd,
-            MATURITY_DT: maturity_date,
-            TRAN_DT: tran_date,
-            PERIOD_CD: period_cd,
-            PERIOD_NO: period_no,
-            PRE_INT_FLAG: pre_int_flag,
-            PRINCIPAL_AMT: principal_amt,
-          });
-          return {
-            INT_RATE_P: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
       },
+
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
           return false;
@@ -1414,95 +947,29 @@ export const metaData = {
       name: "MATURITY_DT_P",
       label: "maturityDate",
       required: true,
-      defaultValue: new Date(),
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_P",
-        "PERIOD_NO_P",
-        "MATURITY_DT_P",
-        "CATEG_CD_P",
-        "ACCT_TYPE_P",
-        "TRAN_DT_P",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_P",
-        "PRINCIPAL_AMT_P",
-      ],
+      dependentFields: ["CALCSWITCH"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
-        auth,
+        _,
         dependentFields
       ) => {
-        let period_cd = "D";
-        // let period_cd = dependentFields.PERIOD_CD_P?.value;
-        let period_no = `${dependentFields?.PERIOD_NO_P?.value}`;
-        let maturity_date = format(new Date(field?.value), "dd/MMM/yyyy");
-        console.log(maturity_date);
-
-        let category_cd = dependentFields?.CATEG_CD_P?.value;
-        let acct_cd = dependentFields?.ACCT_TYPE_P?.value;
-        let tran_date = format(
-          new Date(dependentFields?.TRAN_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let comp_cd = dependentFields?.COMP_CD?.value;
-        let branch_cd = dependentFields?.BRANCH_CD?.value;
-        let pre_int_flag = dependentFields?.PRE_INT_FLG_P?.value;
-        let principal_amt = dependentFields?.PRINCIPAL_AMT_P?.value;
-
-        const params = {
-          comp_cd,
-          branch_cd,
-          period_cd,
-          period_no,
-          maturity_date,
-          category_cd,
-          acct_cd,
-          tran_date,
-          pre_int_flag,
-          principal_amt,
+        return {
+          PERIODRATEAPI: { value: Date.now() },
         };
-
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(params)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: comp_cd,
-            BRANCH_CD: branch_cd,
-            ACCT_TYPE: acct_cd,
-            CATEG_CD: category_cd,
-            MATURITY_DT: maturity_date,
-            TRAN_DT: tran_date,
-            PERIOD_CD: period_cd,
-            PERIOD_NO: period_no,
-            PRE_INT_FLAG: pre_int_flag,
-            PRINCIPAL_AMT: principal_amt,
-          });
-          return {
-            INT_RATE_P: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
       },
-      validate: (currentField, dependentField) => {
-        if (
-          new Date(currentField?.value) <
-          new Date(dependentField?.TRAN_DT_P?.value)
-        ) {
-          return "maturityDateValidationMsg";
-        }
-        return "";
-      },
+      // validate: (currentField, dependentField) => {
+      //   if (
+      //     new Date(currentField?.value) <
+      //     new Date(dependentField?.TRAN_DT_P?.value)
+      //   ) {
+      //     return "maturityDateValidationMsg";
+      //   }
+      //   return "";
+      // },
 
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
@@ -1517,7 +984,6 @@ export const metaData = {
       label: "Period",
       defaultValue: "Day",
       fullWidth: true,
-
       isReadOnly: true,
       preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
@@ -1530,7 +996,6 @@ export const metaData = {
         return true;
       },
     },
-
     {
       render: {
         componentType: "textField",
@@ -1556,9 +1021,14 @@ export const metaData = {
         let duration = dependentFields.PERIOD_CD_D?.value;
         let startDate = dependentFields?.TRAN_DT_P?.value;
         let endDate = dependentFields?.MATURITY_DT_P?.value;
-        const formattedInitialDate = format(startDate, "yyyy-MM-dd"); // Format to YYYY-MM-DD
 
-        if (startDate && endDate) {
+        if (
+          startDate &&
+          endDate &&
+          utilFunction.isValidDate(startDate) &&
+          utilFunction.isValidDate(endDate)
+        ) {
+          const formattedInitialDate = format(startDate, "yyyy-MM-dd"); // Format to YYYY-MM-DD
           const start = new Date(formattedInitialDate);
           const end = new Date(endDate);
 
@@ -1566,70 +1036,15 @@ export const metaData = {
           return days;
         }
       },
-
       postValidationSetCrossFieldValues: async (
         field,
         formState,
-        auth,
+        _,
         dependentFields
       ) => {
-        let period_cd = "D";
-        // let period_cd = dependentFields.PERIOD_CD_P?.value;
-        let period_no = `${field?.value}`;
-        let maturity_date = format(
-          new Date(dependentFields?.MATURITY_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let category_cd = dependentFields?.CATEG_CD_P?.value;
-        let acct_cd = dependentFields?.ACCT_TYPE_P?.value;
-        let tran_date = format(
-          new Date(dependentFields?.TRAN_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let comp_cd = dependentFields?.COMP_CD?.value;
-        let branch_cd = dependentFields?.BRANCH_CD?.value;
-        let pre_int_flag = dependentFields?.PRE_INT_FLG_P?.value;
-        let principal_amt = dependentFields?.PRINCIPAL_AMT_P?.value;
-
-        const params = {
-          comp_cd,
-          branch_cd,
-          period_cd,
-          period_no,
-          maturity_date,
-          category_cd,
-          acct_cd,
-          tran_date,
-          pre_int_flag,
-          principal_amt,
+        return {
+          PERIODRATEAPI: { value: Date.now() },
         };
-
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(params)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: comp_cd,
-            BRANCH_CD: branch_cd,
-            ACCT_TYPE: acct_cd,
-            CATEG_CD: category_cd,
-            MATURITY_DT: maturity_date,
-            TRAN_DT: tran_date,
-            PERIOD_CD: period_cd,
-            PERIOD_NO: period_no,
-            PRE_INT_FLAG: pre_int_flag,
-            PRINCIPAL_AMT: principal_amt,
-          });
-          return {
-            INT_RATE_P: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
       },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
@@ -1650,82 +1065,16 @@ export const metaData = {
         rules: [{ name: "required", params: ["principleAmtrequire"] }],
       },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_P",
-        "PERIOD_NO_P",
-        "MATURITY_DT_P",
-        "CATEG_CD_P",
-        "ACCT_TYPE_P",
-        "TRAN_DT_P",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_P",
-        "PRINCIPAL_AMT_P",
-      ],
+      dependentFields: ["CALCSWITCH"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
-        auth,
+        _,
         dependentFields
       ) => {
-        let period_cd = "D";
-        // let period_cd = dependentFields.PERIOD_CD_P?.value;
-        let period_no = `${dependentFields?.PERIOD_NO_P?.value}`;
-        let maturity_date = format(
-          new Date(dependentFields?.MATURITY_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let category_cd = dependentFields?.CATEG_CD_P?.value;
-        let acct_cd = dependentFields?.ACCT_TYPE_P?.value;
-        let tran_date = format(
-          new Date(dependentFields?.TRAN_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let comp_cd = dependentFields?.COMP_CD?.value;
-        let branch_cd = dependentFields?.BRANCH_CD?.value;
-        let pre_int_flag = dependentFields?.PRE_INT_FLG_P?.value;
-        let principal_amt = field?.value;
-
-        const params = {
-          comp_cd,
-          branch_cd,
-          period_cd,
-          period_no,
-          maturity_date,
-          category_cd,
-          acct_cd,
-          tran_date,
-          pre_int_flag,
-          principal_amt,
+        return {
+          PERIODRATEAPI: { value: Date.now() },
         };
-
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(params)) {
-          const postData = await API.getFdinterest({
-            COMP_CD: comp_cd,
-            BRANCH_CD: branch_cd,
-            ACCT_TYPE: acct_cd,
-            CATEG_CD: category_cd,
-            MATURITY_DT: maturity_date,
-            TRAN_DT: tran_date,
-            PERIOD_CD: period_cd,
-            PERIOD_NO: period_no,
-            PRE_INT_FLAG: pre_int_flag,
-            PRINCIPAL_AMT: principal_amt,
-          });
-          return {
-            INT_RATE_P: {
-              value: postData[0]?.INT_RATE,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
       },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
@@ -1748,143 +1097,18 @@ export const metaData = {
         rules: [{ name: "required", params: ["rateRequired"] }],
       },
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_P",
-        "PERIOD_NO_P",
-        "MATURITY_DT_P",
-        "CATEG_CD_P",
-        "ACCT_TYPE_P",
-        "TRAN_DT_P",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_P",
-        "PRINCIPAL_AMT_P",
-        "INT_RATE_P",
-        "TERM_CD_P",
-      ],
+      dependentFields: ["CALCSWITCH"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
-        auth,
+        _,
         dependentFields
       ) => {
-        let duration = "D";
-        // let duration = dependentFields?.PERIOD_NO_P?.value;
-        let termcd = dependentFields?.TERM_CD_P?.value;
-        let rate = field?.value;
-        let period = `${dependentFields?.PERIOD_NO_P?.value}`;
-        let fdflag = dependentFields?.PRE_INT_FLG_P?.value;
-        let principalAmount = dependentFields?.PRINCIPAL_AMT_P?.value;
-        let acctType = dependentFields?.ACCT_TYPE_P?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = dependentFields?.CATEG_CD_P?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = format(
-          new Date(dependentFields?.MATURITY_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          termcd,
-          rate,
+        return {
+          PERIODAMTAPI: { value: Date.now() },
         };
-
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdMaturityAmount({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: duration,
-            PERIOD_NO: period,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-            INT_RATE: rate,
-            TERM_CD: termcd,
-          });
-          return {
-            MATURITY_AMT_P: {
-              value: postData[0]?.MATURITY_AMT,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
       },
-      // setValueOnDependentFieldsChange: async (dependentFields) => {
-      //   let period_cd = "D";
-      //   // let period_cd = dependentFields.PERIOD_CD_P?.value;
-      //   let period_no = `${dependentFields?.PERIOD_NO_P?.value}`;
-      //   let maturity_date = format(
-      //     new Date(dependentFields?.MATURITY_DT_P?.value),
-      //     "dd/MMM/yyyy"
-      //   );
-      //   let category_cd = dependentFields?.CATEG_CD_P?.value;
-      //   let acct_cd = dependentFields?.ACCT_TYPE_P?.value;
-      //   let tran_date = format(
-      //     new Date(dependentFields?.TRAN_DT_P?.value),
-      //     "dd/MMM/yyyy"
-      //   );
-      //   let comp_cd = dependentFields?.COMP_CD?.value;
-      //   let branch_cd = dependentFields?.BRANCH_CD?.value;
-      //   let pre_int_flag = dependentFields?.PRE_INT_FLG_P?.value;
-      //   let principal_amt = dependentFields?.PRINCIPAL_AMT_P?.value;
 
-      //   const params = {
-      //     comp_cd,
-      //     branch_cd,
-      //     period_cd,
-      //     period_no,
-      //     maturity_date,
-      //     category_cd,
-      //     acct_cd,
-      //     tran_date,
-      //     pre_int_flag,
-      //     principal_amt,
-      //   };
-
-      //   const areAllValuesPresent = (values) => {
-      //     return Object.values(values).every(
-      //       (value) => value !== "" && value != null
-      //     );
-      //   };
-      //   if (areAllValuesPresent(params)) {
-      //     const postData = await API.getFdinterest({
-      //       COMP_CD: comp_cd,
-      //       BRANCH_CD: branch_cd,
-      //       ACCT_TYPE: acct_cd,
-      //       CATEG_CD: category_cd,
-      //       MATURITY_DT: maturity_date,
-      //       TRAN_DT: tran_date,
-      //       PERIOD_CD: period_cd,
-      //       PERIOD_NO: period_no,
-      //       PRE_INT_FLAG: pre_int_flag,
-      //       PRINCIPAL_AMT: principal_amt,
-      //     });
-
-      //     return postData[0]?.INT_RATE;
-      //   }
-      // },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
           return false;
@@ -1903,95 +1127,22 @@ export const metaData = {
         { label: "Half-Yearly", value: "H" },
         { label: "Yearly", value: "Y" },
       ],
-      defaultValue: "M",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["termrequire"] }],
       },
       fullWidth: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_P",
-        "PERIOD_NO_P",
-        "MATURITY_DT_P",
-        "CATEG_CD_P",
-        "ACCT_TYPE_P",
-        "TRAN_DT_P",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_P",
-        "PRINCIPAL_AMT_P",
-        "INT_RATE_P",
-        "TERM_CD_P",
-      ],
+      dependentFields: ["CALCSWITCH"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
-        auth,
+        _,
         dependentFields
       ) => {
-        let duration = "D";
-        // let duration = dependentFields?.PERIOD_NO_P?.value;
-        let termcd = field?.value;
-        let rate = dependentFields?.INT_RATE_P?.value;
-        let period = `${dependentFields?.PERIOD_NO_P?.value}`;
-        let fdflag = dependentFields?.PRE_INT_FLG_P?.value;
-        let principalAmount = dependentFields?.PRINCIPAL_AMT_P?.value;
-        let acctType = dependentFields?.ACCT_TYPE_P?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = dependentFields?.CATEG_CD_P?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = format(
-          new Date(dependentFields?.MATURITY_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          termcd,
-          rate,
+        return {
+          PERIODAMTAPI: { value: Date.now() },
         };
-
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdMaturityAmount({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: duration,
-            PERIOD_NO: period,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-            INT_RATE: rate,
-            TERM_CD: termcd,
-          });
-          return {
-            MATURITY_AMT_P: {
-              value: postData[0]?.MATURITY_AMT,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
       },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
@@ -2025,7 +1176,6 @@ export const metaData = {
         return true;
       },
     },
-
     {
       render: {
         componentType: "amountField",
@@ -2034,147 +1184,8 @@ export const metaData = {
       isReadOnly: true,
       label: "MaturityAmount",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
-      dependentFields: [
-        "CALCSWITCH",
-        "PERIOD_CD_P",
-        "PERIOD_NO_P",
-        "MATURITY_DT_P",
-        "CATEG_CD_P",
-        "ACCT_TYPE_P",
-        "TRAN_DT_P",
-        "COMP_CD",
-        "BRANCH_CD",
-        "PRE_INT_FLG_P",
-        "PRINCIPAL_AMT_P",
-        "INT_RATE_P",
-        "TERM_CD_P",
-      ],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFields
-      ) => {
-        let duration = "D";
-        // let duration = dependentFields?.PERIOD_NO_P?.value;
-        let termcd = dependentFields?.TERM_CD_P?.value;
-        let rate = field?.value;
-        let period = `${dependentFields?.PERIOD_NO_P?.value}`;
-        let fdflag = dependentFields?.PRE_INT_FLG_P?.value;
-        let principalAmount = dependentFields?.PRINCIPAL_AMT_P?.value;
-        let acctType = dependentFields?.ACCT_TYPE_P?.value;
-        let branchCd = dependentFields?.BRANCH_CD?.value;
-        let catCd = dependentFields?.CATEG_CD_P?.value;
-        let companyCd = dependentFields?.COMP_CD?.value;
-        let tranDate = format(
-          new Date(dependentFields?.TRAN_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let maturityDate = format(
-          new Date(dependentFields?.MATURITY_DT_P?.value),
-          "dd/MMM/yyyy"
-        );
-        let reqData = {
-          duration,
-          period,
-          fdflag,
-          principalAmount,
-          acctType,
-          branchCd,
-          companyCd,
-          tranDate,
-          catCd,
-          termcd,
-          rate,
-        };
+      dependentFields: ["CALCSWITCH"],
 
-        const areAllValuesPresent = (values) => {
-          return Object.values(values).every(
-            (value) => value !== "" && value != null
-          );
-        };
-        if (areAllValuesPresent(reqData)) {
-          const postData = await API.getFdMaturityAmount({
-            COMP_CD: companyCd,
-            BRANCH_CD: branchCd,
-            ACCT_TYPE: acctType,
-            CATEG_CD: catCd,
-            MATURITY_DT: maturityDate,
-            TRAN_DT: tranDate,
-            PERIOD_CD: duration,
-            PERIOD_NO: period,
-            PRE_INT_FLAG: fdflag,
-            PRINCIPAL_AMT: principalAmount,
-            INT_RATE: rate,
-            TERM_CD: termcd,
-          });
-          return {
-            INT_RATE_P: {
-              value: postData[0]?.MATURITY_AMT,
-              isFieldFocused: false,
-              ignoreUpdate: true,
-            },
-          };
-        }
-      },
-      // setValueOnDependentFieldsChange: async (dependentFields) => {
-      //   let duration = "D";
-      //   // let duration = dependentFields?.PERIOD_NO_P?.value;
-      //   let termcd = dependentFields?.TERM_CD_P?.value;
-      //   let rate = dependentFields?.INT_RATE_P?.value;
-      //   let period = `${dependentFields?.PERIOD_NO_P?.value}`;
-      //   let fdflag = dependentFields?.PRE_INT_FLG_P?.value;
-      //   let principalAmount = dependentFields?.PRINCIPAL_AMT_P?.value;
-      //   let acctType = dependentFields?.ACCT_TYPE_P?.value;
-      //   let branchCd = dependentFields?.BRANCH_CD?.value;
-      //   let catCd = dependentFields?.CATEG_CD_P?.value;
-      //   let companyCd = dependentFields?.COMP_CD?.value;
-      //   let tranDate = format(
-      //     new Date(dependentFields?.TRAN_DT_P?.value),
-      //     "dd/MMM/yyyy"
-      //   );
-      //   let maturityDate = format(
-      //     new Date(dependentFields?.MATURITY_DT_P?.value),
-      //     "dd/MMM/yyyy"
-      //   );
-      //   let reqData = {
-      //     duration,
-      //     period,
-      //     fdflag,
-      //     principalAmount,
-      //     acctType,
-      //     branchCd,
-      //     companyCd,
-      //     tranDate,
-      //     catCd,
-      //     termcd,
-      //     rate,
-      //   };
-
-      //   const areAllValuesPresent = (values) => {
-      //     return Object.values(values).every(
-      //       (value) => value !== "" && value != null
-      //     );
-      //   };
-      //   if (areAllValuesPresent(reqData)) {
-      //     const postData = await API.getFdMaturityAmount({
-      //       COMP_CD: companyCd,
-      //       BRANCH_CD: branchCd,
-      //       ACCT_TYPE: acctType,
-      //       CATEG_CD: catCd,
-      //       MATURITY_DT: maturityDate,
-      //       TRAN_DT: tranDate,
-      //       PERIOD_CD: duration,
-      //       PERIOD_NO: period,
-      //       PRE_INT_FLAG: fdflag,
-      //       PRINCIPAL_AMT: principalAmount,
-      //       INT_RATE: rate,
-      //       TERM_CD: termcd,
-      //     });
-
-      //     return postData[0]?.MATURITY_AMT;
-      //   }
-      // },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
           return false;
@@ -2228,6 +1239,7 @@ export const metaData = {
       ],
       defaultValue: "D",
       fullWidth: true,
+      required: true,
       GridProps: { xs: 3, sm: 3, md: 2, lg: 2, xl: 2 },
       dependentFields: ["CALCSWITCH"],
       shouldExclude: (val1, dependent) => {
@@ -2244,6 +1256,7 @@ export const metaData = {
       },
       name: "PERIOD_NO_S",
       label: "",
+      required: true,
       GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1, xl: 1 },
       preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       dependentFields: ["CALCSWITCH", "PERIOD_NO_DISP_S"],
@@ -2272,6 +1285,7 @@ export const metaData = {
       },
       name: "PRINCIPAL_AMT_S",
       label: "PrincipalAmount",
+      required: true,
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: ["CALCSWITCH"],
       shouldExclude: (val1, dependent) => {
