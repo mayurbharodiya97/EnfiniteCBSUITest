@@ -29,7 +29,7 @@ spec:
       # - Each init container must complete successfully before the next one starts.
       containers:
       - name: cbs-gateway-microservice-container
-        image: actdocker123/cbs-micro-service:EnfiniteCBS_UI-24.04.00.00.15
+        image: actdocker123/cbs-micro-service:EnfiniteCBS_UI-24.04.00.00.16
         imagePullPolicy: IfNotPresent
         lifecycle:
           preStop:
