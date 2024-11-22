@@ -70,7 +70,7 @@ export const multipleChequebookGridData: GridMetaDataType = {
     },
     {
       accessor: "SERVICE_TAX",
-      columnName: "GSTAmount",
+      columnName: "GST",
       sequence: 8,
       alignment: "right",
       componentType: "currency",

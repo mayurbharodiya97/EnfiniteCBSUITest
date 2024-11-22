@@ -627,7 +627,7 @@ export const en_language_data = {
 
   EnterAccountType: "Enter Account Type.",
   EnterAccountBranch: "Enter Account Branch.",
-  EnterAccountNumber: "Please Enter Accont Number.",
+  EnterAccountNumber: "Please Enter Accont Number",
   EnterAccountNum: "Enter Accont Number",
   ModeOfOperation: "Mode of Operation",
   GetDetails: "Get Details",
@@ -974,7 +974,8 @@ export const en_language_data = {
   ToDateshouldbegreaterthanorequaltoFromDate:
     "To Date should be greater than or equal to From Date.",
   OptionIsAlreadyEntered: "Option is Already entered",
-  FooterNoteMsgCfmRej: "Note :- Double-click the record to confirm or reject",
+  FooterNoteMsgCfmRej:
+    "Note :- Double click on the Record to Confirm or Reject.",
   PressCtrlJToViewJointInformation:
     "Press (Ctrl + J) To View Joint Information & Press Esc to Close",
   DoYouWantDeleteRow: "Do you want to delete this row?",
@@ -1073,7 +1074,7 @@ export const en_language_data = {
   ChequebookEntry: "Cheque Book Issue Entry",
   ChequebookDetail: "Cheque Book Issue Detail",
   RemovalRemarksChequebook:
-    "Enter Removal Remarks for Chequebook Issue Entry (ETRN/045)",
+    "Enter Removal Remarks for Cheque Book Issue Entry (TRN/045)",
   FromChequeNo: "From Cheque No.",
   EnterFromChequeNo: "Enter From Cheque No.",
   NoOfCheques: "No. of Cheque(s)",
@@ -1083,7 +1084,7 @@ export const en_language_data = {
   EnterToChequeNo: "Enter To Cheque No.",
   ServiceCharge: "Charge",
   GSTAmount: "GST-Amount",
-  NoOfChequeBooks: "No. of ChequeBooks",
+  NoOfChequeBooks: "No. of Cheque Book(s)",
   EnterNoOfChequeBooks: "Enter No. of ChequeBooks",
   PayableAtPAR: "Payable At PAR",
   SelectPayableAtPAR: "Select Payable At PAR",
@@ -1269,6 +1270,7 @@ export const en_language_data = {
   LienDetail: "Lien Detail",
   LienEntry: "Lien Entry",
   LienCode: "Lien Code",
+  Lien: "Lien",
   SelectLienCode: "Select Lien Code",
   LienAmount: "Lien Amount",
   LienStatus: "Lien Status",
@@ -1285,7 +1287,15 @@ export const en_language_data = {
   LienReason: "Lien Reason",
   RemovalDtShouldBeGreterThanEqualToEffDT:
     "Removal Date should be greater than or Equal to Effective date",
-
+  CyberFraud: "Cyber Fraud",
+  ReportingDate: "Reporting Date",
+  TransactionId: "Transaction Id",
+  EnterTransactionId: "Enter Transaction Id",
+  AcknowledgementNo: "Acknowledgement No.",
+  EnterAcknowledgementNo: "Enter Acknowledgement No.",
+  LienCodeIsRequired: "Lien Code is required",
+  NotConfirmed: "Not Confirmed.",
+  DoYouWantAllowTransaction: "Do you wnat to allow the transaction ?",
   // Temporary OD
 
   Add: "Add",
