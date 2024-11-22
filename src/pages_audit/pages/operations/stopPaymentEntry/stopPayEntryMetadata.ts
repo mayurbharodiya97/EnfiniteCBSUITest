@@ -708,7 +708,7 @@ export const StopPayEntryMetadata = {
         componentType: "amountField",
       },
       name: "SERVICE_TAX",
-      label: "GSTAmount",
+      label: "GST",
       isReadOnly: true,
 
       FormatProps: {

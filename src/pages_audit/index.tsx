@@ -27,7 +27,7 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
     required: true,
     name: "BRANCH_CD",
     label: "Branch Code",
-    placeholder: "Select branch code",
+    placeholder: "BranchCodePlaceHolder",
     // options: [
     //   { label: "1 branch", value: "1" },
     //   { label: "2 branch", value: "2" },
@@ -84,7 +84,7 @@ const meta: ExtendedFieldMetaDataTypeOptional = {
     },
     label: "Account Number",
     name: "ACCT_CD",
-    placeholder: "Enter account number",
+    placeholder: "EnterAccountNumber",
     required: true,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
     postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",

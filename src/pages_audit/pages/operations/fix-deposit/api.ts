@@ -116,7 +116,7 @@ export const getPeriodDDWData = async (reqData) => {
           return {
             value: PERIOD_CD,
             label: DESCR,
-            defaultVal: DEFAULT_VALUE,
+            tenorDefaultVal: DEFAULT_VALUE,
           };
         }
       );
@@ -140,7 +140,7 @@ export const getMatureInstDDWData = async (reqData) => {
           return {
             value: MATURE_INST,
             label: DESCRIPTION,
-            defaultVal: DEFAULT_VALUE,
+            matureInstDefaultVal: DEFAULT_VALUE,
           };
         }
       );
