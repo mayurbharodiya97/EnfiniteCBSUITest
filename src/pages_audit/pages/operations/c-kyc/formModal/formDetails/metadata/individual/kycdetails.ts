@@ -1,8 +1,5 @@
 import { greaterThanInclusiveDate, lessThanDate } from "@acuteinfo/common-base";
 import * as API from "../../../../api";
-import { isValid } from "date-fns";
-import { useTranslation } from "react-i18next";
-const { t } = useTranslation();
 
 export const kyc_proof_of_identity_meta_data = {
   form: {
@@ -330,13 +327,9 @@ export const kyc_proof_of_identity_meta_data = {
             return "This field is required";
           }
         } else {
-          if (Boolean(columnValue?.value) && !isValid(columnValue?.value)) {
-            return t("Mustbeavaliddate");
-          }
           if (lessThanDate(new Date(), columnValue.value)) {
             return `Passport Issue Date can't be greater than today's date.`;
           }
-          return "";
         }
       },
       runValidationOnDependentFieldsChange: true,
@@ -360,13 +353,9 @@ export const kyc_proof_of_identity_meta_data = {
             return "This field is required";
           }
         } else {
-          if (Boolean(columnValue?.value) && !isValid(columnValue?.value)) {
-            return t("Mustbeavaliddate");
-          }
           if (greaterThanInclusiveDate(new Date(), columnValue.value)) {
             return `Passport Expiry Date can't be less than or equal to Today's Date.`;
           }
-          return "";
         }
       },
       runValidationOnDependentFieldsChange: true,
@@ -438,13 +427,9 @@ export const kyc_proof_of_identity_meta_data = {
             return "This field is required";
           }
         } else {
-          if (Boolean(columnValue?.value) && !isValid(columnValue?.value)) {
-            return t("Mustbeavaliddate");
-          }
           if (lessThanDate(new Date(), columnValue?.value)) {
             return `Driving License Issue Date can't be greater than today's date.`;
           }
-          return "";
         }
       },
       runValidationOnDependentFieldsChange: true,
@@ -468,13 +453,9 @@ export const kyc_proof_of_identity_meta_data = {
             return "This field is required";
           }
         } else {
-          if (Boolean(columnValue?.value) && !isValid(columnValue?.value)) {
-            return t("Mustbeavaliddate");
-          }
           if (greaterThanInclusiveDate(new Date(), columnValue?.value)) {
             return `Driving License Expiry Date can't be less than or equal to Today's Date.`;
           }
-          return "";
         }
       },
       runValidationOnDependentFieldsChange: true,

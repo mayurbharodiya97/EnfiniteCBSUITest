@@ -153,10 +153,6 @@ export const attestation_detail_meta_data = {
       // placeholder: "",
       // type: "datePicker",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
-      schemaValidation: {
-        type: "date",
-        rules: [{ name: "typeError", params: ["Mustbeavaliddate"] }],
-      },
     },
     {
       render: {
@@ -200,10 +196,6 @@ export const attestation_detail_meta_data = {
       isReadOnly: true,
       // placeholder: "",
       // type: "datePicker",
-      schemaValidation: {
-        type: "date",
-        rules: [{ name: "typeError", params: ["Mustbeavaliddate"] }],
-      },
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
     },
   ],

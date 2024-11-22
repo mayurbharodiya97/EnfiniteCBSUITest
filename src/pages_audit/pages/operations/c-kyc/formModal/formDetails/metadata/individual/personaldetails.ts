@@ -598,10 +598,7 @@ export const personal_other_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["ThisFieldisrequired"] },
-          { name: "typeError", params: ["Mustbeavaliddate"] },
-        ],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       // placeholder: "",
       // type: "datePicker",
@@ -779,10 +776,7 @@ export const personal_other_detail_meta_data = {
       maxDate: new Date(),
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["ThisFieldisrequired"] },
-          { name: "typeError", params: ["Mustbeavaliddate"] },
-        ],
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       // placeholder: "",
       // type: "datePicker",
