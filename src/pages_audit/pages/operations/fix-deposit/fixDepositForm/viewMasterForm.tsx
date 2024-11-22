@@ -106,10 +106,20 @@ export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
                     : data?.[0]?.FORM_60 === "N"
                     ? "N"
                     : "",
-                CATEGORY_VAL: `${data?.[0]?.CATEG_CD?.trim()} - ${data?.[0]?.CATEG_NM?.trim()}`,
-                MODE_VAL: `${data?.[0]?.ACCT_MODE?.trim()} - ${data?.[0]?.MODE_NM?.trim()}`,
-                BRANCH_VAL: `${data?.[0]?.BRANCH_CD?.trim()} - ${data?.[0]?.BRANCH_NM?.trim()}`,
-                ACCT_TYPE_VAL: `${data?.[0]?.ACCT_TYPE?.trim()} - ${data?.[0]?.TYPE_NM?.trim()}`,
+                CATEGORY_VAL: `${
+                  data?.[0]?.CATEG_CD ? data?.[0]?.CATEG_CD?.trim() : ""
+                } - ${data?.[0]?.CATEG_NM ? data?.[0]?.CATEG_NM?.trim() : ""}`,
+                MODE_VAL: `${
+                  data?.[0]?.ACCT_MODE ? data?.[0]?.ACCT_MODE?.trim() : ""
+                } - ${data?.[0]?.MODE_NM ? data?.[0]?.MODE_NM?.trim() : ""}`,
+                BRANCH_VAL: `${
+                  data?.[0]?.BRANCH_CD ? data?.[0]?.BRANCH_CD?.trim() : ""
+                } - ${
+                  data?.[0]?.BRANCH_NM ? data?.[0]?.BRANCH_NM?.trim() : ""
+                }`,
+                ACCT_TYPE_VAL: `${
+                  data?.[0]?.ACCT_TYPE ? data?.[0]?.ACCT_TYPE?.trim() : ""
+                } - ${data?.[0]?.TYPE_NM ? data?.[0]?.TYPE_NM?.trim() : ""}`,
               } as InitialValuesType
             }
             onSubmitHandler={() => {}}

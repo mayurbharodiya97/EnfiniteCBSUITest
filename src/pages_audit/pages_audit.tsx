@@ -1,4 +1,12 @@
-import { useState, Fragment, useEffect, lazy, useContext, memo } from "react";
+import {
+  useState,
+  Fragment,
+  useEffect,
+  lazy,
+  useContext,
+  memo,
+  useMemo,
+} from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Content } from "./content";
 import { useStyles } from "./style";
@@ -62,6 +70,49 @@ export const PagesAudit = (props, { columns }) => {
       handleDrawerOpen();
     }
   }, [location.pathname]);
+
+  const allMenuChildren = useMemo(() => {
+    const menu = authController?.authState?.menulistdata;
+    let allChild: any[] = [];
+    if (Array.isArray(menu) && menu.length > 0) {
+      menu.forEach((item) => {
+        if (item?.children && item?.children.length > 0) {
+          allChild = allChild.concat(item?.children);
+        }
+      });
+    }
+    return allChild;
+  }, [authController?.authState?.menulistdata?.length]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key && e.key !== "Control") {
+        const finalKey = "Ctrl+" + e.key?.toUpperCase();
+        const isShortcutKeyExist: any = allMenuChildren.find(
+          (child) => child?.short_cut_key === finalKey
+        );
+        if (isShortcutKeyExist?.short_cut_key && isShortcutKeyExist?.href) {
+          e.preventDefault();
+          navigate(`/cbsenfinity/${isShortcutKeyExist?.href}`);
+        }
+      } else if (e.key && e.key !== "Control") {
+        const isShortcutKeyExist: any = allMenuChildren.find(
+          (child) => child?.short_cut_key === e.key
+        );
+        if (isShortcutKeyExist?.short_cut_key && isShortcutKeyExist?.href) {
+          e.preventDefault();
+          navigate(`/cbsenfinity/${isShortcutKeyExist?.href}`);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate]);
 
   return (
     <Fragment>
