@@ -26,7 +26,6 @@ import {
   queryClient,
 } from "@acuteinfo/common-base";
 import { format } from "date-fns";
-import { FDPayment } from "./fixDepositForm/fdPayment";
 import { useTranslation } from "react-i18next";
 import FDPaymentStepperForm from "./fixDepositForm/fdPaymentStepper";
 import { FDPaymentBtns } from "./fixDepositForm/fdPaymentBtnsForm";
@@ -35,7 +34,6 @@ export const FDDetailGrid = () => {
   const {
     FDState,
     updateFDDetailsFormData,
-    updateRetrieveFormData,
     resetAllData,
     updateViewDtlGridData,
     setActiveStep,
@@ -47,6 +45,7 @@ export const FDDetailGrid = () => {
     updateSourceAcctFormData,
     updateBeneficiaryAcctData,
     updatePayslipAndDDData,
+    setIsBackButton,
   } = useContext(FDContext);
   const [openFDPmtBtns, setOpenFDPmtBtns] = useState(false);
   const [openIntPayment, setOpenIntPayment] = useState(false);
@@ -107,7 +106,6 @@ export const FDDetailGrid = () => {
                   actionButtonData?.find((item) => item.FLAG === "PAIDFD")
                     ?.ACTIONLABEL
                 }  (${FDState?.acctNoData?.PAID_FD_CNT ?? ""})`,
-
                 multiple: undefined,
                 alwaysAvailable: true,
               },
@@ -599,6 +597,7 @@ export const FDDetailGrid = () => {
         data?.name ===
         `${actionButtonData?.find((item) => item.FLAG === "NEWFD")?.ACTIONNAME}`
       ) {
+        setIsBackButton(false);
         navigate(data?.name, {
           state: [],
         });
@@ -655,20 +654,9 @@ export const FDDetailGrid = () => {
     setOpenFDPmtBtns(false);
     setOpenIntPayment(false);
     setOpenLienForm(false);
+    setIsBackButton(false);
     navigate(".");
     if (isDataChangedRef.current === true) {
-      // const reqParam = {
-      //   COMP_CD: authState?.companyID ?? "",
-      //   BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
-      //   ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-      //   ACCT_CD:
-      //     utilFunction.getPadAccountNumber(
-      //       FDState?.retrieveFormData?.ACCT_CD,
-      //       FDState?.retrieveFormData?.ACCT_TYPE
-      //     ) ?? "",
-      //   WORKING_DT: authState?.workingDate ?? "",
-      // };
-      // getFDViewDtlMutation?.mutate(reqParam);
       handleGetDataMutation();
       isDataChangedRef.current = false;
     }

@@ -57,7 +57,10 @@ export const FixDepositDetailFormMetadata = {
         componentType: "spacer",
       },
       name: "TOTAL_FIELD_SPACE",
-      GridProps: { xs: 12, sm: 5, md: 6.2, lg: 9, xl: 9 },
+      GridProps: { xs: 2.2, sm: 7, md: 8, lg: 10, xl: 10 },
+      __NEW__: {
+        GridProps: { xs: 12, sm: 5, md: 6.2, lg: 9, xl: 9 },
+      },
     },
     {
       render: {
@@ -101,19 +104,6 @@ export const FixDepositDetailFormMetadata = {
     },
     {
       render: {
-        componentType: "spacer",
-      },
-      name: "ADD_ROW_BTN_EXCLUDE",
-      __NEW__: {
-        shouldExclude: () => {
-          return true;
-        },
-        GridProps: { xs: 0, sm: 0, md: 0, lg: 0, xl: 0 },
-      },
-      GridProps: { xs: 2.2, sm: 2, md: 1.8, lg: 1, xl: 1 },
-    },
-    {
-      render: {
         componentType: "formbutton",
       },
       name: "ADDNEWROW",
@@ -123,9 +113,14 @@ export const FixDepositDetailFormMetadata = {
         fontSize: "25px !important",
       },
       shouldExclude: () => {
-        return false;
+        return true;
       },
-      GridProps: { xs: 2.2, sm: 2, md: 1.8, lg: 1, xl: 1 },
+      __NEW__: {
+        shouldExclude: () => {
+          return false;
+        },
+        GridProps: { xs: 2.2, sm: 2, md: 1.8, lg: 1, xl: 1 },
+      },
     },
     {
       render: {
@@ -149,6 +144,11 @@ export const FixDepositDetailFormMetadata = {
     {
       render: {
         componentType: "arrayField",
+      },
+      __NEW__: {
+        isDisplayCount: true,
+        isScreenStyle: true,
+        isRemoveButton: true,
       },
       name: "FDDTL",
       fixedRows: true,
@@ -316,9 +316,23 @@ export const FixDepositDetailFormMetadata = {
             "CASH_AMT",
           ],
           options: (dependentValue, formState, _, authState) => {
-            return formState?.tenorDDWData;
+            if (
+              authState?.companyID &&
+              formState?.docCD &&
+              formState?.ACCT_TYPE &&
+              formState?.BRANCH_CD
+            ) {
+              return API.getPeriodDDWData({
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: formState?.BRANCH_CD ?? "",
+                ACCT_TYPE: formState?.ACCT_TYPE ?? "",
+                SCREEN_REF: formState?.docCD ?? "",
+              });
+            }
+            return [];
           },
           _optionsKey: "getPeriodDDWData",
+          defaultValueKey: "tenorDefaultVal",
           required: true,
           postValidationSetCrossFieldValues: async (
             currField,
@@ -1118,9 +1132,21 @@ export const FixDepositDetailFormMetadata = {
           name: "MATURE_INST",
           label: "Mature Instruction",
           options: (dependentValue, formState, _, authState) => {
-            return formState?.matureInstDDWData;
+            if (
+              authState?.companyID &&
+              authState?.user?.baseBranchCode &&
+              formState?.ACCT_TYPE
+            ) {
+              return API.getMatureInstDDWData({
+                COMP_CD: authState?.companyID ?? "",
+                BASE_BRANCH_CD: authState?.user?.baseBranchCode ?? "",
+                ACCT_TYPE: formState?.ACCT_TYPE ?? "",
+              });
+            }
+            return [];
           },
           _optionsKey: "getMatureInstDDWData",
+          defaultValueKey: "matureInstDefaultVal",
           fullWidth: true,
           schemaValidation: {
             type: "string",

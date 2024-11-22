@@ -65,74 +65,26 @@ export const FDDetailForm = forwardRef<any, any>(
           ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
           SCREEN_REF: "RPT/401",
         }),
-      { enabled: Boolean(openDepositForRenew) || defaultView === "new" }
-    );
-
-    //Api for get tenor default value and dropdown value
-    const {
-      data: tenorData,
-      isLoading: tenorDataIsLoading,
-      isFetching: tenorDataIsFetching,
-      isError: tenorDataIsError,
-      error: tenorDataError,
-      refetch: tenorDataRefetch,
-    } = useQuery<any, any>(
-      ["getPeriodDDWData", authState?.user?.branchCode],
-      () =>
-        API.getPeriodDDWData({
-          COMP_CD: authState?.companyID ?? "",
-          BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
-          ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-          SCREEN_REF: "RPT/401",
-        }),
       {
         enabled:
-          Boolean(paraDtlData) &&
-          (defaultView === "new" || Boolean(openDepositForRenew)),
-      }
-    );
-
-    //Api for get Mature instruction default value and dropdown value
-    const {
-      data: matureInstData,
-      isLoading: matureInstDataIsLoading,
-      isFetching: matureInstDataIsFetching,
-      isError: matureInstDataIsError,
-      error: matureInstDataError,
-      refetch: matureInstDataRefetch,
-    } = useQuery<any, any>(
-      ["getMatureInstDDWData", authState?.user?.branchCode],
-      () =>
-        API.getMatureInstDDWData({
-          COMP_CD: authState?.companyID ?? "",
-          BASE_BRANCH_CD: authState?.user?.baseBranchCode ?? "",
-          ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-        }),
-      {
-        enabled:
-          Boolean(paraDtlData) &&
-          Boolean(tenorData) &&
-          (defaultView === "new" || Boolean(openDepositForRenew)),
-
+          Boolean(openDepositForRenew) ||
+          (defaultView === "new" && !Boolean(FDState?.isBackButton)),
         onSuccess: (data) => {
           updateFDDetailsFormData([
             {
               ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
               BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
               ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
-              FD_NO_DISABLED: paraDtlData?.[0]?.FD_NO_DISABLED ?? "",
-              INT_RATE_DISABLED: paraDtlData?.[0]?.INT_RATE_DISABLED ?? "",
-              MATURITY_AMT_DISABLED:
-                paraDtlData?.[0]?.MATURITY_AMT_DISABLED ?? "",
-              TERM_CD_DISABLED: paraDtlData?.[0]?.TERM_CD_DISABLED ?? "",
-              TRAN_DT_DISABLED: paraDtlData?.[0]?.TRAN_DT_DISABLED ?? "",
-              FD_NO: paraDtlData?.[0]?.FD_NO ?? "",
-              TERM_CD: paraDtlData?.[0]?.TERM_CD ?? "",
-              SPL_AMT: paraDtlData?.[0]?.SPL_AMT ?? "",
-              DOUBLE_TRAN: paraDtlData?.[0]?.DOUBLE_TRAN ?? "",
+              FD_NO_DISABLED: data?.[0]?.FD_NO_DISABLED ?? "",
+              INT_RATE_DISABLED: data?.[0]?.INT_RATE_DISABLED ?? "",
+              MATURITY_AMT_DISABLED: data?.[0]?.MATURITY_AMT_DISABLED ?? "",
+              TERM_CD_DISABLED: data?.[0]?.TERM_CD_DISABLED ?? "",
+              TRAN_DT_DISABLED: data?.[0]?.TRAN_DT_DISABLED ?? "",
+              FD_NO: data?.[0]?.FD_NO ?? "",
+              TERM_CD: data?.[0]?.TERM_CD ?? "",
+              SPL_AMT: data?.[0]?.SPL_AMT ?? "",
+              DOUBLE_TRAN: data?.[0]?.DOUBLE_TRAN ?? "",
               COMP_CD: authState?.companyID ?? "",
-              PERIOD_CD: tenorData?.[0]?.defaultVal ?? "",
-              MATURE_INST: data?.[0]?.defaultVal ?? "",
               CATEG_CD: FDState?.acctNoData?.ACCT_CD ?? "",
               AGG_DEP_CUSTID: FDState?.acctNoData?.ACCT_CD ?? "",
               DEP_FAC: FDState?.acctNoData?.ACCT_CD ?? "",
@@ -549,45 +501,9 @@ export const FDDetailForm = forwardRef<any, any>(
     }, []);
 
     useEffect(() => {
-      if (defaultView === "view" || Boolean(openDepositForRenew)) {
-        FixDepositDetailFormMetadata.fields[6].isDisplayCount = false;
-        FixDepositDetailFormMetadata.fields[6].isRemoveButton = false;
-        FixDepositDetailFormMetadata.fields[6].isScreenStyle = false;
-        FixDepositDetailFormMetadata.fields[3].GridProps = {
-          xs: 0,
-          sm: 0,
-          md: 0,
-          lg: 0,
-          xl: 0,
-        };
-        FixDepositDetailFormMetadata.fields[3].shouldExclude = () => true;
-      } else {
-        FixDepositDetailFormMetadata.fields[6].isDisplayCount = true;
-        FixDepositDetailFormMetadata.fields[6].isRemoveButton = true;
-        FixDepositDetailFormMetadata.fields[6].isScreenStyle = true;
-        FixDepositDetailFormMetadata.fields[3].GridProps = {
-          xs: 2.2,
-          sm: 2,
-          md: 1.8,
-          lg: 1,
-          xl: 1,
-        };
-        FixDepositDetailFormMetadata.fields[3].shouldExclude = () => false;
-      }
-    }, []);
-
-    useEffect(() => {
       return () => {
         queryClient.removeQueries([
           "getFDRenewData",
-          authState?.user?.branchCode,
-        ]);
-        queryClient.removeQueries([
-          "getMatureInstDDWData",
-          authState?.user?.branchCode,
-        ]);
-        queryClient.removeQueries([
-          "getPeriodDDWData",
           authState?.user?.branchCode,
         ]);
         queryClient.removeQueries([
@@ -682,8 +598,6 @@ export const FDDetailForm = forwardRef<any, any>(
                       INT_RATE: renewData?.[0]?.INT_RATE ?? "",
                       MATURITY_AMT: maturityAmtData?.MATURITY_AMT ?? "",
                       TRSF_AMT: FDState?.renewTrnsFormData.RENEW_AMT ?? "",
-                      PERIOD_CD: tenorData?.[0]?.defaultVal ?? "",
-                      MATURE_INST: matureInstData?.[0]?.defaultVal ?? "",
                       CASH_AMT: "",
                     },
                   ],
@@ -704,14 +618,12 @@ export const FDDetailForm = forwardRef<any, any>(
                 screenFlag: screenFlag,
                 workingDate: authState?.workingDate ?? "",
                 openDepositForRenew: openDepositForRenew,
-                matureInstDDWData: matureInstData,
-                tenorDDWData: tenorData,
+                ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
+                BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
               }}
             />
           )
-        ) : matureInstDataIsLoading ||
-          tenorDataIsLoading ||
-          paraDtlDataIsLoading ? (
+        ) : paraDtlDataIsLoading ? (
           <LoaderPaperComponent />
         ) : (
           <FormWrapper
@@ -792,8 +704,8 @@ export const FDDetailForm = forwardRef<any, any>(
               docCD: "RPT/401",
               defaultView: defaultView,
               workingDate: authState?.workingDate ?? "",
-              matureInstDDWData: matureInstData,
-              tenorDDWData: tenorData,
+              ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
+              BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
             }}
           />
         )}

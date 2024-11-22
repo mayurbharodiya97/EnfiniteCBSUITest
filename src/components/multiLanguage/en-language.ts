@@ -243,6 +243,14 @@ export const en_language_data = {
   PrematurePayment: "Premature Payment",
   SelectPaymentmode: "Select Payment Mode",
   PenalRt: "Penal Rate",
+  recurringPayslipFormRequiredMsgForArrayfield:
+    "Bill Type, Infavour Of, Payslip Number and Amount are required. Please complete these fields to proceed.",
+  recurringNEFTFormRequiredMsgForArrayfield:
+    "Account Number is required. Please complete this field to proceed.",
+  recurringPaymentTransferFormRequiredMsgForArrayfield:
+    "Branch Code, Account Type, Account Number and Amount are required. Please complete these fields to proceed.",
+  fdTransferFormRequiredMsgForArrayfield:
+    "Branch Code, Account Type, Account Number, Cheque No. and Credit Amount are required. Please complete these fields to proceed.",
 
   // GridWrapper
   Search: "Search",

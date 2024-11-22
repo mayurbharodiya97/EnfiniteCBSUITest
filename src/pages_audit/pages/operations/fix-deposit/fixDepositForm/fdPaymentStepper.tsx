@@ -54,14 +54,6 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
     letterSpacing: "1px",
     fontSize: "1.5rem",
   },
-  formHeaderTitle: {
-    margin: "0",
-    fontWeight: "500",
-    fontSize: "1.25rem",
-    lineHeight: "1.6",
-    letterSpacing: "0.0075em",
-    color: "var(--theme-color2)",
-  },
 }));
 
 type FDPaymentStepperFormProps = {
@@ -1076,16 +1068,19 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
             <div
               style={{
                 marginTop: "0px",
+                width: "100%",
+                overflow: "auto",
               }}
             >
               {FDState?.activeStep === 0 ? (
                 !Object.keys(FDState?.fdPaymentData).length &&
-                !getFDPaymentDtlMutation?.isError ? (
+                !getFDPaymentDtlMutation?.isError &&
+                !fdPmtDtlMutError?.isError ? (
                   <LoaderPaperComponent />
                 ) : (
                   <>
                     {(getFDPaymentDtlMutation?.isError ||
-                      fdPmtDtlMutError?.error_msg ||
+                      fdPmtDtlMutError?.isError ||
                       validatePaymetEntry?.isError) && (
                       <Alert
                         severity="error"
@@ -1103,15 +1098,28 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
                         color="error"
                       />
                     )}
-                    <FDPayment
-                      isDataChangedRef={isDataChangedRef}
-                      openRenew={openRenew}
-                      openPayment={openPayment}
-                      paymentFormSubmitHandler={paymentFormSubmitHandler}
-                      ref={fdPmtFormRef}
-                      reqParam={reqParam}
-                      openIntPayment={openIntPayment}
-                    />
+                    <Box style={{ minWidth: "1200px", overflow: "auto" }}>
+                      <AppBar position="relative">
+                        <Toolbar variant="dense" className={headerClasses.root}>
+                          <Typography
+                            component="span"
+                            variant="h5"
+                            className={headerClasses.title}
+                          >
+                            FD Details
+                          </Typography>
+                        </Toolbar>
+                      </AppBar>
+                      <FDPayment
+                        isDataChangedRef={isDataChangedRef}
+                        openRenew={openRenew}
+                        openPayment={openPayment}
+                        paymentFormSubmitHandler={paymentFormSubmitHandler}
+                        ref={fdPmtFormRef}
+                        reqParam={reqParam}
+                        openIntPayment={openIntPayment}
+                      />
+                    </Box>
                   </>
                 )
               ) : FDState?.activeStep === 1 ? (
@@ -1293,10 +1301,15 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "row-reverse",
                 margin: "0px !important",
+                justifyContent: "right",
               }}
             >
+              {FDState?.activeStep === 0 ? null : (
+                <GradientButton onClick={handleBackBtn}>
+                  {t("Back")}
+                </GradientButton>
+              )}
               {FDState?.activeStep !== steps.length && (
                 <>
                   {FDState?.activeStep !== steps.length - 1 ? (
@@ -1307,7 +1320,12 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
                           <CircularProgress size={20} />
                         ) : null
                       }
-                      disabled={validatePaymetEntry?.isLoading}
+                      disabled={
+                        validatePaymetEntry?.isLoading ||
+                        getFDPaymentDtlMutation?.isError ||
+                        fdPmtDtlMutError?.isError ||
+                        validatePaymetEntry?.isError
+                      }
                       color={"primary"}
                     >
                       {t("Next")}
@@ -1322,11 +1340,6 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
                     </GradientButton>
                   )}
                 </>
-              )}
-              {FDState?.activeStep === 0 ? null : (
-                <GradientButton onClick={handleBackBtn}>
-                  {t("Back")}
-                </GradientButton>
               )}
             </Box>
           </Stack>
