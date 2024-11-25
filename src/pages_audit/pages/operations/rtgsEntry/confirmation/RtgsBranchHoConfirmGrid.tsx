@@ -206,10 +206,8 @@ const RtgsConfirmationGrid = ({ flag }) => {
       }, 0);
     }
   }, [mutation?.data, indexRef.current]);
-  console.log("next indexRef.current", indexRef.current);
   const handleNext = useCallback(() => {
     const index = indexRef.current++;
-    console.log("index", index);
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
@@ -218,7 +216,6 @@ const RtgsConfirmationGrid = ({ flag }) => {
     }, 0);
   }, [mutation?.data, indexRef.current]);
 
-  console.log("test", mutation?.data);
   return (
     <Fragment>
       {/* {isLoading ? (
