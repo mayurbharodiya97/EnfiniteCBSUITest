@@ -1,6 +1,8 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
-import { differenceInYears } from "date-fns";
+import { greaterThanDate, GridMetaDataType } from "@acuteinfo/common-base";
+import { differenceInYears, isValid } from "date-fns";
+import { t } from "i18next";
 import * as API from "../../../../api";
+
 export const personal_detail_prefix_data = {
   form: {
     name: "personal_detail_prefix_details_form",
@@ -600,12 +602,20 @@ export const personal_other_detail_meta_data = {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
-      // placeholder: "",
-      // type: "datePicker",
-      // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
-      maxDate: new Date(),
-      format: "dd/MM/yyyy",
+      isMaxWorkingDate: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        } else if (
+          greaterThanDate(value?.value, value?._maxDt, {
+            ignoreTime: true,
+          })
+        ) {
+          return t("DateShouldBeLessThanEqualToWorkingDT");
+        }
+        return "";
+      },
     },
     {
       render: {
@@ -773,7 +783,18 @@ export const personal_other_detail_meta_data = {
       name: "KYC_REVIEW_DT",
       label: "KycRevisedDate",
       required: true,
-      maxDate: new Date(),
+      isMaxWorkingDate: true,
+      validate: (value, allField, flag) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        } else if (
+          greaterThanDate(value?.value, value?._maxDt, {
+            ignoreTime: true,
+          })
+        ) {
+          return t("KYCRevisedDateShouldBeLessThanTodaysDate");
+        }
+      },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
