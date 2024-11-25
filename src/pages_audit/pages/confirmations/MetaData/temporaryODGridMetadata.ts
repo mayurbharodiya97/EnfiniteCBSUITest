@@ -48,9 +48,9 @@ export const tempODConfirmGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "left",
       componentType: "default",
-      width: 125,
+      width: 150,
       minWidth: 100,
-      maxWidth: 150,
+      maxWidth: 190,
     },
     {
       accessor: "ACCT_NM",

@@ -3,7 +3,7 @@ import { GridMetaDataType } from "@acuteinfo/common-base";
 export const ChequebookDtlGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "ChequeBookIssued",
+    gridLabel: "ChequebookDetail",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -54,7 +54,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       accessor: "AUTO_CHQBK_FLAG_DISPLAY",
       columnName: "AutoIssue",
       sequence: 1,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
       width: 101,
       minWidth: 70,
@@ -64,7 +64,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       accessor: "CHEQUE_FROM",
       columnName: "FromChequeNo",
       sequence: 4,
-      alignment: "center",
+      alignment: "right",
       componentType: "default",
       width: 139,
       minWidth: 100,
@@ -72,7 +72,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_TO",
-      columnName: "ToChequeNo",
+      columnName: "right",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -84,7 +84,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       accessor: "CHEQUE_TOTAL",
       columnName: "NoOfCheques",
       sequence: 6,
-      alignment: "center",
+      alignment: "right",
       componentType: "default",
       isDisplayTotal: true,
       width: 136,
@@ -137,28 +137,12 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 200,
     },
-    {
-      accessor: "ALLOW_DELETE",
-      columnName: "Action",
-      sequence: 8,
-      buttonLabel: "Delete",
-      alignment: "center",
-      shouldExclude: (initialValue, original, prevRows, nextRows) => {
-        if (initialValue === "Y") {
-          return false;
-        }
-        return true;
-      },
-      componentType: "buttonRowCell",
-      width: 90,
-      minWidth: 60,
-      maxWidth: 130,
-    },
+
     {
       accessor: "CHARACTERISTICS",
       columnName: "Characteristics",
       sequence: 8,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
       width: 130,
       minWidth: 100,
@@ -168,7 +152,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       accessor: "PAYABLE_AT_PAR",
       columnName: "PayableAtPAR",
       sequence: 8,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
       width: 147,
       minWidth: 70,
@@ -187,14 +171,31 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "UNUSED_CHQ",
-      columnName: "UnusedCheque",
+      columnName: "Pending",
       sequence: 10,
-      alignment: "center",
+      alignment: "right",
       componentType: "default",
       isDisplayTotal: true,
       width: 125,
       minWidth: 70,
       maxWidth: 140,
+    },
+    {
+      accessor: "ALLOW_DELETE",
+      columnName: "Action",
+      sequence: 8,
+      buttonLabel: "Delete",
+      alignment: "center",
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (initialValue === "Y") {
+          return false;
+        }
+        return true;
+      },
+      componentType: "buttonRowCell",
+      width: 90,
+      minWidth: 60,
+      maxWidth: 130,
     },
   ],
 };

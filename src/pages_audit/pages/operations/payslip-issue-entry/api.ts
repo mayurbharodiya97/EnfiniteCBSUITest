@@ -29,10 +29,11 @@ export const getRetrievalPaySlipEntryData = async ({
         return acc;
       }, {} as Record<string, number>);
 
-      responseData = responseData.map((items) => ({
+      responseData = responseData.map((items, index) => ({
         ...items,
         PENDING_FLAG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending",
         TOTAL_AMT: `${totals[items.TRAN_CD]}`,
+        INDEX: index,
       }));
     }
 
@@ -103,10 +104,11 @@ export const getRetrievalDateWise = async ({
         return acc;
       }, {} as Record<string, number>);
 
-      responseData = responseData.map((items) => ({
+      responseData = responseData.map((items, index) => ({
         ...items,
         PENDING_FLAG: items.CONFIRMED === "Y" ? "Confirmed" : "Pending",
         TOTAL_AMT: `${totals[items.TRAN_CD]}`,
+        INDEX: index,
       }));
     }
 

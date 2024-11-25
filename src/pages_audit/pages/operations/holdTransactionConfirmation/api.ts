@@ -17,7 +17,7 @@ export const getHoldTrnsData = async ({ COMP_CD, BRANCH_CD }) => {
 
           ACCT_CD_NM: `${items?.BRANCH_CD} ${items?.ACCT_TYPE} ${items?.ACCT_CD} ${items?.ACCT_NM}`,
           TO_ACCT_CD_NM: `${items?.TO_BRANCH_CD} ${items?.TO_ACCT_TYPE} ${items?.TO_ACCT_CD} ${items?.TO_ACCT_NM}`,
-          PAID: items?.PAID === "Y" ? "Paid" : "Unpaid",
+          PAID: items?.PAID === "Y" ? "Paid" : "Waive",
         };
       });
     }

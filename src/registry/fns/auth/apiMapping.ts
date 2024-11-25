@@ -2925,6 +2925,50 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/VALIDATEACCOUNTDTL",
     packageName: "",
   },
+  GETBRANCHDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHDDDW",
+    packageName: "",
+  },
+  GETLOCKERSIZEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERSIZEDDDW",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONDDDW",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONTRN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONTRN",
+    packageName: "",
+  },
+  GETLOCKERVIEWMST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERVIEWMST",
+    packageName: "",
+  },
+  GETLOCKERTRXDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERTRXDDDW",
+    packageName: "",
+  },
+  INTERESTCALCULATIONFORSINGLEACCOUNTREPORT: {
+    url: "/enfinityReportServiceAPI/INTERESTCALCULATIONFORSINGLEACCOUNTREPORT",
+    packageName: "",
+  },
+  GETHEADERDETAILS: {
+    url: "/enfinityReportServiceAPI/GETHEADERDETAILS",
+    packageName: "",
+  },
+  APPLYACCTINT: {
+    url: "/transactionServiceAPI/APPLYACCTINT",
+    packageName: "",
+  },
+  REVERTBUTTONCTRI: {
+    url: "/transactionServiceAPI/REVERTBUTTONCTRI",
+    packageName: "",
+  },
+  GETDLYSCROLLREGF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYSCROLLREGF1",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

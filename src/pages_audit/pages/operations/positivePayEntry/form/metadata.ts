@@ -522,7 +522,7 @@ export const PositivePayEntryFormMetadata = {
       },
       name: "PAYEE_NM",
       label: "PayeeName",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       placeholder: "EnterPayeeName",
       type: "text",
       autoComplete: "off",
@@ -536,7 +536,7 @@ export const PositivePayEntryFormMetadata = {
       name: "REMARKS",
       label: "Remarks",
       placeholder: "EnterRemarks",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       type: "text",
       autoComplete: "off",
       maxLength: 200,
@@ -1060,25 +1060,54 @@ export const ResponseParameterFormMetaData = {
   ],
 };
 
-export const PositivePayImportMetaData: GridColumnType[] = [
-  {
-    columnName: "SelectCofiguration",
-    componentType: "editableSelect",
-    required: true,
-    accessor: "DESCRIPTION",
-    options: GetPositivePayImportDdwn,
-    _optionsKey: "GetPositivePayImportDdwn",
-    sequence: 3,
-    alignment: "left",
-    width: 350,
-    minWidth: 50,
-    maxWidth: 600,
-    validation: (values) => {
-      if (!Boolean(values)) return "This field is requried";
-      return "";
+export const positivePayImportData = {
+  form: {
+    name: "positivepayData",
+    label: "Parameters",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 1,
+        },
+      },
     },
   },
-];
+  fields: [
+    {
+      render: {
+        componentType: "select",
+      },
+      name: "DESCRIPTION",
+      label: "SelectConfiguration",
+      fullWidth: true,
+      placeholder: "SelectConfiguration",
+      options: (dependentValue, formState, _, authState) => {
+        return GetPositivePayImportDdwn({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+        });
+      },
+      _optionsKey: "GetPositivePayImportDdwn",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
+  ],
+};
 
 export const ImportGridMetaData: GridMetaDataType = {
   gridConfig: {

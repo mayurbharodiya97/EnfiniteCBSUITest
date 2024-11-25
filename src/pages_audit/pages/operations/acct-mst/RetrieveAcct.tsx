@@ -37,36 +37,36 @@ const RetrieveAcct = () => {
   const { MessageBox } = usePopupContext();
 
   const formRef = useRef<any>(null);
-  const [formMode, setFormMode] = useState("edit");
 
   const setCurrentAction = useCallback(
     (data) => {
       const confirmed = data?.rows?.[0]?.data?.CONFIRMED ?? "";
       const maker = data?.rows?.[0]?.data?.MAKER ?? "";
       const loggedinUser = authState?.user?.id;
-
+      let formmode = "edit";
       if (Boolean(confirmed)) {
         // P=SENT TO CONFIRMATION
         if (confirmed.includes("P")) {
           if (maker === loggedinUser) {
-            setFormMode("edit");
           } else {
-            setFormMode("view");
+            formmode = "view";
           }
         } else if (confirmed.includes("M")) {
           // M=SENT TO MODIFICATION
-          setFormMode("edit");
         } else if (confirmed.includes("Y") || confirmed.includes("R")) {
-          setFormMode("edit");
         } else {
-          setFormMode("view");
+          formmode = "view";
         }
       }
       setRowsData(data?.rows);
 
       if (data.name === "view-detail") {
         navigate(data?.name, {
-          state: data?.rows,
+          state: {
+            rows: data?.rows ?? [{ data: null }],
+            formmode: formmode,
+            from: "retrieve-entry",
+          },
         });
         // setComponentToShow("ViewDetail");
         // setAcctOpen(true);
@@ -179,6 +179,10 @@ const RetrieveAcct = () => {
                     isFormModalOpen: true,
                     // entityType: "I",
                     isFreshEntry: true,
+
+                    rows: [{ data: null }],
+                    formmode: "new",
+                    from: "new-entry",
                   },
                 });
               }}
@@ -214,23 +218,11 @@ const RetrieveAcct = () => {
       <Routes>
         <Route
           path="new-account/*"
-          element={
-            <AcctModal
-              onClose={() => navigate(".")}
-              formmode={"new"}
-              from={"new-entry"}
-            />
-          }
+          element={<AcctModal onClose={() => navigate(".")} />}
         />
         <Route
           path="view-detail/*"
-          element={
-            <AcctModal
-              onClose={() => navigate(".")}
-              formmode={formMode ?? "edit"}
-              from={"acct-retrieve"}
-            />
-          }
+          element={<AcctModal onClose={() => navigate(".")} />}
         />
       </Routes>
     </Grid>

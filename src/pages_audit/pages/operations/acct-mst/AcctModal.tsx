@@ -59,7 +59,7 @@ import {
 } from "@acuteinfo/common-base";
 import { enqueueSnackbar } from "notistack";
 
-const AcctModal = ({ onClose, formmode, from }) => {
+const AcctModal = ({ onClose }) => {
   const {
     AcctMSTState,
     handleFromFormModectx,
@@ -78,20 +78,22 @@ const AcctModal = ({ onClose, formmode, from }) => {
   } = useContext(AcctMSTContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
-  const location: any = useLocation();
+  const {
+    state: {
+      rows: [{ data: row }],
+      from,
+      formmode,
+    },
+  }: any = useLocation();
   const classes = useDialogStyles();
   const [isOpen, setIsOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<any>(null);
   const reqCD =
     formmode === "new"
       ? ""
-      : !isNaN(parseInt(location?.state?.[0]?.data?.REQUEST_ID))
-      ? parseInt(location?.state?.[0]?.data?.REQUEST_ID)
+      : !isNaN(parseInt(row?.REQUEST_ID))
+      ? parseInt(row?.REQUEST_ID)
       : "";
-  const acctType =
-    formmode === "new" ? "" : location?.state?.[0].data?.ACCT_TYPE;
-  const acctCD =
-    formmode === "new" ? "" : location?.state?.[0].data?.ACCT_CD ?? "";
 
   // get account form details
   const {
@@ -101,11 +103,11 @@ const AcctModal = ({ onClose, formmode, from }) => {
     error: AcctDtlError,
     refetch,
   } = useQuery<any, any>(
-    ["getAccountDetails", acctType],
+    ["getAccountDetails", row?.ACCT_TYPE],
     () =>
       API.getAccountDetails({
-        ACCT_TYPE: acctType,
-        ACCT_CD: acctCD,
+        ACCT_TYPE: row?.ACCT_TYPE ?? "",
+        ACCT_CD: row?.ACCT_CD ?? "",
         REQUEST_CD: reqCD,
         COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -192,14 +194,12 @@ const AcctModal = ({ onClose, formmode, from }) => {
 
   useEffect(() => {
     handleFromFormModectx({ formmode, from });
-    if (Boolean(location.state)) {
-      if (formmode === "new") {
-        handleColTabChangectx(0);
-        handleFormModalOpenctx();
-      } else if (Array.isArray(location.state) && location.state.length > 0) {
-        handleFormModalOpenOnEditctx(location?.state);
-        refetch();
-      }
+    if (formmode === "new") {
+      handleColTabChangectx(0);
+      handleFormModalOpenctx();
+    } else if (Boolean(row && typeof row === "object")) {
+      handleFormModalOpenOnEditctx(row);
+      refetch();
     } else {
       handleFormModalClosectx();
       onClose();
@@ -207,7 +207,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
 
     return () => {
       handleFormModalClosectx();
-      queryClient.removeQueries(["getAccountDetails", acctType]);
+      queryClient.removeQueries(["getAccountDetails", row?.ACCT_TYPE]);
     };
   }, []);
 

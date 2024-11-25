@@ -430,6 +430,7 @@ const KYCDetails = () => {
                     messageTitle: "Duplicate Value",
                     message: payload ?? "No Message",
                     buttonNames: ["Ok"],
+                    icon: "WARNING",
                   });
                 }
               }}
@@ -499,6 +500,7 @@ const KYCDetails = () => {
                     messageTitle: "Duplicate Value",
                     message: payload ?? "No Message",
                     buttonNames: ["Ok"],
+                    icon: "WARNING",
                   });
                 }
               }}

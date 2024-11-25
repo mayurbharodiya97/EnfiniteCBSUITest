@@ -1,6 +1,9 @@
 import { useCallback, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { snapShotGridMetaData } from "./gridMetadata";
+import {
+  scrollRegisterGridMetaData,
+  snapShotGridMetaData,
+} from "./gridMetadata";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
@@ -14,12 +17,14 @@ import {
   ActionTypes,
   GradientButton,
   LoaderPaperComponent,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 import { DateRetrievalDialog } from "components/common/custom/dateRetrievalPara";
 import { format } from "date-fns";
 import { ChequeSignImage } from "pages_audit/pages/operations/inwardClearing/inwardClearingForm/chequeSignImage";
 import { getInwardChequeSignFormData } from "pages_audit/pages/operations/inwardClearing/api";
 import i18n from "components/multiLanguage/languagesConfiguration";
+import { enqueueSnackbar } from "notistack";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -36,6 +41,15 @@ const actions: ActionTypes[] = [
     alwaysAvailable: true,
   },
 ];
+const scrollActions: ActionTypes[] = [
+  {
+    actionName: "close",
+    actionLabel: "Close",
+    multiple: undefined,
+    rowDoubleClick: true,
+    alwaysAvailable: true,
+  },
+];
 export const SnapShot = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -44,8 +58,10 @@ export const SnapShot = ({ reqData }) => {
   const reqDataRef = useRef<any>();
   const [imgData, setImgData] = useState();
   const [isopenReport, setIsopenReport] = useState(false);
+  const [scrollRegisterData, setScrollRegisterData] = useState([]);
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
 
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
@@ -70,6 +86,17 @@ export const SnapShot = ({ reqData }) => {
       A_LANG: i18n.resolvedLanguage,
     })
   );
+  const getDailyScrollRegister = useMutation(API.getDailyScrollRegister, {
+    onSuccess: async (data: any, variables: any) => {
+      setScrollRegisterData(data);
+    },
+    onError: (error: any, variables: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+  });
 
   const getChequeImg: any = useMutation(getInwardChequeSignFormData, {
     onError: (error: any) => {},
@@ -83,7 +110,25 @@ export const SnapShot = ({ reqData }) => {
     if (data.name === "back-date") {
       setDateDialog(true);
     } else if (data.name === "view-detail") {
-      setIsopenReport(true);
+      if (row?.SCROLL1 > 0) {
+        setIsopenReport(true);
+        scrollRegisterGridMetaData.gridConfig.gridLabel = `Scroll Register of ${row?.SCROLL1}`;
+        getDailyScrollRegister.mutate({
+          COMP_CD: reqData?.COMP_CD ?? "",
+          BRANCH_CD: reqData?.BRANCH_CD ?? "",
+          TO_DT: row?.TRN_DATE
+            ? format(new Date(row?.TRN_DATE), "dd/MMM/yyyy")
+            : "",
+          SCROLL1: row?.SCROLL1 ?? "",
+          AS_FLAG: row?.TYPE_CD ?? "",
+        });
+      }
+    }
+  }, []);
+  const setScrollActions = useCallback((data) => {
+    if (data.name === "close") {
+      setIsopenReport(false);
+      setScrollRegisterData([]);
     }
   }, []);
 
@@ -154,6 +199,30 @@ export const SnapShot = ({ reqData }) => {
           retrievalParaValues={retrievalParaValues}
           defaultData={undefined}
         />
+      )}
+      {isopenReport && (
+        <Dialog
+          open={true}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="md"
+        >
+          <GridWrapper
+            key={`scrollRegisterGridMetaData`}
+            finalMetaData={scrollRegisterGridMetaData as GridMetaDataType}
+            data={scrollRegisterData ?? []}
+            setData={() => null}
+            loading={getDailyScrollRegister?.isLoading}
+            refetchData={() => refetch()}
+            actions={scrollActions}
+            setAction={setScrollActions}
+            enableExport={true}
+          />
+        </Dialog>
       )}
       {isopenChequeImg ? (
         <>

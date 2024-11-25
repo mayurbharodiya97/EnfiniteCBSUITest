@@ -27,8 +27,6 @@ import SettingsAccessibilityOutlinedIcon from "@mui/icons-material/SettingsAcces
 import { useNavigate } from "react-router-dom";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 import About from "./about";
-import TotpEnbaledDisabled from "./totp/totp-enabled-disable";
-import QrCode2Icon from "@mui/icons-material/QrCode2";
 import { useTranslation } from "react-i18next";
 import { PersonalizeDash } from "./personalizeDash";
 import { AllowedAccess } from "./allowedAccess";
@@ -53,8 +51,6 @@ export const Profile = () => {
   const [filesdata, setFilesData] = useState<any>([]);
   const [ProfilePictureURL, setProfilePictureURL] = useState<any | null>(null);
   const [value, setValue] = useState("tab1");
-  const [showTOTP, setshowTOTP] = useState(false);
-  const [totpAuthStatus, setTotpAuthStatus] = useState<any>("");
   const { t } = useTranslation();
   const navigate = useNavigate();
   const handleNavigate = () => {
@@ -85,7 +81,6 @@ export const Profile = () => {
       setProfilePictureURL(urlObj.current);
       authController?.setProfileImage(urlObj.current);
     }
-    setTotpAuthStatus(queryData.data?.TOTP_ENABLED);
   }, [queryData.data]);
 
   const handleProfileUploadClose = (flag, imgdata) => {
@@ -243,20 +238,6 @@ export const Profile = () => {
                             <Box sx={{ flexGrow: 1 }}></Box>
                             <Box sx={{ display: { xs: "none", md: "flex" } }}>
                               <GradientButton
-                                onClick={() => {
-                                  setshowTOTP(true);
-                                }}
-                                starticon="QrCode2"
-                                rotateIcon="scale(1.7)"
-                              >
-                                {totpAuthStatus === "N"
-                                  ? `${t("profile.EnableTOTPAuth")}`
-                                  : totpAuthStatus === "Y"
-                                  ? `${t("profile.DisableTOTPAuth")}`
-                                  : ""}
-                              </GradientButton>
-
-                              <GradientButton
                                 onClick={handleNavigate}
                                 endicon="CancelOutlined"
                                 // rotateIcon="scale(1.4) rotateY(360deg)"
@@ -402,28 +383,7 @@ export const Profile = () => {
                         ) : null}
                       </Grid>
                     </Container>
-                    {showTOTP ? (
-                      <TotpEnbaledDisabled
-                        open={showTOTP}
-                        // onClose={() => setshowTOTP(false)}
-                        onClose={(isSuccess, isLocked) => {
-                          if (isSuccess) {
-                            setTotpAuthStatus((old) => {
-                              if (old === "N") {
-                                return "Y";
-                              } else {
-                                return "N";
-                              }
-                            });
-                          }
-                          setshowTOTP(false);
-                        }}
-                        authFlag={
-                          totpAuthStatus === "N" ? "ENABLED" : "DISABLED"
-                        }
-                        // authFlag="ENABLED"
-                      />
-                    ) : null}
+
                     {profileUpdate && filesdata.length > 0 ? (
                       <ProfilePhotoUpdate
                         open={profileUpdate}

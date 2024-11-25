@@ -84,7 +84,7 @@ export const EMICalculateMetaData = {
         type: "string",
         rules: [{ name: "required", params: [t("LoanAmountisrequired")] }],
       },
-      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 2 },
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 1, xl: 1 },
     },
     {
       render: {
@@ -179,21 +179,6 @@ export const EMICalculateMetaData = {
       name: "spacer",
       GridProps: { xs: 1, sm: 1, md: 9, lg: 9, xl: 9 },
     },
-    // {
-    //   render: {
-    //     componentType: "formbutton",
-    //   },
-    //   name: "UPDOWN",
-    //   label: "Step up/down",
-    //   placeholder: "",
-    //   type: "text",
-    //   tabIndex: "-1",
-    //   iconStyle: {
-    //     fontSize: "25px !important",
-    //   },
-    //   GridProps: { xs: 2.2, sm: 2, md: 1.8, lg: 1.2, xl: 1.2 },
-    // },
-
     {
       render: {
         componentType: "formbutton",
@@ -212,15 +197,6 @@ export const EMICalculateMetaData = {
       type: "text",
       GridProps: { xs: 1, sm: 1, md: 1, lg: 1, xl: 1 },
     },
-    // {
-    //   render: {
-    //     componentType: "divider",
-    //   },
-    //   name: "total",
-    //   label: "",
-    //   GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-    // },
-
     {
       render: {
         componentType: "arrayField",
@@ -268,7 +244,6 @@ export const EMICalculateMetaData = {
             authState,
             dependentFieldValues
           ) => {
-            // formState.setDataOnFieldChange("EMI_SCHEDULE", {});
             const refIDCurrent = formState?.refID?.current;
             const date = new Date(currentField?.value);
             if (isNaN(date.getTime())) {

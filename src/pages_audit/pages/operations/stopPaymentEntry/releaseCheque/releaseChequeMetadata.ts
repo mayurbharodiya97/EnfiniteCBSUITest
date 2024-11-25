@@ -194,7 +194,7 @@ export const releaseChequeMetadata = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "GSTAmount",
+      label: "GST",
       isReadOnly: true,
       // shouldExclude(fieldData, dependentFields, formState) {
       //   if (fieldData?.value) {

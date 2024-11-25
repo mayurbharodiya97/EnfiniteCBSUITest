@@ -58,7 +58,7 @@ export const getFDParaDetail = async (reqData) => {
   if (status === "0") {
     return data;
   } else if (status === "999") {
-    return { status: status, messageDetails: messageDetails };
+    return { status: status, messageDetails: message };
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -116,7 +116,7 @@ export const getPeriodDDWData = async (reqData) => {
           return {
             value: PERIOD_CD,
             label: DESCR,
-            defaultVal: DEFAULT_VALUE,
+            tenorDefaultVal: DEFAULT_VALUE,
           };
         }
       );
@@ -140,7 +140,7 @@ export const getMatureInstDDWData = async (reqData) => {
           return {
             value: MATURE_INST,
             label: DESCRIPTION,
-            defaultVal: DEFAULT_VALUE,
+            matureInstDefaultVal: DEFAULT_VALUE,
           };
         }
       );

@@ -167,11 +167,18 @@ export const LienEntryMetadata = {
 
             let apiRespMSGdata = postData?.MSG;
             let isReturn;
-            const messagebox = async (msgTitle, msg, buttonNames, status) => {
+            const messagebox = async (
+              msgTitle,
+              msg,
+              buttonNames,
+              status,
+              icon
+            ) => {
               let buttonName = await formState.MessageBox({
                 messageTitle: msgTitle,
                 message: msg,
                 buttonNames: buttonNames,
+                icon: icon,
               });
               return { buttonName, status };
             };
@@ -179,14 +186,23 @@ export const LienEntryMetadata = {
               for (let i = 0; i < apiRespMSGdata?.length; i++) {
                 if (apiRespMSGdata[i]?.O_STATUS !== "0") {
                   let btnName = await messagebox(
-                    apiRespMSGdata[i]?.O_STATUS === "999"
-                      ? "validation fail"
-                      : "Alert message",
+                    apiRespMSGdata[i]?.O_MSG_TITLE
+                      ? apiRespMSGdata[i]?.O_MSG_TITLE
+                      : apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "ValidationFailed"
+                      : apiRespMSGdata[i]?.O_STATUS === "99"
+                      ? "confirmation"
+                      : "ALert",
                     apiRespMSGdata[i]?.O_MESSAGE,
                     apiRespMSGdata[i]?.O_STATUS === "99"
                       ? ["Yes", "No"]
                       : ["Ok"],
-                    apiRespMSGdata[i]?.O_STATUS
+                    apiRespMSGdata[i]?.O_STATUS,
+                    apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "ERROR"
+                      : apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "CONFIRM"
+                      : "WARNING"
                   );
 
                   if (btnName.buttonName === "No" || btnName.status === "999") {
@@ -326,7 +342,7 @@ export const LienEntryMetadata = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["LienCodeIsRequired"] }],
       },
       GridProps: {
         xs: 12,
@@ -392,7 +408,8 @@ export const LienEntryMetadata = {
       },
       name: "REMOVAL_DT",
       label: "RemovalDate",
-      // isMinWorkingDate: true,
+      isMinWorkingDate: true,
+      placeholder: "DD/MM/YYYY",
       dependentFields: ["EFECTIVE_DT"],
       validate: (currentField, dependentField) => {
         if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
@@ -453,11 +470,50 @@ export const LienEntryMetadata = {
       },
       name: "REMARKS",
       label: "Remarks",
-      required: false,
       placeholder: "EnterRemarks",
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
+      // validate: (columnValue) => {
+      //   let regex = /^[^!&#]*$/;
+      //   if (!regex.test(columnValue.value)) {
+      //     return "Special Characters(! &) not Allowed in Remarks";
+      //   }
+      //   return "";
+      // },
+      GridProps: {
+        xs: 12,
+        md: 4.3,
+        sm: 4.3,
+        lg: 4.3,
+        xl: 4.3,
+      },
+    },
+
+    {
+      render: {
+        componentType: "checkbox",
+      },
+      name: "CYBER_FRAUD",
+      label: "CyberFraud",
+      defaultValue: false,
+      GridProps: { xs: 3, sm: 2, md: 2, lg: 2, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACKNOWLEDGEMENT_NO",
+      label: "AcknowledgementNo",
+      placeholder: "EnterAcknowledgementNo",
+
+      dependentFields: ["CYBER_FRAUD"],
+      shouldExclude(fieldData, dependent) {
+        if (
+          Boolean(dependent?.CYBER_FRAUD?.value) ||
+          dependent?.CYBER_FRAUD?.value === "Y"
+        ) {
+          return false;
+        }
+        return true;
       },
       validate: (columnValue) => {
         let regex = /^[^!&]*$/;
@@ -468,10 +524,61 @@ export const LienEntryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 4.3,
-        sm: 4.3,
-        lg: 4.3,
-        xl: 4.3,
+        md: 3.2,
+        sm: 3.2,
+        lg: 3.2,
+        xl: 3.2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "TRANSACTION_ID",
+      label: "TransactionId",
+      placeholder: "EnterTransactionId",
+      dependentFields: ["CYBER_FRAUD"],
+      shouldExclude(fieldData, dependent) {
+        if (
+          Boolean(dependent?.CYBER_FRAUD?.value) ||
+          dependent?.CYBER_FRAUD?.value === "Y"
+        ) {
+          return false;
+        }
+        return true;
+      },
+      GridProps: {
+        xs: 12,
+        md: 3.2,
+        sm: 3.2,
+        lg: 3.2,
+        xl: 3.2,
+      },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "REPORTING_DATE",
+      label: "ReportingDate",
+      isWorkingDate: true,
+      placeholder: "DD/MM/YYYY",
+      dependentFields: ["CYBER_FRAUD"],
+      shouldExclude(fieldData, dependent) {
+        if (
+          Boolean(dependent?.CYBER_FRAUD?.value) ||
+          dependent?.CYBER_FRAUD?.value === "Y"
+        ) {
+          return false;
+        }
+        return true;
+      },
+      GridProps: {
+        xs: 12,
+        md: 1.9,
+        sm: 1.9,
+        lg: 1.9,
+        xl: 1.9,
       },
     },
   ],
