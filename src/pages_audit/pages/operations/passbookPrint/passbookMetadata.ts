@@ -158,7 +158,7 @@ export const PassbookPrintingInq = {
       },
       name: "TRAN_CD",
       label: "Template",
-      // defaultValue: "1",
+      defaultValueKey: "defaultValue",
       dependentFields: ["PID_DESCRIPION", "ACCT_TYPE", "BRANCH_CD"],
       fullWidth: true,
       disableCaching: true,
@@ -273,30 +273,6 @@ export const PassbookPrintingInq = {
                 ignoreUpdate: true,
               },
               ACCT_CD: { value: "", ignoreUpdate: true },
-            };
-          }
-        } else if (
-          currentField?.value &&
-          !Boolean(dependentFieldsValues?.TRAN_CD?.value)
-        ) {
-          let buttonName = await formState?.MessageBox({
-            messageTitle: "Alert",
-            message: "SelectTemplate",
-            buttonNames: ["Ok"],
-            icon: "WARNING",
-          });
-          if (buttonName === "Ok") {
-            return {
-              TRAN_CD: {
-                value: "",
-                isFieldFocused: true,
-                ignoreUpdate: true,
-              },
-              ACCT_CD: {
-                value: "",
-                isFieldFocused: false,
-                ignoreUpdate: true,
-              },
             };
           }
         } else if (

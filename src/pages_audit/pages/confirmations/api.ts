@@ -50,7 +50,13 @@ export const getConfirmationGridData = async (apiReqPara) => {
         : "0.00";
       item.AMOUNT = item.AMOUNT ? parseFloat(item.AMOUNT).toFixed(2) : "0.00";
       item.FULL_ACCT_NO =
-        item.BRANCH_CD + " " + item.ACCT_TYPE + " " + item.ACCT_CD;
+        item.COMP_CD +
+        " " +
+        item.BRANCH_CD +
+        " " +
+        item.ACCT_TYPE +
+        " " +
+        item.ACCT_CD;
 
       //limit
 

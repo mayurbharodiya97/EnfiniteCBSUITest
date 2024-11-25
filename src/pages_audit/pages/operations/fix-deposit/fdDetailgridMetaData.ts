@@ -17,8 +17,8 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     pageSizes: [50, 80, 100],
     defaultPageSize: 50,
     containerHeight: {
-      min: "77vh",
-      max: "77vh",
+      min: "70vh",
+      max: "70vh",
     },
     allowFilter: false,
     allowColumnHiding: false,

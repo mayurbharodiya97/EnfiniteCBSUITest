@@ -26,10 +26,12 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
   const lienConfirm: any = useMutation("lienConfirmation", lienConfirmation, {
     onError: () => {
       CloseMessageBox();
+      setIsDelete(false);
     },
     onSuccess: () => {
       CloseMessageBox();
       closeDialog();
+      setIsDelete(false);
       result.mutate({
         screenFlag: "lienCFM",
         COMP_CD: authState.companyID,
@@ -99,7 +101,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
                   onClick={async () => {
                     let buttonName = await MessageBox({
                       messageTitle: t("confirmation"),
-                      message: t("AreYouSureToConfirm"),
+                      message: t("DoYouWantAllowTransaction"),
                       buttonNames: ["Yes", "No"],
                       defFocusBtnName: "Yes",
                       loadingBtnName: ["Yes"],
@@ -122,6 +124,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
                         ACTIVITY_TYPE: "LIEN CONFIRMATION SCREEN",
                         LIEN_AMOUNT: rows?.[0]?.data?.LIEN_AMOUNT,
                         EFECTIVE_DT: rows?.[0]?.data?.EFECTIVE_DT,
+                        LAST_ENTERED_BY: rows?.[0]?.data?.LAST_ENTERED_BY,
                       });
                     }
                   }}
@@ -169,6 +172,7 @@ export const LienConfirmationForm = ({ closeDialog, result }) => {
               ACTIVITY_TYPE: "LIEN CONFIRMATION SCREEN",
               LIEN_AMOUNT: rows?.LIEN_AMOUNT,
               EFECTIVE_DT: rows?.EFECTIVE_DT,
+              LAST_ENTERED_BY: rows?.LAST_ENTERED_BY,
             };
 
             lienConfirm.mutate(deleteReqPara);

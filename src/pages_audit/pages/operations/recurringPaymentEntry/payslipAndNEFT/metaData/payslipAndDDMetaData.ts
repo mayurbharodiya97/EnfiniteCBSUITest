@@ -1,5 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../api";
+import { t } from "i18next";
 
 export const PayslipAndDDFormMetaData = {
   form: {
@@ -170,7 +171,9 @@ export const PayslipAndDDFormMetaData = {
               return true;
             }
           }
-          return false;
+          return {
+            reason: t("recurringPayslipFormRequiredMsgForArrayfield"),
+          };
         } else {
           return true;
         }
@@ -185,16 +188,16 @@ export const PayslipAndDDFormMetaData = {
           label: "billType",
           placeholder: "SelectBillType",
           required: true,
-          defaultValue: "532",
           fullWidth: true,
           options: (dependentValue, formState, _, authState) => {
-            return GeneralAPI.getCommTypeList({
+            return API.getCommTypeList({
               COMP_CD: authState?.companyID ?? "",
               BRANCH_CD: authState?.user?.branchCode ?? "",
               CODE: "DD",
             });
           },
           _optionsKey: "getCommonTypeList",
+          defaultValueKey: "billTypeDefaultVal",
           isFieldFocused: true,
           runPostValidationHookAlways: true,
           dependentFields: ["PAYMENT_AMOUNT"],
@@ -205,6 +208,7 @@ export const PayslipAndDDFormMetaData = {
             dependentFieldsValues
           ) => {
             if (formState?.isSubmitting) return {};
+
             if (
               currentField?.value &&
               formState?.accountDetailsForPayslip?.ACCT_TYPE &&
@@ -263,6 +267,10 @@ export const PayslipAndDDFormMetaData = {
                   value: currentField?.optionData?.[0]?.TYPE_CD ?? "",
                   ignoreUpdate: true,
                 },
+                PAYSLIP_NO: {
+                  value: currentField?.optionData?.[0]?.PAYSLIP_NO ?? "",
+                  ignoreUpdate: false,
+                },
               };
             } else if (!currentField?.value) {
               return {
@@ -288,6 +296,10 @@ export const PayslipAndDDFormMetaData = {
                 },
                 AMOUNT_HIDDEN: {
                   value: "",
+                },
+                PAYSLIP_NO: {
+                  value: "",
+                  ignoreUpdate: false,
                 },
               };
             }
@@ -339,7 +351,7 @@ export const PayslipAndDDFormMetaData = {
               return {
                 REGION: {
                   value: currentField?.optionData?.[0]?.REGION_NM ?? "",
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
               };
             }
@@ -380,7 +392,6 @@ export const PayslipAndDDFormMetaData = {
           className: "textInputFromRight",
           type: "number",
           maxLength: 12,
-          disableCaching: true,
           dependentFields: ["DEF_TRAN_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
             return dependentFields?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
@@ -477,12 +488,12 @@ export const PayslipAndDDFormMetaData = {
                     : {
                         value: "",
                         isFieldFocused: true,
-                        ignoreUpdate: true,
+                        ignoreUpdate: false,
                       },
               };
             } else if (!currentField?.value) {
               return {
-                PAYSLIP_NO: { value: "", ignoreUpdate: true },
+                PAYSLIP_NO: { value: "", ignoreUpdate: false },
               };
             }
             return {};

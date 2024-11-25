@@ -197,7 +197,7 @@ export const stopPayconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "GSTAmount",
+      label: "GST",
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "P") {

@@ -142,7 +142,7 @@ export const PagesAudit = (props, { columns }) => {
                 props: { open: acctInq, setAcctInq },
               },
               { Component: Quick_View },
-              { Component: Notification_App },
+              // { Component: Notification_App },
               {
                 Component:
                   location.pathname.includes("dashboard") ||

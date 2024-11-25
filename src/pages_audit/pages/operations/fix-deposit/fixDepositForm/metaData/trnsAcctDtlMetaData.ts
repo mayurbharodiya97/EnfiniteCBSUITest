@@ -2,6 +2,7 @@ import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../../api";
 import { validateHOBranch } from "components/utilFunction/function";
+import { t } from "i18next";
 
 export const TransferAcctDetailFormMetadata = {
   form: {
@@ -192,8 +193,7 @@ export const TransferAcctDetailFormMetadata = {
             }
           }
           return {
-            reason:
-              "Branch Code, Account Type, Account Number and Credit Amount are required. Please complete these fields to proceed.",
+            reason: t("fdTransferFormRequiredMsgForArrayfield"),
           };
         } else {
           return true;
