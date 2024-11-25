@@ -198,6 +198,7 @@ const InsuranceConfirmationForm = ({ closeDialog, result }) => {
                 _isNewRow: false,
                 _isDeleteRow: true,
                 _isAllowRenewRow: false,
+                _isConfrimed: true,
                 ...rows?.[0]?.data,
                 USER_DEF_REMARKS: val
                   ? val

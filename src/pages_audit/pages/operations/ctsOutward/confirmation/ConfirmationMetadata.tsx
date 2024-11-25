@@ -512,6 +512,12 @@ export const CTSOutwardClearingConfirmMetaData = {
       name: "TRAN_DT",
       label: "PresentmentDate",
       placeholder: "",
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
     },
     {
@@ -875,6 +881,12 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
+          validate: (value) => {
+            if (Boolean(value?.value) && !isValid(value?.value)) {
+              return "Mustbeavaliddate";
+            }
+            return "";
+          },
           GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
         },
         {
@@ -1079,6 +1091,12 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
+          validate: (value) => {
+            if (Boolean(value?.value) && !isValid(value?.value)) {
+              return "Mustbeavaliddate";
+            }
+            return "";
+          },
           GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
         },
         {

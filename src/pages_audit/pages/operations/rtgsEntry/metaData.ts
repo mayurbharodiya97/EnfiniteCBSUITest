@@ -87,6 +87,12 @@ export const RtgsEntryFormMetaData = {
       label: "Date",
       placeholder: "",
       isReadOnly: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 6, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
     {
@@ -909,7 +915,9 @@ export const RtgsEntryFormMetaData = {
         const currentDate = new Date(currentField?.value);
         const rangeDate = new Date(dependentField?.TRAN_DT?.value);
         const transDate = new Date(dependentField?.TRAN_DT?.value);
-
+        if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+          return "Mustbeavaliddate";
+        }
         if (currentDate < rangeDate || currentDate > transDate) {
           return (
             "DateShouldBetween" +
@@ -918,6 +926,7 @@ export const RtgsEntryFormMetaData = {
             transDate.toLocaleDateString("en-IN")
           );
         }
+        return "";
       },
       __EDIT__: {
         dependentFields: ["BR_CONFIRMED"],

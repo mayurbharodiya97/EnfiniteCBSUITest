@@ -67,20 +67,22 @@ export const getRtgsBranchConfirmOrderingData = async (ApiReq) => {
     await AuthSDK.internalFetcher("GETRTGSTRNHDRDATADISP", {
       ...ApiReq,
     });
-  if (status === "0" && Array.isArray(data) && data.length > 0) {
+  if (status === "0") {
     // if (data?.BR_CONFIRMED === "Y") {
-    const acBalanceData = await getHoconfirmationAcBanlaceData({
-      MSG_FLOW: data?.[0]?.MSG_FLOW,
-      ENTRY_TYPE: data?.[0]?.ENTRY_TYPE,
-      BASE_BRANCH_CD: data?.[0]?.BRANCH_CD,
-      COMP_CD: data?.[0]?.COMP_CD,
-      ENT_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
-      MSG_TYPE: data?.[0]?.TRAN_TYPE,
-    });
-    return {
-      hdrData: data[0],
-      acBalanceData: acBalanceData[0],
-    };
+    if (Array.isArray(data) && data.length > 0) {
+      const acBalanceData = await getHoconfirmationAcBanlaceData({
+        MSG_FLOW: data?.[0]?.MSG_FLOW,
+        ENTRY_TYPE: data?.[0]?.ENTRY_TYPE,
+        BASE_BRANCH_CD: data?.[0]?.BRANCH_CD,
+        COMP_CD: data?.[0]?.COMP_CD,
+        ENT_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
+        MSG_TYPE: data?.[0]?.TRAN_TYPE,
+      });
+      return {
+        hdrData: data[0],
+        acBalanceData: acBalanceData[0],
+      };
+    }
     // }
     // return data
   } else {

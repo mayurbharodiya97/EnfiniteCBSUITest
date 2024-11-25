@@ -186,7 +186,7 @@ const RtgsBranchHoConfirmationForm: FC<{
       queryKey: ["getRtgsBranchConfirmOrderingData", rowsData?.BRANCH_TRAN_CD],
       queryFn: () =>
         API.getRtgsBranchConfirmOrderingData({
-          ENT_BRANCH_CD: authState?.user?.branchCode,
+          ENT_BRANCH_CD: rowsData?.ENTERED_BRANCH_CD ?? "",
           COMP_CD: rowsData?.COMP_CD ?? "",
           BRANCH_CD: rowsData?.BRANCH_CD ?? "",
           BRANCH_TRAN_CD: rowsData?.BRANCH_TRAN_CD ?? "",
@@ -721,6 +721,24 @@ const RtgsBranchHoConfirmationForm: FC<{
                   )}
                   <GradientButton
                     onClick={() => {
+                      if (currentIndex && currentIndex !== totalData) {
+                        handleNext();
+                      }
+                    }}
+                  >
+                    {t("MoveForward")}
+                  </GradientButton>
+                  <GradientButton
+                    onClick={(e) => {
+                      if (currentIndex && currentIndex > 0) {
+                        handlePrev();
+                      }
+                    }}
+                  >
+                    {t("Previous")}
+                  </GradientButton>
+                  {/* <GradientButton
+                    onClick={() => {
                       if (currentIndex && currentIndex !== totalData)
                         handleNext();
                     }}
@@ -736,7 +754,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                     disabled={result?.[0]?.isLoading || result?.[1]?.isLoading}
                   >
                     {t("Previous")}
-                  </GradientButton>
+                  </GradientButton> */}
                   {/* {flag === "R" &&
                     data?.[0]?.CHEQUE_DETAIL?.[0]?.CP_TRAN_CD ===
                     undefined && ( */}
@@ -841,7 +859,7 @@ const RtgsBranchHoConfirmationForm: FC<{
               ) : (
                 <>
                   <FormWrapper
-                    key={"rtgsOrderingConfirm"}
+                    key={"rtgsOrderingConfirm" + currentIndex}
                     metaData={
                       extractMetaData(
                         flag === "BO"
@@ -852,10 +870,10 @@ const RtgsBranchHoConfirmationForm: FC<{
                     }
                     initialValues={{
                       ...(flag === "BO"
-                        ? { ...result[0]?.data?.hdrData }
+                        ? { ...(result[0]?.data?.hdrData ?? "") }
                         : {
-                            ...result[0]?.data?.hdrData,
-                            ...result[0]?.data?.acBalanceData,
+                            ...(result[0]?.data?.hdrData ?? ""),
+                            ...(result[0]?.data?.acBalanceData ?? ""),
                           }),
                       ENTERED_BY:
                         "Enter by " + result[0]?.data?.hdrData?.ENTERED_BY,
@@ -873,7 +891,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                     }}
                   />
                   <FormWrapper
-                    key={`rtgBenDetailConfirm` + formMode}
+                    key={`rtgBenDetailConfirm` + formMode + currentIndex}
                     metaData={
                       extractMetaData(
                         flag === "BO"
@@ -885,7 +903,7 @@ const RtgsBranchHoConfirmationForm: FC<{
                     displayMode={formMode}
                     onSubmitHandler={() => {}}
                     initialValues={{
-                      beneficiaryAcDetails: result?.[1]?.data,
+                      beneficiaryAcDetails: result?.[1]?.data ?? "",
                     }}
                     hideHeader={true}
                     containerstyle={{ padding: "0px !important" }}

@@ -560,7 +560,7 @@ export const en_language_data = {
   Tips: "Tips",
   Alert: "Alert",
   AnnouncingNewFeatures: "Announcing New Features.",
-  BePreaparedForFruad: "Be Preapared For Fruad.",
+  BePreaparedForFruad: "Be prepared for fraud.",
   CustomerQueriesSolve: "Customer Queries Solve.",
   LowBalanceAlert: "Low Balance Alert.",
 

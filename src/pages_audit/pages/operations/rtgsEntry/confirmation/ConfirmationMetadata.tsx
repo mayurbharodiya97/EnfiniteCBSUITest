@@ -578,6 +578,12 @@ export const RtgsOrderingBranchConfirmFormMetaData = {
       label: "Date",
       placeholder: "",
       isReadOnly: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 6, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
     {
@@ -795,6 +801,12 @@ export const RtgsOrderingBranchConfirmFormMetaData = {
       placeholder: "",
       format: "dd/MM/yyyy",
       type: "text",
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.5 },
     },
     {
@@ -1108,6 +1120,12 @@ export const RtgsOrderingHOConfirmFormMetaData = {
       label: "Date",
       placeholder: "",
       isReadOnly: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 6, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
     {
@@ -1325,6 +1343,12 @@ export const RtgsOrderingHOConfirmFormMetaData = {
       placeholder: "",
       format: "dd/MM/yyyy",
       type: "text",
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.5 },
     },
     {

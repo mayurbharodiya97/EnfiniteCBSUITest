@@ -105,6 +105,12 @@ export const InsuranceDetailFormMetaData = {
         name: "INSURANCE_DATE",
         fullWidth: true,
         label: "InsuranceDate",
+        validate: (value) => {
+          if (Boolean(value?.value) && !isValid(value?.value)) {
+            return "Mustbeavaliddate";
+          }
+          return "";
+        },
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       },
       {
@@ -146,6 +152,12 @@ export const InsuranceDetailFormMetaData = {
         name: "TRAN_DT",
         isReadOnly: true,
         label: "EntryDate",
+        validate: (value) => {
+          if (Boolean(value?.value) && !isValid(value?.value)) {
+            return "Mustbeavaliddate";
+          }
+          return "";
+        },
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       },
 
@@ -572,6 +584,12 @@ export const InsuranceDetailFormMetaData = {
           name: "INACTIVE_DATE",
           fullWidth: true,
           label: "InactiveDate",
+          validate: (value) => {
+            if (Boolean(value?.value) && !isValid(value?.value)) {
+              return "Mustbeavaliddate";
+            }
+            return "";
+          },
           GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
           dependentFields: ["RENEWED_FLAG"],
           shouldExclude: (_, dependent, __) => {

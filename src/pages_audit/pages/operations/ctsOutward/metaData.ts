@@ -59,6 +59,12 @@ export const CTSOutwardClearingFormMetaData = {
       name: "TRAN_DT",
       label: "PresentmentDate",
       placeholder: "",
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
     },
     {
@@ -949,7 +955,9 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
             const currentDate = new Date(currentField?.value);
             const rangeDate = new Date(dependentField?.RANGE_DT?.value);
             const transDate = new Date(dependentField?.TRAN_DT?.value);
-
+            if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+              return "Mustbeavaliddate";
+            }
             if (currentDate < rangeDate || currentDate > transDate) {
               return `DateShouldBetween ${rangeDate.toLocaleDateString(
                 "en-IN"
@@ -1627,6 +1635,12 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
+          validate: (value) => {
+            if (Boolean(value?.value) && !isValid(value?.value)) {
+              return "Mustbeavaliddate";
+            }
+            return "";
+          },
           // dependentFields: ["TRAN_DT", "RANGE_DT"],
           // validate: (currentField, dependentField) => {
           //   const currentDate = new Date(currentField?.value);
