@@ -723,6 +723,16 @@ export const en_language_data = {
   PhoneO: "Phone(O)",
   PhoneR: "Phone(R)",
   Fax: "Fax",
+  PassportIssueDateCantBeGreaterThanTodaysDate:
+    "Passport Issue Date can't be greater than today's date.",
+  DrivingLicenseIssueDateCantBeGreaterThanTodaysDate:
+    "Driving License Issue Date can't be greater than today's date.",
+  KYCRevisedDateShouldBeLessThanTodaysDate:
+    "KYC Revised Date should be less than Today's Date.",
+  CommencementDateCantBeGreaterThanTodaysDate:
+    "Commencement Date can't be greater than today's Date.",
+  InceptionDateCantBeGreaterThanTodaysDate:
+    "Inception Date can't be greater than today's Date.",
   // tab - declaration details
   DeclarationDetails: "Declaration Details",
   FATCACRSDetails: "FATCA/CRS Details",
@@ -807,6 +817,8 @@ export const en_language_data = {
   VisuallyImpaired: "Visually Impaired",
   CustomerEvaluationRequired: "Customer Evaluation Required",
   RelationshipManager: "Relationship Manager",
+  VisaIssueDateCantBeGreaterThanTodayssDate:
+    "Visa issue Date can't be greater than today's Date.",
   // tab - attestation details
   AttestationDetails: "Attestation Details",
   TypeOfDocSubmitted: "Type of Document Submitted",
