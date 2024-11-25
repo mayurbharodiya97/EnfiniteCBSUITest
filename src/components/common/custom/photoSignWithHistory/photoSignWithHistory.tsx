@@ -121,11 +121,6 @@ const PhotoSignWithHistory = ({
       AC_CUST_LEVEL: AcCustLevel ?? "",
     })
   );
-  console.log(
-    "LatestPhotoSignData",
-    LatestPhotoSignData?.length ===
-      LatestPhotoSignData?.filter((item) => item.ROW_VISIBLE === "Y").length
-  );
   // photo/sign history
 
   const getPhotoSignHistory: any = useMutation(GeneralAPI.getPhotoSignHistory, {
