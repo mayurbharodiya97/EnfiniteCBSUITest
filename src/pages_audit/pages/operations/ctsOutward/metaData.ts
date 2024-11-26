@@ -60,6 +60,28 @@ export const CTSOutwardClearingFormMetaData = {
       label: "PresentmentDate",
       placeholder: "",
       GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
+      dependentFields: ["WORKING_DT", "ZONE_TRAN_TYPE"],
+      validate: (currentField, dependentField) => {
+        if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+          return "Mustbeavaliddate";
+        }
+        if (dependentField?.ZONE_TRAN_TYPE?.value === "S") {
+          if (
+            new Date(currentField?.value) <
+            new Date(dependentField?.WORKING_DT?.value)
+          ) {
+            return "ClearingDateshouldbegreaterthanorequaltoWorkingDate";
+          }
+        } else {
+          if (
+            new Date(currentField?.value) >
+            new Date(dependentField?.WORKING_DT?.value)
+          ) {
+            return "ClearingReturnDateshouldbeLessthanorequaltoWorkingDate";
+          }
+        }
+        return "";
+      },
     },
     {
       render: {
@@ -409,6 +431,12 @@ export const CTSOutwardClearingFormMetaData = {
         componentType: "hidden",
       },
       name: "ZONE_TRAN_TYPE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "WORKING_DT",
     },
   ],
 };

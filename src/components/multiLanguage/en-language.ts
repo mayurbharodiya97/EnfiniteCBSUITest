@@ -1063,7 +1063,6 @@ export const en_language_data = {
   RecordRemovedMsg: "Record Removed Successfully.",
   HOBranchValidMessage: "HO Branch can't be Access by Anyone.",
   HOBranchValidMessageTitle: "Data Validation Failed.",
-
   // cheque book
 
   AreYouSureToProceed: "Are you sure to Proceed ?",
@@ -1607,6 +1606,10 @@ export const en_language_data = {
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",
   EnterChequeNo: "Enter Cheque No.",
+  ClearingDateshouldbegreaterthanorequaltoWorkingDate:
+    "Clearing Date should be greater than or equal to Working Date.",
+  ClearingReturnDateshouldbeLessthanorequaltoWorkingDate:
+    "Clearing Return Date should be less than or equal to Working Date",
   // cts o/w confirmation
 
   EnterRemovalRemarksCTSOWCONFIRMATION:
