@@ -716,10 +716,15 @@ export const ChequeBookEntryMetaData = {
         },
       },
       defaultValue: "1",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["NoOfChequebooksIsRequired"] }],
+      },
       FormatProps: {
         allowNegative: false,
         isAllowed: (values) => {
-          if (values?.value?.length > 2 || values?.value === "-") {
+          if (values?.value?.length > 2 || values?.value === "0") {
             return false;
           }
           return true;

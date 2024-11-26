@@ -708,7 +708,6 @@ export const guj_language_data = {
   ChequeStopDetail: "ચેક સ્ટોપ વિગતો",
   ChequeStopEntry: "ચેક સ્ટોપ એન્ટ્રી",
   ReleaseChequeDetail: "રીલીઝ ચેક વિગતો",
-  ChequeValidationFailed: "ચેક માન્યતા નિષ્ફળ",
   ChequeToValidateMsg: "કૃપા કરીને ચેક-ફ્રોમ મૂલ્ય કરતાં વધુ મૂલ્ય દાખલ કરો",
   ChequeStopType: "ચેક સ્ટોપ પ્રકાર",
   IntimateDate: "ઘનિષ્ઠ તારીખ",

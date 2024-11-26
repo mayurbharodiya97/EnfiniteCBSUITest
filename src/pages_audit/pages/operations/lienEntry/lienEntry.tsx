@@ -180,7 +180,13 @@ const LienEntryCustom = () => {
     displayData,
     endSubmit
   ) => {
-    validateInsertData.mutate(data, {
+    let newdata = {
+      ...data,
+      LIEN_TYPE: data?.LIEN_CD,
+      CYBER_FRAUD:
+        data?.CYBER_FRAUD === "Y" || Boolean(data?.CYBER_FRAUD) ? "Y" : "N",
+    };
+    validateInsertData.mutate(newdata, {
       onSuccess: () => {
         //@ts-ignore
         endSubmit(true);

@@ -936,8 +936,8 @@ export const en_language_data = {
   DataConfirmMessage: "Data has been Successfully Confirmed",
   DataRejectMessage: "Data has been Successfully Rejected",
   ConfirmationDetail: "Confirmation Detail",
-  AreYouSureToConfirm: "Are You Sure to Confirm",
-  AreYouSureToReject: "Are You Sure to Reject",
+  AreYouSureToConfirm: "Are you sure to confirm ?",
+  AreYouSureToReject: "Are you sure to reject ?",
   AreYouSureToProcced: "Are You Sure to Procced ?",
   Confirm: "Confirm",
   ConfirmRestrictMsg: "You can not Confirm your own posted transaction.",
@@ -1079,6 +1079,7 @@ export const en_language_data = {
   EnterFromChequeNo: "Enter From Cheque No.",
   NoOfCheques: "No. of Cheque(s)",
   NoOfChequesIsRequired: "No. of Cheque(s) is Required",
+  NoOfChequebooksIsRequired: "No. of ChequeBook(s) is Required",
   SelectNoOfChequeBook: "Select No. of Cheque book",
   ToChequeNo: "To Cheque No.",
   EnterToChequeNo: "Enter To Cheque No.",
@@ -1190,7 +1191,7 @@ export const en_language_data = {
   // stop payment
 
   InsertStopPaymentMsg:
-    "Are you sure you want to stop the selected check-number ?",
+    "Are you sure you want to stop the selected cheque number ?",
   InsertStopPaymentMsg2:
     "Are you sure you want to surrender the selected cheque number ?",
   InsertStopPaymentMsg3:
@@ -1200,7 +1201,7 @@ export const en_language_data = {
   ChequeStopDetail: "Cheque Stop Detail",
   ReleaseChequeDetail: "Release Cheque Detail",
   ChequeStopEntry: "Cheque Stop Entry",
-  ChequeValidationFailed: "Cheque Validation Failed",
+  ChequeStopped: "Cheque Stopped",
   ChequeToValidateMsg: "Please enter a value greater than the Check-From value",
   ChequeStopType: "Cheque Stop Type",
   IntimateDate: "Intimate Date",
@@ -1222,6 +1223,10 @@ export const en_language_data = {
     "Enter Removal Remarks for Cheque Stop Confirmation (ETRN/380)",
   FromChequenorequired: "From Cheque Number is required",
   ToChequenorequired: "To Cheque Number is required",
+  ChequeBook: "Cheque Book",
+  SelectChequeStopType: "Select Cheque Stop Type",
+  EnterInfavour: "Enter Infavour",
+  StoppedChequetitle: "Cheque(s) used  between series",
   // stock entry
 
   stockEntry: "Stock Entry",

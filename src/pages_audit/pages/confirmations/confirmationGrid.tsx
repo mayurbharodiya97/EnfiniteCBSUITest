@@ -50,7 +50,7 @@ export const Confirmations = ({ screenFlag }) => {
   ];
 
   const myGridRef = useRef<any>(null);
-  const [isOpen, setIsOpen] = useState<any>(false);
+  const [isOpen, setIsOpen] = useState<any>(true);
   const { getEntries } = useContext(ClearCacheContext);
   const { authState } = useContext(AuthContext);
   const { MessageBox } = usePopupContext();
