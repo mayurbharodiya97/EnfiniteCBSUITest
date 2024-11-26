@@ -147,6 +147,7 @@ export const accountFindmetaData = {
               ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
               BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
               SCREEN_REF: "MST/604",
+              GD_TODAY_DT: auth?.workingDate,
             };
             let postData = await GeneralAPI.getAccNoValidation(Apireq);
             let btn99, returnVal;

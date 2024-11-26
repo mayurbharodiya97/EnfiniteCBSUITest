@@ -1589,7 +1589,7 @@ export const en_language_data = {
   TotalSlipAmount: "Total Slip Amount",
   TotalChequeAmount: "Total Cheque Amount",
   ChequeNorequired: "Cheque No. is required.",
-  BankCode: "Bank Code",
+  BankCode: "Enter Bank Code",
   BankCodeRequired: "Bank Code is required.",
   PayeeACNo: "Payee A/C No.",
   PayeeACNorequired: "Payee A/C No. is required.",
@@ -1606,7 +1606,7 @@ export const en_language_data = {
   CLGDate: "CLG. Date",
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",
-
+  EnterChequeNo: "Enter Cheque No.",
   // cts o/w confirmation
 
   EnterRemovalRemarksCTSOWCONFIRMATION:

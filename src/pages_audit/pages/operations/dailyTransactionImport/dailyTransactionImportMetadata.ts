@@ -135,6 +135,7 @@ export const DailyTransactionImportMetadata = {
               ACCT_TYPE: dependentFieldsValues?.["FROM_ACCT_TYPE"]?.value,
               BRANCH_CD: dependentFieldsValues?.["FROM_BRANCH_CD"]?.value,
               SCREEN_REF: "MST/454",
+              GD_TODAY_DT: auth?.workingDate,
             };
             let postData = await GeneralAPI.getAccNoValidation(Apireq);
             let btn99, returnVal;
@@ -559,7 +560,7 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 290,
       isDisplayTotal: true,
-      footerLabel: "Total Entries",
+      footerLabel: "Total Entries :",
       setFooterValue(total, rows) {
         return [rows.length ?? 0];
       },
@@ -574,7 +575,7 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       minWidth: 50,
       maxWidth: 120,
       isDisplayTotal: true,
-      footerLabel: "Total Errors",
+      footerLabel: "Total Errors :",
       setFooterValue(total, rows) {
         const proccessedCount = rows?.filter(
           ({ original }) => !(original.STATUS === "Y")
@@ -614,7 +615,7 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 180,
       isDisplayTotal: true,
-      footerLabel: "Total Credit",
+      footerLabel: "Total Credit :",
       setFooterValue(total, rows) {
         // Filter rows where TYPE_CD is 1, 2, or 3
         const filteredRows = rows?.filter(({ original }) =>
@@ -640,7 +641,7 @@ export const DailyTransactionImportGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 290,
       isDisplayTotal: true,
-      footerLabel: "Total Debit",
+      footerLabel: "Total Debit :",
       setFooterValue(total, rows) {
         const filteredRows = rows?.filter(({ original }) =>
           [4, 5, 6].includes(Number(original.TYPE_CD))
