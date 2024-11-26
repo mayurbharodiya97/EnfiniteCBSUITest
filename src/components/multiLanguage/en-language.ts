@@ -383,7 +383,7 @@ export const en_language_data = {
   Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
-  SignInWithUserIDandPassword: "Please provide your UserID and password",
+  SignInWithUserIDandPassword: "Please provide your User ID and password",
   UserID: "User ID",
   Password: "Password",
   ConfirmPassword: "Confirm Password",
