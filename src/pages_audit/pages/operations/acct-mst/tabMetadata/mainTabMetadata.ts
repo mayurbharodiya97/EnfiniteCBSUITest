@@ -389,7 +389,6 @@ export const main_tab_metadata = {
       // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
       maxDate: new Date(),
-      // format: "dd/MM/yyyy",
     },
     {
       render: {

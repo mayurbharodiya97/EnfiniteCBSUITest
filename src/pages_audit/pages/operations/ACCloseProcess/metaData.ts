@@ -48,7 +48,7 @@ export const accountFindmetaData = {
           return {
             ACCT_NM: { value: "" },
             ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
           };
         },
         GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
@@ -93,7 +93,7 @@ export const accountFindmetaData = {
             }
           }
           return {
-            ACCT_CD: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
             ACCT_NM: { value: "" },
           };
         },
@@ -157,7 +157,8 @@ export const accountFindmetaData = {
             }
           } else if (
             dependentFieldValues?.BRANCH_CD?.value &&
-            dependentFieldValues?.ACCT_TYPE?.value
+            dependentFieldValues?.ACCT_TYPE?.value &&
+            currentField?.value
           ) {
             formState.handleButtonDisable(true);
             const postData = await API.getAccountCloseValidation(reqParameters);
@@ -235,7 +236,7 @@ export const accountFindmetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
 
               ACCT_NM: {
