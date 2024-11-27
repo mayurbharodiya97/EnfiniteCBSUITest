@@ -41,6 +41,7 @@ import {
   GridMetaDataType,
   FormWrapper,
 } from "@acuteinfo/common-base";
+import { format } from "date-fns";
 
 const KYCDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
@@ -166,8 +167,28 @@ const KYCDetails = () => {
         (field) => !field.includes("_ignoreField")
       ); // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current);
-
+      let formData: any = _.pick(data, formFieldsRef.current);
+      formData = {
+        ...formData,
+        PASSPORT_ISSUE_DT: Boolean(formData?.PASSPORT_ISSUE_DT)
+          ? format(new Date(formData?.PASSPORT_ISSUE_DT), "dd/MM/yyyy")
+          : "",
+        PASSPORT_EXPIRY_DT: Boolean(formData?.PASSPORT_EXPIRY_DT)
+          ? format(new Date(formData?.PASSPORT_EXPIRY_DT), "dd/MM/yyyy")
+          : "",
+        DRIVING_LICENSE_ISSUE_DT: Boolean(formData?.DRIVING_LICENSE_ISSUE_DT)
+          ? format(new Date(formData?.DRIVING_LICENSE_ISSUE_DT), "dd/MM/yyyy")
+          : "",
+        DRIVING_LICENSE_EXPIRY_DT: Boolean(formData?.DRIVING_LICENSE_EXPIRY_DT)
+          ? format(new Date(formData?.DRIVING_LICENSE_EXPIRY_DT), "dd/MM/yyyy")
+          : "",
+        COMMENCEMENT_DT: Boolean(formData?.COMMENCEMENT_DT)
+          ? format(new Date(formData?.COMMENCEMENT_DT), "dd/MM/yyyy")
+          : "",
+        LIQUIDATION_DT: Boolean(formData?.LIQUIDATION_DT)
+          ? format(new Date(formData?.LIQUIDATION_DT), "dd/MM/yyyy")
+          : "",
+      };
       // setCurrentTabFormData((formData) => ({
       //   ...formData,
       //   proof_of_identity: data,

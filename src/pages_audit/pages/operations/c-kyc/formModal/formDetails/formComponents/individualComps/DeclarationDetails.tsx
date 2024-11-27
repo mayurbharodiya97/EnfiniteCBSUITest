@@ -32,6 +32,7 @@ import {
   MetaDataType,
   usePopupContext,
 } from "@acuteinfo/common-base";
+import { format } from "date-fns";
 const DeclarationDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
@@ -186,8 +187,16 @@ const DeclarationDetails = () => {
         (field) => !field.includes("_ignoreField") && field !== "AGE"
       ); // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current);
-
+      let formData: any = _.pick(data, formFieldsRef.current);
+      formData = {
+        ...formData,
+        FATCA_DT: Boolean(formData?.FATCA_DT)
+          ? format(new Date(formData?.FATCA_DT), "dd/MM/yyyy")
+          : "",
+        DATE_OF_COMMENCEMENT: Boolean(formData?.DATE_OF_COMMENCEMENT)
+          ? format(new Date(formData?.DATE_OF_COMMENCEMENT), "dd/MM/yyyy")
+          : "",
+      };
       // if(Boolean(data["FATCA_DT"])) {
       //     data["FATCA_DT"] = format(new Date(data["FATCA_DT"]), "dd-MMM-yyyy")
       // }

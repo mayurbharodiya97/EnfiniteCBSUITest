@@ -31,6 +31,7 @@ import * as API from "../../../../api";
 import { useMutation } from "react-query";
 import { SearchListdialog } from "../legalComps/EntityDetails";
 import TabNavigate from "../TabNavigate";
+import { format } from "date-fns";
 const PersonalDetails = () => {
   const { t } = useTranslation();
   const PDFormRef = useRef<any>("");
@@ -229,7 +230,7 @@ const PersonalDetails = () => {
         (field) => !field.includes("_ignoreField") && field !== "AGE"
       ); // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current);
+      let formData: any = _.pick(data, formFieldsRef.current);
 
       let newData = state?.formDatactx;
       const commonData = {
@@ -239,6 +240,15 @@ const PersonalDetails = () => {
         REQ_FLAG: "",
         REQ_CD: "",
         // SR_CD: "",
+      };
+      formData = {
+        ...formData,
+        BIRTH_DT: Boolean(formData?.BIRTH_DT)
+          ? format(new Date(formData?.BIRTH_DT), "dd/MM/yyyy")
+          : "",
+        KYC_REVIEW_DT: Boolean(formData?.KYC_REVIEW_DT)
+          ? format(new Date(formData?.KYC_REVIEW_DT), "dd/MM/yyyy")
+          : "",
       };
       newData["PERSONAL_DETAIL"] = {
         ...newData["PERSONAL_DETAIL"],
