@@ -1,4 +1,4 @@
-import { greaterThanDate } from "@acuteinfo/common-base";
+import { greaterThanDate, lessThanInclusiveDate } from "@acuteinfo/common-base";
 import * as API from "../../../../api";
 import { isValid } from "date-fns";
 import { t } from "i18next";
@@ -116,10 +116,30 @@ export const nri_detail_meta_data = {
       name: "VISA_EXPIRY_DT",
       label: "VisaExpiryDate",
       required: true,
-      minDate: new Date(),
+      isMinWorkingDate: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
+      validate: (currentField, dependentField, formState) => {
+        if (Boolean(currentField.value)) {
+          if (!isValid(currentField?.value)) {
+            return "Mustbeavaliddate";
+          } else if (
+            lessThanInclusiveDate(
+              currentField?.value,
+              new Date(currentField?._minDt)
+            )
+          ) {
+            return t("VisaExpiryDateCantBeLessThanOrEqualToTodaysDate");
+          }
+        } else {
+          const passport = dependentField?.PASSPORT_NO?.value;
+          if (Boolean(passport)) {
+            return "This field is required";
+          }
+        }
+        return "";
       },
       // placeholder: "",
       // type: "datePicker",
