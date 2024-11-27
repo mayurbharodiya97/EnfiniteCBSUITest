@@ -19,6 +19,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { format } from "date-fns";
 import {
   kyc_legal_proof_of_add_meta_data,
   kyc_proof_of_address_meta_data,
@@ -41,7 +42,6 @@ import {
   GridMetaDataType,
   FormWrapper,
 } from "@acuteinfo/common-base";
-import { format } from "date-fns";
 
 const KYCDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")

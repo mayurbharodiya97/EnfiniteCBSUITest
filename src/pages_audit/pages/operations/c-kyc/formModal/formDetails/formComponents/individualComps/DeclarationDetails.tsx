@@ -15,6 +15,7 @@ import {
   Collapse,
   Button,
 } from "@mui/material";
+import { format } from "date-fns";
 import { declaration_meta_data } from "../../metadata/individual/declarationdetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -25,14 +26,12 @@ import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import _ from "lodash";
 import TabNavigate from "../TabNavigate";
-// import { format } from 'date-fns';
 import {
   Alert,
   FormWrapper,
   MetaDataType,
   usePopupContext,
 } from "@acuteinfo/common-base";
-import { format } from "date-fns";
 const DeclarationDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
@@ -196,12 +195,6 @@ const DeclarationDetails = () => {
             : "";
         }
       });
-      // if(Boolean(data["FATCA_DT"])) {
-      //     data["FATCA_DT"] = format(new Date(data["FATCA_DT"]), "dd-MMM-yyyy")
-      // }
-      // if(Boolean(data["DATE_OF_COMMENCEMENT"])) {
-      //     data["DATE_OF_COMMENCEMENT"] = format(new Date(data["DATE_OF_COMMENCEMENT"]), "dd-MMM-yyyy")
-      // }
 
       // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
