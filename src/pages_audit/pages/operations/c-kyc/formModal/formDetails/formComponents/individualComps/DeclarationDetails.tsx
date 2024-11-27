@@ -188,15 +188,14 @@ const DeclarationDetails = () => {
       ); // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
       let formData: any = _.pick(data, formFieldsRef.current);
-      formData = {
-        ...formData,
-        FATCA_DT: Boolean(formData?.FATCA_DT)
-          ? format(new Date(formData?.FATCA_DT), "dd/MM/yyyy")
-          : "",
-        DATE_OF_COMMENCEMENT: Boolean(formData?.DATE_OF_COMMENCEMENT)
-          ? format(new Date(formData?.DATE_OF_COMMENCEMENT), "dd/MM/yyyy")
-          : "",
-      };
+      const dateFields: string[] = ["FATCA_DT", "DATE_OF_COMMENCEMENT"];
+      dateFields.forEach((field) => {
+        if (Object.hasOwn(formData, field)) {
+          formData[field] = Boolean(formData[field])
+            ? format(new Date(formData[field]), "dd/MM/yyyy")
+            : "";
+        }
+      });
       // if(Boolean(data["FATCA_DT"])) {
       //     data["FATCA_DT"] = format(new Date(data["FATCA_DT"]), "dd-MMM-yyyy")
       // }

@@ -336,7 +336,6 @@ export const related_person_detail_data = {
                 return t("DrivingLicenseExpiryDateShouldBeFutureDate");
               }
             } else {
-              console.log("wewkfwieuhfiuwehf", dependentField);
               const dirvingLicenseNo =
                 dependentField?.["RELATED_PERSON_DTL.DRIVING_LICENSE_NO"]
                   ?.value;

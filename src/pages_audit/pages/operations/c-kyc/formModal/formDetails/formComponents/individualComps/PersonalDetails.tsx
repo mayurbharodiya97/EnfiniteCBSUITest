@@ -231,6 +231,14 @@ const PersonalDetails = () => {
       ); // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
       let formData: any = _.pick(data, formFieldsRef.current);
+      const dateFields: string[] = ["BIRTH_DT", "KYC_REVIEW_DT"];
+      dateFields.forEach((field) => {
+        if (Object.hasOwn(formData, field)) {
+          formData[field] = Boolean(formData[field])
+            ? format(new Date(formData[field]), "dd/MM/yyyy")
+            : "";
+        }
+      });
 
       let newData = state?.formDatactx;
       const commonData = {
@@ -240,15 +248,6 @@ const PersonalDetails = () => {
         REQ_FLAG: "",
         REQ_CD: "",
         // SR_CD: "",
-      };
-      formData = {
-        ...formData,
-        BIRTH_DT: Boolean(formData?.BIRTH_DT)
-          ? format(new Date(formData?.BIRTH_DT), "dd/MM/yyyy")
-          : "",
-        KYC_REVIEW_DT: Boolean(formData?.KYC_REVIEW_DT)
-          ? format(new Date(formData?.KYC_REVIEW_DT), "dd/MM/yyyy")
-          : "",
       };
       newData["PERSONAL_DETAIL"] = {
         ...newData["PERSONAL_DETAIL"],
