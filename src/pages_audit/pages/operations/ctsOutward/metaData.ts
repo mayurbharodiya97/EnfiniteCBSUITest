@@ -59,12 +59,6 @@ export const CTSOutwardClearingFormMetaData = {
       name: "TRAN_DT",
       label: "PresentmentDate",
       placeholder: "",
-      validate: (value) => {
-        if (Boolean(value?.value) && !isValid(value?.value)) {
-          return "Mustbeavaliddate";
-        }
-        return "";
-      },
       GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
       dependentFields: ["WORKING_DT", "ZONE_TRAN_TYPE"],
       validate: (currentField, dependentField) => {
