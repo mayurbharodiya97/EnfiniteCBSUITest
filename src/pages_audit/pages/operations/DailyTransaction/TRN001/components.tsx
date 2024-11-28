@@ -364,6 +364,7 @@ export const CustomAmountField = ({
 interface CustomTextFieldProps {
   value: any;
   onKeyUp?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onDoubleClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   size?: "small" | "medium";
   type?: "text" | "number" | "password" | "email";
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -383,6 +384,7 @@ export const CustomTextField = ({
   onChange,
   disabled,
   onKeyUp,
+  onDoubleClick,
   onBlur,
   loadingState,
   inputRef,
@@ -399,6 +401,7 @@ export const CustomTextField = ({
         type={type}
         onChange={onChange}
         onKeyUp={onKeyUp}
+        onDoubleClick={onDoubleClick}
         disabled={disabled}
         onBlur={onBlur}
         variant="outlined"

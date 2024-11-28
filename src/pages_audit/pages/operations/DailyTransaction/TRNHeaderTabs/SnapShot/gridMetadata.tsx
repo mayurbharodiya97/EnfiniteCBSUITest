@@ -23,21 +23,22 @@ export const snapShotGridMetaData: GridMetaDataType = {
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
+    isCusrsorFocused: true,
   },
   filters: [],
   columns: [
     {
-      columnName: "Sr.",
+      columnName: "SrNo",
       accessor: "sr",
       sequence: 1,
       componentType: "default",
-      width: 60,
+      width: 80,
       maxWidth: 100,
       minWidth: 50,
       isAutoSequence: true,
     },
     {
-      columnName: "Value Date",
+      columnName: "ValueDate",
       accessor: "VALUE_DT",
       sequence: 3,
       componentType: "date",
@@ -47,14 +48,14 @@ export const snapShotGridMetaData: GridMetaDataType = {
     },
 
     {
-      columnName: "Narration ",
+      columnName: "narration",
       accessor: "REMARKS",
       sequence: 4,
       componentType: "default",
       width: 250,
     },
     {
-      columnName: "TRX ",
+      columnName: "Trx",
       accessor: "TYPE_CD",
       sequence: 5,
       componentType: "default",
@@ -63,7 +64,7 @@ export const snapShotGridMetaData: GridMetaDataType = {
       minWidth: 50,
     },
     {
-      columnName: "Chq No.",
+      columnName: "ChequeNo",
       accessor: "CHEQUE_NO",
       sequence: 6,
       componentType: "default",
@@ -74,7 +75,7 @@ export const snapShotGridMetaData: GridMetaDataType = {
       accessor: "DR_AMT",
       sequence: 7,
       componentType: "currency",
-      width: 100,
+      width: 150,
       color: "red",
       alignment: "right",
       isDisplayTotal: true,
@@ -85,7 +86,7 @@ export const snapShotGridMetaData: GridMetaDataType = {
       accessor: "CR_AMT",
       sequence: 8,
       componentType: "currency",
-      width: 100,
+      width: 150,
       color: "green",
       alignment: "right",
       isDisplayTotal: true,
@@ -93,15 +94,15 @@ export const snapShotGridMetaData: GridMetaDataType = {
     },
 
     {
-      columnName: "Closing Bal",
+      columnName: "ClosingBalance",
       accessor: "CL_BAL",
       sequence: 9,
       componentType: "currency",
-      width: 100,
+      width: 125,
       alignment: "right",
     },
     {
-      columnName: "Br ",
+      columnName: "Branch",
       accessor: "ENTERED_BRANCH_CD",
       sequence: 10,
       componentType: "default",
@@ -110,7 +111,7 @@ export const snapShotGridMetaData: GridMetaDataType = {
       minWidth: 50,
     },
     {
-      columnName: "SDC ",
+      columnName: "SDC",
       accessor: "SDC",
       sequence: 11,
       componentType: "default",
@@ -136,21 +137,21 @@ export const snapShotGridMetaData: GridMetaDataType = {
       },
     },
     {
-      columnName: "Maker ",
+      columnName: "Maker",
       accessor: "MAKER",
       sequence: 13,
       componentType: "default",
       width: 100,
     },
     {
-      columnName: "Checker ",
+      columnName: "Checker",
       accessor: "CHECKER",
       sequence: 14,
       componentType: "default",
       width: 100,
     },
     {
-      columnName: "Entered Date",
+      columnName: "EnteredDate",
       accessor: "ENTRY_DT",
       sequence: 15,
       componentType: "date",
@@ -165,7 +166,7 @@ export const snapShotGridMetaData: GridMetaDataType = {
 export const scrollRegisterGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Scroll Register",
+    gridLabel: "ScrollRegister",
     rowIdColumn: "REF_TRAN_CD",
     defaultColumnConfig: {
       width: 400,
@@ -190,17 +191,17 @@ export const scrollRegisterGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      columnName: "Sr.",
+      columnName: "SrNo",
       accessor: "sr",
       sequence: 1,
       componentType: "default",
-      width: 60,
+      width: 80,
       maxWidth: 100,
       minWidth: 50,
       isAutoSequence: true,
     },
     {
-      columnName: "Account Holder",
+      columnName: "Accountholder",
       accessor: "AC_HOLDER_DISP",
       sequence: 2,
       componentType: "default",
@@ -219,7 +220,7 @@ export const scrollRegisterGridMetaData: GridMetaDataType = {
       maxWidth: 350,
     },
     {
-      columnName: "Chq No.",
+      columnName: "ChequeNo",
       accessor: "CHEQUE_NO",
       sequence: 4,
       componentType: "default",
@@ -256,7 +257,7 @@ export const scrollRegisterGridMetaData: GridMetaDataType = {
       maxWidth: 150,
     },
     {
-      columnName: "Voucher No.",
+      columnName: "VoucherNo",
       accessor: "REF_TRAN_CD",
       sequence: 7,
       componentType: "default",
@@ -267,7 +268,7 @@ export const scrollRegisterGridMetaData: GridMetaDataType = {
     },
 
     {
-      columnName: "Tr. Branch",
+      columnName: "TrBranch",
       accessor: "ENTERED_BRANCH_CD",
       sequence: 8,
       componentType: "default",
@@ -278,7 +279,7 @@ export const scrollRegisterGridMetaData: GridMetaDataType = {
     },
 
     {
-      columnName: "Entry Date",
+      columnName: "EntryDate",
       accessor: "ENTERED_DATE",
       sequence: 9,
       componentType: "date",
@@ -298,7 +299,7 @@ export const scrollRegisterGridMetaData: GridMetaDataType = {
       maxWidth: 130,
     },
     {
-      columnName: "Checker Details",
+      columnName: "CheckerDetails",
       accessor: "VERIFIED_BY",
       sequence: 10,
       componentType: "default",

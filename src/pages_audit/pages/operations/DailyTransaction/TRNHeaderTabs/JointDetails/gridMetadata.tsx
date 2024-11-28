@@ -2,7 +2,7 @@ import { GridMetaDataType } from "@acuteinfo/common-base";
 export const JointDetailGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Joint Details",
+    gridLabel: "jointDetails",
     rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,
@@ -23,15 +23,17 @@ export const JointDetailGridMetaData: GridMetaDataType = {
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
+    isCusrsorFocused: true,
   },
   filters: [],
   columns: [
     {
-      columnName: "Sr.",
-      accessor: "SR_CD",
+      columnName: "SrNo",
+      accessor: "SrNo",
       sequence: 1,
       componentType: "default",
-      width: 60,
+      isAutoSequence: true,
+      width: 70,
       maxWidth: 100,
       minWidth: 50,
     },
@@ -44,7 +46,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
     },
 
     {
-      columnName: "Person Name",
+      columnName: "PersonName",
       accessor: "REF_PERSON_NAME",
       sequence: 3,
       componentType: "default",
@@ -52,34 +54,34 @@ export const JointDetailGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Designation",
-      accessor: "DESIGNATION",
+      accessor: "DESIGNATION_NM",
       sequence: 4,
       componentType: "default",
       width: 100,
     },
     {
-      columnName: "Mem. Type A/C No.",
+      columnName: "MemTypeACNo",
       accessor: "MEM_ACCT_CD",
       sequence: 5,
       componentType: "default",
       width: 150,
     },
     {
-      columnName: "Reference Account",
+      columnName: "ReferenceAccount",
       accessor: "REF_ACCT_CD",
       sequence: 6,
       componentType: "default",
       width: 150,
     },
     {
-      columnName: "Contact No.",
+      columnName: "ContactNo",
       accessor: "MOBILE_NO",
       sequence: 7,
       componentType: "default",
       width: 200,
     },
     {
-      columnName: "Customer ID",
+      columnName: "CustomerId",
       accessor: "CUSTOMER_ID",
       sequence: 8,
       componentType: "default",
