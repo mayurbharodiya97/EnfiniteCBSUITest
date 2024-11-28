@@ -28,6 +28,7 @@ const RetrieveDataCustom = ({ closeDialog, result }) => {
   );
   // API calling for Retrieve Data
   const onSubmitHandler = (data, displayData, endSubmit) => {
+    closeDialog();
     result.mutate({
       screenFlag: "chequebookCFM",
       COMP_CD: authState?.companyID,
@@ -90,7 +91,6 @@ const RetrieveDataCustom = ({ closeDialog, result }) => {
                   <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
-                      closeDialog();
                     }}
                     disabled={isSubmitting}
                     color={"primary"}

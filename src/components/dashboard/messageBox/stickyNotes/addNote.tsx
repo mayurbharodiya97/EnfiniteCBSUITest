@@ -280,85 +280,87 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
           ></textarea>
           <div className="note-footer">
             <small>{characterLimit - noteText.length} Remaining</small>
-            {defualtView === "edit" ? (
-              <>
-                <Tooltip title="Delete Note">
-                  <GradientButton
-                    style={{
-                      marginLeft: "180px",
-                      minWidth: "0px",
-                      borderRadius: "10px",
-                      background: "none",
-                    }}
-                    onClick={() => handleDeleteClick()}
-                  >
-                    <GridDeleteForeverIcon
+            <div>
+              {defualtView === "edit" ? (
+                <>
+                  <Tooltip title="Delete Note">
+                    <GradientButton
                       style={{
-                        fontSize: "3.0em",
-                        color: "var(--theme-color2)",
+                        marginLeft: "180px",
+                        minWidth: "0px",
+                        borderRadius: "10px",
+                        background: "none",
                       }}
-                    />
-                  </GradientButton>
-                </Tooltip>
-                <Tooltip title="Save Note">
-                  <GradientButton
-                    className="save"
-                    onClick={handleSaveClick}
-                    style={{
-                      minWidth: "0px",
-                      borderRadius: "10px",
-                      background: "none",
-                    }}
-                    disabled={mutation.isLoading}
-                  >
-                    {mutation.isLoading ? (
-                      <CircularProgress
-                        size={25}
-                        style={{ color: "black" }}
-                        thickness={4.6}
-                      />
-                    ) : (
-                      <SaveIcon
+                      onClick={() => handleDeleteClick()}
+                    >
+                      <GridDeleteForeverIcon
                         style={{
-                          fontSize: "3.2em",
+                          fontSize: "3.0em",
                           color: "var(--theme-color2)",
                         }}
                       />
-                    )}
-                  </GradientButton>
-                </Tooltip>
-              </>
-            ) : (
-              <>
-                <Tooltip title="Save Note">
-                  <GradientButton
-                    className="save"
-                    onClick={handleSaveClick}
-                    style={{
-                      minWidth: "0px",
-                      borderRadius: "10px",
-                      background: "none",
-                    }}
-                    disabled={mutation.isLoading}
-                  >
-                    {mutation.isLoading ? (
-                      <CircularProgress
-                        size={25}
-                        style={{ color: "black" }}
-                        thickness={4.6}
-                      />
-                    ) : (
-                      <SaveIcon
-                        style={{
-                          fontSize: "3.2em",
-                          color: "var(--theme-color2)",
-                        }}
-                      />
-                    )}
-                  </GradientButton>
-                </Tooltip>
-              </>
-            )}
+                    </GradientButton>
+                  </Tooltip>
+                  <Tooltip title="Save Note">
+                    <GradientButton
+                      className="save"
+                      onClick={handleSaveClick}
+                      style={{
+                        minWidth: "0px",
+                        borderRadius: "10px",
+                        background: "none",
+                      }}
+                      disabled={mutation.isLoading}
+                    >
+                      {mutation.isLoading ? (
+                        <CircularProgress
+                          size={25}
+                          style={{ color: "black" }}
+                          thickness={4.6}
+                        />
+                      ) : (
+                        <SaveIcon
+                          style={{
+                            fontSize: "3.2em",
+                            color: "var(--theme-color2)",
+                          }}
+                        />
+                      )}
+                    </GradientButton>
+                  </Tooltip>
+                </>
+              ) : (
+                <>
+                  <Tooltip title="Save Note">
+                    <GradientButton
+                      className="save"
+                      onClick={handleSaveClick}
+                      style={{
+                        minWidth: "0px",
+                        borderRadius: "10px",
+                        background: "none",
+                      }}
+                      disabled={mutation.isLoading}
+                    >
+                      {mutation.isLoading ? (
+                        <CircularProgress
+                          size={25}
+                          style={{ color: "black" }}
+                          thickness={4.6}
+                        />
+                      ) : (
+                        <SaveIcon
+                          style={{
+                            fontSize: "3.2em",
+                            color: "var(--theme-color2)",
+                          }}
+                        />
+                      )}
+                    </GradientButton>
+                  </Tooltip>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </Dialog>

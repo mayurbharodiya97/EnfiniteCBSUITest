@@ -10,6 +10,9 @@ import {
   getPMISCData,
   getRangeOptions,
 } from "../../c-kyc/api";
+import { isValid } from "date-fns";
+import { greaterThanDate } from "@acuteinfo/common-base";
+import { t } from "i18next";
 
 export const main_tab_metadata = {
   form: {
@@ -388,8 +391,19 @@ export const main_tab_metadata = {
       // type: "datePicker",
       // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
-      maxDate: new Date(),
-      // format: "dd/MM/yyyy",
+      isMaxWorkingDate: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        } else if (
+          greaterThanDate(value?.value, value?._maxDt, {
+            ignoreTime: true,
+          })
+        ) {
+          return t("DateShouldBeLessThanEqualToWorkingDT");
+        }
+        return "";
+      },
     },
     {
       render: {

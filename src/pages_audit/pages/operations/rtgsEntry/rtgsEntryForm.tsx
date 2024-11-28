@@ -208,20 +208,22 @@ const RtgsEntryForm: FC<{}> = () => {
         for (let i = 0; i < data.length; i++) {
           if (data[i]?.RTGS_ENTRY) {
             const message = ` ${t("RTGSNEFTTransNo")}.:- ${
-              data?.[0]?.RTGS_ENTRY?.[0]?.FD_NO
-            }\n${data?.[0]?.RTGS_ENTRY?.[0]?.TRAN_CD} ${t("ACNo")}:- ${
-              data?.[0]?.RTGS_ENTRY?.[0]?.BRANCH_CD
-            }-${
-              data?.[0]?.RTGS_ENTRY?.[0]?.ACCT_TYPE
-            }-${data?.[0]?.RTGS_ENTRY?.[0]?.ACCT_CD.trim()}  ${t("Trx")}:- ${
-              data?.[0]?.RTGS_ENTRY?.[0]?.TYPE_CD
-            } ${t("Amount")}:- ${data?.[0]?.RTGS_ENTRY?.[0]?.AMOUNT}.\n${
-              data?.[0]?.RTGS_ENTRY?.[1]?.TRAN_CD
-            } ${t("ACNo")}:- ${data?.[0]?.RTGS_ENTRY?.[1]?.BRANCH_CD}-${
-              data?.[0]?.RTGS_ENTRY?.[1]?.ACCT_TYPE
-            }-${data?.[0]?.RTGS_ENTRY?.[1]?.ACCT_CD.trim()}  ${t("Trx")}:- ${
-              data?.[0]?.RTGS_ENTRY?.[1]?.TYPE_CD
-            } ${t("Amount")}:- ${data?.[0]?.RTGS_ENTRY?.[1]?.AMOUNT}`;
+              data?.[0]?.RTGS_ENTRY?.[0]?.FD_NO ?? ""
+            }\n${data?.[0]?.RTGS_ENTRY?.[0]?.TRAN_CD ?? ""} ${t("ACNo")}:- ${
+              data?.[0]?.RTGS_ENTRY?.[0]?.BRANCH_CD ?? ""
+            }-${data?.[0]?.RTGS_ENTRY?.[0]?.ACCT_TYPE ?? ""}-${
+              data?.[0]?.RTGS_ENTRY?.[0]?.ACCT_CD.trim() ?? ""
+            }  ${t("Trx")}:- ${data?.[0]?.RTGS_ENTRY?.[0]?.TYPE_CD ?? ""} ${t(
+              "Amount"
+            )}:- ${data?.[0]?.RTGS_ENTRY?.[0]?.AMOUNT ?? "0.00"}.\n${
+              data?.[0]?.RTGS_ENTRY?.[1]?.TRAN_CD ?? ""
+            } ${t("ACNo")}:- ${data?.[0]?.RTGS_ENTRY?.[1]?.BRANCH_CD ?? ""}-${
+              data?.[0]?.RTGS_ENTRY?.[1]?.ACCT_TYPE ?? ""
+            }-${data?.[0]?.RTGS_ENTRY?.[1]?.ACCT_CD.trim() ?? ""}  ${t(
+              "Trx"
+            )}:- ${data?.[0]?.RTGS_ENTRY?.[1]?.TYPE_CD ?? ""} ${t(
+              "Amount"
+            )}:- ${data?.[0]?.RTGS_ENTRY?.[1]?.AMOUNT ?? "0.00"}`;
             await MessageBox({
               messageTitle: t("VoucherConfirmation"),
               message: message,
@@ -229,8 +231,8 @@ const RtgsEntryForm: FC<{}> = () => {
           }
           if (data[i]?.UTR_MSG) {
             const message = ` ${t("RTGSNEFTTransNo")}.:- ${
-              data?.[0]?.RTGS_ENTRY?.[0]?.FD_NO
-            }\n${data[i]?.UTR_MSG?.[0]}`;
+              data?.[0]?.RTGS_ENTRY?.[0]?.FD_NO ?? ""
+            }\n${data[i]?.UTR_MSG?.[0] ?? ""}`;
             await MessageBox({
               messageTitle: t("UTRConfirmation"),
               message: message,
@@ -360,8 +362,8 @@ const RtgsEntryForm: FC<{}> = () => {
         onSuccess: async (data, variables) => {
           for (let i = 0; i < data?.length; i++) {
             if (data[i]?.O_STATUS === "999") {
-              const buttonName = await MessageBox({
-                messageTitle: t("ValidationFailed"),
+              MessageBox({
+                messageTitle: data[i]?.O_MSG_TITLE,
                 message: data[i]?.O_MESSAGE,
                 icon: "ERROR",
               });
@@ -403,6 +405,7 @@ const RtgsEntryForm: FC<{}> = () => {
                   message: t("ProceedGen"),
                   buttonNames: ["Yes", "No"],
                   loadingBtnName: ["Yes"],
+                  defFocusBtnName: "Yes",
                 });
                 if (buttonName === "Yes") {
                   mutationRtgs.mutate(finalReqDataRef.current);

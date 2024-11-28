@@ -28,6 +28,8 @@ import {
 import { useLocation } from "react-router-dom";
 import { DateRetrievalDialog } from "components/common/custom/dateRetrievalPara";
 import { useStyles } from "pages_audit/style";
+import { DateRetrival } from "./DateRetrival/DataRetrival";
+import { SingleAccountInterestReport } from "./DateRetrival/singleAccountInterestReport";
 export const Trn001 = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
@@ -66,9 +68,12 @@ export const Trn001 = () => {
   const lastRowUnqID = useRef(null);
   const isBatchEntry = useRef(false);
   const acctNoRef = useRef<any>(null);
+  const interestCalculateParaRef = useRef<any>(null);
+  const [interestCalReportDTL, setInterestCalReportDTL] = useState([]);
   const carousalCrdLastReq = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
   const [dateDialog, setDateDialog] = useState(false);
+  const [singleAccountInterest, setSingleAccountInterest] = useState(false);
   const classes = useStyles();
   const {
     clearCache: clearTabsCache,
@@ -218,9 +223,17 @@ export const Trn001 = () => {
   const getInterestCalculatePara = useMutation(API.getInterestCalculatePara, {
     onSuccess: async (data: any, variables: any) => {
       const rowUnqID = variables?.unqID;
+      let currentRowData = state?.rows?.find(
+        (item) => item?.unqID === rowUnqID
+      );
       setLoadingState(rowUnqID, "ACCTNO", false);
       if (data?.[0]?.OPEN_DATE_PARA === "Y") {
         setDateDialog(true);
+        const combinedData = { ...currentRowData, ...data?.[0] };
+        interestCalculateParaRef.current = [
+          ...(interestCalculateParaRef.current || []),
+          combinedData,
+        ];
       }
     },
     onError: (error: any, variables: any) => {
@@ -685,25 +698,28 @@ export const Trn001 = () => {
   };
 
   const handleGetAccInfo = (row, unqID) => {
-    if (
-      Boolean(row?.accNo) &&
-      Boolean(row?.accType?.value) &&
-      Boolean(row?.branch?.value) &&
-      !Boolean(dateDialog)
-    ) {
-      const data = {
-        COMP_CD: row?.branch?.info?.COMP_CD ?? "",
-        ACCT_TYPE: row?.accType?.value ?? "",
-        ACCT_CD: row?.accNo ?? "",
-        PARENT_TYPE: row?.accType?.info?.PARENT_TYPE ?? "",
-        PARENT_CODE: row?.accType?.info?.PARENT_CODE ?? "",
-        BRANCH_CD: row?.branch?.value ?? "",
-        SCREEN_REF: "ETRN/001",
-        unqID: unqID,
-      };
+    let prevAcct = state?.rows?.find((item) => item?.unqID === unqID);
+    if (prevAcct?.accNo !== row?.accNo) {
+      if (
+        Boolean(row?.accNo) &&
+        Boolean(row?.accType?.value) &&
+        Boolean(row?.branch?.value) &&
+        !Boolean(dateDialog)
+      ) {
+        const data = {
+          COMP_CD: row?.branch?.info?.COMP_CD ?? "",
+          ACCT_TYPE: row?.accType?.value ?? "",
+          ACCT_CD: row?.accNo ?? "",
+          PARENT_TYPE: row?.accType?.info?.PARENT_TYPE ?? "",
+          PARENT_CODE: row?.accType?.info?.PARENT_CODE ?? "",
+          BRANCH_CD: row?.branch?.value ?? "",
+          SCREEN_REF: "TRN/001",
+          unqID: unqID,
+        };
 
-      setLoadingState(unqID, "ACCTNO", true);
-      getAccNoValidation.mutate(data);
+        setLoadingState(unqID, "ACCTNO", true);
+        getAccNoValidation.mutate(data);
+      }
     }
   };
 
@@ -889,13 +905,17 @@ export const Trn001 = () => {
 
   const handleKeyUp = (event, unqID) => {
     // Check if Ctrl + I is pressed
+    let reqParaDtl = state?.rows?.find((item) => item?.unqID === unqID);
+
     if (event.ctrlKey && (event.key === "i" || event.key === "I")) {
       setLoadingState(unqID, "ACCTNO", true);
+      setInterestCalReportDTL([]);
+      interestCalculateParaRef.current = [];
       getInterestCalculatePara.mutate({
-        A_COMP_CD: row?.branch?.info?.COMP_CD ?? "",
-        A_BRANCH_CD: row?.branch?.value ?? "",
-        A_ACCT_TYPE: row?.accType?.value ?? "",
-        A_ACCT_CD: row?.accNo ?? "",
+        A_COMP_CD: reqParaDtl?.branch?.info?.COMP_CD ?? "",
+        A_BRANCH_CD: reqParaDtl?.branch?.value ?? "",
+        A_ACCT_TYPE: reqParaDtl?.accType?.value ?? "",
+        A_ACCT_CD: reqParaDtl?.accNo ?? "",
         A_SCREEN_REF: "TRN/001",
         WORKING_DATE: authState?.workingDate ?? "",
         USERNAME: authState?.user?.id ?? "",
@@ -903,11 +923,6 @@ export const Trn001 = () => {
         unqID: unqID,
       });
     }
-  };
-  const retrievalParaValues = (retrievalValues) => {
-    setDateDialog(false);
-    reqData.FROM_DATE = retrievalValues[0]?.value?.value;
-    reqData.TO_DATE = retrievalValues[1]?.value?.value;
   };
 
   const maxUnqID = (state?.rows ?? [])?.reduce(
@@ -1020,7 +1035,7 @@ export const Trn001 = () => {
       {!Boolean(viewOnly) && (
         <>
           <GradientButton
-            onClick={() => window.open("Calculator:///")}
+            onClick={() => (window.location.href = "Calculator:///")}
             sx={{ margin: "5px" }}
           >
             Calculator
@@ -1043,25 +1058,29 @@ export const Trn001 = () => {
         />
       )}
       {dateDialog && (
-        <DateRetrievalDialog
-          classes={classes}
+        <DateRetrival
+          closeDialog={() => {
+            setDateDialog(false);
+          }}
           open={dateDialog}
-          handleClose={() => setDateDialog(false)}
-          loginState={{}}
-          retrievalParaValues={retrievalParaValues}
-          defaultData={{
-            A_FROM_DT: getInterestCalculatePara?.data?.[0]?.FROM_DT
-              ? format(
-                  new Date(getInterestCalculatePara?.data?.[0]?.FROM_DT),
-                  "yyyy/MM/dd"
-                )
-              : "",
-            A_TO_DT: getInterestCalculatePara?.data?.[0]?.TO_DT
-              ? format(
-                  new Date(getInterestCalculatePara?.data?.[0]?.TO_DT),
-                  "yyyy/MM/dd"
-                )
-              : "",
+          reqData={interestCalculateParaRef?.current}
+          reportDTL={setInterestCalReportDTL}
+          openReport={() => {
+            setDateDialog(false);
+            setSingleAccountInterest(true);
+          }}
+        />
+      )}
+      {singleAccountInterest && (
+        <SingleAccountInterestReport
+          open={singleAccountInterest}
+          date={interestCalReportDTL?.[0]}
+          reportHeading={interestCalReportDTL?.[2]}
+          reportDetail={interestCalReportDTL?.[1]}
+          acctInfo={interestCalReportDTL?.[3]}
+          reqData={interestCalReportDTL}
+          closeDialog={() => {
+            setSingleAccountInterest(false);
           }}
         />
       )}

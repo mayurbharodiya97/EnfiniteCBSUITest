@@ -287,6 +287,7 @@ const InsuranceEntry = ({ screenFlag, reqApiData }) => {
             _isNewRow: true,
             _isDeleteRow: false,
             _isAllowRenewRow: false,
+            _isConfrimed: false,
           };
           for (let i = 0; i < data?.length; i++) {
             if (data[i]?.O_STATUS === "0") {

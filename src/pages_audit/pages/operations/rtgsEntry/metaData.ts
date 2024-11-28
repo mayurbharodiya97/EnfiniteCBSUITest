@@ -66,6 +66,16 @@ export const RtgsEntryFormMetaData = {
       },
       _optionsKey: "getEntryType",
       required: true,
+      placeholder: "SelectEntryType",
+      schemaValidation: {
+        type: "string",
+        rules: [
+          {
+            name: "required",
+            params: ["PleaseSelectOrderingTransaction"],
+          },
+        ],
+      },
       GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
       __EDIT__: { render: { componentType: "textField" }, isReadOnly: true },
     },
@@ -77,6 +87,12 @@ export const RtgsEntryFormMetaData = {
       label: "Date",
       placeholder: "",
       isReadOnly: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 6, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
     {
@@ -87,6 +103,7 @@ export const RtgsEntryFormMetaData = {
       label: "TransactionType",
       defaultValue: "R42",
       required: true,
+      placeholder: "SelectTheTransactionType",
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
       skipDefaultOption: true,
       dependentFields: ["ENTRY_TYPE"],
@@ -127,6 +144,7 @@ export const RtgsEntryFormMetaData = {
       },
       name: "SLIP_NO",
       label: "SlipNo",
+      placeholder: "SlipNo",
       type: "text",
       FormatProps: {
         allowNegative: false,
@@ -188,13 +206,18 @@ export const RtgsEntryFormMetaData = {
       label: "CommType",
       defaultValue: "149",
       required: true,
+      placeholder: "SelectCommType",
+      dependentFields: ["ENTRY_TYPE"],
       GridProps: { xs: 12, sm: 2.4, md: 2.4, lg: 2.4, xl: 2.4 },
       options: (dependentValue, formState, _, authState) => {
-        return API.getCommTypeList({
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-          CODE: "RTGSO",
-        });
+        if (dependentValue?.ENTRY_TYPE?.value) {
+          return API.getCommTypeList({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            CODE:
+              dependentValue?.ENTRY_TYPE?.value === "RTGS" ? "RTGSO" : "NEFTO",
+          });
+        }
       },
       __EDIT__: { render: { componentType: "textField" }, isReadOnly: true },
       _optionsKey: "getCommTypeList",
@@ -212,6 +235,7 @@ export const RtgsEntryFormMetaData = {
       name: "BR_IFSCCODE",
       label: "IFSC",
       defaultValue: "SBI0000KBCB",
+      placeholder: "SelectIFSC",
       GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
       options: async (dependentValue, formState, _, authState) => {
         const data = await API.getIfscCodeList({
@@ -257,11 +281,11 @@ export const RtgsEntryFormMetaData = {
             rules: [
               {
                 name: "required",
-                params: [" PleaseEnterOrderingAcBranch"],
+                params: ["PleaseEnterOrderingAcBranch"],
               },
             ],
           },
-          validationRun: "onChange",
+          validationRun: "all",
           runPostValidationHookAlways: true,
           postValidationSetCrossFieldValues: (
             field,
@@ -292,7 +316,7 @@ export const RtgsEntryFormMetaData = {
           isFieldFocused: true,
           defaultfocus: true,
           defaultValue: "",
-          validationRun: "onChange",
+          validationRun: "all",
           runPostValidationHookAlways: true,
           options: (dependentValue, formState, _, authState) => {
             return GeneralAPI.get_Account_Type({
@@ -622,6 +646,7 @@ export const RtgsEntryFormMetaData = {
       label: "OrdACName",
       type: "text",
       fullWidth: true,
+      placeholder: "EnterOrderingAcName",
       GridProps: { xs: 12, sm: 3.5, md: 3.5, lg: 3.5, xl: 3.5 },
       required: true,
       schemaValidation: {
@@ -651,6 +676,7 @@ export const RtgsEntryFormMetaData = {
       name: "ADD1",
       label: "ACAddress",
       type: "text",
+      placeholder: "EnterOrderingAcAddress",
       fullWidth: true,
       __EDIT__: {
         dependentFields: ["BR_CONFIRMED"],
@@ -889,7 +915,9 @@ export const RtgsEntryFormMetaData = {
         const currentDate = new Date(currentField?.value);
         const rangeDate = new Date(dependentField?.TRAN_DT?.value);
         const transDate = new Date(dependentField?.TRAN_DT?.value);
-
+        if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+          return "Mustbeavaliddate";
+        }
         if (currentDate < rangeDate || currentDate > transDate) {
           return (
             "DateShouldBetween" +
@@ -898,6 +926,7 @@ export const RtgsEntryFormMetaData = {
             transDate.toLocaleDateString("en-IN")
           );
         }
+        return "";
       },
       __EDIT__: {
         dependentFields: ["BR_CONFIRMED"],
@@ -919,6 +948,7 @@ export const RtgsEntryFormMetaData = {
       label: "Remarks",
       type: "text",
       fullWidth: true,
+      placeholder: "EnterRemarks",
       __EDIT__: {
         dependentFields: ["BR_CONFIRMED"],
         isReadOnly(fieldData, dependentFieldsValues, formState) {
@@ -1744,6 +1774,8 @@ export const rtgsAccountDetailFormMetaData: any = {
           label: "ACNo",
           required: true,
           defaultValue: "",
+          isFieldFocused: true,
+          placeholder: "EnterBeneficiaryAccountNumber",
           GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
           __EDIT__: {
             dependentFields: ["FILED_HIDDEN"],
@@ -1786,6 +1818,8 @@ export const rtgsAccountDetailFormMetaData: any = {
             alwaysRun: true,
             touchAndValidate: false,
           },
+          validationRun: "all",
+          runPostValidationHookAlways: true,
           _optionsKey: "getRtgsBenfDtlList",
           postValidationSetCrossFieldValues: async (
             field,
@@ -1981,6 +2015,7 @@ export const rtgsAccountDetailFormMetaData: any = {
           label: "Remarks",
           type: "text",
           fullWidth: true,
+          placeholder: "EnterRemarks",
           dependentFields: ["BENEF_REM_EDIT"],
           isReadOnly(fieldData, dependentFieldsValues, formState) {
             if (dependentFieldsValues?.BENEF_REM_EDIT?.value === "Y") {
@@ -2368,7 +2403,7 @@ export const AuditBenfiDetailFormMetadata = {
       },
       name: "TO_IFSCCODE",
       label: "IFSCCode",
-      placeholder: "",
+      placeholder: "EnterIFSCCode",
       type: "text",
 
       __EDIT__: {
@@ -2484,7 +2519,7 @@ export const AuditBenfiDetailFormMetadata = {
       },
       name: "TO_ACCT_TYPE",
       label: "AcctType",
-      placeholder: "",
+      placeholder: "AccountTypePlaceHolder",
       type: "text",
       options: () => {
         return API.getAcctTypeData();
@@ -2501,8 +2536,8 @@ export const AuditBenfiDetailFormMetadata = {
       },
       name: "TO_ACCT_NO",
       label: "ACNumber",
-      placeholder: "",
       type: "text",
+      placeholder: "AccountNumberPlaceHolder",
       __NEW__: {
         required: true,
         schemaValidation: {
@@ -2523,7 +2558,7 @@ export const AuditBenfiDetailFormMetadata = {
       },
       name: "TO_ACCT_NM",
       label: "Account_Name",
-      placeholder: "",
+      placeholder: "EnterAcName",
       type: "text",
       __NEW__: {
         required: true,
@@ -2545,7 +2580,7 @@ export const AuditBenfiDetailFormMetadata = {
       },
       name: "TO_ADD1",
       label: "Address",
-      placeholder: "",
+      placeholder: "EnterAddress",
       type: "text",
       txtTransform: "uppercase",
       __NEW__: {
@@ -2572,7 +2607,7 @@ export const AuditBenfiDetailFormMetadata = {
       },
       name: "TO_CONTACT_NO",
       label: "Mobile Number",
-      placeholder: "",
+      placeholder: "EnterMobileNo",
       type: "text",
       startsIcon: "PhoneAndroidSharp",
       iconStyle: {
@@ -2617,7 +2652,7 @@ export const AuditBenfiDetailFormMetadata = {
       },
       name: "TO_EMAIL_ID",
       label: "EmailID",
-      placeholder: "",
+      placeholder: "EnterEmailID",
       type: "text",
       __NEW__: {
         required: true,
@@ -2631,14 +2666,12 @@ export const AuditBenfiDetailFormMetadata = {
           ],
         },
         validate: (columnValue, allField, flag) => {
-          let emailRegex =
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
           if (columnValue.value && !emailRegex.test(columnValue.value)) {
             return "PleaseEnterValidEmailID";
           }
           return "";
         },
-
         __EDIT__: {
           isReadOnly: true,
         },
@@ -2650,8 +2683,8 @@ export const AuditBenfiDetailFormMetadata = {
         componentType: "textField",
       },
       name: "REMARKS",
-      label: "Reamrks",
-      placeholder: "",
+      label: "Remarks",
+      placeholder: "EnterRemark",
       type: "text",
       validate: (columnValue, allField, flag) => {
         let regex = /^[a-zA-Z0-9 ]*$/;
@@ -2674,7 +2707,7 @@ export const AuditBenfiDetailFormMetadata = {
       },
       name: "TO_LEI_NO",
       label: "LEINo",
-      placeholder: "",
+      placeholder: "EnterTheLEINo",
       type: "text",
       maxLength: 20,
       FormatProps: {

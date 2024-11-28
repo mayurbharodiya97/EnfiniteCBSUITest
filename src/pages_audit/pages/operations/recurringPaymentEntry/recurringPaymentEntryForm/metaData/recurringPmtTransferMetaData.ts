@@ -1,5 +1,6 @@
 import { utilFunction } from "@acuteinfo/common-base";
 import { validateHOBranch } from "components/utilFunction/function";
+import { t } from "i18next";
 import { GeneralAPI } from "registry/fns/functions";
 
 export const RecurringPaymentTransferFormMetaData = {
@@ -191,7 +192,9 @@ export const RecurringPaymentTransferFormMetaData = {
               return true;
             }
           }
-          return false;
+          return {
+            reason: t("recurringPaymentTransferFormRequiredMsgForArrayfield"),
+          };
         } else {
           return true;
         }

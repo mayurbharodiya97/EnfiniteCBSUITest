@@ -117,11 +117,11 @@ export const ChequeBookEntryMetaData = {
               DOC_CD: "TRN/045",
             });
           }
+          return [];
         },
         _optionsKey: "get_Account_Type",
         postValidationSetCrossFieldValues: (field, formState) => {
           formState.setDataOnFieldChange("DTL_TAB", { DTL_TAB: false });
-
           return {
             ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },
@@ -444,7 +444,7 @@ export const ChequeBookEntryMetaData = {
         "PER_CHQ_ALLOW",
       ],
       disableCaching: true,
-      options: async (dependentValue, formState, _, authState) => {
+      options: (dependentValue) => {
         let newDD = dependentValue?.NEW_LEAF_ARR?.value;
         if (newDD) {
           newDD = newDD.split(",").map((item) => ({
@@ -689,7 +689,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "amountField",
       },
       name: "SERVICE_TAX",
-      label: "GSTAmount",
+      label: "GST",
       FormatProps: {
         allowNegative: false,
       },
@@ -716,10 +716,15 @@ export const ChequeBookEntryMetaData = {
         },
       },
       defaultValue: "1",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["NoOfChequebooksIsRequired"] }],
+      },
       FormatProps: {
         allowNegative: false,
         isAllowed: (values) => {
-          if (values?.value?.length > 2 || values?.value === "-") {
+          if (values?.value?.length > 2 || values?.value === "0") {
             return false;
           }
           return true;
@@ -816,12 +821,7 @@ export const ChequeBookEntryMetaData = {
       label: "RequisitionDate",
       isMaxWorkingDate: true,
       isWorkingDate: true,
-      required: true,
       placeholder: "DD/MM/YYYY",
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["RequisitionDateIsRequired"] }],
-      },
       validate: (value) => {
         if (Boolean(value?.value) && !isValid(value?.value)) {
           return "RequisitionDateIsRequired";

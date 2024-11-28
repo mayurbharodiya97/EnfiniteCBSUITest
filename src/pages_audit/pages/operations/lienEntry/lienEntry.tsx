@@ -91,7 +91,7 @@ const LienEntryCustom = () => {
 
           data.forEach((item) => {
             if (messages[item.O_STATUS] !== undefined) {
-              messages[item.O_STATUS].push(`⁕ ${item?.O_MESSAGE}`);
+              messages[item.O_STATUS].push(`${item?.O_MESSAGE}`);
               status[item.O_STATUS] = true;
             }
           });
@@ -150,13 +150,14 @@ const LienEntryCustom = () => {
     onSuccess: (data) => {
       if (data?.[0]?.O_STATUS && data?.[0]?.O_STATUS !== "0") {
         MessageBox({
-          messageTitle: "validationAlert",
+          messageTitle: "ValidationFailed",
           message: data?.[0]?.O_MESSAGE,
           defFocusBtnName: "Yes",
+          icon: "WARNING",
         });
       } else {
         CloseMessageBox();
-        enqueueSnackbar(t("insertSuccessfully"), { variant: "success" });
+        enqueueSnackbar(t("RecordInsertedMsg"), { variant: "success" });
         myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
         setIsData((old) => ({ ...old, isVisible: false }));
       }
@@ -179,7 +180,13 @@ const LienEntryCustom = () => {
     displayData,
     endSubmit
   ) => {
-    validateInsertData.mutate(data, {
+    let newdata = {
+      ...data,
+      LIEN_TYPE: data?.LIEN_CD,
+      CYBER_FRAUD:
+        data?.CYBER_FRAUD === "Y" || Boolean(data?.CYBER_FRAUD) ? "Y" : "N",
+    };
+    validateInsertData.mutate(newdata, {
       onSuccess: () => {
         //@ts-ignore
         endSubmit(true);
@@ -195,19 +202,22 @@ const LienEntryCustom = () => {
     async (data) => {
       if (data?.rows?.[0]?.data?.CONFIRMED !== "Y") {
         MessageBox({
-          messageTitle: "Alert",
+          messageTitle: "NotConfirmed",
           message: "LienEntryNotConfirmed",
+          icon: "WARNING",
         });
       } else if (data?.rows?.[0]?.data?.LIEN_STATUS === "E") {
         MessageBox({
           messageTitle: "Alert",
           message: "LienEntryExpired",
+          icon: "WARNING",
         });
       } else if (data?.rows?.[0]?.data?.LIEN_STATUS === "A") {
         let res = await MessageBox({
           messageTitle: "confirmation",
           message: "LienExpireMsg",
           buttonNames: ["Yes", "No"],
+          icon: "CONFIRM",
         });
         if (res === "Yes") {
           navigate(data?.name, {
@@ -332,8 +342,7 @@ const LienEntryCustom = () => {
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
-                    // disabled={isSubmitting}
-                    //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    disabled={isSubmitting}
                     color={"primary"}
                   >
                     {t("Save")}

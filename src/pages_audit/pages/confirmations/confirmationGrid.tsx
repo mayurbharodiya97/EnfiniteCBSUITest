@@ -50,7 +50,7 @@ export const Confirmations = ({ screenFlag }) => {
   ];
 
   const myGridRef = useRef<any>(null);
-  const [isOpen, setIsOpen] = useState<any>(false);
+  const [isOpen, setIsOpen] = useState<any>(true);
   const { getEntries } = useContext(ClearCacheContext);
   const { authState } = useContext(AuthContext);
   const { MessageBox } = usePopupContext();
@@ -60,9 +60,10 @@ export const Confirmations = ({ screenFlag }) => {
     (data) => {
       if (data?.rows?.[0]?.data?.LAST_ENTERED_BY === authState?.user?.id) {
         MessageBox({
-          messageTitle: t("Alert"),
+          messageTitle: t("InvalidConfirmation"),
           message: t("ConfirmRestrictMsg"),
           buttonNames: ["Ok"],
+          icon: "WARNING",
         });
       } else if (data?.name === "retrieve") {
         setIsOpen(true);

@@ -230,10 +230,10 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          margin: "33px 0 0 30px",
+          margin: "33px 10px 0 0",
           fontSize: "14px",
           width: "100%",
-          textAlign: "left",
+          textAlign: "right",
         },
       },
       fullWidth: true,
@@ -546,10 +546,10 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          margin: "33px 0 0 30px",
+          margin: "33px 10px 0 0",
           fontSize: "14px",
           width: "100%",
-          textAlign: "left",
+          textAlign: "right",
         },
       },
       fullWidth: true,
@@ -703,10 +703,10 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          margin: "33px 0 0 30px",
+          margin: "33px 10px 0 0",
           fontSize: "14px",
           width: "100%",
-          textAlign: "left",
+          textAlign: "right",
         },
       },
       fullWidth: true,
@@ -984,10 +984,10 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          margin: "33px 0 0 30px",
+          margin: "33px 10px 0 0",
           fontSize: "14px",
           width: "100%",
-          textAlign: "left",
+          textAlign: "right",
         },
       },
       fullWidth: true,
@@ -1280,10 +1280,10 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          margin: "33px 0 0 30px",
+          margin: "33px 10px 0 0",
           fontSize: "14px",
           width: "100%",
-          textAlign: "left",
+          textAlign: "right",
         },
       },
       fullWidth: true,
@@ -1866,10 +1866,10 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          margin: "33px 0 0 30px",
+          margin: "33px 10px 0 0",
           fontSize: "14px",
           width: "100%",
-          textAlign: "left",
+          textAlign: "right",
         },
       },
       fullWidth: true,
@@ -2128,10 +2128,10 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          margin: "33px 0 0 30px",
+          margin: "33px 10px 0 0",
           fontSize: "14px",
           width: "100%",
-          textAlign: "left",
+          textAlign: "right",
         },
       },
       fullWidth: true,
@@ -2522,10 +2522,10 @@ export const FDPaymentMetadata = {
       TypographyProps: {
         variant: "subtitle2",
         style: {
-          margin: "33px 0 0 30px",
+          margin: "33px 10px 0 0",
           fontSize: "14px",
           width: "100%",
-          textAlign: "left",
+          textAlign: "right",
         },
       },
       fullWidth: true,
