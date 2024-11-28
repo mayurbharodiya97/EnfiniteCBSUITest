@@ -142,6 +142,7 @@ export const StockEntryMetaData = {
               ),
               ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
               BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              GD_TODAY_DT: authState?.workingDate,
               SCREEN_REF: "TRN/047",
             };
             let postData = await GeneralAPI.getAccNoValidation(

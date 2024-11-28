@@ -25,7 +25,7 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
-    searchPlaceholder: "Records of Stop Payment Confirmation",
+    // searchPlaceholder: "Records of Stop Payment Confirmation",
     footerNote: "FooterNoteMsgCfmRej",
   },
   filters: [],
