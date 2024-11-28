@@ -16,6 +16,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { FormWrapper, MetaDataType } from "@acuteinfo/common-base";
+import { format } from "date-fns";
 import {
   personal_detail_prefix_data,
   personal_other_detail_meta_data,
@@ -26,7 +27,6 @@ import { useTranslation } from "react-i18next";
 import { CkycContext } from "../../../../CkycContext";
 import _ from "lodash";
 import { AuthContext } from "pages_audit/auth";
-// import { format } from 'date-fns';
 import * as API from "../../../../api";
 import { useMutation } from "react-query";
 import { SearchListdialog } from "../legalComps/EntityDetails";
@@ -220,16 +220,21 @@ const PersonalDetails = () => {
   ) => {
     // setIsNextLoading(true);
     // console.log("qweqweqwe", data)
-    // if(Boolean(data["BIRTH_DT"])) {
-    //     data["BIRTH_DT"] = format(new Date(data["BIRTH_DT"]), "dd-MMM-yyyy")
-    // }
     if (data && !hasError) {
       let formFields = Object.keys(data); // array, get all form-fields-name
       formFields = formFields.filter(
         (field) => !field.includes("_ignoreField") && field !== "AGE"
       ); // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current);
+      let formData: any = _.pick(data, formFieldsRef.current);
+      const dateFields: string[] = ["BIRTH_DT", "KYC_REVIEW_DT"];
+      dateFields.forEach((field) => {
+        if (Object.hasOwn(formData, field)) {
+          formData[field] = Boolean(formData[field])
+            ? format(new Date(formData[field]), "dd/MM/yyyy")
+            : "";
+        }
+      });
 
       let newData = state?.formDatactx;
       const commonData = {

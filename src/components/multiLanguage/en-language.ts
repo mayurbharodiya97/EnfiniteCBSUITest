@@ -733,6 +733,10 @@ export const en_language_data = {
     "Commencement Date can't be greater than today's Date.",
   InceptionDateCantBeGreaterThanTodaysDate:
     "Inception Date can't be greater than today's Date.",
+  DrivingLicenseExpiryDateCantBeLessThanOrEqualToTodaysDate:
+    "Driving License Expiry Date can't be less than or equal to Today's Date.",
+  PassportExpiryDatecantBeLessThanOrEqualToTodaysDate:
+    "Passport Expiry Date can't be less than or equal to Today's Date.",
   // tab - declaration details
   DeclarationDetails: "Declaration Details",
   FATCACRSDetails: "FATCA/CRS Details",
@@ -770,6 +774,10 @@ export const en_language_data = {
   OrgCode: "Org. Code",
   DecPlace: "Dec. Place",
   DecDate: "Dec. Date",
+  DrivingLicenseExpiryDateShouldBeFutureDate:
+    "Driving License Expiry Date should be future date.",
+  PassportExpiryDateShouldBeFutureDate:
+    "Passport Expiry Date should be future date.",
   // tab - other details
   AnnualIncome: "Annual Income",
   ExposureInfo: "Exposure Info./Risk Profile",
@@ -819,6 +827,8 @@ export const en_language_data = {
   RelationshipManager: "Relationship Manager",
   VisaIssueDateCantBeGreaterThanTodayssDate:
     "Visa issue Date can't be greater than today's Date.",
+  VisaExpiryDateCantBeLessThanOrEqualToTodaysDate:
+    "Visa Expiry Date can't be less than or equal to Today's Date.",
   // tab - attestation details
   AttestationDetails: "Attestation Details",
   TypeOfDocSubmitted: "Type of Document Submitted",
