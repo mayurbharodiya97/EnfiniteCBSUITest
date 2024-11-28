@@ -258,7 +258,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 150,
       isDisplayTotal: true,
-      footerLabel: "Total Cheque List",
+      footerLabel: "Total Cheque List :",
       setFooterValue(total, rows) {
         return [rows.length ?? 0];
       },
@@ -274,7 +274,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 500,
       isDisplayTotal: true,
-      footerLabel: "Total Cheque Amount",
+      footerLabel: "Total Cheque Amount :",
       setFooterValue(total, rows) {
         const filteredRows = rows?.filter(
           ({ original }) => original.CHQ_AMT_LIST
@@ -442,7 +442,8 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
       columnName: "Date",
       sequence: 4,
       alignment: "left",
-      componentType: "datetimePicker",
+      componentType: "date",
+      dateFormat: "dd/MMM/yyyy HH:mm:ss",
       placeholder: "",
       width: 150,
       minWidth: 180,
@@ -516,7 +517,7 @@ export const CTSOutwardClearingConfirmMetaData = {
     },
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "select",
       },
       name: "ZONE",
       label: "Zone",
@@ -630,6 +631,14 @@ export const CTSOutwardClearingConfirmMetaData = {
       placeholder: "",
       type: "text",
       isReadOnly: true,
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "red !important",
+          },
+        },
+      },
       GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2 },
     },
     {

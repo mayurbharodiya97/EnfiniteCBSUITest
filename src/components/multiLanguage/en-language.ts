@@ -383,7 +383,7 @@ export const en_language_data = {
   Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
-  SignInWithUserIDandPassword: "Please provide your UserID and password",
+  SignInWithUserIDandPassword: "Please provide your User ID and password",
   UserID: "User ID",
   Password: "Password",
   ConfirmPassword: "Confirm Password",
@@ -1085,7 +1085,6 @@ export const en_language_data = {
   RecordRemovedMsg: "Record Removed Successfully.",
   HOBranchValidMessage: "HO Branch can't be Access by Anyone.",
   HOBranchValidMessageTitle: "Data Validation Failed.",
-
   // cheque book
 
   AreYouSureToProceed: "Are you sure to Proceed ?",
@@ -1616,7 +1615,7 @@ export const en_language_data = {
   TotalSlipAmount: "Total Slip Amount",
   TotalChequeAmount: "Total Cheque Amount",
   ChequeNorequired: "Cheque No. is required.",
-  BankCode: "Bank Code",
+  BankCode: "Enter Bank Code",
   BankCodeRequired: "Bank Code is required.",
   PayeeACNo: "Payee A/C No.",
   PayeeACNorequired: "Payee A/C No. is required.",
@@ -1633,7 +1632,11 @@ export const en_language_data = {
   CLGDate: "CLG. Date",
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",
-
+  EnterChequeNo: "Enter Cheque No.",
+  ClearingDateshouldbegreaterthanorequaltoWorkingDate:
+    "Clearing Date should be greater than or equal to Working Date.",
+  ClearingReturnDateshouldbeLessthanorequaltoWorkingDate:
+    "Clearing Return Date should be less than or equal to Working Date",
   // cts o/w confirmation
 
   EnterRemovalRemarksCTSOWCONFIRMATION:

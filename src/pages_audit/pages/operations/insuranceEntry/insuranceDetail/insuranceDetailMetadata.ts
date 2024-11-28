@@ -711,7 +711,7 @@ export const InsuranceDetailFormMetaData = {
           },
         },
         isDisplayTotal: true,
-        footerLabel: "Total Amount",
+        footerLabel: "Total Amount :",
       },
       {
         columnName: "Action",

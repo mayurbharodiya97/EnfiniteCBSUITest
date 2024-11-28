@@ -115,6 +115,7 @@ export const InsuranceEntryFormMetaData = {
                 ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
                 BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
                 SCREEN_REF: "RPT/70",
+                GD_TODAY_DT: auth?.workingDate,
               };
               formState?.handleDisableButton(true);
               let postData = await GeneralAPI.getAccNoValidation(Apireq);
@@ -773,7 +774,7 @@ export const InsuranceEntryFormMetaData = {
           },
         },
         isDisplayTotal: true,
-        footerLabel: "Total Amount",
+        footerLabel: "Total Amount :",
       },
       {
         columnName: "Action",
@@ -1330,6 +1331,7 @@ export const insuranceAccountRetrievemetaData = {
               ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
               BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
               SCREEN_REF: "RPT/70",
+              GD_TODAY_DT: auth?.workingDate,
             };
             let postData = await GeneralAPI.getAccNoValidation(Apireq);
 
