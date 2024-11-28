@@ -115,6 +115,7 @@ export const InsuranceEntryFormMetaData = {
                 ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
                 BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
                 SCREEN_REF: "RPT/70",
+                GD_TODAY_DT: auth?.workingDate,
               };
               formState?.handleDisableButton(true);
               let postData = await GeneralAPI.getAccNoValidation(Apireq);
@@ -265,6 +266,12 @@ export const InsuranceEntryFormMetaData = {
           type: "string",
           rules: [{ name: "required", params: ["InsuranceRequired"] }],
         },
+        validate: (value) => {
+          if (Boolean(value?.value) && !isValid(value?.value)) {
+            return "Mustbeavaliddate";
+          }
+          return "";
+        },
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       },
       {
@@ -312,6 +319,12 @@ export const InsuranceEntryFormMetaData = {
         name: "TRAN_DT",
         isReadOnly: true,
         label: "EntryDate",
+        validate: (value) => {
+          if (Boolean(value?.value) && !isValid(value?.value)) {
+            return "Mustbeavaliddate";
+          }
+          return "";
+        },
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       },
 
@@ -773,7 +786,7 @@ export const InsuranceEntryFormMetaData = {
           },
         },
         isDisplayTotal: true,
-        footerLabel: "Total Amount",
+        footerLabel: "Total Amount :",
       },
       {
         columnName: "Action",
@@ -906,6 +919,12 @@ export const ViewInsuranceMetaData = {
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
     },
 
@@ -1330,6 +1349,7 @@ export const insuranceAccountRetrievemetaData = {
               ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
               BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
               SCREEN_REF: "RPT/70",
+              GD_TODAY_DT: auth?.workingDate,
             };
             let postData = await GeneralAPI.getAccNoValidation(Apireq);
 

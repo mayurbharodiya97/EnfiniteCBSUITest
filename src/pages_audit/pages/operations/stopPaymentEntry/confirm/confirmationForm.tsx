@@ -71,21 +71,6 @@ export const StopPayConfirmationForm = ({ closeDialog, result }) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (rows?.[0]?.data) {
-      stopPayconfirmFormMetaData.form.label = `${t(
-        "ConfirmationDetail"
-      )} \u00A0\u00A0 
-      ${(
-        rows?.[0]?.data?.COMP_CD +
-        rows?.[0]?.data?.BRANCH_CD +
-        rows?.[0]?.data?.ACCT_TYPE +
-        rows?.[0]?.data?.ACCT_CD
-      ).replace(/\s/g, "")}   \u00A0\u00A0   ${rows?.[0]?.data?.ACCT_NM}   `;
-    }
-  }, [rows?.[0]?.data]);
-
-  console.log("<<<rows ", rows);
   return (
     <Dialog
       open={true}

@@ -2949,6 +2949,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERTRXDDDW",
     packageName: "",
   },
+  GETSTPCHQISSUEUSED: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTPCHQISSUEUSED",
+    packageName: "",
+  },
   INTERESTCALCULATIONFORSINGLEACCOUNTREPORT: {
     url: "/enfinityReportServiceAPI/INTERESTCALCULATIONFORSINGLEACCOUNTREPORT",
     packageName: "",

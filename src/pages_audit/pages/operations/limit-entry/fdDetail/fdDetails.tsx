@@ -82,16 +82,6 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
   }, []);
   return (
     <>
-      {fdDetail.isError && (
-        <AppBar position="relative" color="primary">
-          <Alert
-            severity="error"
-            errorMsg={fdDetail?.error?.error_msg ?? "Unknow Error"}
-            errorDetail={fdDetail?.error?.error_detail ?? ""}
-            color="error"
-          />
-        </AppBar>
-      )}
       <Dialog
         open={openDialog}
         fullWidth={true}
@@ -103,6 +93,16 @@ export const FdDetails = ({ navigate, myMasterRef }) => {
         }}
       >
         <>
+          {fdDetail.isError && (
+            <AppBar position="relative" color="primary">
+              <Alert
+                severity="error"
+                errorMsg={fdDetail?.error?.error_msg ?? "Unknow Error"}
+                errorDetail={fdDetail?.error?.error_detail ?? ""}
+                color="error"
+              />
+            </AppBar>
+          )}
           <GridWrapper
             key={`fd-Detail-GridData`}
             finalMetaData={fdDetailGridData as GridMetaDataType}

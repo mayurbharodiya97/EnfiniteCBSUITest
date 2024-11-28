@@ -2,6 +2,7 @@ import { utilFunction } from "@acuteinfo/common-base";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 import { t } from "i18next";
+import { isValid } from "date-fns";
 
 export const StopPayEntryMetadata = {
   form: {
@@ -45,7 +46,7 @@ export const StopPayEntryMetadata = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        validationRun: "onChange",
+        validationRun: "all",
         postValidationSetCrossFieldValues: (field, formState) => {
           if (field?.value) {
             return {
@@ -86,17 +87,20 @@ export const StopPayEntryMetadata = {
         },
       },
       accountTypeMetadata: {
-        validationRun: "onChange",
+        validationRun: "all",
         isFieldFocused: true,
         disableCaching: true,
         dependentFields: ["BRANCH_CD"],
         options: (dependentValue, formState, _, authState) => {
-          return GeneralAPI.get_Account_Type({
-            COMP_CD: authState?.companyID,
-            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-            USER_NAME: authState?.user?.id,
-            DOC_CD: "TRN/048",
-          });
+          if (dependentValue?.BRANCH_CD?.value) {
+            return GeneralAPI.get_Account_Type({
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              USER_NAME: authState?.user?.id,
+              DOC_CD: "TRN/048",
+            });
+          }
+          return [];
         },
         _optionsKey: "get_Account_Type",
         postValidationSetCrossFieldValues: (field, formState) => {
@@ -144,6 +148,7 @@ export const StopPayEntryMetadata = {
           authState,
           dependentValue
         ) => {
+          console.log("<<<authState", authState);
           if (
             field?.value &&
             dependentValue?.BRANCH_CD?.value &&
@@ -157,6 +162,7 @@ export const StopPayEntryMetadata = {
               ),
               ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
               BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              GD_TODAY_DT: authState?.workingDate,
               SCREEN_REF: "TRN/048",
             };
             let postData = await GeneralAPI.getAccNoValidation(
@@ -164,11 +170,18 @@ export const StopPayEntryMetadata = {
             );
             let apiRespMSGdata = postData?.MSG;
             let isReturn;
-            const messagebox = async (msgTitle, msg, buttonNames, status) => {
+            const messagebox = async (
+              msgTitle,
+              msg,
+              buttonNames,
+              status,
+              icon
+            ) => {
               let buttonName = await formState.MessageBox({
                 messageTitle: msgTitle,
                 message: msg,
                 buttonNames: buttonNames,
+                icon: icon,
               });
               return { buttonName, status };
             };
@@ -176,14 +189,23 @@ export const StopPayEntryMetadata = {
               for (let i = 0; i < apiRespMSGdata?.length; i++) {
                 if (apiRespMSGdata[i]?.O_STATUS !== "0") {
                   let btnName = await messagebox(
-                    apiRespMSGdata[i]?.O_STATUS === "999"
-                      ? "validation fail"
-                      : "ALert message",
+                    apiRespMSGdata[i]?.O_MSG_TITLE
+                      ? apiRespMSGdata[i]?.O_MSG_TITLE
+                      : apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "ValidationFailed"
+                      : apiRespMSGdata[i]?.O_STATUS === "99"
+                      ? "confirmation"
+                      : "ALert",
                     apiRespMSGdata[i]?.O_MESSAGE,
                     apiRespMSGdata[i]?.O_STATUS === "99"
                       ? ["Yes", "No"]
                       : ["Ok"],
-                    apiRespMSGdata[i]?.O_STATUS
+                    apiRespMSGdata[i]?.O_STATUS,
+                    apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "ERROR"
+                      : apiRespMSGdata[i]?.O_STATUS === "999"
+                      ? "CONFIRM"
+                      : "WARNING"
                   );
 
                   if (btnName.buttonName === "No" || btnName.status === "999") {
@@ -288,12 +310,12 @@ export const StopPayEntryMetadata = {
 
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "select",
       },
       name: "FLAG",
       label: "ChequeStopType",
       defaultValue: "P",
-      placeholder: "Select one",
+      placeholder: "SelectChequeStopType",
       options: () => {
         return [
           { value: "P", label: "Stop Payment" },
@@ -333,12 +355,19 @@ export const StopPayEntryMetadata = {
       label: "IntimateDate",
       isWorkingDate: true,
       dependentFields: ["FLAG"],
+      placeholder: "DD/MM/YYYY",
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "S") {
           return true;
         } else {
           return false;
         }
+      },
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return t("Mustbeavaliddate");
+        }
+        return "";
       },
       GridProps: {
         xs: 12,
@@ -354,6 +383,7 @@ export const StopPayEntryMetadata = {
       },
       name: "SURR_DT",
       label: "SurrenderDate",
+      placeholder: "DD/MM/YYYY",
       isWorkingDate: true,
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
@@ -362,6 +392,12 @@ export const StopPayEntryMetadata = {
         } else {
           return true;
         }
+      },
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return t("Mustbeavaliddate");
+        }
+        return "";
       },
       GridProps: {
         xs: 12,
@@ -380,12 +416,9 @@ export const StopPayEntryMetadata = {
       placeholder: "EnterFromChequeNo",
       dependentFields: ["ACCT_TYPE", "BRANCH_CD", "ACCT_CD", "FLAG", "TYPE_CD"],
       FormatProps: {
-        isAllowed: (values, dependentFields, formState) => {
-          if (
-            values.floatValue === 0 ||
-            values.value === "-" ||
-            values?.value?.length > 10
-          ) {
+        allowNegative: false,
+        isAllowed: (values) => {
+          if (values.floatValue === 0 || values?.value?.length > 10) {
             return false;
           }
           return true;
@@ -397,11 +430,22 @@ export const StopPayEntryMetadata = {
         authState,
         dependentValue
       ) => {
-        if (
+        console.log("<<<ppp", field, dependentValue);
+        if (field?.value && !dependentValue?.ACCT_CD?.value) {
+          let btnName = await formState.MessageBox({
+            messageTitle: "ChequeBook",
+            message: "EnterAccountInformation",
+          });
+          if (btnName === "Ok") {
+            return {
+              CHEQUE_FROM: { value: "", isFieldFocused: true },
+              CHEQUE_TO: { value: "" },
+            };
+          }
+        } else if (
           field?.value &&
           dependentValue?.BRANCH_CD?.value &&
-          dependentValue?.ACCT_TYPE?.value &&
-          dependentValue?.ACCT_CD?.value
+          dependentValue?.ACCT_TYPE?.value
         ) {
           let apiReq = {
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
@@ -421,8 +465,11 @@ export const StopPayEntryMetadata = {
 
           if (postData?.[0]?.ERR_CODE !== "0" && postData?.[0]?.ERR_MSG) {
             let res = await formState.MessageBox({
-              messageTitle: "ChequeValidationFailed",
+              messageTitle: postData?.[0]?.MSG_TITLE
+                ? postData?.[0]?.MSG_TITLE
+                : "ValidationFailed",
               message: postData?.[0]?.ERR_MSG,
+              icon: "ERROR",
             });
             if (res === "Ok") {
               return {
@@ -435,6 +482,18 @@ export const StopPayEntryMetadata = {
                 },
               };
             }
+          } else if (postData?.[0]?.OPEN_GRID === "Y") {
+            formState.setDataOnFieldChange("STOPPED_CHEQUE", {
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+              ACCT_CD: dependentValue?.ACCT_CD?.value,
+              FROM_CHEQUE: field?.value,
+              TO_CHEQUE: "",
+            });
+            return {
+              CHEQUE_FROM: { value: "", isFieldFocused: true },
+              CHEQUE_TO: { value: "" },
+            };
           } else {
             return {
               CHEQUE_TO: { value: field?.value },
@@ -497,12 +556,9 @@ export const StopPayEntryMetadata = {
         return "";
       },
       FormatProps: {
+        allowNegative: false,
         isAllowed: (values, dependentFields, formState) => {
-          if (
-            values.floatValue === 0 ||
-            values.value === "-" ||
-            values?.value?.length > 10
-          ) {
+          if (values.floatValue === 0 || values?.value?.length > 10) {
             return false;
           }
           return true;
@@ -518,7 +574,8 @@ export const StopPayEntryMetadata = {
           field?.value &&
           dependentValue?.BRANCH_CD?.value &&
           dependentValue?.ACCT_TYPE?.value &&
-          dependentValue?.ACCT_CD?.value
+          dependentValue?.ACCT_CD?.value &&
+          dependentValue?.CHEQUE_FROM?.value
           // && field?.value !== dependentValue?.CHEQUE_FROM?.value
         ) {
           let apiReq = {
@@ -539,7 +596,7 @@ export const StopPayEntryMetadata = {
 
           if (postData?.[0]?.ERR_CODE !== "0" && postData?.[0]?.ERR_MSG) {
             let res = await formState.MessageBox({
-              messageTitle: "ChequeValidationFailed",
+              messageTitle: "ChequeStopped",
               message: postData?.[0]?.ERR_MSG,
             });
 
@@ -736,6 +793,13 @@ export const StopPayEntryMetadata = {
       },
       name: "CHEQUE_DT",
       label: "ChequeDate",
+      placeholder: "DD/MM/YYYY",
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return t("Mustbeavaliddate");
+        }
+        return "";
+      },
       GridProps: {
         xs: 12,
         md: 2,
@@ -779,7 +843,7 @@ export const StopPayEntryMetadata = {
       name: "INFAVOUR_OF",
       label: "Infavour",
       type: "text",
-      placeholder: "Infavour",
+      placeholder: "EnterInfavour",
       validate: (columnValue) => {
         let regex = /^[^!&]*$/;
         if (!regex.test(columnValue.value)) {
@@ -809,7 +873,8 @@ export const StopPayEntryMetadata = {
       },
       name: "REMARKS",
       label: "Remarks",
-      placeholder: "Enter Remarks",
+      txtTransform: "uppercase",
+      placeholder: "EnterRemarks",
       validate: (columnValue) => {
         let regex = /^[^!&]*$/;
         if (!regex.test(columnValue.value)) {

@@ -25,7 +25,7 @@ export const limitConfirmGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
-    searchPlaceholder: "Records of Limit Confirmation",
+    // searchPlaceholder: "Records of Limit Confirmation",
     footerNote: "FooterNoteMsgCfmRej",
   },
   filters: [],

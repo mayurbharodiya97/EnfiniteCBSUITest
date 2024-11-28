@@ -197,7 +197,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
             buttonNames: ["Ok"],
           });
         } else if (
-          new Date(rowsData?.TRAN_DT) !== new Date(authState?.workingDate)
+          new Date(rowsData?.TRAN_DT).toDateString() !==
+          new Date(authState?.workingDate).toDateString()
         ) {
           await MessageBox({
             messageTitle: t("ValidationFailed"),
@@ -253,6 +254,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
               </Typography>
               <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                 <GradientButton
+                  disabled={data?.[0]?.CONFIRMBUTTON === "Y"}
                   onClick={async () => {
                     if (authState?.user?.id === data?.[0]?.ENTERED_BY) {
                       await MessageBox({
@@ -263,14 +265,28 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                     } else {
                       const buttonName = await MessageBox({
                         messageTitle: t("Confirmation"),
-                        message: t(
-                          t("DoYouWantToAllowTheTransaction") +
-                            " - " +
-                            "Slip No." +
-                            data?.[0]?.SLIP_CD +
-                            " " +
-                            "?"
-                        ),
+                        message:
+                          zoneTranType === "R" || zoneTranType === "W"
+                            ? "Return Reason(s):" +
+                              data?.[0]?.CHEQUE_DETAIL?.[0]
+                                ?.REASON_CODE_DESCRIPTION +
+                              "\n" +
+                              t(
+                                t("DoYouWantToAllowTheTransaction") +
+                                  " - " +
+                                  "Slip No." +
+                                  data?.[0]?.SLIP_CD +
+                                  " " +
+                                  "?"
+                              )
+                            : t(
+                                t("DoYouWantToAllowTheTransaction") +
+                                  " - " +
+                                  "Slip No." +
+                                  data?.[0]?.SLIP_CD +
+                                  " " +
+                                  "?"
+                              ),
                         buttonNames: ["Yes", "No"],
                         loadingBtnName: ["Yes"],
                         icon: "CONFIRM",
@@ -308,8 +324,8 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                         buttonNames: ["Ok"],
                       });
                     } else if (
-                      new Date(rowsData?.TRAN_DT) !==
-                      new Date(authState?.workingDate)
+                      new Date(rowsData?.TRAN_DT).toDateString() !==
+                      new Date(authState?.workingDate).toDateString()
                     ) {
                       await MessageBox({
                         messageTitle: t("Validation Failed"),
