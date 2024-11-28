@@ -25,7 +25,7 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
-    searchPlaceholder: "Stock Confirmation",
+    // searchPlaceholder: "Stock Confirmation",
     footerNote: "FooterNoteMsgCfmRej",
   },
   filters: [],

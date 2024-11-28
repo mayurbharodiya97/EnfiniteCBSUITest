@@ -23,7 +23,7 @@ export const StopPayGridMetaData: GridMetaDataType = {
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
-    searchPlaceholder: "Stop Cheque Detail",
+    // searchPlaceholder: "Stop Cheque Detail",
     footerNote: "StopPayFooterNote",
   },
   filters: [],

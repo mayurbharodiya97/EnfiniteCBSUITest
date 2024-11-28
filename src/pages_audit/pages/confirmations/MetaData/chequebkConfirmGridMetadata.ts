@@ -101,7 +101,7 @@ export const chequeBkConfirmGridMetaData: GridMetaDataType = {
       columnName: "ChargeAmount",
       sequence: 8,
       alignment: "right",
-      componentType: "default",
+      componentType: "currency",
       width: 140,
       minWidth: 70,
       maxWidth: 160,

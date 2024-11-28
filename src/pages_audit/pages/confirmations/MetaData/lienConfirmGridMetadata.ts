@@ -25,7 +25,7 @@ export const lienConfirmGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
-    searchPlaceholder: "Records of Lien Confirmation",
+    // searchPlaceholder: "Records of Lien Confirmation",
     footerNote: "FooterNoteMsgCfmRej",
   },
   filters: [],
