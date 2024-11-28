@@ -194,59 +194,27 @@ const RtgsConfirmationGrid = ({ flag }) => {
       FLAG_RTGSC: flag === "BO" ? "RTGSBO" : "RTGSHO",
     });
   }, []);
-  // const handlePrev = useCallback(
-  //   () => {
-  //     navigate(".");
-  //     const index = indexRef.current -= 2;
-  //     setTimeout(() => {
-  //       setCurrentAction({ name: "view-detail", rows: [{ data: mutation?.data[index], id: String(index + 1) }] })
-  //     }, 0)
-  //   }, [mutation?.data]);
-
-  // const handleNext = useCallback(
-  //   () => {
-  //     navigate(".");
-  //     const index = indexRef.current++;
-  //     console.log("next index", index)
-  //     setTimeout(() => {
-  //       setCurrentAction({ name: "view-detail", rows: [{ data: mutation?.data[index + 1], id: String(index + 1) }] })
-  //     }, 0)
-  //     console.log("next data", mutation?.data[index], mutation?.data)
-  //   }, [mutation?.data]);
   const handlePrev = useCallback(() => {
-    navigate(".");
-    const index = (indexRef.current -= 1);
-    // console.log("index prev", index);
-    setTimeout(() => {
-      setCurrentAction({
-        name: "view-detail",
-        rows: [
-          {
-            data: mutation?.data[index - 1],
-            id: String(index - 1),
-          },
-        ],
-      });
-      // console.log("mutation?.data[index]", mutation?.data);
-    }, 0);
-  }, [mutation?.data]);
+    if (indexRef.current > 1) {
+      indexRef.current -= 1;
+      const index = indexRef.current;
+      setTimeout(() => {
+        setCurrentAction({
+          name: "view-detail",
+          rows: [{ data: mutation?.data[index - 1], id: String(index) }],
+        });
+      }, 0);
+    }
+  }, [mutation?.data, indexRef.current]);
   const handleNext = useCallback(() => {
-    navigate(".");
     const index = indexRef.current++;
-    // console.log("index next", index);
     setTimeout(() => {
       setCurrentAction({
         name: "view-detail",
-        rows: [
-          {
-            data: mutation?.data[index + 1],
-            id: String(index + 1),
-          },
-        ],
+        rows: [{ data: mutation?.data[index], id: String(index + 1) }],
       });
-      // console.log("mutation?.data[index + 1]", mutation?.data[index + 1])
     }, 0);
-  }, [mutation?.data]);
+  }, [mutation?.data, indexRef.current]);
 
   return (
     <Fragment>

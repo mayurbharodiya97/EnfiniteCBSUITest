@@ -570,7 +570,7 @@ export const en_language_data = {
   Tips: "Tips",
   Alert: "Alert",
   AnnouncingNewFeatures: "Announcing New Features.",
-  BePreaparedForFruad: "Be Preapared For Fruad.",
+  BePreaparedForFruad: "Be prepared for fraud.",
   CustomerQueriesSolve: "Customer Queries Solve.",
   LowBalanceAlert: "Low Balance Alert.",
 
@@ -1546,7 +1546,14 @@ export const en_language_data = {
   PleaseEnterAlphabeticValueSlipNumber:
     "Please enter Alphabetic Value in Slip Number",
   SelectRTGSNEFTTransactionType: "Select RTGS/NEFT Transaction",
-
+  SelectEntryType: "Select Entry Type",
+  SelectTheTransactionType: "Select the Transaction Type",
+  SelectCommType: "Select Comm. Type",
+  SelectIFSC: "Select IFSC",
+  EnterTheRemittanceInfo: "Enter the Remittance Info.",
+  EnterAcName: "Enter A/c Name",
+  EnterTheLEINo: "Eenter the LEI No.",
+  PleaseSelectOrderingTransaction: "Please Select the Ordering Transaction",
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
   EnterBy: "Enter By",
@@ -1731,7 +1738,7 @@ export const en_language_data = {
   BlackWhite: "Black & White",
   AreYouReturnThisCheque: "Are you sure to return this Cheque?? ",
   PleaseEnterACType: "Please Enter A/c Type",
-  PleaseEnterACNumber: "Please Enter A / c Number",
+  PleaseEnterACNumber: "Please Enter A/c Number",
   SaveClose: "Save & Close",
 
   //payslip issue entry

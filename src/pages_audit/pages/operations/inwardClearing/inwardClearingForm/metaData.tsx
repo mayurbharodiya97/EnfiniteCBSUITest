@@ -6,6 +6,7 @@ import {
   getInwardAccountDetail,
 } from "../api";
 import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
+import { isValid } from "date-fns";
 export const chequeReturnPostFormMetaData = {
   form: {
     name: "InwardClearingChequeDetail",
@@ -156,6 +157,12 @@ export const chequeReturnPostFormMetaData = {
       fullWidth: true,
       isFieldFocused: true,
       defaultfocus: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       // dependentFields: ["TRAN_DATE", "RANGE_DATE"],
       // validate: (currentField, dependentField) => {
       //   const currentDate = new Date(currentField?.value);
@@ -854,7 +861,12 @@ export const chequesignFormMetaData = {
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
-
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["ChequeDateRequired."] }],
@@ -1078,6 +1090,12 @@ export const positivePayFormMetaData = {
       type: "text",
       fullWidth: true,
       required: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
     },
     {
@@ -1120,7 +1138,12 @@ export const positivePayFormMetaData = {
       type: "text",
       fullWidth: true,
       required: true,
-
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
     },
     {
@@ -1916,6 +1939,12 @@ export const ViewMasterMetaData = {
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["OpeningDateRequired"] }],

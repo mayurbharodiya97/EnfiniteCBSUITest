@@ -197,6 +197,7 @@ export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
               _isAllowRenewRow: formMode === "new" ? true : false,
               _isDeleteRow: false,
               _isUpdateRow: formMode === "edit" ? true : false,
+              _isConfrimed: false,
             };
             for (let i = 0; i < data?.length; i++) {
               if (data[i]?.O_STATUS === "0") {
@@ -463,6 +464,7 @@ export const InsuranceDetailForm: React.FC<InsuranceEntryDtlCustomProps> = ({
                 deleteInsuranceMutation.mutate({
                   _isNewRow: false,
                   _isDeleteRow: true,
+                  _isConfrimed: false,
                   COMP_CD: mainData?.[0]?.COMP_CD,
                   ENTERED_COMP_CD: mainData?.[0]?.ENTERED_COMP_CD,
                   ENTERED_BRANCH_CD: mainData?.[0]?.ENTERED_BRANCH_CD,

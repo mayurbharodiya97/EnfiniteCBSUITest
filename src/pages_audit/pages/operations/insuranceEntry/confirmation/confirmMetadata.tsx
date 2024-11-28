@@ -1,3 +1,4 @@
+import { isValid } from "date-fns";
 
 export const insuranceConfirmFormMetaData = {
   form: {
@@ -76,6 +77,12 @@ export const insuranceConfirmFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 12, sm: 3.2, md: 3.2, lg: 3.2, xl: 3.2 },
     },
     {

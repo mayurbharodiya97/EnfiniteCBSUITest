@@ -28,27 +28,6 @@ export const rtgsHoConfirmtionAndDelete = async (formData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getRtgsTransactionTypeList = async (ApiReq) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETRTGSTRANTYPEDDW", {
-      ...ApiReq,
-    });
-  if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DESCRIPTION, MSG_TYPE, ...other }) => {
-        return {
-          value: MSG_TYPE,
-          label: MSG_TYPE + "-" + DESCRIPTION,
-          ...other,
-        };
-      });
-    }
-    return responseData;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
 
 export const getRtgsBranchConfirmtion = async (apiReq) => {
   const { data, status, message, messageDetails } =
@@ -90,18 +69,20 @@ export const getRtgsBranchConfirmOrderingData = async (ApiReq) => {
     });
   if (status === "0") {
     // if (data?.BR_CONFIRMED === "Y") {
-    const acBalanceData = await getHoconfirmationAcBanlaceData({
-      MSG_FLOW: data?.[0]?.MSG_FLOW,
-      ENTRY_TYPE: data?.[0]?.ENTRY_TYPE,
-      BASE_BRANCH_CD: data?.[0]?.BRANCH_CD,
-      COMP_CD: data?.[0]?.COMP_CD,
-      ENT_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
-      MSG_TYPE: data?.[0]?.TRAN_TYPE,
-    });
-    return {
-      hdrData: data[0],
-      acBalanceData: acBalanceData[0],
-    };
+    if (Array.isArray(data) && data.length > 0) {
+      const acBalanceData = await getHoconfirmationAcBanlaceData({
+        MSG_FLOW: data?.[0]?.MSG_FLOW,
+        ENTRY_TYPE: data?.[0]?.ENTRY_TYPE,
+        BASE_BRANCH_CD: data?.[0]?.BRANCH_CD,
+        COMP_CD: data?.[0]?.COMP_CD,
+        ENT_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
+        MSG_TYPE: data?.[0]?.TRAN_TYPE,
+      });
+      return {
+        hdrData: data[0],
+        acBalanceData: acBalanceData[0],
+      };
+    }
     // }
     // return data
   } else {
