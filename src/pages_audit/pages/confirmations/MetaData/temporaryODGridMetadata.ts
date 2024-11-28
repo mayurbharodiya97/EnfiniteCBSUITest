@@ -25,7 +25,7 @@ export const tempODConfirmGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
-    searchPlaceholder: "Records of Temporary OD Against Confirmation",
+    // searchPlaceholder: "Records of Temporary OD Against Confirmation",
     footerNote: "FooterNoteMsgCfmRej",
   },
   filters: [],

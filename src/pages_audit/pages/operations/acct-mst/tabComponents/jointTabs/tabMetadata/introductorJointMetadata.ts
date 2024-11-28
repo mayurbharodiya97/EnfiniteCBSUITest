@@ -217,7 +217,6 @@ export const introductorjoint_tab_metadata = {
           },
           name: "BIIRTH_DATE",
           label: "Birth Date",
-          maxDate: new Date(),
           GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
         },
         {

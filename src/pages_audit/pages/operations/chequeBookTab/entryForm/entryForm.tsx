@@ -273,20 +273,22 @@ export const EntryForm = (props) => {
           if (data?.length) {
             for (let i = 0; i < data?.length; i++) {
               let btnName = await messagebox(
-                data[i]?.O_STATUS === "999"
-                  ? "validation fail"
-                  : data[i]?.O_STATUS === "0"
+                data[i]?.O_MSG_TITLE && data[i]?.O_STATUS !== "0"
+                  ? data[i]?.O_MSG_TITLE
+                  : data[i]?.O_STATUS === "999"
+                  ? "ValidationFailed"
+                  : data[i]?.O_STATUS === "0" || data[i]?.O_STATUS === "99"
                   ? "confirmation"
-                  : "ALert message",
+                  : "ALert",
                 data[i]?.O_STATUS === "0" && isConfirm === "C"
-                  ? t("AreYouSureToConfirm")
+                  ? t("DoYouWantAllowTransaction")
                   : data[i]?.O_STATUS === "0" && isConfirm === "R"
-                  ? t("AreYouSureToReject")
+                  ? t("DoYouWantAllowTransaction")
                   : data[i]?.O_MESSAGE,
                 data[i]?.O_STATUS === "99" || data[i]?.O_STATUS === "0"
                   ? ["Yes", "No"]
                   : ["Ok"],
-                data[i]?.O_STATUS === "0"
+                data[i]?.O_STATUS === "0" || data[i]?.O_STATUS === "99"
                   ? "CONFIRM"
                   : data[i]?.O_STATUS === "999"
                   ? "ERROR"

@@ -87,7 +87,6 @@ export const relativeDtl_tab_metadata = {
           },
           name: "DATE_OF_BIRTH",
           label: "Birth Date",
-          maxDate: new Date(),
           GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
         },
         {

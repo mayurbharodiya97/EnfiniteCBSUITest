@@ -219,3 +219,7 @@ h2 {
 .waviy-loading-text span {
   color: var(--theme-color1);
 }
+.ps__thumb-y,
+.ps__rail-y {
+  height: 0 !important;
+}

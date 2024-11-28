@@ -345,7 +345,6 @@ export const guardianjoint_tab_metadata = {
           },
           name: "BIRTH_DATE",
           label: "Birth Date",
-          maxDate: new Date(),
           isReadOnly: (fieldValue, dependentFields, formState) =>
             API.isReadOnlyonParam320({ formState }),
           GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },

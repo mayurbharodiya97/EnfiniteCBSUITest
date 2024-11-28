@@ -383,7 +383,7 @@ export const en_language_data = {
   Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
-  SignInWithUserIDandPassword: "Please provide your UserID and password",
+  SignInWithUserIDandPassword: "Please provide your User ID and password",
   UserID: "User ID",
   Password: "Password",
   ConfirmPassword: "Confirm Password",
@@ -570,7 +570,7 @@ export const en_language_data = {
   Tips: "Tips",
   Alert: "Alert",
   AnnouncingNewFeatures: "Announcing New Features.",
-  BePreaparedForFruad: "Be Preapared For Fruad.",
+  BePreaparedForFruad: "Be prepared for fraud.",
   CustomerQueriesSolve: "Customer Queries Solve.",
   LowBalanceAlert: "Low Balance Alert.",
 
@@ -723,6 +723,20 @@ export const en_language_data = {
   PhoneO: "Phone(O)",
   PhoneR: "Phone(R)",
   Fax: "Fax",
+  PassportIssueDateCantBeGreaterThanTodaysDate:
+    "Passport Issue Date can't be greater than today's date.",
+  DrivingLicenseIssueDateCantBeGreaterThanTodaysDate:
+    "Driving License Issue Date can't be greater than today's date.",
+  KYCRevisedDateShouldBeLessThanTodaysDate:
+    "KYC Revised Date should be less than Today's Date.",
+  CommencementDateCantBeGreaterThanTodaysDate:
+    "Commencement Date can't be greater than today's Date.",
+  InceptionDateCantBeGreaterThanTodaysDate:
+    "Inception Date can't be greater than today's Date.",
+  DrivingLicenseExpiryDateCantBeLessThanOrEqualToTodaysDate:
+    "Driving License Expiry Date can't be less than or equal to Today's Date.",
+  PassportExpiryDatecantBeLessThanOrEqualToTodaysDate:
+    "Passport Expiry Date can't be less than or equal to Today's Date.",
   // tab - declaration details
   DeclarationDetails: "Declaration Details",
   FATCACRSDetails: "FATCA/CRS Details",
@@ -760,6 +774,10 @@ export const en_language_data = {
   OrgCode: "Org. Code",
   DecPlace: "Dec. Place",
   DecDate: "Dec. Date",
+  DrivingLicenseExpiryDateShouldBeFutureDate:
+    "Driving License Expiry Date should be future date.",
+  PassportExpiryDateShouldBeFutureDate:
+    "Passport Expiry Date should be future date.",
   // tab - other details
   AnnualIncome: "Annual Income",
   ExposureInfo: "Exposure Info./Risk Profile",
@@ -807,6 +825,10 @@ export const en_language_data = {
   VisuallyImpaired: "Visually Impaired",
   CustomerEvaluationRequired: "Customer Evaluation Required",
   RelationshipManager: "Relationship Manager",
+  VisaIssueDateCantBeGreaterThanTodayssDate:
+    "Visa issue Date can't be greater than today's Date.",
+  VisaExpiryDateCantBeLessThanOrEqualToTodaysDate:
+    "Visa Expiry Date can't be less than or equal to Today's Date.",
   // tab - attestation details
   AttestationDetails: "Attestation Details",
   TypeOfDocSubmitted: "Type of Document Submitted",
@@ -936,8 +958,8 @@ export const en_language_data = {
   DataConfirmMessage: "Data has been Successfully Confirmed",
   DataRejectMessage: "Data has been Successfully Rejected",
   ConfirmationDetail: "Confirmation Detail",
-  AreYouSureToConfirm: "Are You Sure to Confirm",
-  AreYouSureToReject: "Are You Sure to Reject",
+  AreYouSureToConfirm: "Are you sure to confirm ?",
+  AreYouSureToReject: "Are you sure to reject ?",
   AreYouSureToProcced: "Are You Sure to Procced ?",
   Confirm: "Confirm",
   ConfirmRestrictMsg: "You can not Confirm your own posted transaction.",
@@ -1063,7 +1085,6 @@ export const en_language_data = {
   RecordRemovedMsg: "Record Removed Successfully.",
   HOBranchValidMessage: "HO Branch can't be Access by Anyone.",
   HOBranchValidMessageTitle: "Data Validation Failed.",
-
   // cheque book
 
   AreYouSureToProceed: "Are you sure to Proceed ?",
@@ -1079,6 +1100,7 @@ export const en_language_data = {
   EnterFromChequeNo: "Enter From Cheque No.",
   NoOfCheques: "No. of Cheque(s)",
   NoOfChequesIsRequired: "No. of Cheque(s) is Required",
+  NoOfChequebooksIsRequired: "No. of ChequeBook(s) is Required",
   SelectNoOfChequeBook: "Select No. of Cheque book",
   ToChequeNo: "To Cheque No.",
   EnterToChequeNo: "Enter To Cheque No.",
@@ -1190,7 +1212,7 @@ export const en_language_data = {
   // stop payment
 
   InsertStopPaymentMsg:
-    "Are you sure you want to stop the selected check-number ?",
+    "Are you sure you want to stop the selected cheque number ?",
   InsertStopPaymentMsg2:
     "Are you sure you want to surrender the selected cheque number ?",
   InsertStopPaymentMsg3:
@@ -1200,7 +1222,7 @@ export const en_language_data = {
   ChequeStopDetail: "Cheque Stop Detail",
   ReleaseChequeDetail: "Release Cheque Detail",
   ChequeStopEntry: "Cheque Stop Entry",
-  ChequeValidationFailed: "Cheque Validation Failed",
+  ChequeStopped: "Cheque Stopped",
   ChequeToValidateMsg: "Please enter a value greater than the Check-From value",
   ChequeStopType: "Cheque Stop Type",
   IntimateDate: "Intimate Date",
@@ -1222,6 +1244,10 @@ export const en_language_data = {
     "Enter Removal Remarks for Cheque Stop Confirmation (ETRN/380)",
   FromChequenorequired: "From Cheque Number is required",
   ToChequenorequired: "To Cheque Number is required",
+  ChequeBook: "Cheque Book",
+  SelectChequeStopType: "Select Cheque Stop Type",
+  EnterInfavour: "Enter Infavour",
+  StoppedChequetitle: "Cheque(s) used  between series",
   // stock entry
 
   stockEntry: "Stock Entry",
@@ -1520,7 +1546,14 @@ export const en_language_data = {
   PleaseEnterAlphabeticValueSlipNumber:
     "Please enter Alphabetic Value in Slip Number",
   SelectRTGSNEFTTransactionType: "Select RTGS/NEFT Transaction",
-
+  SelectEntryType: "Select Entry Type",
+  SelectTheTransactionType: "Select the Transaction Type",
+  SelectCommType: "Select Comm. Type",
+  SelectIFSC: "Select IFSC",
+  EnterTheRemittanceInfo: "Enter the Remittance Info.",
+  EnterAcName: "Enter A/c Name",
+  EnterTheLEINo: "Eenter the LEI No.",
+  PleaseSelectOrderingTransaction: "Please Select the Ordering Transaction",
   // RTGS BRANCH/HO CONFIRMATION
   DualConfirmationHistory: "Dual Confirmation History",
   EnterBy: "Enter By",
@@ -1589,7 +1622,7 @@ export const en_language_data = {
   TotalSlipAmount: "Total Slip Amount",
   TotalChequeAmount: "Total Cheque Amount",
   ChequeNorequired: "Cheque No. is required.",
-  BankCode: "Bank Code",
+  BankCode: "Enter Bank Code",
   BankCodeRequired: "Bank Code is required.",
   PayeeACNo: "Payee A/C No.",
   PayeeACNorequired: "Payee A/C No. is required.",
@@ -1606,7 +1639,11 @@ export const en_language_data = {
   CLGDate: "CLG. Date",
   EntryFrom: "Entry From",
   ViewCheque: "View Cheque",
-
+  EnterChequeNo: "Enter Cheque No.",
+  ClearingDateshouldbegreaterthanorequaltoWorkingDate:
+    "Clearing Date should be greater than or equal to Working Date.",
+  ClearingReturnDateshouldbeLessthanorequaltoWorkingDate:
+    "Clearing Return Date should be less than or equal to Working Date",
   // cts o/w confirmation
 
   EnterRemovalRemarksCTSOWCONFIRMATION:
@@ -1701,9 +1738,13 @@ export const en_language_data = {
   BlackWhite: "Black & White",
   AreYouReturnThisCheque: "Are you sure to return this Cheque?? ",
   PleaseEnterACType: "Please Enter A/c Type",
-  PleaseEnterACNumber: "Please Enter A / c Number",
+  PleaseEnterACNumber: "Please Enter A/c Number",
   SaveClose: "Save & Close",
-
+  SelectZone: "Select Zone",
+  SelectReturnBranch: "Select Return Branch",
+  SelectReturnAccountType: "Select Return Account Type",
+  EnterReturnACNumber: "Enter Return A/C Number",
+  EnterOtherReason: "Enter Other Reason",
   //payslip issue entry
   branchCode: "Branch Code",
   DoYouWantToAllowPayslipDD: "Do you want to allow Payslip/Draft Issue-",

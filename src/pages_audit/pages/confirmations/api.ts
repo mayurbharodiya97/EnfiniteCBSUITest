@@ -48,7 +48,6 @@ export const getConfirmationGridData = async (apiReqPara) => {
       item.SERVICE_TAX = item.SERVICE_TAX
         ? parseFloat(item.SERVICE_TAX).toFixed(2)
         : "0.00";
-      item.AMOUNT = item.AMOUNT ? parseFloat(item.AMOUNT).toFixed(2) : "0.00";
       item.FULL_ACCT_NO =
         item.COMP_CD +
         " " +

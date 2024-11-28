@@ -408,6 +408,7 @@ const CtsOutwardClearingForm: FC<{
                         ? data?.[0]?.TRAN_DATE
                         : authState?.workingDate ?? "",
                     ZONE_TRAN_TYPE: zoneTranType,
+                    WORKING_DT: authState?.workingDate ?? "",
                   }
                 : {
                     ...getOutwardClearingData.data?.[0],

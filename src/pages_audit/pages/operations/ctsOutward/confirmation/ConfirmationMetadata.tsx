@@ -258,7 +258,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 150,
       isDisplayTotal: true,
-      footerLabel: "Total Cheque List",
+      footerLabel: "Total Cheque List :",
       setFooterValue(total, rows) {
         return [rows.length ?? 0];
       },
@@ -274,7 +274,7 @@ export const CtsOutwardClearingConfirmGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 500,
       isDisplayTotal: true,
-      footerLabel: "Total Cheque Amount",
+      footerLabel: "Total Cheque Amount :",
       setFooterValue(total, rows) {
         const filteredRows = rows?.filter(
           ({ original }) => original.CHQ_AMT_LIST
@@ -442,7 +442,8 @@ export const DualConfHistoryGridMetaData: GridMetaDataType = {
       columnName: "Date",
       sequence: 4,
       alignment: "left",
-      componentType: "datetimePicker",
+      componentType: "date",
+      dateFormat: "dd/MMM/yyyy HH:mm:ss",
       placeholder: "",
       width: 150,
       minWidth: 180,
@@ -512,11 +513,17 @@ export const CTSOutwardClearingConfirmMetaData = {
       name: "TRAN_DT",
       label: "PresentmentDate",
       placeholder: "",
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
     },
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "select",
       },
       name: "ZONE",
       label: "Zone",
@@ -630,6 +637,14 @@ export const CTSOutwardClearingConfirmMetaData = {
       placeholder: "",
       type: "text",
       isReadOnly: true,
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          "&.Mui-disabled": {
+            color: "var(--theme-color2) !important",
+            "-webkit-text-fill-color": "red !important",
+          },
+        },
+      },
       GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2 },
     },
     {
@@ -875,6 +890,12 @@ export const ctsOutwardChequeDetailConfirmMetaData: any = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
+          validate: (value) => {
+            if (Boolean(value?.value) && !isValid(value?.value)) {
+              return "Mustbeavaliddate";
+            }
+            return "";
+          },
           GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
         },
         {
@@ -1079,6 +1100,12 @@ export const inwardReturnChequeDetailConfirmMetaData: any = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
+          validate: (value) => {
+            if (Boolean(value?.value) && !isValid(value?.value)) {
+              return "Mustbeavaliddate";
+            }
+            return "";
+          },
           GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
         },
         {

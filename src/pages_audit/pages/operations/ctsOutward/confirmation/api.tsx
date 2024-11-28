@@ -61,6 +61,7 @@ export const getOutwardConfirmViewDetailData = async ({
       return {
         ...item,
         CONFIRMED: item.CONFIRMED === "Y" ? "Confirmed" : "Pending",
+        CONFIRMBUTTON: item.CONFIRMED,
       };
     });
   } else {
