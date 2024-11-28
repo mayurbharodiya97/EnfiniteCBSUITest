@@ -2973,6 +2973,42 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYSCROLLREGF1",
     packageName: "",
   },
+  GETAPBSGRIDDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAPBSGRIDDATA",
+    packageName: "",
+  },
+  VALIDATEAPBSUID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSUID",
+    packageName: "",
+  },
+  VALIDATEAPBSACCTNO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSACCTNO",
+    packageName: "",
+  },
+  VALIDATEAPBSCUSTID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSCUSTID",
+    packageName: "",
+  },
+  GETPREVBANKIINDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPREVBANKIINDDDW",
+    packageName: "",
+  },
+  DOAPBSACREGISTRATIONDML: {
+    url: "/transactionServiceAPI/DOAPBSACREGISTRATIONDML",
+    packageName: "",
+  },
+  VALIDATEAPBSSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSSTATUS",
+    packageName: "",
+  },
+  GETAPBSUIDRESPONSE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAPBSUIDRESPONSE",
+    packageName: "",
+  },
+  DOCONFIRMAPBSREGISTRATIONENTRY: {
+    url: "/transactionServiceAPI/DOCONFIRMAPBSREGISTRATIONENTRY",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "license": "MIT",
   "dependencies": {
-    "@acuteinfo/common-base": "^1.0.51",
-    "@acuteinfo/common-screens": "^1.0.71",
+    "@acuteinfo/common-base": "^1.0.54",
+    "@acuteinfo/common-screens": "^1.0.72",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@date-io/date-fns": "^2.16.0",
     "@emotion/react": "^11.11.0",
