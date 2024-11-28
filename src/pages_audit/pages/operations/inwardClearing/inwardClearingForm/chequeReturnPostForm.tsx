@@ -713,10 +713,10 @@ export const ChequeReturnPostFormWrapper = ({
       open={true}
       PaperProps={{
         style: {
-          width: "100%",
+          width: "96%",
         },
       }}
-      maxWidth="lg"
+      maxWidth="xl"
     >
       <ChequeReturnPostForm
         onClose={onClose}

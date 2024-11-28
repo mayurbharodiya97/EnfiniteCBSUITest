@@ -1740,7 +1740,11 @@ export const en_language_data = {
   PleaseEnterACType: "Please Enter A/c Type",
   PleaseEnterACNumber: "Please Enter A/c Number",
   SaveClose: "Save & Close",
-
+  SelectZone: "Select Zone",
+  SelectReturnBranch: "Select Return Branch",
+  SelectReturnAccountType: "Select Return Account Type",
+  EnterReturnACNumber: "Enter Return A/C Number",
+  EnterOtherReason: "Enter Other Reason",
   //payslip issue entry
   branchCode: "Branch Code",
   DoYouWantToAllowPayslipDD: "Do you want to allow Payslip/Draft Issue-",

@@ -776,13 +776,17 @@ export const InwardClearing = () => {
           setAction={setCurrentAction}
           enableExport={true}
           refetchData={() =>
-            getInwardClearingData.mutate({
-              data: {
-                ...formData,
-                BRANCH_CD: selectedRowsRef?.current?.toString() ?? "",
-                COMP_CD: authState?.companyID ?? "",
-              },
-            })
+            Object.entries(formData).length &&
+            selectedRowsRef?.current?.toString() &&
+            authState?.companyID
+              ? getInwardClearingData.mutate({
+                  data: {
+                    ...formData,
+                    BRANCH_CD: selectedRowsRef?.current?.toString(),
+                    COMP_CD: authState?.companyID,
+                  },
+                })
+              : null
           }
           actionContextAtBottom={true}
           disableMultipleRowSelect={true}

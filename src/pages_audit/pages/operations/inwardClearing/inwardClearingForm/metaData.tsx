@@ -151,7 +151,7 @@ export const chequeReturnPostFormMetaData = {
       },
       name: "CHEQUE_DT",
       label: "ChequeDate",
-      placeholder: "",
+      placeholder: "DD/MM/YYYY",
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
@@ -189,6 +189,7 @@ export const chequeReturnPostFormMetaData = {
       label: "ChequeAmount",
       placeholder: "",
       required: true,
+      isReadOnly: true,
       type: "text",
       FormatProps: {
         allowNegative: false,
@@ -271,7 +272,6 @@ export const chequeReturnPostFormMetaData = {
       accountCodeMetadata: {
         name: "ACCT_CD",
         label: "ACNumber",
-        placeholder: "",
         fullWidth: true,
         // required: true,
         schemaValidation: {
@@ -488,6 +488,7 @@ export const chequeReturnPostFormMetaData = {
       name: "MICR_TRAN_CD",
       label: "MICR",
       type: "text",
+      placeholder: "MICR",
       fullWidth: true,
       required: true,
       dependentFields: ["DISABLE_MICR"],
@@ -499,19 +500,26 @@ export const chequeReturnPostFormMetaData = {
         }
       },
 
-      GridProps: { xs: 6, sm: 0.6, md: 0.6, lg: 0.6, xl: 0.6 },
+      GridProps: { xs: 6, sm: 0.5, md: 0.5, lg: 0.5, xl: 0.5 },
     },
     {
       render: {
         componentType: "textField",
       },
-      name: "REMARKS",
-      label: "Remarks",
+      name: "ERR_DESC",
+      label: "Error Description",
       type: "text",
       fullWidth: true,
       required: true,
-
-      GridProps: { xs: 12, sm: 4.3, md: 4.3, lg: 4.3, xl: 4.3 },
+      isReadOnly: true,
+      placeholder: "Error Description",
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          color: "rgb(168, 0, 0) !important",
+          "-webkit-text-fill-color": "rgb(168, 0, 0) !important",
+        },
+      },
+      GridProps: { xs: 12, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.7 },
     },
     {
       render: {
@@ -522,7 +530,7 @@ export const chequeReturnPostFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 3.2, md: 3.2, lg: 3.2, xl: 3.2 },
+      GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
     },
     {
       render: {
@@ -535,7 +543,18 @@ export const chequeReturnPostFormMetaData = {
       isReadOnly: true,
       GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
-
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "REMARKS",
+      label: "Remarks",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      placeholder: "EnterRemarks",
+      GridProps: { xs: 12, sm: 3.6, md: 3.6, lg: 3.6, xl: 3.6 },
+    },
     {
       render: {
         componentType: "formbutton",
@@ -655,7 +674,7 @@ export const chequeReturnPostFormMetaData = {
         }
       },
       runPostValidationHookAlways: true,
-      placeholder: "",
+      placeholder: "SelectZone",
       type: "text",
       GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
@@ -665,7 +684,7 @@ export const chequeReturnPostFormMetaData = {
       },
       name: "RET_BRANCH_CD",
       label: "ReturnBranch",
-      placeholder: "ReturnBranch",
+      placeholder: "SelectReturnBranch",
       type: "text",
       required: true,
       options: GeneralAPI.getBranchCodeList,
@@ -686,6 +705,7 @@ export const chequeReturnPostFormMetaData = {
       },
       name: "RET_ACCT_TYPE",
       label: "ReturnAccountType",
+      placeholder: "SelectReturnAccountType",
       type: "text",
       required: true,
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
@@ -713,6 +733,7 @@ export const chequeReturnPostFormMetaData = {
       },
       name: "RET_ACCT_CD",
       label: "ReturnACNumber",
+      placeholder: "EnterReturnACNumber",
       type: "text",
       required: true,
       dependentFields: ["DISABLE_RET_AC"],
@@ -750,6 +771,7 @@ export const chequeReturnPostFormMetaData = {
         return API.getInwardReasonTypeList(ApiReq);
       },
       _optionsKey: "getInwardReasonTypeList",
+      placeholder: "SelectReason",
     },
 
     {
@@ -766,6 +788,7 @@ export const chequeReturnPostFormMetaData = {
         }
         return "";
       },
+      placeholder: "EnterOtherReason",
       GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
     },
     {
