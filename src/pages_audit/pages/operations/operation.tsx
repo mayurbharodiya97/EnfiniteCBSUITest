@@ -130,6 +130,12 @@ const LockerOperationTrnsMain = lazy(() => import("./LockerOperationTrns"));
 const CashPaymentEntry = lazy(
   () => import("./denomination/tellerTransaction/cashPayment/cashPayment")
 );
+const APBSAcctRegistrationGrid = lazy(
+  () => import("./APBSAccountRegistration")
+);
+const APBSRegistrationConfirmationGrid = lazy(
+  () => import("./APBSAccountRegistration/confirmation")
+);
 
 export const OperationsMenu = () => (
   <Routes>
@@ -332,7 +338,11 @@ export const OperationsMenu = () => (
     />
     <Route path="passbook-printing/*" element={<PassbookPrint />} />
     <Route path="loanschedule/*" element={<LoanScheduleGrid />} />
-    {/* <Route path="loanschedule/*" element={<LoanScheduleGrid />} /> */}
+    <Route path="apbs-reg-entry/*" element={<APBSAcctRegistrationGrid />} />
+    <Route
+      path="apbs-reg-confirmation/*"
+      element={<APBSRegistrationConfirmationGrid />}
+    />
     <Route
       path="loanschedule-confirmation/*"
       element={<LoanRescheduleConfirmationGrid />}
