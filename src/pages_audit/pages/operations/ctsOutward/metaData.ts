@@ -73,7 +73,7 @@ export const CTSOutwardClearingFormMetaData = {
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
-      dependentFields: ["TRAN_DT"],
+      // dependentFields: ["TRAN_DT"],
     },
     {
       render: {
