@@ -121,6 +121,7 @@ const PhotoSignWithHistory = ({
       AC_CUST_LEVEL: AcCustLevel ?? "",
     })
   );
+
   // photo/sign history
 
   const getPhotoSignHistory: any = useMutation(GeneralAPI.getPhotoSignHistory, {
@@ -198,32 +199,21 @@ const PhotoSignWithHistory = ({
                 >
                   {LatestPhotoSignData?.[0]?.TITLE || ""}
                 </Typography>
-                {Boolean(LatestPhotoSignData?.[0]?.BT_NAME) ? (
-                  <GradientButton
-                    onClick={() => {
-                      setAcCustLevel(
-                        LatestPhotoSignData?.[0]?.AC_CUST_LEVEL || null
-                      );
-                    }}
-                  >
-                    {LatestPhotoSignData?.[0]?.BT_NAME || ""}
-                  </GradientButton>
-                ) : null}
-                {!(
-                  LatestPhotoSignData?.length ===
-                  LatestPhotoSignData?.filter(
-                    (item) => item.ROW_VISIBLE === "Y"
-                  ).length
-                ) && (
-                  <GradientButton
-                    onClick={() => {
-                      showAll ? setShowAll(false) : setShowAll(true);
-                      LatestDtlRefetch();
-                    }}
-                  >
-                    {showAll ? t("Back") : t("ViewAll")}
-                  </GradientButton>
-                )}
+                <GradientButton
+                  onClick={() => {
+                    setAcCustLevel(LatestPhotoSignData?.[0]?.AC_CUST_LEVEL);
+                  }}
+                >
+                  {LatestPhotoSignData[0]?.BT_NAME || ""}
+                </GradientButton>
+                <GradientButton
+                  onClick={() => {
+                    showAll ? setShowAll(false) : setShowAll(true);
+                    LatestDtlRefetch();
+                  }}
+                >
+                  {showAll ? t("Back") : t("ViewAll")}
+                </GradientButton>
                 <GradientButton
                   onClick={() => {
                     onClose();
@@ -255,7 +245,7 @@ const PhotoSignWithHistory = ({
                 <Grid container spacing={3} sx={{ padding: 2 }}>
                   {LatestPhotoSignData?.filter(
                     (item) => showAll || item?.ROW_VISIBLE === "Y"
-                  )?.map((item, index) => (
+                  ).map((item, index) => (
                     <React.Fragment key={index}>
                       <Grid item xs={12} sm={4} md={4}>
                         <Paper elevation={3} className={headerClasses.paper}>
@@ -280,7 +270,7 @@ const PhotoSignWithHistory = ({
                                         }}
                                       >
                                         <Typography variant="body2">
-                                          {item?.SR_CD}
+                                          {item?.SIGN_GROUP}
                                         </Typography>
                                       </Box>
                                       <Typography
