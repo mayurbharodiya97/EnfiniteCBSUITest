@@ -86,6 +86,8 @@ export const kyc_proof_of_identity_meta_data = {
       txtTransform: "uppercase",
       dependentFields: ["FORM_60"],
       required: true,
+      validate: (columnValue, allField, flag) =>
+        API.validatePAN(columnValue, allField, flag),
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
       schemaValidation: {
         type: "string",
