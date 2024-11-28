@@ -415,14 +415,59 @@ export const AccountCloseProcess = () => {
     API.accountCloseEntry,
     {
       onSuccess: async (data) => {
-        let message = data?.[0]?.VOUCHER_MSG ?? "";
-        let splitIndex = message.indexOf("\n") ?? "";
-        let scrollNo = message.substring(0, splitIndex) ?? "";
-        let remainingDetails = message.substring(splitIndex + 1) ?? "";
+        console.log("data", data);
+
+        // for (let i = 0; i < postData?.MSG?.length; i++) {
+        //   if (postData?.MSG?.[i]?.O_STATUS === "999") {
+        //     formState?.handleButtonDisable(false);
+        //     const { btnName, obj } = await getButtonName({
+        //       messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+        //         ? postData?.MSG?.[i]?.O_MSG_TITLE
+        //         : "ValidationFailed",
+        //       message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
+        //       icon: "ERROR",
+        //     });
+        //     returnVal = "";
+        //   } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
+        //     formState?.handleButtonDisable(false);
+        //     if (btn99 !== "No") {
+        //       const { btnName, obj } = await getButtonName({
+        //         messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+        //           ? postData?.MSG?.[i]?.O_MSG_TITLE
+        //           : "Alert",
+        //         message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
+        //         icon: "WARNING",
+        //       });
+        //     }
+        //     returnVal = postData;
+        //   } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
+        //     formState?.handleButtonDisable(false);
+        //     const { btnName, obj } = await getButtonName({
+        //       messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE?.length
+        //         ? postData?.MSG?.[i]?.O_MSG_TITLE
+        //         : "Confirmation",
+        //       message: postData?.MSG?.[i]?.O_MESSAGE ?? "",
+        //       buttonNames: ["Yes", "No"],
+        //       icon: "CONFIRM",
+        //     });
+
+        //     btn99 = btnName;
+        //     if (btnName === "No") {
+        //       returnVal = "";
+        //     }
+        //   } else if (postData?.MSG?.[i]?.O_STATUS === "0") {
+        //     formState?.handleButtonDisable(false);
+        //     if (btn99 !== "No") {
+        //       returnVal = postData;
+        //     } else {
+        //       returnVal = "";
+        //     }
+        //   }
+        // }
 
         const btnName = await MessageBox({
-          messageTitle: `Voucher ${scrollNo}`,
-          message: remainingDetails,
+          messageTitle: data?.[0]?.MSG_TITLE ?? "",
+          message: data?.[0]?.VOUCHER_MSG ?? "",
           icon: "SUCCESS",
         });
         setIsopenDDNeft(false);
