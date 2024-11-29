@@ -41,13 +41,11 @@ export const updateBankIfscCodeData = async ({ data: reqdata }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const GetBankIfscImportDdwn = async (...reqData: any) => {
-  console.log(reqData);
-
+export const GetBankIfscImportDdwn = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETBANKIFSCIMPORTDDDW", {
-      COMP_CD: reqData?.[1]?.companyID,
-      BRANCH_CD: reqData?.[1]?.user?.branchCode,
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
       TABLE_NM: "RTGS_IFSCCODE_MST",
     });
 
@@ -58,7 +56,7 @@ export const GetBankIfscImportDdwn = async (...reqData: any) => {
         ({ DESCRIPTION, FILE_FORMAT, TRAN_CD, ...other }) => {
           return {
             ...other,
-            value: [FILE_FORMAT, TRAN_CD],
+            value: `${FILE_FORMAT},${TRAN_CD}`,
             label: DESCRIPTION,
           };
         }

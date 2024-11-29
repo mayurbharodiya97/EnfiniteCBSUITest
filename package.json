@@ -50,7 +50,6 @@
     "json-rules-engine": "6.1.2",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "3.5.28",
-    "juice": "^11.0.0",
     "lint-staged": "^13.1.2",
     "lodash-es": "^4.17.21",
     "match-sorter": "^6.3.0",

@@ -99,6 +99,7 @@ const ChequeSearchMain = () => {
         const buttonName = await MessageBox({
           messageTitle: "ValidationFailed",
           message: response[0]?.O_MESSAGE ?? "",
+          icon: "ERROR",
           buttonNames: ["Ok"],
         });
       }
