@@ -68,13 +68,16 @@ export const ExtDocumentFormMetadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [
-        { name: "required", params: ["ThisFieldisrequired"] },
-        ],
-    },
+        rules: [{ name: "required", params: ["DocumentIsRequired"] }],
+      },
       dependentFields: ["TRAN_CD", "SR_CD"],
       isReadOnly: false,
-      options: (dependentValue?, formState?, _?, authState?) => API.getCustDocumentOpDtl({ COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode, formState }),
+      options: (dependentValue?, formState?, _?, authState?) =>
+        API.getCustDocumentOpDtl({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+          formState,
+        }),
       _optionsKey: "getKYCDocumentTypes",
       // options: () => [],
       // _optionsKey: "getDocumentOptionsDTL",
@@ -83,7 +86,8 @@ export const ExtDocumentFormMetadata = {
         xs: 12,
         sm: 6,
         md: 6,
-        lg: 3, xl: 2
+        lg: 3,
+        xl: 2,
       },
       postValidationSetCrossFieldValues: (
         field,
@@ -91,15 +95,19 @@ export const ExtDocumentFormMetadata = {
         ___,
         dependentFieldsValues
       ) => {
-        if ((field.optionData && field.optionData.length > 0) && field.optionData[0].DESCRIPTION) {
+        if (
+          field.optionData &&
+          field.optionData.length > 0 &&
+          field.optionData[0].DESCRIPTION
+        ) {
           return {
             DOC_DESCRIPTION: { value: field.optionData[0].DESCRIPTION ?? "" },
-          }
+          };
         } else {
-          return {}
+          return {};
         }
       },
-      __EDIT__: { isReadOnly: true }
+      __EDIT__: { isReadOnly: true },
     },
     {
       render: { componentType: "hidden" },
@@ -137,14 +145,20 @@ export const ExtDocumentFormMetadata = {
         ],
       },
       validate: (value, data, others) => {
-        if(Boolean(value.value)) {
+        if (Boolean(value.value)) {
           // console.log(data, "WEfwedqwe", value)
-          if(data.VALID_UPTO_HRS && Boolean(data.VALID_UPTO_HRS.value)) {
+          if (data.VALID_UPTO_HRS && Boolean(data.VALID_UPTO_HRS.value)) {
             const valid_upto = data.VALID_UPTO_HRS.value;
-            const max_date = addMonths(new Date(), !isNaN(parseInt(valid_upto)) ? parseInt(valid_upto) : 0)
+            const max_date = addMonths(
+              new Date(),
+              !isNaN(parseInt(valid_upto)) ? parseInt(valid_upto) : 0
+            );
             // console.log(value.value, "dateasdasdas", max_date, isAfter(value.value, max_date))
-            if(isAfter(value.value, max_date)) {
-              return `Maximum allowed date - ${format(new Date(max_date), "dd/MM/yyyy")}`
+            if (isAfter(value.value, max_date)) {
+              return `Maximum allowed date - ${format(
+                new Date(max_date),
+                "dd/MM/yyyy"
+              )}`;
             }
           }
           return "";

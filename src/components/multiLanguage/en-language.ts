@@ -684,6 +684,19 @@ export const en_language_data = {
   Religion: "Religion",
   Caste: "Caste",
   KycRevisedDate: "KYC Revised Date",
+  PrefixIsRequired: "Prefix is required",
+  FirstNameIsRequired: "First Name is required",
+  GenderIsRequired: "Gender is required",
+  MaritalStatusIsRequired: "Marital Status is required",
+  DateofBirthIsRequired: "Date of Birth is required",
+  NationalityIsRequired: "Nationality is required",
+  ResidenceStatusIsRequired: "Residence Status is required",
+  OccupationIsRequired: "Occupation is required",
+  ReligionIsRequired: "Religion is required",
+  KYCRevisedDateIsRequired: "KYC Revised Date is required",
+  //  tab - entity details
+  EntityNameIsRequired: "Entity Name is required",
+  ExplicitTDSIsRequired: "Explicit TDS is required",
   //  tab - kyc details
   ProofOfIdentity: "Proof of Identity [PoI]",
   ProofOfAddress: "Proof of Address [PoA]",
@@ -737,6 +750,17 @@ export const en_language_data = {
     "Driving License Expiry Date can't be less than or equal to Today's Date.",
   PassportExpiryDatecantBeLessThanOrEqualToTodaysDate:
     "Passport Expiry Date can't be less than or equal to Today's Date.",
+  CommencementDateIsRequired: "Commencement Date is required",
+  PanNoIsRequired: "Pan No is required",
+  AdhaarIsRequired: "UID(Aadhaar) is required",
+  AddressTypeIsRequired: "Address Type is required",
+  Line1IsRequired: "Line1 is required",
+  PINIsRequired: "PIN is required",
+  SubAreaIsRequired: "Sub Area is required",
+  CityIsRequired: "City is required",
+  ProofofAddressIsRequired: "Proof of Address is required",
+  EmailIDIsRequired: "Email ID is required",
+  MobileNoIsRequired: "Mobile No. is required",
   // tab - declaration details
   DeclarationDetails: "Declaration Details",
   FATCACRSDetails: "FATCA/CRS Details",
@@ -746,6 +770,8 @@ export const en_language_data = {
   PlaceOfIncorporation: "Place of Incorporation",
   CountryOfIncorporation: "Country of Incorporation",
   TINIssuingCountry: "TIN Issuing Country",
+  // tab - document
+  DocumentIsRequired: "Document is required",
   // tab - Details of Related Person
   DetailsOfRelatedPerson: "Details of Related Person",
   PoIOfRelatedPerson: "Proof of Identity [PoI] of Related Person",
@@ -778,6 +804,11 @@ export const en_language_data = {
     "Driving License Expiry Date should be future date.",
   PassportExpiryDateShouldBeFutureDate:
     "Passport Expiry Date should be future date.",
+  RelatedPersonTypeIsRequired: "Related Person Type is required",
+  RefTypeIsRequired: "Ref Type is required",
+  RefCustIDIsRequired: "Ref Cust ID is required",
+  DocReceivedIsRequired: "Doc Received is required",
+  IPVFlagIsRequired: "IPV Flag is required",
   // tab - other details
   AnnualIncome: "Annual Income",
   ExposureInfo: "Exposure Info./Risk Profile",
@@ -829,6 +860,15 @@ export const en_language_data = {
     "Visa issue Date can't be greater than today's Date.",
   VisaExpiryDateCantBeLessThanOrEqualToTodaysDate:
     "Visa Expiry Date can't be less than or equal to Today's Date.",
+  VisaDetailsIsRequired: "Visa Details is required",
+  VisaIssueByIsRequired: "Visa Issue By is required",
+  VisaIssueDateIsRequired: "Visa Issue Date is required",
+  VisaExpiryDateIsRequired: "Visa Expiry Date is required",
+  CountryofRiskIsRequired: "Country of Risk is required",
+  CrossBorderRiskIsRequired: "Cross Border Risk is required",
+  VisuallyImpairedIsRequired: "Visually Impaired is required",
+  DomesticRiskIsRequired: "Domestic Risk is required",
+  CustomerEvaluationFlagIsRequired: "Customer Evaluation Flag is required",
   // tab - attestation details
   AttestationDetails: "Attestation Details",
   TypeOfDocSubmitted: "Type of Document Submitted",
@@ -842,6 +882,7 @@ export const en_language_data = {
   OrganizationName: "Organization Name",
   PlaceOfDeclaration: "Place of Declaration",
   DateOfDeclaration: "Date of Declaration",
+  TypesofDocSubmittedIsRequired: "Types of Doc Submitted is required",
   // tab - entity details
   EntityDetails: "Entity Details",
   CompanyInfo: "Company Info",
