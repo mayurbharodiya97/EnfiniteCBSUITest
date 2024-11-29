@@ -1,58 +1,47 @@
-import { Fragment, useRef, useState } from "react";
-import { useQuery } from "react-query";
-import { PMBYGridMetaData } from "./gridMetadata";
-import * as API from "./api";
+import {
+  Alert,
+  GridMetaDataType,
+  GridWrapper,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
-import { AccDetailContext } from "pages_audit/auth";
-import { useContext } from "react";
-import { Alert, GridWrapper, GridMetaDataType } from "@acuteinfo/common-base";
-
+import { Fragment, useContext, useEffect } from "react";
+import { useQuery } from "react-query";
+import * as API from "./api";
+import { PMBYGridMetaData } from "./gridMetadata";
 export const PMBY = ({ reqData }) => {
-  const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
-  const [rows, setRows] = useState([]);
-
-  // // api define
-  // const getPMBYList = useMutation(API.getPMBYList, {
-  //   onSuccess: (data) => {
-  //     console.log(data, " getPMBYList detailssss");
-  //     setRows(data);
-  //   },
-  //   onError: (error) => {},
-  // });
-
-  // useEffect(() => {
-  //   tempStore?.accInfo?.ACCT_CD && getPMBYList.mutate(tempStore.accInfo);
-  // }, [tempStore]);
-
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
   >(["getPMBYList", { reqData }], () => API.getPMBYList(reqData));
 
+  useEffect(() => {
+    return () => {
+      const keysToRemove = ["getPMBYList"].map((key) => [
+        key,
+        authState?.user?.branchCode,
+      ]);
+      keysToRemove.forEach((key) => queryClient.removeQueries(key));
+    };
+  }, []);
   return (
-    <>
+    <Fragment>
       {isError ? (
-        <Fragment>
-          <div style={{ width: "100%", paddingTop: "10px" }}>
-            <Alert
-              severity={error?.severity ?? "error"}
-              errorMsg={error?.error_msg ?? "Error"}
-              errorDetail={error?.error_detail ?? ""}
-            />
-          </div>
-        </Fragment>
+        <Alert
+          severity={error?.severity ?? "error"}
+          errorMsg={error?.error_msg ?? "Error"}
+          errorDetail={error?.error_detail ?? ""}
+        />
       ) : null}
       <GridWrapper
         key={`PMBYGridMetaData`}
         finalMetaData={PMBYGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
-        // refetchData={() => {}}
-        ref={myGridRef}
+        refetchData={refetch}
         loading={isLoading || isFetching}
       />
-    </>
+    </Fragment>
   );
 };

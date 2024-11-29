@@ -746,9 +746,9 @@ export const FdInterestPaymentFormMetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
           return {
-            CR_ACCT_TYPE: { value: "", ignoreUpdate: true },
-            CR_ACCT_CD: { value: "", ignoreUpdate: true },
-            CR_ACCT_NM: { value: "", ignoreUpdate: true },
+            CR_ACCT_TYPE: { value: "", ignoreUpdate: false },
+            CR_ACCT_CD: { value: "", ignoreUpdate: false },
+            CR_ACCT_NM: { value: "", ignoreUpdate: false },
           };
         },
         isReadOnly: (fieldValue, dependentFields, formState) => {
@@ -784,9 +784,45 @@ export const FdInterestPaymentFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          if (
+            currentField?.value &&
+            dependentFieldValues?.CR_BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: "Alert",
+              message: "EnterAccountBranch",
+              buttonNames: ["Ok"],
+              icon: "WARNING",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                CR_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+                CR_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                CR_ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                CR_ACCT_NM: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
           return {
-            CR_ACCT_CD: { value: "" },
-            CR_ACCT_NM: { value: "", ignoreUpdate: true },
+            CR_ACCT_CD: { value: "", ignoreUpdate: false },
+            CR_ACCT_NM: { value: "", ignoreUpdate: false },
           };
         },
         isReadOnly: (fieldValue, dependentFields, formState) => {
@@ -838,16 +874,6 @@ export const FdInterestPaymentFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (
-            !Boolean(currentField?.displayValue) &&
-            !Boolean(currentField?.value)
-          ) {
-            return {
-              CR_ACCT_NM: { value: "", ignoreUpdate: true },
-            };
-          } else if (!Boolean(currentField?.displayValue)) {
-            return {};
-          }
 
           if (
             currentField?.value &&
@@ -941,7 +967,7 @@ export const FdInterestPaymentFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
 
               CR_ACCT_NM: {
@@ -952,7 +978,7 @@ export const FdInterestPaymentFormMetaData = {
             };
           } else if (!currentField?.value) {
             return {
-              CR_ACCT_NM: { value: "" },
+              CR_ACCT_NM: { value: "", ignoreUpdate: false },
             };
           }
         },

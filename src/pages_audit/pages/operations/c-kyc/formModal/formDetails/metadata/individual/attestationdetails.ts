@@ -55,7 +55,9 @@ export const attestation_detail_meta_data = {
       isFieldFocused: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [
+          { name: "required", params: ["TypesofDocSubmittedIsRequired"] },
+        ],
       },
       placeholder: "",
       type: "text",
@@ -75,7 +77,7 @@ export const attestation_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["IPVFlagIsRequired"] }],
       },
       placeholder: "",
       type: "text",

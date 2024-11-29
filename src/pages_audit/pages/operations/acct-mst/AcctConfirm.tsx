@@ -67,12 +67,20 @@ const AcctConfirm = () => {
           });
         } else if (data.rows?.[0]?.data?.UPD_TAB_NAME === "FRESH_MODIFY") {
           navigate("view-detail", {
-            state: data?.rows,
+            state: {
+              rows: data?.rows ?? [{ data: null }],
+              formmode: "view",
+              from: "confirmation-entry",
+            },
           });
         } else {
           setRowsData(data?.rows);
           navigate(data?.name, {
-            state: data?.rows,
+            state: {
+              rows: data?.rows ?? [{ data: null }],
+              formmode: "view",
+              from: "confirmation-entry",
+            },
           });
         }
       }
@@ -124,13 +132,7 @@ const AcctConfirm = () => {
       <Routes>
         <Route
           path="view-detail/*"
-          element={
-            <AcctModal
-              onClose={() => navigate(".")}
-              formmode={"view"}
-              from={"confirmation-entry"}
-            />
-          }
+          element={<AcctModal onClose={() => navigate(".")} />}
         />
 
         {/* <Route

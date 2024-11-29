@@ -53,7 +53,7 @@ export const AdvocateMstFormMetaData = {
       validate: (columnValue, ...rest) => {
         let regex = /^[^~`!@#$%^&*()\-+_=\\"';:?/<>,.{}[\]|]+$/;
         if (columnValue.value && !regex.test(columnValue.value)) {
-          return "Specialcharacterisnotallowed";
+          return `${t(`SpecialCharacterNotAllowed`)}`;
         }
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
@@ -90,7 +90,7 @@ export const AdvocateMstFormMetaData = {
       autoComplete: "off",
       required: true,
       maxLength: 100,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["AdvocateNameisrequired"] }],
@@ -153,7 +153,7 @@ export const AdvocateMstFormMetaData = {
       autoComplete: "off",
       type: "text",
       maxLength: 100,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       GridProps: { xs: 12, sm: 9, md: 12, lg: 4.5, xl: 4.5 },
     },
     {
@@ -165,7 +165,7 @@ export const AdvocateMstFormMetaData = {
       placeholder: "EnterEmailID",
       type: "text",
       autoComplete: "off",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       maxLength: 200,
       validate: (columnValue, allField, flag) => {
         let emailRegex =

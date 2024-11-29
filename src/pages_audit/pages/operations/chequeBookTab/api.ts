@@ -23,7 +23,7 @@ export const getChequebookDTL = async (chequeDTLRequestPara) => {
     return data.map((item) => {
       if (item?.CONFIRMED === "Y") {
         item._rowColor = "rgb(9 132 3 / 51%)";
-        item.CONFIRMED_DISPLAY = "Confirm";
+        item.CONFIRMED_DISPLAY = "Confirmed";
       } else {
         item.CONFIRMED_DISPLAY = "Pending";
       }

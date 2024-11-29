@@ -21,6 +21,7 @@ import {
   usePopupContext,
   GradientButton,
   utilFunction,
+  Alert,
 } from "@acuteinfo/common-base";
 import PhotoSignWithHistory from "components/common/custom/photoSignWithHistory/photoSignWithHistory";
 const useTypeStyles = makeStyles((theme: Theme) => ({
@@ -61,14 +62,6 @@ export const RecurringPaymentConfirmation = ({
     recurringPmtConfirmation,
     {
       onError: async (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        await MessageBox({
-          messageTitle: "ValidationFailed",
-          message: errorMsg ?? "",
-        });
         CloseMessageBox();
       },
       onSuccess: async (data) => {
@@ -101,12 +94,14 @@ export const RecurringPaymentConfirmation = ({
       await MessageBox({
         messageTitle: "InvalidConfirmation",
         message: "ConfirmRestrictMsg",
+        icon: "ERROR",
       });
     } else {
       const buttonName = await MessageBox({
         messageTitle: "Confirmation",
         message: "DoYouWantToAllowTheTransaction",
         buttonNames: ["Yes", "No"],
+        icon: "CONFIRM",
       });
       if (buttonName === "Yes") {
         let reqParam = {
@@ -126,6 +121,7 @@ export const RecurringPaymentConfirmation = ({
           message: "DoYouWantToCloseAccount",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes", "No"],
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           reqParam = { ...reqParam, ACCOUNT_CLOSE: "Y" };
@@ -151,6 +147,18 @@ export const RecurringPaymentConfirmation = ({
         }}
         maxWidth="xl"
       >
+        {recurringPmtConfMutation.isError && (
+          <Alert
+            severity="error"
+            errorMsg={
+              recurringPmtConfMutation?.error?.error_msg ||
+              t("Somethingwenttowrong")
+            }
+            errorDetail={recurringPmtConfMutation?.error?.error_detail || ""}
+            color="error"
+          />
+        )}
+
         <AppBar position="relative" style={{ marginBottom: "10px" }}>
           <Toolbar className={headerClasses.root} variant="dense">
             <Typography

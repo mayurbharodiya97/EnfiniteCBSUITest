@@ -47,6 +47,67 @@ export const stopPayconfirmFormMetaData = {
   fields: [
     {
       render: {
+        componentType: "textField",
+      },
+      name: "BRANCH_CD",
+      label: "BranchCode",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 1.8,
+        sm: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_TYPE",
+      label: "AccountType",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 1.8,
+        sm: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_CD",
+      label: "AccountNumber",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NM",
+      label: "AccountName",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
+      },
+    },
+
+    {
+      render: {
         componentType: "amountField",
       },
       name: "TRAN_BAL",
@@ -60,6 +121,34 @@ export const stopPayconfirmFormMetaData = {
       },
     },
 
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "CHEQUE_FROM",
+      label: "FromChequeNo",
+      GridProps: {
+        xs: 12,
+        md: 1.8,
+        sm: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+      },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "CHEQUE_TO",
+      label: "ToChequeNo",
+      GridProps: {
+        xs: 12,
+        md: 1.8,
+        sm: 1.8,
+        lg: 1.8,
+        xl: 1.8,
+      },
+    },
     {
       render: {
         componentType: "autocomplete",
@@ -77,10 +166,10 @@ export const stopPayconfirmFormMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2.1,
+        sm: 2.1,
+        lg: 2.1,
+        xl: 2.1,
       },
     },
 
@@ -100,10 +189,10 @@ export const stopPayconfirmFormMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2.1,
+        sm: 2.1,
+        lg: 2.1,
+        xl: 2.1,
       },
     },
     {
@@ -122,54 +211,13 @@ export const stopPayconfirmFormMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2.1,
+        sm: 2.1,
+        lg: 2.1,
+        xl: 2.1,
       },
     },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "CHEQUE_FROM",
-      label: "FromChequeNo",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "CHEQUE_TO",
-      label: "ToChequeNo",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "REASON_CD",
-      label: "Reason",
-      GridProps: {
-        xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
-      },
-    },
+
     {
       render: {
         componentType: "amountField",
@@ -186,10 +234,10 @@ export const stopPayconfirmFormMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2.1,
+        sm: 2.1,
+        lg: 2.1,
+        xl: 2.1,
       },
     },
     {
@@ -197,7 +245,7 @@ export const stopPayconfirmFormMetaData = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "GSTAmount",
+      label: "GST",
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "P") {
@@ -208,10 +256,10 @@ export const stopPayconfirmFormMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2.1,
+        sm: 2.1,
+        lg: 2.1,
+        xl: 2.1,
       },
     },
     {
@@ -222,10 +270,10 @@ export const stopPayconfirmFormMetaData = {
       label: "ChequeDate",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2.1,
+        sm: 2.1,
+        lg: 2.1,
+        xl: 2.1,
       },
     },
 
@@ -246,26 +294,10 @@ export const stopPayconfirmFormMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-
-    {
-      render: {
-        componentType: "Remark",
-      },
-      name: "REMARKS",
-      label: "Remarks",
-      placeholder: "Enter Remarks",
-      GridProps: {
-        xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 2.1,
+        sm: 2.1,
+        lg: 2.1,
+        xl: 2.1,
       },
     },
   ],

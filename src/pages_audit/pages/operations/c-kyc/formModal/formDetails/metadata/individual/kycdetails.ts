@@ -1,5 +1,7 @@
-import { greaterThanInclusiveDate, lessThanDate } from "@acuteinfo/common-base";
+import { greaterThanDate, lessThanInclusiveDate } from "@acuteinfo/common-base";
 import * as API from "../../../../api";
+import { isValid } from "date-fns";
+import { t } from "i18next";
 
 export const kyc_proof_of_identity_meta_data = {
   form: {
@@ -84,11 +86,13 @@ export const kyc_proof_of_identity_meta_data = {
       txtTransform: "uppercase",
       dependentFields: ["FORM_60"],
       required: true,
+      validate: (columnValue, allField, flag) =>
+        API.validatePAN(columnValue, allField, flag),
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
       schemaValidation: {
         type: "string",
         rules: [
-          { name: "required", params: ["ThisFieldisrequired"] },
+          { name: "required", params: ["PanNoIsRequired"] },
           {
             name: "pancard",
             params: ["Please Enter Valid PAN Number"],
@@ -117,7 +121,7 @@ export const kyc_proof_of_identity_meta_data = {
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["AdhaarIsRequired"] }],
       },
       validate: (columnValue, allField, flag) =>
         API.validateUniqueId(columnValue, allField, flag),
@@ -318,24 +322,27 @@ export const kyc_proof_of_identity_meta_data = {
       },
       name: "PASSPORT_ISSUE_DT",
       label: "IssueDate",
-      maxDate: new Date(),
       dependentFields: ["PASSPORT_NO"],
-      validate: (columnValue, allField, flag) => {
-        if (!Boolean(columnValue?.value)) {
+      isMaxWorkingDate: true,
+      validate: (value, allField, flag) => {
+        if (Boolean(value?.value)) {
+          if (!isValid(value?.value)) {
+            return "Mustbeavaliddate";
+          } else if (
+            greaterThanDate(value?.value, value?._maxDt, {
+              ignoreTime: true,
+            })
+          ) {
+            return t("PassportIssueDateCantBeGreaterThanTodaysDate");
+          }
+        } else {
           const passport = allField?.PASSPORT_NO?.value;
           if (Boolean(passport)) {
             return "This field is required";
           }
-        } else {
-          if (lessThanDate(new Date(), columnValue.value)) {
-            return `Passport Issue Date can't be greater than today's date.`;
-          }
         }
       },
       runValidationOnDependentFieldsChange: true,
-      //   required: true,
-      // placeholder: "",
-      // type: "datePicker",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
     },
     {
@@ -344,19 +351,27 @@ export const kyc_proof_of_identity_meta_data = {
       },
       name: "PASSPORT_EXPIRY_DT",
       label: "ExpiryDate",
-      minDate: new Date(),
       dependentFields: ["PASSPORT_NO"],
-      validate: (columnValue, allField, flag) => {
-        if (!Boolean(columnValue?.value)) {
-          const passport = allField?.PASSPORT_NO?.value;
+      isMinWorkingDate: true,
+      validate: (currentField, dependentField, formState) => {
+        if (Boolean(currentField.value)) {
+          if (!isValid(currentField?.value)) {
+            return "Mustbeavaliddate";
+          } else if (
+            lessThanInclusiveDate(
+              currentField?.value,
+              new Date(currentField?._minDt)
+            )
+          ) {
+            return t("PassportExpiryDatecantBeLessThanOrEqualToTodaysDate");
+          }
+        } else {
+          const passport = dependentField?.PASSPORT_NO?.value;
           if (Boolean(passport)) {
             return "This field is required";
           }
-        } else {
-          if (greaterThanInclusiveDate(new Date(), columnValue.value)) {
-            return `Passport Expiry Date can't be less than or equal to Today's Date.`;
-          }
         }
+        return "";
       },
       runValidationOnDependentFieldsChange: true,
       //   required: true,
@@ -418,17 +433,23 @@ export const kyc_proof_of_identity_meta_data = {
       },
       name: "DRIVING_LICENSE_ISSUE_DT",
       label: "IssueDate",
-      maxDate: new Date(),
       dependentFields: ["DRIVING_LICENSE_NO"],
-      validate: (columnValue, allField, flag) => {
-        if (!Boolean(columnValue?.value)) {
+      isMaxWorkingDate: true,
+      validate: (value, allField, flag) => {
+        if (Boolean(value?.value)) {
+          if (!isValid(value?.value)) {
+            return "Mustbeavaliddate";
+          } else if (
+            greaterThanDate(value?.value, value?._maxDt, {
+              ignoreTime: true,
+            })
+          ) {
+            return t("DrivingLicenseIssueDateCantBeGreaterThanTodaysDate");
+          }
+        } else {
           const passport = allField?.DRIVING_LICENSE_NO?.value;
           if (Boolean(passport)) {
             return "This field is required";
-          }
-        } else {
-          if (lessThanDate(new Date(), columnValue?.value)) {
-            return `Driving License Issue Date can't be greater than today's date.`;
           }
         }
       },
@@ -444,24 +465,31 @@ export const kyc_proof_of_identity_meta_data = {
       },
       name: "DRIVING_LICENSE_EXPIRY_DT",
       label: "ExpiryDate",
-      minDate: new Date(),
       dependentFields: ["DRIVING_LICENSE_NO"],
-      validate: (columnValue, allField, flag) => {
-        if (!Boolean(columnValue?.value)) {
-          const passport = allField?.DRIVING_LICENSE_NO?.value;
-          if (Boolean(passport)) {
-            return "This field is required";
+      isMinWorkingDate: true,
+      validate: (currentField, dependentField, formState) => {
+        if (Boolean(currentField.value)) {
+          if (!isValid(currentField?.value)) {
+            return "Mustbeavaliddate";
+          } else if (
+            lessThanInclusiveDate(
+              currentField?.value,
+              new Date(currentField?._minDt)
+            )
+          ) {
+            return t(
+              "DrivingLicenseExpiryDateCantBeLessThanOrEqualToTodaysDate"
+            );
           }
         } else {
-          if (greaterThanInclusiveDate(new Date(), columnValue?.value)) {
-            return `Driving License Expiry Date can't be less than or equal to Today's Date.`;
+          const drivingLicenseNo = dependentField?.DRIVING_LICENSE_NO?.value;
+          if (Boolean(drivingLicenseNo)) {
+            return "This field is required";
           }
         }
+        return "";
       },
       runValidationOnDependentFieldsChange: true,
-      //   required: true,
-      // placeholder: "",
-      // type: "datePicker",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
     },
   ],
@@ -542,7 +570,7 @@ export const kyc_proof_of_address_meta_data = {
       maxLength: 50,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["Line1IsRequired"] }],
       },
       validate: (columnValue, allField, flag) =>
         API.AlphaNumericValidate(columnValue),
@@ -588,7 +616,7 @@ export const kyc_proof_of_address_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PINIsRequired"] }],
       },
       maxLength: 6,
       FormatProps: {
@@ -698,7 +726,7 @@ export const kyc_proof_of_address_meta_data = {
       label: "City",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["CityIsRequired"] }],
       },
       isReadOnly: true,
       placeholder: "",
@@ -846,7 +874,7 @@ export const kyc_proof_of_address_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["ProofofAddressIsRequired"] }],
       },
       placeholder: "",
       type: "text",
@@ -970,7 +998,7 @@ export const kyc_proof_of_address_meta_data = {
       maxLength: 50,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["Line1IsRequired"] }],
       },
       validate: (columnValue, allField, flag) =>
         API.AlphaNumericValidate(columnValue),
@@ -1095,7 +1123,7 @@ export const kyc_proof_of_address_meta_data = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PINIsRequired"] }],
       },
       validate: (columnValue) => {
         const PIN = columnValue.value;
@@ -1538,7 +1566,7 @@ export const kyc_proof_of_address_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["MobileNoIsRequired"] }],
       },
       placeholder: "",
       maxLength: 3,
@@ -1560,7 +1588,7 @@ export const kyc_proof_of_address_meta_data = {
       name: "CONTACT2",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["MobileNoIsRequired"] }],
       },
       label: "",
       required: true,
@@ -1637,7 +1665,7 @@ export const kyc_proof_of_address_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["EmailIDIsRequired"] }],
       },
       maxLength: 60,
       // validate: (columnValue, allField, flag) => API.validateEmailID(columnValue),
@@ -1771,7 +1799,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["Line1IsRequired"] }],
       },
       placeholder: "",
       maxLength: 50,
@@ -1815,7 +1843,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PINIsRequired"] }],
       },
       maxLength: 6,
       FormatProps: {
@@ -1996,7 +2024,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["CityIsRequired"] }],
       },
       isReadOnly: true,
       placeholder: "",
@@ -2081,7 +2109,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["ProofofAddressIsRequired"] }],
       },
       placeholder: "",
       type: "text",
@@ -2161,7 +2189,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["Line1IsRequired"] }],
       },
       maxLength: 50,
       validate: (columnValue, allField, flag) =>
@@ -2223,7 +2251,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       // },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PINIsRequired"] }],
       },
     },
     {
@@ -2654,7 +2682,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["EmailIDIsRequired"] }],
       },
       maxLength: 60,
       validate: (columnValue, allField, flag) => {
@@ -2678,7 +2706,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["EmailIDIsRequired"] }],
       },
       maxLength: 60,
       validate: (columnValue, allField, flag) => {

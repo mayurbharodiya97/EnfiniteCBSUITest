@@ -137,7 +137,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 200,
       isDisplayTotal: true,
-      footerLabel: "Total Cheques",
+      footerLabel: "Total Cheques :",
       setFooterValue(total, rows) {
         return [rows.length ?? 0];
       },
@@ -152,7 +152,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 350,
       isDisplayTotal: true,
-      footerLabel: "Total Amount",
+      footerLabel: "Total Amount :",
       setFooterValue(total, rows) {
         // Filter rows where TYPE_CD is 1, 2, or 3
         const sum =

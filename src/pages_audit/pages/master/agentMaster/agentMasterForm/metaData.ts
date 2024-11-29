@@ -6,6 +6,7 @@ import {
 } from "../api";
 import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const AgentMasterFormMetaData = {
   form: {
@@ -59,7 +60,7 @@ export const AgentMasterFormMetaData = {
       isFieldFocused: true,
       autoComplete: "off",
       required: true,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CodeisRequired"] }],
@@ -102,7 +103,7 @@ export const AgentMasterFormMetaData = {
       required: true,
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CategoryNameisrequired"] }],
@@ -142,10 +143,24 @@ export const AgentMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              AGENT_BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             ACCT_NM: { value: "" },
             AGENT_TYPE_CD: { value: "" },
-            AGENT_ACCT_CD: { value: "" },
+            AGENT_ACCT_CD: { value: "", ignoreUpdate: false },
           };
         },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
@@ -189,7 +204,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            AGENT_ACCT_CD: { value: "" },
+            AGENT_ACCT_CD: { value: "", ignoreUpdate: false },
             ACCT_NM: { value: "" },
           };
         },
@@ -234,7 +249,7 @@ export const AgentMasterFormMetaData = {
                 AGENT_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 AGENT_TYPE_CD: {
                   value: "",
@@ -328,7 +343,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -384,7 +399,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               SECURITY_TYPE_CD: { value: "" },
-              SECURITY_ACCT_CD: { value: "" },
+              SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
               SECURITY_ACCT_NM: { value: "" },
             };
           },
@@ -408,7 +423,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               SECURITY_TYPE_CD: { value: "" },
-              SECURITY_ACCT_CD: { value: "" },
+              SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
               SECURITY_ACCT_NM: { value: "" },
             };
           },
@@ -432,7 +447,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               SECURITY_TYPE_CD: { value: "" },
-              SECURITY_ACCT_CD: { value: "" },
+              SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
               SECURITY_ACCT_NM: { value: "" },
             };
           },
@@ -481,7 +496,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            SECURITY_ACCT_CD: { value: "" },
+            SECURITY_ACCT_CD: { value: "", ignoreUpdate: false },
             SECURITY_ACCT_NM: { value: "" },
           };
         },
@@ -529,7 +544,7 @@ export const AgentMasterFormMetaData = {
                 SECURITY_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 SECURITY_TYPE_CD: {
                   value: "",
@@ -623,7 +638,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               SECURITY_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -773,7 +788,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               OTH_ACCT_TYPE: { value: "" },
-              OTH_ACCT_CD: { value: "" },
+              OTH_ACCT_CD: { value: "", ignoreUpdate: false },
               OTHER_ACCT_NM: { value: "" },
             };
           },
@@ -795,9 +810,23 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                OTH_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               OTH_ACCT_TYPE: { value: "" },
-              OTH_ACCT_CD: { value: "" },
+              OTH_ACCT_CD: { value: "", ignoreUpdate: false },
               OTHER_ACCT_NM: { value: "" },
             };
           },
@@ -818,9 +847,23 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                OTH_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               OTH_ACCT_TYPE: { value: "" },
-              OTH_ACCT_CD: { value: "" },
+              OTH_ACCT_CD: { value: "", ignoreUpdate: false },
               OTHER_ACCT_NM: { value: "" },
             };
           },
@@ -869,7 +912,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            OTH_ACCT_CD: { value: "" },
+            OTH_ACCT_CD: { value: "", ignoreUpdate: false },
             OTHER_ACCT_NM: { value: "" },
           };
         },
@@ -916,7 +959,7 @@ export const AgentMasterFormMetaData = {
                 OTH_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 OTH_ACCT_TYPE: {
                   value: "",
@@ -1010,7 +1053,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               OTHER_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -1066,9 +1109,23 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                PTAX_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               PTAX_ACCT_TYPE: { value: "" },
-              PTAX_ACCT_CD: { value: "" },
+              PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
               PTAX_ACCT_NM: { value: "" },
             };
           },
@@ -1092,7 +1149,7 @@ export const AgentMasterFormMetaData = {
             if (formState?.isSubmitting) return {};
             return {
               PTAX_ACCT_TYPE: { value: "" },
-              PTAX_ACCT_CD: { value: "" },
+              PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
               PTAX_ACCT_NM: { value: "" },
             };
           },
@@ -1114,9 +1171,23 @@ export const AgentMasterFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                PTAX_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               PTAX_ACCT_TYPE: { value: "" },
-              PTAX_ACCT_CD: { value: "" },
+              PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
               PTAX_ACCT_NM: { value: "" },
             };
           },
@@ -1165,7 +1236,7 @@ export const AgentMasterFormMetaData = {
             }
           }
           return {
-            PTAX_ACCT_CD: { value: "" },
+            PTAX_ACCT_CD: { value: "", ignoreUpdate: false },
             PTAX_ACCT_NM: { value: "" },
           };
         },
@@ -1212,7 +1283,7 @@ export const AgentMasterFormMetaData = {
                 PTAX_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 PTAX_ACCT_TYPE: {
                   value: "",
@@ -1306,7 +1377,7 @@ export const AgentMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               PTAX_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",

@@ -226,10 +226,8 @@ const GeneralAPISDK = () => {
   };
   const getBranchCodeList = async (...reqData) => {
     const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETBRACCESSLST", {
-        USER_NAME: reqData?.[3]?.user.id
-          ? reqData?.[3]?.user.id
-          : reqData?.[1]?.user.id ?? "",
+      await AuthSDK.internalFetcher("GETBRANCHDDDW", {
+        COMP_CD: reqData?.[3]?.companyID ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -238,7 +236,7 @@ const GeneralAPISDK = () => {
           ({ BRANCH_CD, BRANCH_NM, ...other }) => {
             return {
               value: BRANCH_CD,
-              label: BRANCH_CD + " - " + BRANCH_NM,
+              label: BRANCH_CD?.trim() + " - " + BRANCH_NM?.trim(),
             };
           }
         );
@@ -693,7 +691,7 @@ const GeneralAPISDK = () => {
         COMP_CD: reqData?.COMP_CD,
         ACCT_TYPE: reqData?.ACCT_TYPE,
         ACCT_CD: reqData?.ACCT_CD,
-        GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
+        GD_TODAY_DT: reqData?.GD_TODAY_DT,
         SCREEN_REF: reqData?.SCREEN_REF, //depending on screen code
       });
     if (status === "0") {

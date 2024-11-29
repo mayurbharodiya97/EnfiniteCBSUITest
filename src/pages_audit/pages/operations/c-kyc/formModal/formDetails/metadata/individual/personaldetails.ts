@@ -1,6 +1,8 @@
-import { GridMetaDataType } from "@acuteinfo/common-base";
-import { differenceInYears } from "date-fns";
+import { greaterThanDate, GridMetaDataType } from "@acuteinfo/common-base";
+import { differenceInYears, isValid } from "date-fns";
+import { t } from "i18next";
 import * as API from "../../../../api";
+
 export const personal_detail_prefix_data = {
   form: {
     name: "personal_detail_prefix_details_form",
@@ -72,7 +74,7 @@ export const personal_detail_prefix_data = {
       GridProps: { xs: 12, sm: 4, md: 1, lg: 1, xl: 1 },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PrefixIsRequired"] }],
       },
       postValidationSetCrossFieldValues: (
         field,
@@ -123,7 +125,7 @@ export const personal_detail_prefix_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["FirstNameIsRequired"] }],
       },
       validate: (columnValue, allField, flag) =>
         API.TrimSpaceValidation(columnValue, allField, flag),
@@ -200,7 +202,7 @@ export const personal_detail_prefix_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["GenderIsRequired"] }],
       },
       dependentFields: ["PREFIX_CD"],
       disableCaching: true,
@@ -218,14 +220,13 @@ export const personal_detail_prefix_data = {
       name: "MARITAL_STATUS",
       label: "MaritalStatus",
       required: true,
-      dependentFields: ["PREFIX_CD"],
       disableCaching: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["MaritalStatusIsRequired"] }],
       },
       placeholder: "",
-      options: (dependentValue) => API.getPMISCData("Marital", dependentValue),
+      options: () => API.getPMISCData("Marital"),
       _optionsKey: "maritalStatus",
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
@@ -422,7 +423,7 @@ export const personal_detail_prefix_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["FirstNameIsRequired"] }],
       },
       validate: (columnValue, allField, flag) =>
         API.TrimSpaceValidation(columnValue, allField, flag),
@@ -504,7 +505,7 @@ export const personal_detail_prefix_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["FirstNameIsRequired"] }],
       },
       validate: (columnValue, allField, flag) =>
         API.TrimSpaceValidation(columnValue, allField, flag),
@@ -598,14 +599,22 @@ export const personal_other_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["DateofBirthIsRequired"] }],
       },
-      // placeholder: "",
-      // type: "datePicker",
-      // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
-      maxDate: new Date(),
-      format: "dd/MM/yyyy",
+      isMaxWorkingDate: true,
+      validate: (value) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        } else if (
+          greaterThanDate(value?.value, value?._maxDt, {
+            ignoreTime: true,
+          })
+        ) {
+          return t("DateShouldBeLessThanEqualToWorkingDT");
+        }
+        return "";
+      },
     },
     {
       render: {
@@ -673,7 +682,7 @@ export const personal_other_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["NationalityIsRequired"] }],
       },
       placeholder: "",
       options: (dependentValue, formState, _, authState) =>
@@ -699,7 +708,7 @@ export const personal_other_detail_meta_data = {
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["ResidenceStatusIsRequired"] }],
       },
     },
     {
@@ -714,7 +723,7 @@ export const personal_other_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["OccupationIsRequired"] }],
       },
       placeholder: "",
       type: "text",
@@ -745,7 +754,7 @@ export const personal_other_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["ReligionIsRequired"] }],
       },
       options: (dependentValue, formState, _, authState) =>
         API.getCommunityList(authState?.companyID, authState?.user?.branchCode),
@@ -773,10 +782,21 @@ export const personal_other_detail_meta_data = {
       name: "KYC_REVIEW_DT",
       label: "KycRevisedDate",
       required: true,
-      maxDate: new Date(),
+      isMaxWorkingDate: true,
+      validate: (value, allField, flag) => {
+        if (Boolean(value?.value) && !isValid(value?.value)) {
+          return "Mustbeavaliddate";
+        } else if (
+          greaterThanDate(value?.value, value?._maxDt, {
+            ignoreTime: true,
+          })
+        ) {
+          return t("KYCRevisedDateShouldBeLessThanTodaysDate");
+        }
+      },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["KYCRevisedDateIsRequired"] }],
       },
       // placeholder: "",
       // type: "datePicker",
@@ -870,7 +890,7 @@ export const personal_individual_detail_metadata = {
       GridProps: { xs: 12, sm: 4, md: 1, lg: 1, xl: 1 },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PrefixIsRequired"] }],
       },
       postValidationSetCrossFieldValues: (
         field,
@@ -916,7 +936,7 @@ export const personal_individual_detail_metadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["FirstNameIsRequired"] }],
       },
       // dependentFields: ["DAILY_AMT"],
     },
@@ -971,7 +991,7 @@ export const personal_individual_detail_metadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["GenderIsRequired"] }],
       },
       dependentFields: ["PREFIX_CD"],
       disableCaching: true,
@@ -993,7 +1013,7 @@ export const personal_individual_detail_metadata = {
       disableCaching: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["MaritalStatusIsRequired"] }],
       },
       placeholder: "",
       options: (dependentValue) => API.getPMISCData("Marital", dependentValue),
@@ -1180,7 +1200,7 @@ export const personal_individual_detail_metadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["FirstNameIsRequired"] }],
       },
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
       // dependentFields: ["DAILY_AMT"],
@@ -1251,7 +1271,7 @@ export const personal_individual_detail_metadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["FirstNameIsRequired"] }],
       },
       // placeholder: "First Name",
       type: "text",

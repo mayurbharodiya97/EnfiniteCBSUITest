@@ -2925,6 +2925,90 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/VALIDATEACCOUNTDTL",
     packageName: "",
   },
+  GETBRANCHDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHDDDW",
+    packageName: "",
+  },
+  GETLOCKERSIZEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERSIZEDDDW",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONDDDW",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONTRN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONTRN",
+    packageName: "",
+  },
+  GETLOCKERVIEWMST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERVIEWMST",
+    packageName: "",
+  },
+  GETLOCKERTRXDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERTRXDDDW",
+    packageName: "",
+  },
+  GETSTPCHQISSUEUSED: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTPCHQISSUEUSED",
+    packageName: "",
+  },
+  INTERESTCALCULATIONFORSINGLEACCOUNTREPORT: {
+    url: "/enfinityReportServiceAPI/INTERESTCALCULATIONFORSINGLEACCOUNTREPORT",
+    packageName: "",
+  },
+  GETHEADERDETAILS: {
+    url: "/enfinityReportServiceAPI/GETHEADERDETAILS",
+    packageName: "",
+  },
+  APPLYACCTINT: {
+    url: "/transactionServiceAPI/APPLYACCTINT",
+    packageName: "",
+  },
+  REVERTBUTTONCTRI: {
+    url: "/transactionServiceAPI/REVERTBUTTONCTRI",
+    packageName: "",
+  },
+  GETDLYSCROLLREGF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYSCROLLREGF1",
+    packageName: "",
+  },
+  GETAPBSGRIDDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAPBSGRIDDATA",
+    packageName: "",
+  },
+  VALIDATEAPBSUID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSUID",
+    packageName: "",
+  },
+  VALIDATEAPBSACCTNO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSACCTNO",
+    packageName: "",
+  },
+  VALIDATEAPBSCUSTID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSCUSTID",
+    packageName: "",
+  },
+  GETPREVBANKIINDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPREVBANKIINDDDW",
+    packageName: "",
+  },
+  DOAPBSACREGISTRATIONDML: {
+    url: "/transactionServiceAPI/DOAPBSACREGISTRATIONDML",
+    packageName: "",
+  },
+  VALIDATEAPBSSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSSTATUS",
+    packageName: "",
+  },
+  GETAPBSUIDRESPONSE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAPBSUIDRESPONSE",
+    packageName: "",
+  },
+  DOCONFIRMAPBSREGISTRATIONENTRY: {
+    url: "/transactionServiceAPI/DOCONFIRMAPBSREGISTRATIONENTRY",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

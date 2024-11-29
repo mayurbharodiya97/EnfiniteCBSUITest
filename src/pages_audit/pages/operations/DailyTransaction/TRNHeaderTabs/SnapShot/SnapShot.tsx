@@ -1,37 +1,50 @@
-import { useCallback, useRef, useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import { snapShotGridMetaData } from "./gridMetadata";
-import * as API from "./api";
+import { Dialog, DialogActions } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
-import { useContext } from "react";
-import { Dialog, DialogActions, Grid } from "@mui/material";
-//date
-import { useStyles } from "pages_audit/style";
+import { useCallback, useContext, useRef, useState } from "react";
+import { useMutation, useQuery } from "react-query";
+import * as API from "./api";
 import {
-  Alert,
-  GridWrapper,
-  GridMetaDataType,
+  scrollRegisterGridMetaData,
+  snapShotGridMetaData,
+} from "./gridMetadata";
+import {
   ActionTypes,
+  Alert,
   GradientButton,
+  GridMetaDataType,
+  GridWrapper,
   LoaderPaperComponent,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 import { DateRetrievalDialog } from "components/common/custom/dateRetrievalPara";
-import { format } from "date-fns";
-import { ChequeSignImage } from "pages_audit/pages/operations/inwardClearing/inwardClearingForm/chequeSignImage";
-import { getInwardChequeSignFormData } from "pages_audit/pages/operations/inwardClearing/api";
 import i18n from "components/multiLanguage/languagesConfiguration";
+import { format } from "date-fns";
+import { t } from "i18next";
+import { enqueueSnackbar } from "notistack";
+import { getInwardChequeSignFormData } from "pages_audit/pages/operations/inwardClearing/api";
+import { ChequeSignImage } from "pages_audit/pages/operations/inwardClearing/inwardClearingForm/chequeSignImage";
+import { useStyles } from "pages_audit/style";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: "View Details",
+    actionLabel: "ViewDetails",
     multiple: false,
     rowDoubleClick: true,
     alwaysAvailable: false,
   },
   {
     actionName: "back-date",
-    actionLabel: "Back Date",
+    actionLabel: "BackDate",
     multiple: false,
+    rowDoubleClick: false,
+    alwaysAvailable: true,
+  },
+];
+const scrollActions: ActionTypes[] = [
+  {
+    actionName: "close",
+    actionLabel: "Close",
+    multiple: undefined,
     rowDoubleClick: false,
     alwaysAvailable: true,
   },
@@ -44,18 +57,20 @@ export const SnapShot = ({ reqData }) => {
   const reqDataRef = useRef<any>();
   const [imgData, setImgData] = useState();
   const [isopenReport, setIsopenReport] = useState(false);
+  const [scrollRegisterData, setScrollRegisterData] = useState([]);
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  const { MessageBox, CloseMessageBox } = usePopupContext();
 
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
   >(["getSnapShotList", { reqData }], () =>
     API.getSnapShotList({
-      A_COMP_CD: reqData.COMP_CD ?? "",
-      A_BRANCH_CD: reqData.BRANCH_CD ?? "",
-      A_ACCT_TYPE: reqData.ACCT_TYPE ?? "",
-      A_FROM_ACCT: reqData.ACCT_CD ?? "",
+      A_COMP_CD: reqData?.COMP_CD ?? "",
+      A_BRANCH_CD: reqData?.BRANCH_CD ?? "",
+      A_ACCT_TYPE: reqData?.ACCT_TYPE ?? "",
+      A_FROM_ACCT: reqData?.ACCT_CD ?? "",
       A_FR_DT: reqData?.FROM_DATE
         ? reqData?.FROM_DATE
         : format(oneMonthAgo, "dd-MMM-yyyy"),
@@ -70,6 +85,17 @@ export const SnapShot = ({ reqData }) => {
       A_LANG: i18n.resolvedLanguage,
     })
   );
+  const getDailyScrollRegister = useMutation(API.getDailyScrollRegister, {
+    onSuccess: async (data: any, variables: any) => {
+      setScrollRegisterData(data);
+    },
+    onError: (error: any, variables: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+      CloseMessageBox();
+    },
+  });
 
   const getChequeImg: any = useMutation(getInwardChequeSignFormData, {
     onError: (error: any) => {},
@@ -79,19 +105,37 @@ export const SnapShot = ({ reqData }) => {
   });
 
   const setCurrentAction = useCallback((data) => {
-    let row = data.rows[0]?.data;
-    if (data.name === "back-date") {
+    let row = data?.rows?.[0]?.data;
+    if (data?.name === "back-date") {
       setDateDialog(true);
-    } else if (data.name === "view-detail") {
-      setIsopenReport(true);
+    } else if (data?.name === "view-detail") {
+      if (row?.SCROLL1 > 0) {
+        setIsopenReport(true);
+        scrollRegisterGridMetaData.gridConfig.gridLabel = `Scroll Register of ${row?.SCROLL1}`;
+        getDailyScrollRegister.mutate({
+          COMP_CD: reqData?.COMP_CD ?? "",
+          BRANCH_CD: reqData?.BRANCH_CD ?? "",
+          TO_DT: row?.TRN_DATE
+            ? format(new Date(row?.TRN_DATE), "dd/MMM/yyyy")
+            : "",
+          SCROLL1: row?.SCROLL1 ?? "",
+          AS_FLAG: row?.TYPE_CD ?? "",
+        });
+      }
+    }
+  }, []);
+  const setScrollActions = useCallback((data) => {
+    if (data?.name === "close") {
+      setIsopenReport(false);
+      setScrollRegisterData([]);
     }
   }, []);
 
   const classes = useStyles();
   const retrievalParaValues = (retrievalValues) => {
     setDateDialog(false);
-    reqData.FROM_DATE = retrievalValues[0]?.value?.value;
-    reqData.TO_DATE = retrievalValues[1]?.value?.value;
+    reqData.FROM_DATE = retrievalValues?.[0]?.value?.value ?? "";
+    reqData.TO_DATE = retrievalValues?.[1]?.value?.value ?? "";
   };
   return (
     <>
@@ -155,6 +199,30 @@ export const SnapShot = ({ reqData }) => {
           defaultData={undefined}
         />
       )}
+      {isopenReport && (
+        <Dialog
+          open={true}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="md"
+        >
+          <GridWrapper
+            key={`scrollRegisterGridMetaData`}
+            finalMetaData={scrollRegisterGridMetaData as GridMetaDataType}
+            data={scrollRegisterData ?? []}
+            setData={() => null}
+            loading={getDailyScrollRegister?.isLoading}
+            refetchData={() => refetch()}
+            actions={scrollActions}
+            setAction={setScrollActions}
+            enableExport={true}
+          />
+        </Dialog>
+      )}
       {isopenChequeImg ? (
         <>
           <Dialog
@@ -172,7 +240,7 @@ export const SnapShot = ({ reqData }) => {
               <>
                 <DialogActions>
                   <GradientButton onClick={() => setOpenChequeImg(false)}>
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </DialogActions>
                 <ChequeSignImage imgData={imgData} isVisibleSign={false} />

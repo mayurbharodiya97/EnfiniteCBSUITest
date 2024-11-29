@@ -2,6 +2,7 @@ import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../../api";
 import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
+import { validateHOBranch } from "components/utilFunction/function";
 
 const resetFields = {
   ACCT_NM: {
@@ -203,6 +204,21 @@ export const RecurringPaymentEntryFormMetaData = {
             dependentFieldValues
           ) => {
             if (formState?.isSubmitting) return {};
+
+            const isHOBranch = await validateHOBranch(
+              currentField,
+              formState?.MessageBox,
+              authState
+            );
+            if (isHOBranch) {
+              return {
+                BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: false,
+                },
+              };
+            }
             return {
               ...resetFields,
               ACCT_TYPE: {
@@ -210,6 +226,7 @@ export const RecurringPaymentEntryFormMetaData = {
               },
               ACCT_CD: {
                 value: "",
+                ignoreUpdate: false,
               },
             };
           },
@@ -267,6 +284,7 @@ export const RecurringPaymentEntryFormMetaData = {
               ...resetFields,
               ACCT_CD: {
                 value: "",
+                ignoreUpdate: false,
               },
             };
           },
@@ -301,7 +319,7 @@ export const RecurringPaymentEntryFormMetaData = {
                   ACCT_CD: {
                     value: "",
                     isFieldFocused: false,
-                    ignoreUpdate: true,
+                    ignoreUpdate: false,
                   },
                   ACCT_TYPE: {
                     value: "",
@@ -342,7 +360,7 @@ export const RecurringPaymentEntryFormMetaData = {
                   return {
                     ACCT_CD: {
                       value: "",
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                       isFieldFocused: true,
                     },
                     ACCT_NM: { value: "" },
@@ -469,7 +487,7 @@ export const RecurringPaymentEntryFormMetaData = {
                       return {
                         ACCT_CD: {
                           value: "",
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                           isFieldFocused: true,
                         },
                         ACCT_NM: { value: "" },
@@ -534,7 +552,7 @@ export const RecurringPaymentEntryFormMetaData = {
                     : {
                         value: "",
                         isFieldFocused: true,
-                        ignoreUpdate: true,
+                        ignoreUpdate: false,
                       },
                 ACCT_NM: {
                   value: returnVal?.ACCT_NM ?? "",

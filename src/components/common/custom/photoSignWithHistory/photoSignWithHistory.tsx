@@ -201,7 +201,7 @@ const PhotoSignWithHistory = ({
                 </Typography>
                 <GradientButton
                   onClick={() => {
-                    setAcCustLevel(LatestPhotoSignData[0]?.AC_CUST_LEVEL);
+                    setAcCustLevel(LatestPhotoSignData?.[0]?.AC_CUST_LEVEL);
                   }}
                 >
                   {LatestPhotoSignData[0]?.BT_NAME || ""}
@@ -322,7 +322,7 @@ const PhotoSignWithHistory = ({
                                         </Typography>
                                         <Typography
                                           variant="body2"
-                                          sx={{ marginLeft: 6 }}
+                                          sx={{ marginLeft: 3 }}
                                         >
                                           {item?.FROM_LIMIT}
                                         </Typography>

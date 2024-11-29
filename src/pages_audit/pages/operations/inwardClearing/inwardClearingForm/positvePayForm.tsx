@@ -69,7 +69,7 @@ export const PositivePayFormWrapper: FC<{
               }}
               displayMode={"view"}
               onFormButtonClickHandel={async (id) => {
-                if (data?.[0]?.CHEUQE_IMG) {
+                if (data?.[0]?.CHEQUE_IMG) {
                   setIsImageOpen(true);
                   let blob = utilFunction.base64toBlob(data?.[0]?.CHEQUE_IMG);
                   setIsImageBlob(blob);
@@ -85,7 +85,7 @@ export const PositivePayFormWrapper: FC<{
           </>
         )}
       </Dialog>
-      {Boolean(isImageBlob) && Boolean(isImageOpen) && (
+      {isImageOpen ? (
         <Dialog
           open={true}
           PaperProps={{
@@ -105,7 +105,7 @@ export const PositivePayFormWrapper: FC<{
             }}
           />
         </Dialog>
-      )}
+      ) : null}
     </>
   );
 };

@@ -616,8 +616,8 @@ const cacheImageData = async (imageURL, cacheName = "image-cache") => {
       let fingerprint = await AuthSDK.Getfingerprintdata();
       return String(CRC32C.str((str || "") + fingerprint));
     };
-    localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
-    localStorage.setItem(
+    sessionStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+    sessionStorage.setItem(
       "charchecksum",
       await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
     );
@@ -655,11 +655,11 @@ const processImageData = async () => {
       return String(CRC32C.str((str || "") + fingerprint));
     };
     if (
-      !Boolean(localStorage.getItem("specialChar")) &&
-      !Boolean(localStorage.getItem("charchecksum"))
+      !Boolean(sessionStorage.getItem("specialChar")) &&
+      !Boolean(sessionStorage.getItem("charchecksum"))
     ) {
-      localStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
-      localStorage.setItem(
+      sessionStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+      sessionStorage.setItem(
         "charchecksum",
         await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
       );

@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { useMutation } from "react-query";
 import { enqueueSnackbar, useSnackbar } from "notistack";
 import { Dialog } from "@mui/material";
-import { ImportGridMetaData, PositivePayImportMetaData } from "./metadata";
+import { ImportGridMetaData, positivePayImportData } from "./metadata";
 import { importFileData } from "../api";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
@@ -12,6 +12,11 @@ import {
   ActionTypes,
   FileUploadControl,
   GridMetaDataType,
+  FormWrapper,
+  MetaDataType,
+  GradientButton,
+  SubmitFnType,
+  Alert,
 } from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
@@ -25,9 +30,11 @@ const actions: ActionTypes[] = [
 ];
 export default function ImportData({ CloseFileUpload, refetchData }) {
   const { MessageBox, CloseMessageBox } = usePopupContext();
+  const [openFile, setOpenFile] = useState(false);
   const [openGrid, setOpenGrid] = useState(false);
   const [gridData, setGridData] = useState([]);
   const navigate = useNavigate();
+  const [fileData, setFileData] = useState<any>(null);
 
   const setCurrentAction = useCallback(
     async (data) => {
@@ -44,7 +51,7 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
     onError: (error: any) => {
       let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
+        errorMsg = error?.error_msg ? error?.error_msg : error?.error_detail;
       }
       enqueueSnackbar(errorMsg, {
         variant: "error",
@@ -117,16 +124,55 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
   const countOfRecords = gridData.length;
   ImportGridMetaData.gridConfig.footerNote = `Total Records : ${countOfRecords}\u00A0\u00A0 Total Errors : ${countOfError} `;
 
+  const onSubmitHandler: SubmitFnType = async (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag
+  ) => {
+    setOpenFile(true);
+    setFileData(data);
+  };
+
   return (
     <>
-      <div>
+      <Dialog fullWidth maxWidth="sm" open={true}>
+        <FormWrapper
+          key={"importData"}
+          metaData={positivePayImportData as MetaDataType}
+          onSubmitHandler={onSubmitHandler}
+          // initialValues={}
+          formStyle={{
+            background: "white",
+          }}
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              <GradientButton
+                onClick={(event) => {
+                  handleSubmit(event, "Save");
+                }}
+                disabled={isSubmitting}
+                color={"primary"}
+              >
+                {t("Ok")}
+              </GradientButton>
+              <GradientButton onClick={CloseFileUpload} color={"primary"}>
+                {t("Close")}
+              </GradientButton>
+            </>
+          )}
+        </FormWrapper>
+      </Dialog>
+
+      {openFile && (
         <Dialog fullWidth maxWidth="md" open={true}>
           <FileUploadControl
             key={"PositivePayEntryImportData"}
             onClose={() => {
               CloseFileUpload();
             }}
-            additionalColumns={PositivePayImportMetaData}
             editableFileName={false}
             defaultFileData={[]}
             onUpload={async (
@@ -143,11 +189,14 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
                 loadingBtnName: ["Yes"],
                 icon: "CONFIRM",
               });
-
               if (btnName === "Yes") {
-                const FILE_FORMAT = base64Object[0].DESCRIPTION[0];
-                const TRAN_CD = base64Object[0].DESCRIPTION[1];
-                const FILEBLOB = base64Object;
+                const descriptionArray =
+                  fileData?.DESCRIPTION?.split(",") || [];
+                const FILE_FORMAT = descriptionArray[0] || "";
+                const TRAN_CD = descriptionArray[1] || "";
+                const FILEBLOB = [
+                  { ...base64Object[0], DESCRIPTION: [FILE_FORMAT, TRAN_CD] },
+                ];
                 mutation.mutate({
                   FILE_FORMAT,
                   TRAN_CD,
@@ -165,12 +214,20 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
               }
             }}
             gridProps={{}}
-            allowedExtensions={["xlsx", "pdf", "csv", "txt", "xls"]}
+            allowedExtensions={
+              fileData?.DESCRIPTION.split(",")[0] === "L"
+                ? ["xlsx", "xls"]
+                : fileData?.DESCRIPTION.split(",")[0] === "T"
+                ? ["txt"]
+                : fileData?.DESCRIPTION.split(",")[0] === "E"
+                ? ["csv"]
+                : []
+            }
             onUpdateFileData={(files) => {}}
+            allowMultipleFilesSelection={false}
           />
         </Dialog>
-      </div>
-
+      )}
       {openGrid && (
         <Dialog
           PaperProps={{

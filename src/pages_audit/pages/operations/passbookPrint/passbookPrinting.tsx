@@ -39,6 +39,7 @@ type PassbookPrintingCustomProps = {
   parameterFlagDate?: any;
   acctInqDetail?: any;
   handleClose?: any;
+  onClose?: any;
 };
 
 export const PassbookPrint: React.FC<PassbookPrintingCustomProps> = ({
@@ -47,6 +48,7 @@ export const PassbookPrint: React.FC<PassbookPrintingCustomProps> = ({
   parameterFlagDate,
   acctInqDetail,
   handleClose,
+  onClose,
 }) => {
   const [passbookDetail, setPassbookDetail] = useState<any>([]);
   const parameterRef = useRef<any>(null);
@@ -341,6 +343,10 @@ export const PassbookPrint: React.FC<PassbookPrintingCustomProps> = ({
   const handleButonDisable = (disable) => {
     setDisableButton(disable);
   };
+  const closeAll = () => {
+    handleClose(false);
+    onClose();
+  };
 
   return (
     <>
@@ -394,7 +400,7 @@ export const PassbookPrint: React.FC<PassbookPrintingCustomProps> = ({
           {Boolean(screenFlag) ? (
             <Tooltip title={t("Close")}>
               <GradientButton
-                onClick={() => handleClose(false)}
+                onClick={closeAll}
                 color={"primary"}
                 endicon="CancelOutlined"
                 rotateIcon="scale(1.4) rotateY(360deg)"

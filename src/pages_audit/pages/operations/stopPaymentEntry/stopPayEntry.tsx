@@ -41,6 +41,7 @@ import {
   GradientButton,
 } from "@acuteinfo/common-base";
 import { cloneDeep } from "lodash";
+import { StoppedChequeData } from "./stopped-cheque/stoppedCheque";
 
 const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
   const [isData, setIsData] = useState({
@@ -203,7 +204,7 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
   const onSubmitHandler = async (data: any, displayData, endSubmit) => {
     let insertReq = {
       ...data,
-      CHEQUE_DT: await GeneralAPI.getDateWithCurrentTime(data?.CHEQUE_DT),
+      CHEQUE_DATE: await GeneralAPI.getDateWithCurrentTime(data?.CHEQUE_DT),
       TRAN_DT: data?.TRAN_DT || data?.SURR_DT,
       _isNewRow: true,
     };
@@ -382,6 +383,14 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
                         isVisible: payload.IS_VISIBLE,
                       }));
                     }
+                    if (action === "STOPPED_CHEQUE") {
+                      navigate("stopped-Cheque", {
+                        state: {
+                          ...payload,
+                          COMP_CD: authState?.companyID,
+                        },
+                      });
+                    }
                   }}
                   ref={myMasterRef}
                 >
@@ -431,6 +440,10 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
                       />
                     }
                   />
+                  <Route
+                    path="stopped-Cheque/*"
+                    element={<StoppedChequeData navigate={navigate} />}
+                  />
                 </Routes>
               </div>
             </Grid>
@@ -439,6 +452,7 @@ const StopPaymentEntryCustom = ({ screenFlag, reqData }) => {
           {isData.isDelete && (
             <RemarksAPIWrapper
               TitleText={"StopDeleteTitle"}
+              label="RemovalRemarks"
               onActionNo={() =>
                 setIsData((old) => ({ ...old, isDelete: false }))
               }

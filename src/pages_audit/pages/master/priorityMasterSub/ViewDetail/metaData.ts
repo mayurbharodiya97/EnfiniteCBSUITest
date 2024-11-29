@@ -62,7 +62,7 @@ export const prioritymastersubformmetadata = {
       _optionsKey: "getPMISCData",
       GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 6 },
       __VIEW__: { isReadOnly: true },
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
     },
     {
       render: { componentType: "textField" },
@@ -73,7 +73,7 @@ export const prioritymastersubformmetadata = {
       placeholder: "Description",
       maxLength: 50,
       multiline: true,
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["DescriptionisRequired"] }],

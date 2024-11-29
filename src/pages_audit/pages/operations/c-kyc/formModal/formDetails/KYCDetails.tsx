@@ -19,6 +19,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { format } from "date-fns";
 import {
   kyc_legal_proof_of_add_meta_data,
   kyc_proof_of_address_meta_data,
@@ -166,8 +167,22 @@ const KYCDetails = () => {
         (field) => !field.includes("_ignoreField")
       ); // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current);
-
+      let formData: any = _.pick(data, formFieldsRef.current);
+      const dateFields: string[] = [
+        "PASSPORT_ISSUE_DT",
+        "PASSPORT_EXPIRY_DT",
+        "DRIVING_LICENSE_ISSUE_DT",
+        "DRIVING_LICENSE_EXPIRY_DT",
+        "COMMENCEMENT_DT",
+        "LIQUIDATION_DT",
+      ];
+      dateFields.forEach((field) => {
+        if (Object.hasOwn(formData, field)) {
+          formData[field] = Boolean(formData[field])
+            ? format(new Date(formData[field]), "dd/MM/yyyy")
+            : "";
+        }
+      });
       // setCurrentTabFormData((formData) => ({
       //   ...formData,
       //   proof_of_identity: data,
@@ -430,6 +445,7 @@ const KYCDetails = () => {
                     messageTitle: "Duplicate Value",
                     message: payload ?? "No Message",
                     buttonNames: ["Ok"],
+                    icon: "WARNING",
                   });
                 }
               }}
@@ -499,6 +515,7 @@ const KYCDetails = () => {
                     messageTitle: "Duplicate Value",
                     message: payload ?? "No Message",
                     buttonNames: ["Ok"],
+                    icon: "WARNING",
                   });
                 }
               }}

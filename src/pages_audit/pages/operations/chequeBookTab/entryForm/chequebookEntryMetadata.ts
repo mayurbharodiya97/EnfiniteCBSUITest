@@ -91,11 +91,12 @@ export const ChequeBookEntryMetaData = {
             };
           }
         },
+        placeholder: "BranchCodePlaceHolder",
 
         runPostValidationHookAlways: true,
       },
       accountTypeMetadata: {
-        validationRun: "onChange",
+        validationRun: "all",
         GridProps: {
           xs: 12,
           md: 2,
@@ -116,11 +117,11 @@ export const ChequeBookEntryMetaData = {
               DOC_CD: "TRN/045",
             });
           }
+          return [];
         },
         _optionsKey: "get_Account_Type",
         postValidationSetCrossFieldValues: (field, formState) => {
           formState.setDataOnFieldChange("DTL_TAB", { DTL_TAB: false });
-
           return {
             ACCT_CD: { value: "" },
             ACCT_NM: { value: "" },
@@ -140,6 +141,7 @@ export const ChequeBookEntryMetaData = {
       },
       accountCodeMetadata: {
         // disableCaching: true,
+        placeholder: "AccountNumberPlaceHolder",
         render: {
           componentType: "textField",
         },
@@ -431,7 +433,7 @@ export const ChequeBookEntryMetaData = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["NoOfChequesIsRequired"] }],
       },
       dependentFields: [
         "CHEQUE_FROM",
@@ -442,7 +444,7 @@ export const ChequeBookEntryMetaData = {
         "PER_CHQ_ALLOW",
       ],
       disableCaching: true,
-      options: async (dependentValue, formState, _, authState) => {
+      options: (dependentValue) => {
         let newDD = dependentValue?.NEW_LEAF_ARR?.value;
         if (newDD) {
           newDD = newDD.split(",").map((item) => ({
@@ -528,7 +530,7 @@ export const ChequeBookEntryMetaData = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["NoOfChequesIsRequired"] }],
       },
       dependentFields: [
         "CHEQUE_FROM",
@@ -601,10 +603,6 @@ export const ChequeBookEntryMetaData = {
           background: "var(--theme-color7)",
         },
       },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -631,6 +629,12 @@ export const ChequeBookEntryMetaData = {
       },
       FormatProps: {
         allowNegative: false,
+        isAllowed: (values) => {
+          if (values?.value?.length > 7 || values?.value === "-") {
+            return false;
+          }
+          return true;
+        },
       },
       dependentFields: ["SERVICE_C_FLAG", "ROUND_OFF_FLAG", "GST"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
@@ -685,7 +689,7 @@ export const ChequeBookEntryMetaData = {
         componentType: "amountField",
       },
       name: "SERVICE_TAX",
-      label: "GSTAmount",
+      label: "GST",
       FormatProps: {
         allowNegative: false,
       },
@@ -705,16 +709,22 @@ export const ChequeBookEntryMetaData = {
       },
       name: "NO_OF_CHQBK",
       label: "NoOfChequeBooks",
+      placeholder: "EnterNoOfChequeBooks",
       textFieldStyle: {
         "& .MuiInputBase-input": {
           textAlign: "right",
         },
       },
       defaultValue: "1",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["NoOfChequebooksIsRequired"] }],
+      },
       FormatProps: {
         allowNegative: false,
         isAllowed: (values) => {
-          if (values?.value?.length > 2 || values?.value === "-") {
+          if (values?.value?.length > 2 || values?.value === "0") {
             return false;
           }
           return true;
@@ -739,11 +749,11 @@ export const ChequeBookEntryMetaData = {
 
     {
       render: {
-        componentType: "select",
+        componentType: "autocomplete",
       },
       name: "PAYABLE_AT_PAR",
       label: "PayableAtPAR",
-      placeholder: "PayableAtPAR",
+      placeholder: "SelectPayableAtPAR",
       defaultValue: "Y",
       options: () => {
         return [
@@ -772,11 +782,11 @@ export const ChequeBookEntryMetaData = {
 
     {
       render: {
-        componentType: "select",
+        componentType: "autocomplete",
       },
       name: "CHARACTERISTICS",
       label: "Characteristics",
-      placeholder: "Characteristics",
+      placeholder: "SelectCharacteristics",
       type: "text",
       defaultValue: "B",
       options: () => {
@@ -811,14 +821,10 @@ export const ChequeBookEntryMetaData = {
       label: "RequisitionDate",
       isMaxWorkingDate: true,
       isWorkingDate: true,
-      required: true,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
-      },
+      placeholder: "DD/MM/YYYY",
       validate: (value) => {
         if (Boolean(value?.value) && !isValid(value?.value)) {
-          return "ThisFieldisrequired";
+          return "RequisitionDateIsRequired";
         } else if (
           greaterThanDate(value?.value, value?._maxDt, {
             ignoreTime: true,

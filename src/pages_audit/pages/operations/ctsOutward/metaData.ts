@@ -60,10 +60,32 @@ export const CTSOutwardClearingFormMetaData = {
       label: "PresentmentDate",
       placeholder: "",
       GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
+      dependentFields: ["WORKING_DT", "ZONE_TRAN_TYPE"],
+      validate: (currentField, dependentField) => {
+        if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+          return "Mustbeavaliddate";
+        }
+        if (dependentField?.ZONE_TRAN_TYPE?.value === "S") {
+          if (
+            new Date(currentField?.value) <
+            new Date(dependentField?.WORKING_DT?.value)
+          ) {
+            return "ClearingDateshouldbegreaterthanorequaltoWorkingDate";
+          }
+        } else {
+          if (
+            new Date(currentField?.value) >
+            new Date(dependentField?.WORKING_DT?.value)
+          ) {
+            return "ClearingReturnDateshouldbeLessthanorequaltoWorkingDate";
+          }
+        }
+        return "";
+      },
     },
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "select",
       },
       name: "ZONE",
       label: "Zone",
@@ -73,7 +95,7 @@ export const CTSOutwardClearingFormMetaData = {
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
-      dependentFields: ["TRAN_DT"],
+      // dependentFields: ["TRAN_DT"],
     },
     {
       render: {
@@ -410,6 +432,12 @@ export const CTSOutwardClearingFormMetaData = {
       },
       name: "ZONE_TRAN_TYPE",
     },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "WORKING_DT",
+    },
   ],
 };
 
@@ -634,9 +662,9 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           Array.isArray(dependentFieldState?.["chequeDetails"])
             ? dependentFieldState?.["chequeDetails"]
             : []
-        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
+        ).reduce((accum, obj) => accum + Number(obj?.AMOUNT?.value), 0);
 
-        return accumulatedTakeoverLoanAmount;
+        return accumulatedTakeoverLoanAmount ?? 0;
       },
 
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
@@ -654,7 +682,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
       validationRun: "onBlur",
       dependentFields: ["SLIP_AMOUNT", "FINALAMOUNT"],
       FormatProps: {
-        allowNegative: false,
+        allowNegative: true,
         allowLeadingZeros: true,
       },
       setValueOnDependentFieldsChange: (dependentFields) => {
@@ -736,8 +764,8 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
             componentType: "numberFormat",
           },
           name: "CHEQUE_NO",
-          label: "ChequeNo",
-          placeholder: "ChequeNo",
+          label: "EnterChequeNo",
+          placeholder: "EnterChequeNo",
           type: "text",
           required: true,
           autoComplete: "off",
@@ -883,7 +911,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
             }
           },
 
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1.3, md: 1.3, lg: 1.3, xl: 1.3 },
         },
         {
           render: {
@@ -914,6 +942,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           name: "ECS_SEQ_NO",
           label: "PayeeACNo",
           runExternalFunction: true,
+          placeholder: "EnterPayeeACNo",
           textFieldStyle: {
             "& .MuiInputBase-input": {
               textAlign: "right",
@@ -929,7 +958,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
               return true;
             },
           },
-          placeholder: "",
           type: "text",
           GridProps: { xs: 12, sm: 2, md: 1.9, lg: 1.9, xl: 1.5 },
         },
@@ -949,7 +977,9 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
             const currentDate = new Date(currentField?.value);
             const rangeDate = new Date(dependentField?.RANGE_DT?.value);
             const transDate = new Date(dependentField?.TRAN_DT?.value);
-
+            if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+              return "Mustbeavaliddate";
+            }
             if (currentDate < rangeDate || currentDate > transDate) {
               return `DateShouldBetween ${rangeDate.toLocaleDateString(
                 "en-IN"
@@ -975,6 +1005,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           type: "text",
           fullWidth: true,
           maxLength: 100,
+          placeholder: "EnterDescription",
           // required: true,
 
           GridProps: { xs: 12, sm: 3, md: 3, lg: 4, xl: 1.5 },
@@ -989,6 +1020,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           fullWidth: true,
           defaultValue: "10",
           required: true,
+          placeholder: "CHQMicr",
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -1011,7 +1043,7 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           },
           name: "ECS_USER_NO",
           label: "PayeeName",
-          placeholder: "",
+          placeholder: "EnterPayeeName",
           type: "text",
           required: true,
           autoComplete: "off",
@@ -1180,7 +1212,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           Array.isArray(dependentFieldState?.["chequeDetails"])
             ? dependentFieldState?.["chequeDetails"]
             : []
-        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
+        ).reduce((accum, obj) => accum + Number(obj?.AMOUNT?.value), 0);
 
         if (
           Number(currentFieldState.value) ===
@@ -1221,8 +1253,10 @@ export const inwardReturnChequeDetailFormMetaData: any = {
         let value =
           Number(dependentFields?.SLIP_AMOUNT?.value) -
           Number(dependentFields?.FINALAMOUNT?.value);
-
         return value ?? "0";
+      },
+      FormatProps: {
+        allowNegative: true,
       },
       textFieldStyle: {
         "& .MuiInputBase-root": {
@@ -1402,7 +1436,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
             }
           },
 
-          GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+          GridProps: { xs: 12, sm: 1.3, md: 1.3, lg: 1.3, xl: 1.3 },
         },
         {
           render: {
@@ -1434,6 +1468,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           type: "text",
           fullWidth: true,
           maxLength: 100,
+          placeholder: "EnterDescription",
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3 },
         },
         {
@@ -1443,7 +1478,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           name: "REASON",
           label: "Reason",
           GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
-
+          placeholder: "SelectReason",
           options: (dependentValue, formState, _, authState) => {
             let ApiReq = {
               BRANCH_CD: authState?.user?.branchCode,
@@ -1463,6 +1498,7 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           label: "CHQMicr",
           type: "text",
           fullWidth: true,
+          placeholder: "CHQMicr",
           defaultValue: "10",
           required: true,
           FormatProps: {
@@ -1486,8 +1522,8 @@ export const inwardReturnChequeDetailFormMetaData: any = {
             componentType: "numberFormat",
           },
           name: "CHEQUE_NO",
-          label: "ChequeNo",
-          placeholder: "Cheque No.",
+          label: "EnterChequeNo",
+          placeholder: "EnterChequeNo",
           type: "text",
           required: true,
           autoComplete: "off",
@@ -1627,6 +1663,12 @@ export const inwardReturnChequeDetailFormMetaData: any = {
           format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
+          validate: (value) => {
+            if (Boolean(value?.value) && !isValid(value?.value)) {
+              return "Mustbeavaliddate";
+            }
+            return "";
+          },
           // dependentFields: ["TRAN_DT", "RANGE_DT"],
           // validate: (currentField, dependentField) => {
           //   const currentDate = new Date(currentField?.value);
@@ -2067,7 +2109,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
       minWidth: 150,
       maxWidth: 500,
       isDisplayTotal: true,
-      footerLabel: "Total Cheque Amount",
+      footerLabel: "Total Cheque Amount :",
       setFooterValue(total, rows) {
         const filteredRows = rows?.filter(
           ({ original }) => original.CHQ_AMT_LIST

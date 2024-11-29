@@ -122,6 +122,7 @@ export const temporaryODentryMetadata = {
                 ),
                 ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
                 BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+                GD_TODAY_DT: authState?.workingDate,
                 SCREEN_REF: "TRN/047",
               };
               let postData = await GeneralAPI.getAccNoValidation(
@@ -129,11 +130,18 @@ export const temporaryODentryMetadata = {
               );
               let apiRespMSGdata = postData?.MSG;
               let isReturn;
-              const messagebox = async (msgTitle, msg, buttonNames, status) => {
+              const messagebox = async (
+                msgTitle,
+                msg,
+                buttonNames,
+                status,
+                icon
+              ) => {
                 let buttonName = await formState.MessageBox({
                   messageTitle: msgTitle,
                   message: msg,
                   buttonNames: buttonNames,
+                  icon: icon,
                 });
                 return { buttonName, status };
               };
@@ -152,7 +160,12 @@ export const temporaryODentryMetadata = {
                       apiRespMSGdata[i]?.O_STATUS === "99"
                         ? ["Yes", "No"]
                         : ["Ok"],
-                      apiRespMSGdata[i]?.O_STATUS
+                      apiRespMSGdata[i]?.O_STATUS,
+                      apiRespMSGdata[i]?.O_STATUS === "999"
+                        ? "ERROR"
+                        : apiRespMSGdata[i]?.O_STATUS === "999"
+                        ? "CONFIRM"
+                        : "WARNING"
                     );
 
                     if (

@@ -15,6 +15,7 @@ import {
   Collapse,
   Button,
 } from "@mui/material";
+import { format } from "date-fns";
 import { declaration_meta_data } from "../../metadata/individual/declarationdetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -25,7 +26,6 @@ import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import _ from "lodash";
 import TabNavigate from "../TabNavigate";
-// import { format } from 'date-fns';
 import {
   Alert,
   FormWrapper,
@@ -186,14 +186,15 @@ const DeclarationDetails = () => {
         (field) => !field.includes("_ignoreField") && field !== "AGE"
       ); // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]); // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current);
-
-      // if(Boolean(data["FATCA_DT"])) {
-      //     data["FATCA_DT"] = format(new Date(data["FATCA_DT"]), "dd-MMM-yyyy")
-      // }
-      // if(Boolean(data["DATE_OF_COMMENCEMENT"])) {
-      //     data["DATE_OF_COMMENCEMENT"] = format(new Date(data["DATE_OF_COMMENCEMENT"]), "dd-MMM-yyyy")
-      // }
+      let formData: any = _.pick(data, formFieldsRef.current);
+      const dateFields: string[] = ["FATCA_DT", "DATE_OF_COMMENCEMENT"];
+      dateFields.forEach((field) => {
+        if (Object.hasOwn(formData, field)) {
+          formData[field] = Boolean(formData[field])
+            ? format(new Date(formData[field]), "dd/MM/yyyy")
+            : "";
+        }
+      });
 
       // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
@@ -247,10 +248,11 @@ const DeclarationDetails = () => {
       };
       if (!Boolean(state?.req_cd_ctx)) {
         const buttonName = await MessageBox({
-          messageTitle: "Confirm",
+          messageTitle: "Confirmation",
           message: "Do you want to save entry as draft?",
           buttonNames: ["Yes", "No"],
           loadingBtnName: ["Yes"],
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           let payload = {

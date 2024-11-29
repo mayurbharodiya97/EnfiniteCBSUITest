@@ -11,7 +11,7 @@ import { AuthControllerWrapper } from "@acuteinfo/common-screens";
 
 export const AuthLoginController = () => {
   const [specialChar, setSpecialChar] = useState(
-    localStorage.getItem("specialChar") || ""
+    sessionStorage.getItem("specialChar") || ""
   );
   const { isLoggedIn, login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -27,15 +27,13 @@ export const AuthLoginController = () => {
     isLoading,
     isFetching,
   } = useQuery<any, any>(["getLoginImageData"], () => API.getImageData());
-  const imageDataString = JSON.stringify(imageData);
-  localStorage.setItem("imageData", imageDataString);
 
   useEffect(() => {
     GeneralAPI.setDocumentName("Enfinity");
   }, []);
 
   useEffect(() => {
-    setSpecialChar(localStorage.getItem("specialChar") || "");
+    setSpecialChar(sessionStorage.getItem("specialChar") || "");
   }, [imageData]);
 
   return (

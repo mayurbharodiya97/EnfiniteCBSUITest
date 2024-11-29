@@ -53,7 +53,7 @@ export const ViewStatement = ({
       onSuccess: async (data) => {
         setPassbookOpen(true);
         setPassbookData(data);
-        onClose();
+        // onClose();
       },
       onError: async (error: any) => {
         const btnName = await MessageBox({
@@ -286,6 +286,7 @@ export const ViewStatement = ({
             parameterFlagDate={parameterRef.current}
             acctInqDetail={acctInqData?.data?.[0]}
             handleClose={setPassbookOpen}
+            onClose={onClose}
           />
           ;
         </Dialog>

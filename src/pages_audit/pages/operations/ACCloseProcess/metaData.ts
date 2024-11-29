@@ -38,6 +38,7 @@ export const accountFindmetaData = {
         name: "BRANCH_CD",
         isReadOnly: true,
         runPostValidationHookAlways: true,
+        validationRun: "onChange",
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -47,8 +48,8 @@ export const accountFindmetaData = {
           if (formState?.isSubmitting) return {};
           return {
             ACCT_NM: { value: "" },
-            ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
+            ACCT_TYPE: { value: "", ignoreUpdate: false },
+            ACCT_CD: { value: "", ignoreUpdate: false },
           };
         },
         GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
@@ -57,7 +58,6 @@ export const accountFindmetaData = {
         name: "ACCT_TYPE",
         isFieldFocused: true,
         dependentFields: ["BRANCH_CD"],
-        validationRun: "onChange",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -93,7 +93,7 @@ export const accountFindmetaData = {
             }
           }
           return {
-            ACCT_CD: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
             ACCT_NM: { value: "" },
           };
         },
@@ -146,7 +146,7 @@ export const accountFindmetaData = {
                 ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 ACCT_TYPE: {
                   value: "",
@@ -157,7 +157,8 @@ export const accountFindmetaData = {
             }
           } else if (
             dependentFieldValues?.BRANCH_CD?.value &&
-            dependentFieldValues?.ACCT_TYPE?.value
+            dependentFieldValues?.ACCT_TYPE?.value &&
+            currentField?.value
           ) {
             formState.handleButtonDisable(true);
             const postData = await API.getAccountCloseValidation(reqParameters);
@@ -235,7 +236,7 @@ export const accountFindmetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
 
               ACCT_NM: {
@@ -250,7 +251,13 @@ export const accountFindmetaData = {
                     ?.PARENT_TYPE ?? "",
               },
             };
+          } else if (!currentField?.value) {
+            return {
+              ACCT_NM: { value: "" },
+              PARENT_TYPE: { value: "" },
+            };
           }
+          return {};
         },
         fullWidth: true,
         GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
@@ -902,7 +909,7 @@ export const AccountCloseForm = {
           return {
             TRN_ACCT_NM: { value: "" },
             TRN_ACCT_TYPE: { value: "" },
-            TRN_ACCT_CD: { value: "" },
+            TRN_ACCT_CD: { value: "", ignoreUpdate: false },
           };
         },
         GridProps: { xs: 12, sm: 4, md: 1.5, lg: 1.5, xl: 1.5 },
@@ -960,7 +967,7 @@ export const AccountCloseForm = {
             }
           }
           return {
-            TRN_ACCT_CD: { value: "" },
+            TRN_ACCT_CD: { value: "", ignoreUpdate: false },
             TRN_ACCT_NM: { value: "" },
           };
         },
@@ -1043,7 +1050,8 @@ export const AccountCloseForm = {
             }
           } else if (
             Boolean(dependentFieldValues?.TRN_BRANCH_CD?.value) &&
-            Boolean(dependentFieldValues?.TRN_ACCT_TYPE?.value)
+            Boolean(dependentFieldValues?.TRN_ACCT_TYPE?.value) &&
+            currentField?.value
           ) {
             const postData = await GeneralAPI.getAccNoValidation(reqParameters);
             let btn99, returnVal;
@@ -1114,7 +1122,7 @@ export const AccountCloseForm = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               TRN_ACCT_NM: {
                 value: postData?.ACCT_NM ?? "",

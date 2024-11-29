@@ -2,6 +2,8 @@ import { GeneralAPI } from "registry/fns/functions";
 import { getPMISCData } from "../api";
 import { utilFunction } from "@acuteinfo/common-base";
 import { t } from "i18next";
+import * as API from "../api";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const CategoryMasterFormMetaData = {
   form: {
@@ -55,7 +57,7 @@ export const CategoryMasterFormMetaData = {
       isFieldFocused: true,
       required: true,
       autoComplete: "off",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["CodeisRequired"] }],
@@ -99,7 +101,7 @@ export const CategoryMasterFormMetaData = {
       required: true,
       autoComplete: "off",
       txtTransform: "uppercase",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       validate: (columnValue, ...rest) => {
         const gridData = rest[1]?.gridData;
         const accessor: any = columnValue.fieldKey.split("/").pop();
@@ -233,9 +235,25 @@ export const CategoryMasterFormMetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              TDS_BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
+
           return {
             TDS_ACCT_TYPE: { value: "" },
-            TDS_ACCT_CD: { value: "" },
+            TDS_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_ACCT_NM: { value: "" },
           };
         },
@@ -280,7 +298,7 @@ export const CategoryMasterFormMetaData = {
             }
           }
           return {
-            TDS_ACCT_CD: { value: "" },
+            TDS_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_ACCT_NM: { value: "" },
           };
         },
@@ -324,7 +342,7 @@ export const CategoryMasterFormMetaData = {
                 TDS_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 TDS_ACCT_TYPE: {
                   value: "",
@@ -418,7 +436,7 @@ export const CategoryMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               TDS_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -490,7 +508,6 @@ export const CategoryMasterFormMetaData = {
       placeholder: "AccountTypePlaceHolder",
       validationRun: "onChange",
       runPostValidationHookAlways: true,
-      disableCaching: true,
       options: (dependentValue, formState, _, authState) => {
         return GeneralAPI.get_Account_Type({
           COMP_CD: authState?.companyID ?? "",
@@ -508,7 +525,7 @@ export const CategoryMasterFormMetaData = {
       ) => {
         if (formState?.isSubmitting) return {};
         return {
-          TDS_SUR_ACCT_CD: { value: "" },
+          TDS_SUR_ACCT_CD: { value: "", ignoreUpdate: false },
         };
       },
       type: "text",
@@ -555,7 +572,7 @@ export const CategoryMasterFormMetaData = {
               TDS_SUR_ACCT_CD: {
                 value: "",
                 isFieldFocused: false,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
               TDS_SUR_ACCT_TYPE: {
                 value: "",
@@ -649,7 +666,7 @@ export const CategoryMasterFormMetaData = {
                 : {
                     value: "",
                     isFieldFocused: true,
-                    ignoreUpdate: true,
+                    ignoreUpdate: false,
                   },
           };
         }
@@ -699,9 +716,23 @@ export const CategoryMasterFormMetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
 
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              TDS_REC_BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             TDS_REC_ACCT_TYPE: { value: "" },
-            TDS_REC_ACCT_CD: { value: "" },
+            TDS_REC_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_REC_ACCT_NM: { value: "" },
           };
         },
@@ -746,7 +777,7 @@ export const CategoryMasterFormMetaData = {
             }
           }
           return {
-            TDS_REC_ACCT_CD: { value: "" },
+            TDS_REC_ACCT_CD: { value: "", ignoreUpdate: false },
             TDS_REC_ACCT_NM: { value: "" },
           };
         },
@@ -790,7 +821,7 @@ export const CategoryMasterFormMetaData = {
                 TDS_REC_ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 TDS_REC_ACCT_TYPE: {
                   value: "",
@@ -884,7 +915,7 @@ export const CategoryMasterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               TDS_REC_ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",

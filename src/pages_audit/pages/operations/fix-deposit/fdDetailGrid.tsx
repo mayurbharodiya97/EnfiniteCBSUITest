@@ -26,7 +26,6 @@ import {
   queryClient,
 } from "@acuteinfo/common-base";
 import { format } from "date-fns";
-import { FDPayment } from "./fixDepositForm/fdPayment";
 import { useTranslation } from "react-i18next";
 import FDPaymentStepperForm from "./fixDepositForm/fdPaymentStepper";
 import { FDPaymentBtns } from "./fixDepositForm/fdPaymentBtnsForm";
@@ -35,7 +34,6 @@ export const FDDetailGrid = () => {
   const {
     FDState,
     updateFDDetailsFormData,
-    updateRetrieveFormData,
     resetAllData,
     updateViewDtlGridData,
     setActiveStep,
@@ -47,6 +45,7 @@ export const FDDetailGrid = () => {
     updateSourceAcctFormData,
     updateBeneficiaryAcctData,
     updatePayslipAndDDData,
+    setIsBackButton,
   } = useContext(FDContext);
   const [openFDPmtBtns, setOpenFDPmtBtns] = useState(false);
   const [openIntPayment, setOpenIntPayment] = useState(false);
@@ -107,7 +106,6 @@ export const FDDetailGrid = () => {
                   actionButtonData?.find((item) => item.FLAG === "PAIDFD")
                     ?.ACTIONLABEL
                 }  (${FDState?.acctNoData?.PAID_FD_CNT ?? ""})`,
-
                 multiple: undefined,
                 alwaysAvailable: true,
               },
@@ -346,7 +344,9 @@ export const FDDetailGrid = () => {
               const allowModifyMutData = data[0];
               if (allowModifyMutData?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "Validation Failed",
+                  messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
+                    ? allowModifyMutData?.O_MSG_TITLE
+                    : "Validation Failed",
                   message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -369,7 +369,9 @@ export const FDDetailGrid = () => {
               const allowModifyMutData = data[0];
               if (allowModifyMutData?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "Validation Failed",
+                  messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
+                    ? allowModifyMutData?.O_MSG_TITLE
+                    : "Validation Failed",
                   message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -387,19 +389,25 @@ export const FDDetailGrid = () => {
                       for (const obj of checkAllowFDPayData) {
                         if (obj?.O_STATUS === "999") {
                           await MessageBox({
-                            messageTitle: "ValidationFailed",
+                            messageTitle: obj?.O_MSG_TITLE?.length
+                              ? obj?.O_MSG_TITLE
+                              : "ValidationFailed",
                             message: obj?.O_MESSAGE,
                             icon: "ERROR",
                           });
                         } else if (obj?.O_STATUS === "9") {
                           await MessageBox({
-                            messageTitle: "validationAlert",
+                            messageTitle: obj?.O_MSG_TITLE?.length
+                              ? obj?.O_MSG_TITLE
+                              : "Alert",
                             message: obj?.O_MESSAGE ?? "",
                             icon: "WARNING",
                           });
                         } else if (obj?.O_STATUS === "99") {
                           const buttonName = await MessageBox({
-                            messageTitle: "Confirmation",
+                            messageTitle: obj?.O_MSG_TITLE?.length
+                              ? obj?.O_MSG_TITLE
+                              : "Confirmation",
                             message: obj?.O_MESSAGE ?? "",
                             buttonNames: ["Yes", "No"],
                             icon: "CONFIRM",
@@ -442,7 +450,9 @@ export const FDDetailGrid = () => {
               const allowModifyMutData = data[0];
               if (allowModifyMutData?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "Validation Failed",
+                  messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
+                    ? allowModifyMutData?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -460,19 +470,25 @@ export const FDDetailGrid = () => {
                       for (const obj of checkAllowFDPayData) {
                         if (obj?.O_STATUS === "999") {
                           await MessageBox({
-                            messageTitle: "ValidationFailed",
+                            messageTitle: obj?.O_MSG_TITLE?.length
+                              ? obj?.O_MSG_TITLE
+                              : "ValidationFailed",
                             message: obj?.O_MESSAGE,
                             icon: "ERROR",
                           });
                         } else if (obj?.O_STATUS === "9") {
                           await MessageBox({
-                            messageTitle: "validationAlert",
+                            messageTitle: obj?.O_MSG_TITLE?.length
+                              ? obj?.O_MSG_TITLE
+                              : "validationAlert",
                             message: obj?.O_MESSAGE ?? "",
                             icon: "WARNING",
                           });
                         } else if (obj?.O_STATUS === "99") {
                           const buttonName = await MessageBox({
-                            messageTitle: "Confirmation",
+                            messageTitle: obj?.O_MSG_TITLE?.length
+                              ? obj?.O_MSG_TITLE
+                              : "Confirmation",
                             message: obj?.O_MESSAGE ?? "",
                             buttonNames: ["Yes", "No"],
                             icon: "CONFIRM",
@@ -515,7 +531,9 @@ export const FDDetailGrid = () => {
               const allowModifyMutData = data[0];
               if (allowModifyMutData?.O_STATUS === "999") {
                 await MessageBox({
-                  messageTitle: "Validation Failed",
+                  messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
+                    ? allowModifyMutData?.O_MSG_TITLE
+                    : "Validation Failed",
                   message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -533,19 +551,25 @@ export const FDDetailGrid = () => {
                       for (const obj of checkAllowFDPayData) {
                         if (obj?.O_STATUS === "999") {
                           await MessageBox({
-                            messageTitle: "ValidationFailed",
+                            messageTitle: obj?.O_MSG_TITLE?.length
+                              ? obj?.O_MSG_TITLE
+                              : "ValidationFailed",
                             message: obj?.O_MESSAGE,
                             icon: "ERROR",
                           });
                         } else if (obj?.O_STATUS === "9") {
                           await MessageBox({
-                            messageTitle: "validationAlert",
+                            messageTitle: obj?.O_MSG_TITLE?.length
+                              ? obj?.O_MSG_TITLE
+                              : "validationAlert",
                             message: obj?.O_MESSAGE ?? "",
                             icon: "WARNING",
                           });
                         } else if (obj?.O_STATUS === "99") {
                           const buttonName = await MessageBox({
-                            messageTitle: "Confirmation",
+                            messageTitle: obj?.O_MSG_TITLE?.length
+                              ? obj?.O_MSG_TITLE
+                              : "Confirmation",
                             message: obj?.O_MESSAGE ?? "",
                             buttonNames: ["Yes", "No"],
                             icon: "CONFIRM",
@@ -573,6 +597,7 @@ export const FDDetailGrid = () => {
         data?.name ===
         `${actionButtonData?.find((item) => item.FLAG === "NEWFD")?.ACTIONNAME}`
       ) {
+        setIsBackButton(false);
         navigate(data?.name, {
           state: [],
         });
@@ -584,6 +609,21 @@ export const FDDetailGrid = () => {
     },
     [navigate]
   );
+
+  const handleGetDataMutation = () => {
+    const reqParam = {
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
+      ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
+      ACCT_CD:
+        utilFunction.getPadAccountNumber(
+          FDState?.retrieveFormData?.ACCT_CD,
+          FDState?.retrieveFormData?.ACCT_TYPE
+        ) ?? "",
+      WORKING_DT: authState?.workingDate ?? "",
+    };
+    getFDViewDtlMutation?.mutate(reqParam);
+  };
 
   const handleDialogClose = useCallback(() => {
     updateFDDetailsFormData([
@@ -614,20 +654,10 @@ export const FDDetailGrid = () => {
     setOpenFDPmtBtns(false);
     setOpenIntPayment(false);
     setOpenLienForm(false);
+    setIsBackButton(false);
     navigate(".");
     if (isDataChangedRef.current === true) {
-      const reqParam = {
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: FDState?.retrieveFormData?.BRANCH_CD ?? "",
-        ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
-        ACCT_CD:
-          utilFunction.getPadAccountNumber(
-            FDState?.retrieveFormData?.ACCT_CD,
-            FDState?.retrieveFormData?.ACCT_TYPE
-          ) ?? "",
-        WORKING_DT: authState?.workingDate ?? "",
-      };
-      getFDViewDtlMutation?.mutate(reqParam);
+      handleGetDataMutation();
       isDataChangedRef.current = false;
     }
   }, [navigate]);
@@ -693,9 +723,10 @@ export const FDDetailGrid = () => {
         data={FDState?.viewDtlGridData ?? []}
         setData={() => null}
         loading={getFDViewDtlMutation?.isLoading}
-        actions={actionButtonData && actions}
+        actions={actions}
         setAction={setCurrentAction}
         enableExport={true}
+        refetchData={() => handleGetDataMutation()}
         onClickActionEvent={async (index, id, data) => {
           if (id === "LEAN_FLAG") {
             let rowData = data;
@@ -748,7 +779,9 @@ export const FDDetailGrid = () => {
                   const allowModifyMutData = data[0];
                   if (allowModifyMutData?.O_STATUS === "999") {
                     await MessageBox({
-                      messageTitle: "Validation Failed",
+                      messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
+                        ? allowModifyMutData?.O_MSG_TITLE
+                        : "Validation Failed",
                       message: allowModifyMutData?.O_MESSAGE ?? "",
                       icon: "ERROR",
                     });
@@ -768,19 +801,25 @@ export const FDDetailGrid = () => {
                           for (const obj of checkAllowFDPayData) {
                             if (obj?.O_STATUS === "999") {
                               await MessageBox({
-                                messageTitle: "ValidationFailed",
+                                messageTitle: obj?.O_MSG_TITLE?.length
+                                  ? obj?.O_MSG_TITLE
+                                  : "ValidationFailed",
                                 message: obj?.O_MESSAGE,
                                 icon: "ERROR",
                               });
                             } else if (obj?.O_STATUS === "9") {
                               await MessageBox({
-                                messageTitle: "validationAlert",
+                                messageTitle: obj?.O_MSG_TITLE?.length
+                                  ? obj?.O_MSG_TITLE
+                                  : "validationAlert",
                                 message: obj?.O_MESSAGE ?? "",
                                 icon: "WARNING",
                               });
                             } else if (obj?.O_STATUS === "99") {
                               const buttonName = await MessageBox({
-                                messageTitle: "Confirmation",
+                                messageTitle: obj?.O_MSG_TITLE?.length
+                                  ? obj?.O_MSG_TITLE
+                                  : "Confirmation",
                                 message: obj?.O_MESSAGE ?? "",
                                 buttonNames: ["Yes", "No"],
                                 icon: "CONFIRM",
@@ -873,6 +912,7 @@ export const FDDetailGrid = () => {
                     ACCT_TYPE: FDState?.retrieveFormData?.ACCT_TYPE ?? "",
                     ACCT_CD: FDState?.retrieveFormData?.ACCT_CD ?? "",
                     ACCT_NM: FDState?.retrieveFormData?.ACCT_NM ?? "",
+                    BTN_FLAG: "Y",
                   }}
                 />
               </div>

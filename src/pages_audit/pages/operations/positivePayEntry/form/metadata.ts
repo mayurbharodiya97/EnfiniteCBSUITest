@@ -6,6 +6,7 @@ import {
   GridColumnType,
   GridMetaDataType,
 } from "@acuteinfo/common-base";
+import { validateHOBranch } from "components/utilFunction/function";
 export const PositivePayEntryFormMetadata = {
   form: {
     name: "positivePayEntry",
@@ -51,11 +52,25 @@ export const PositivePayEntryFormMetadata = {
           authState,
           dependentFieldValues
         ) => {
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             ACCT_NM: { value: "" },
-            ACCT_TYPE: { value: "", isFieldFocused: true },
-            ACCT_CD: { value: "" },
-            CHEQUE_NO: { value: "" },
+            ACCT_TYPE: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
+            CHEQUE_NO: { value: "", ignoreUpdate: false },
           };
         },
         GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
@@ -98,15 +113,15 @@ export const PositivePayEntryFormMetadata = {
                 CHEQUE_NO: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
               };
             }
           } else {
             return {
-              ACCT_CD: { value: "" },
+              ACCT_CD: { value: "", ignoreUpdate: false },
               ACCT_NM: { value: "" },
-              CHEQUE_NO: { value: "" },
+              CHEQUE_NO: { value: "", ignoreUpdate: false },
             };
           }
         },
@@ -140,7 +155,7 @@ export const PositivePayEntryFormMetadata = {
                 ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 ACCT_TYPE: {
                   value: "",
@@ -229,14 +244,14 @@ export const PositivePayEntryFormMetadata = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
                 ignoreUpdate: true,
               },
               TYPE_CD: { value: returnVal?.TYPE_CD ?? "" },
-              CHEQUE_NO: { value: "" },
+              CHEQUE_NO: { value: "", ignoreUpdate: false },
             };
           } else if (!currentField?.value) {
             formState?.handleButtonDisable(false);
@@ -244,8 +259,7 @@ export const PositivePayEntryFormMetadata = {
               ACCT_NM: { value: "", isFieldFocused: false },
               CHEQUE_NO: {
                 value: "",
-                isFieldFocused: true,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
             };
           }
@@ -327,7 +341,7 @@ export const PositivePayEntryFormMetadata = {
               CHEQUE_NO: {
                 value: "",
                 isFieldFocused: false,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
             };
           }
@@ -351,7 +365,7 @@ export const PositivePayEntryFormMetadata = {
               CHEQUE_NO: {
                 value: "",
                 isFieldFocused: false,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
             };
           }
@@ -375,7 +389,7 @@ export const PositivePayEntryFormMetadata = {
               CHEQUE_NO: {
                 value: "",
                 isFieldFocused: false,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
             };
           }
@@ -458,13 +472,13 @@ export const PositivePayEntryFormMetadata = {
                 : {
                     value: "",
                     isFieldFocused: true,
-                    ignoreUpdate: true,
+                    ignoreUpdate: false,
                   },
           };
         } else if (!currentField?.value) {
           formState?.handleButtonDisable(false);
           return {
-            CHEQUE_NO: { value: "" },
+            CHEQUE_NO: { value: "", ignoreUpdate: false },
           };
         }
         return {};
@@ -522,7 +536,7 @@ export const PositivePayEntryFormMetadata = {
       },
       name: "PAYEE_NM",
       label: "PayeeName",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       placeholder: "EnterPayeeName",
       type: "text",
       autoComplete: "off",
@@ -536,7 +550,7 @@ export const PositivePayEntryFormMetadata = {
       name: "REMARKS",
       label: "Remarks",
       placeholder: "EnterRemarks",
-      preventSpecialChars: localStorage.getItem("specialChar") || "",
+      preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       type: "text",
       autoComplete: "off",
       maxLength: 200,
@@ -775,10 +789,24 @@ export const ResponseParameterFormMetaData = {
           authState,
           dependentFieldValues
         ) => {
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             ACCT_NM: { value: "" },
             ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
           };
         },
         validationRun: "onChange",
@@ -827,7 +855,7 @@ export const ResponseParameterFormMetaData = {
             }
           } else {
             return {
-              ACCT_CD: { value: "" },
+              ACCT_CD: { value: "", ignoreUpdate: false },
               ACCT_NM: { value: "" },
             };
           }
@@ -954,7 +982,7 @@ export const ResponseParameterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
@@ -1060,25 +1088,54 @@ export const ResponseParameterFormMetaData = {
   ],
 };
 
-export const PositivePayImportMetaData: GridColumnType[] = [
-  {
-    columnName: "SelectCofiguration",
-    componentType: "editableSelect",
-    required: true,
-    accessor: "DESCRIPTION",
-    options: GetPositivePayImportDdwn,
-    _optionsKey: "GetPositivePayImportDdwn",
-    sequence: 3,
-    alignment: "left",
-    width: 350,
-    minWidth: 50,
-    maxWidth: 600,
-    validation: (values) => {
-      if (!Boolean(values)) return "This field is requried";
-      return "";
+export const positivePayImportData = {
+  form: {
+    name: "positivepayData",
+    label: "Parameters",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 1,
+        },
+      },
     },
   },
-];
+  fields: [
+    {
+      render: {
+        componentType: "select",
+      },
+      name: "DESCRIPTION",
+      label: "SelectConfiguration",
+      fullWidth: true,
+      placeholder: "SelectConfiguration",
+      options: (dependentValue, formState, _, authState) => {
+        return GetPositivePayImportDdwn({
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+        });
+      },
+      _optionsKey: "GetPositivePayImportDdwn",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+    },
+  ],
+};
 
 export const ImportGridMetaData: GridMetaDataType = {
   gridConfig: {
