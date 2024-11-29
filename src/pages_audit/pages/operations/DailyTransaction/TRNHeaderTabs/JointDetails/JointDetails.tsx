@@ -68,7 +68,7 @@ export const JointDetails = ({ reqData }) => {
     {
       onSuccess(data) {},
       onError(err) {
-        enqueueSnackbar(err?.error_msg || "Error fetching joint details", {
+        enqueueSnackbar(err?.error_msg || t("Somethingwenttowrong"), {
           variant: "error",
         });
       },

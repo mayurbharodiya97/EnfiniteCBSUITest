@@ -317,14 +317,7 @@ export const CategoryMasterFormMetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
 
-          if (
-            !Boolean(currentField?.displayValue) &&
-            !Boolean(currentField?.value)
-          ) {
-            return {
-              TDS_ACCT_NM: { value: "" },
-            };
-          } else if (!Boolean(currentField?.displayValue)) {
+          if (!Boolean(currentField?.displayValue)) {
             return {};
           } else if (
             currentField.value &&

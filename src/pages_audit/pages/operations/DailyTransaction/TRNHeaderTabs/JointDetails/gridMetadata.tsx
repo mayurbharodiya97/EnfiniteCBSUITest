@@ -29,7 +29,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
   columns: [
     {
       columnName: "SrNo",
-      accessor: "SrNo",
+      accessor: "SR_NO",
       sequence: 1,
       componentType: "default",
       isAutoSequence: true,
@@ -38,7 +38,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       minWidth: 50,
     },
     {
-      columnName: "Type",
+      columnName: "type",
       accessor: "JOINT_DISC",
       sequence: 2,
       componentType: "default",
@@ -51,6 +51,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       sequence: 3,
       componentType: "default",
       width: 250,
+      showTooltip: true,
     },
     {
       columnName: "Designation",
