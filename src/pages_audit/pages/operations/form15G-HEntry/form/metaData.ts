@@ -1,4 +1,3 @@
-import { LocalHospital } from "@mui/icons-material";
 import { getCutomerDetail, getFDDtl, getFinDate } from "../api";
 import { format } from "date-fns";
 import { isValid } from "date-fns";
@@ -911,7 +910,7 @@ export const form15GHEntryMetaData = {
         columnName: "FinInterest",
         sequence: 7,
         alignment: "right",
-        componentType: "default",
+        componentType: "currency",
         width: 230,
         minWidth: 170,
         maxWidth: 250,

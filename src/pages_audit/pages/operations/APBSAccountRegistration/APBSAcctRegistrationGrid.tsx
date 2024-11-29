@@ -15,7 +15,6 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { APBSAcctRegistrationFormWrapper } from "./form";
 import { APBSRetrieveFormWrapper } from "./form/retrieveForm";
 import { format } from "date-fns";
-import { t } from "i18next";
 
 const actions: ActionTypes[] = [
   {

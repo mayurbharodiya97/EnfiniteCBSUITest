@@ -2416,4 +2416,27 @@ export const en_language_data = {
   Accountholder: "Account Holder",
   CheckerDetails: "Checker Details",
   DoubleClicktoviewSign: "Double Click to view Sign",
+
+  // APBS A/c Registration
+  RegisterFromBranch: "Register From Branch",
+  SelectPreviousBankIIN: "Select Previous Bank IIN",
+  FromDateValidationMsg: "From Date cannot be Greater than To Date.",
+  RegisterDate: "Register Date",
+  AadhaarNo: "Aadhaar No.",
+  UploadInNPCI: "Upload in NPCI",
+  ResponseFileName: "Response File Name",
+  MappedIIN: "Mapped IIN",
+  Scheme: "Scheme",
+  MandateDate: "Mandate Date",
+  MappingStatus: "Mapping Status",
+  UIDResult: "UID Result",
+  YouCanNotConfirmYourOwnPostedTransaction:
+    "You can't confirm your own posted transaction.",
+  RequestAcceptedRegistrationNo: "Request accepted, Registration No is",
+  ViewUIDResponse: "View UID Response",
+  AadhaarNumberIsRequired: "Aadhaar Number is required.",
+  EnterAadhaarNo: "Enter Aadhaar No.",
+  FreshRegistrationIsRequired: "Fresh Registration is required.",
+  PreviousBankIINIsRequired: "Previous Bank IIN is required.",
+  DeActiveDate: "De-Active Date",
 };
