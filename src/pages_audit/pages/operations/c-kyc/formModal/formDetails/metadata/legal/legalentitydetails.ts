@@ -59,7 +59,7 @@ export const entity_detail_legal_meta_data = {
       isFieldFocused: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["EntityNameIsRequired"] }],
       },
       maxLength: 100,
       validate: (columnValue, allField, flag) =>
@@ -107,7 +107,7 @@ export const entity_detail_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["OccupationIsRequired"] }],
       },
       // placeholder: "First Name",
       type: "text",
@@ -165,7 +165,7 @@ export const entity_detail_legal_meta_data = {
       type: "text",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["DateofBirthIsRequired"] }],
       },
       validate: (value, allField, flag) => {
         if (Boolean(value?.value)) {
@@ -195,7 +195,7 @@ export const entity_detail_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["ExplicitTDSIsRequired"] }],
       },
       placeholder: "",
       type: "text",

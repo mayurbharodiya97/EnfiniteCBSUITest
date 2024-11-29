@@ -26,6 +26,7 @@ import * as API from "./api";
 import { useContext, useRef } from "react";
 import { AuthContext } from "pages_audit/auth";
 import { useReactToPrint } from "react-to-print";
+import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,19 +53,20 @@ const SingleAccountInterestCustom = ({
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const printRef = useRef<any>(null);
+  const { t } = useTranslation();
   const applyAccountInt = useMutation(API.applyAccountInt, {
     onSuccess: async (data: any, variables: any) => {
       for (let i = 0; i < data?.length; i++) {
         if (data?.[i]?.O_STATUS === "999") {
           const btnName = await MessageBox({
             messageTitle: data?.[i]?.O_MSG_TITLE ?? "ValidationFailed",
-            message: data?.[i]?.O_MESSAGE,
+            message: data?.[i]?.O_MESSAGE ?? "",
             icon: "ERROR",
           });
         } else if (data?.[i]?.O_STATUS === "99") {
           const btnName = await MessageBox({
             messageTitle: data?.[i]?.O_MSG_TITLE ?? "Confirmation",
-            message: data?.[i]?.O_MESSAGE,
+            message: data?.[i]?.O_MESSAGE ?? "",
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
             icon: "CONFIRM",
@@ -72,7 +74,7 @@ const SingleAccountInterestCustom = ({
           if (btnName === "No") {
             const btnName = await MessageBox({
               messageTitle: "Failed",
-              message: "Interest Applied/Revert Back Failed.",
+              message: "InterestAppliedRevertBackFailed",
               buttonNames: ["Ok"],
             });
             if (btnName === "Ok") {
@@ -80,34 +82,22 @@ const SingleAccountInterestCustom = ({
             }
           }
           if (btnName === "Yes") {
-            // if (reportDetail?.REVERT_BUTTON === "Y") {
             revertAccountInt.mutate({
               COMP_CD: authState?.companyID ?? "",
               BRANCH_CD: acctInfo?.branch?.value ?? "",
               SCROLL_NO: data?.[i]?.SCROLL_NO ?? "",
               PAID: data?.[i]?.PAID ?? "",
             });
-            // }
           }
         } else if (data?.[i]?.O_STATUS === "9") {
           const btnName = await MessageBox({
             messageTitle: data?.[i]?.O_MSG_TITLE ?? "Alert",
-            message: data?.[i]?.O_MESSAGE,
+            message: data?.[i]?.O_MESSAGE ?? "",
             icon: "WARNING",
           });
         } else if (data?.[i]?.O_STATUS === "0") {
-          // if (reportDetail?.REVERT_BUTTON === "Y") {
-          // revertAccountInt.mutate({
-          //   COMP_CD: authState?.companyID ?? "",
-          //   BRANCH_CD: acctInfo?.branch?.value ?? "",
-          //   SCROLL_NO: data?.[i]?.SCROLL_NO ?? "",
-          //   PAID: data?.[i]?.PAID ?? "",
-          // });
-          // }
-          if (reportDetail?.REVERT_BUTTON !== "Y") {
-            CloseMessageBox();
-            closeDialog();
-          }
+          CloseMessageBox();
+          closeDialog();
         }
       }
     },
@@ -124,20 +114,20 @@ const SingleAccountInterestCustom = ({
         if (data?.[i]?.O_STATUS === "999") {
           const btnName = await MessageBox({
             messageTitle: data?.[i]?.O_MSG_TITLE ?? "ValidationFailed",
-            message: data?.[i]?.O_MESSAGE,
+            message: data?.[i]?.O_MESSAGE ?? "",
             icon: "ERROR",
           });
         } else if (data?.[i]?.O_STATUS === "99") {
           const btnName = await MessageBox({
             messageTitle: data?.[i]?.O_MSG_TITLE ?? "Confirmation",
-            message: data?.[i]?.O_MESSAGE,
+            message: data?.[i]?.O_MESSAGE ?? "",
             buttonNames: ["Yes", "No"],
             icon: "CONFIRM",
           });
         } else if (data?.[i]?.O_STATUS === "9") {
           const btnName = await MessageBox({
             messageTitle: data?.[i]?.O_MSG_TITLE ?? "Alert",
-            message: data?.[i]?.O_MESSAGE,
+            message: data?.[i]?.O_MESSAGE ?? "",
             icon: "WARNING",
           });
         } else if (data?.[i]?.O_STATUS === "0") {
@@ -155,7 +145,7 @@ const SingleAccountInterestCustom = ({
   });
   const handleApplyInt = async () => {
     const btnName = await MessageBox({
-      message: "Are you sure to Apply Interest ?",
+      message: "AreyousuretoApplyInterest",
       messageTitle: "Confirmation",
       buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],
@@ -168,15 +158,15 @@ const SingleAccountInterestCustom = ({
         ACCT_CD: acctInfo?.accNo ?? "",
         FROM_DT: date?.FROM_DT ?? "",
         TO_DT: date?.TO_DT ?? "",
-        NPA_CD: reportDetail?.NPA_CD_PARENT ?? "",
-        // NPA_CD: acctInfo?.NPA_CD ?? "",
+        // NPA_CD: reportDetail?.NPA_CD_PARENT ?? "",
+        NPA_CD: acctInfo?.NPA_CD ?? "",
         SCREEN_REF: "TRN/001",
       });
     }
   };
   const handleRevertInt = async () => {
     const btnName = await MessageBox({
-      message: "Are you sure to Apply Interest ?",
+      message: "AreyousuretoApplyInterest",
       messageTitle: "Confirmation",
       buttonNames: ["Yes", "No"],
       loadingBtnName: ["Yes"],
@@ -189,8 +179,8 @@ const SingleAccountInterestCustom = ({
         ACCT_CD: acctInfo?.accNo ?? "",
         FROM_DT: date?.FROM_DT ?? "",
         TO_DT: date?.TO_DT ?? "",
-        NPA_CD: reportDetail?.NPA_CD_PARENT ?? "",
-        // NPA_CD: acctInfo?.NPA_CD ?? "",
+        // NPA_CD: reportDetail?.NPA_CD_PARENT ?? "",
+        NPA_CD: acctInfo?.NPA_CD ?? "",
         SCREEN_REF: "TRN/001",
       });
     }
@@ -218,10 +208,9 @@ const SingleAccountInterestCustom = ({
             overflow: "auto",
 
             "@media print": {
-              width: "200mm", // A4 width
-              // height: "290mm", // A4 height
-              margin: "5px auto", // Center content
-              pageBreakBefore: "always", // Ensure the content starts from a new page
+              width: "200mm",
+              margin: "5px auto",
+              pageBreakBefore: "always",
               overflow: "hidden",
               pageBreakInside: "auto",
             },
@@ -239,8 +228,7 @@ const SingleAccountInterestCustom = ({
           >
             <Box
               sx={{
-                // height: "60%", // Use full height of the parent Box
-                width: "10%", // Define the width for the image container
+                width: "10%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "left",
@@ -248,7 +236,7 @@ const SingleAccountInterestCustom = ({
             >
               <img
                 src={URL.createObjectURL(
-                  utilFunction.base64toBlob(reportHeading?.RPT_IMG)
+                  utilFunction?.base64toBlob(reportHeading?.RPT_IMG ?? "")
                 )}
                 alt="Report Image"
                 style={{
@@ -260,7 +248,6 @@ const SingleAccountInterestCustom = ({
             </Box>
             <Box
               sx={{
-                // height: "90%",
                 width: "90%",
                 display: "flex",
                 justifyContent: "center",
@@ -268,12 +255,11 @@ const SingleAccountInterestCustom = ({
                 paddingLeft: "5px",
               }}
             >
-              <Typography className={classes.typoStyle}>
-                {reportHeading?.LINE1}
+              <Typography className={classes?.typoStyle}>
+                {reportHeading?.LINE1 ?? ""}
               </Typography>
-              <Typography className={classes.typoStyle}>
-                {" "}
-                {reportHeading?.LINE2}
+              <Typography className={classes?.typoStyle}>
+                {reportHeading?.LINE2 ?? ""}
               </Typography>
               <Divider sx={{ border: "1px dashed black" }} />
               <Box
@@ -282,16 +268,18 @@ const SingleAccountInterestCustom = ({
                   justifyContent: "space-between",
                 }}
               >
-                <pre className={classes.typoStyle}>
-                  {reportHeading?.LINE3_P1}
+                <pre className={classes?.typoStyle}>
+                  {reportHeading?.LINE3_P1 ?? ""}
                 </pre>
-                <pre className={classes.typoStyle}>
-                  {reportHeading?.LINE3_P2}
+                <pre className={classes?.typoStyle}>
+                  {reportHeading?.LINE3_P2 ?? ""}
                 </pre>
               </Box>
             </Box>
           </Box>
-          <pre className={classes.typoStyle}>{reportDetail?.RPT_HEADING}</pre>
+          <pre className={classes?.typoStyle}>
+            {reportDetail?.RPT_HEADING ?? ""}
+          </pre>
 
           {/* Display middle section */}
           <Box>
@@ -566,10 +554,7 @@ const SingleAccountInterestCustom = ({
           {/* Display Interest details in table */}
           <Box>
             <TableContainer>
-              <Table
-                // sx={{ minWidth: 650 }}
-                aria-label="simple table"
-              >
+              <Table aria-label="simple table">
                 <TableHead>
                   <TableRow sx={{ padding: "0 !important" }}>
                     <TableCell
@@ -588,7 +573,7 @@ const SingleAccountInterestCustom = ({
                         borderBottom: "1px dashed black",
                       }}
                     >
-                      <pre className={classes.typoStyle}>
+                      <pre className={classes?.typoStyle}>
                         {reportDetail?.CR_INT_LABEL
                           ? reportDetail?.CR_INT_LABEL
                           : ""}
@@ -602,7 +587,7 @@ const SingleAccountInterestCustom = ({
                         borderBottom: "1px dashed black",
                       }}
                     >
-                      <pre className={classes.typoStyle}>
+                      <pre className={classes?.typoStyle}>
                         {acctInfo?.PARENT_TYPE?.trim() !== "SB"
                           ? "Ag Clg Int Amt"
                           : ""}
@@ -616,7 +601,7 @@ const SingleAccountInterestCustom = ({
                         borderBottom: "1px dashed black",
                       }}
                     >
-                      <pre className={classes.typoStyle}>
+                      <pre className={classes?.typoStyle}>
                         {acctInfo?.PARENT_TYPE?.trim() !== "SB"
                           ? "Penal Int Amt"
                           : ""}
@@ -630,7 +615,7 @@ const SingleAccountInterestCustom = ({
                         borderBottom: "1px dashed black",
                       }}
                     >
-                      <pre className={classes.typoStyle}>Interest Amt</pre>
+                      <pre className={classes?.typoStyle}>Interest Amt</pre>
                     </TableCell>
                     <TableCell
                       align="right"
@@ -640,7 +625,7 @@ const SingleAccountInterestCustom = ({
                         borderBottom: "1px dashed black",
                       }}
                     >
-                      <pre className={classes.typoStyle}>Int Rate</pre>
+                      <pre className={classes?.typoStyle}>Int Rate</pre>
                     </TableCell>
                     <TableCell
                       align="right"
@@ -650,101 +635,97 @@ const SingleAccountInterestCustom = ({
                         borderBottom: "1px dashed black",
                       }}
                     >
-                      <pre className={classes.typoStyle}>Total Int Amt</pre>
+                      <pre className={classes?.typoStyle}>Total Int Amt</pre>
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {
-                    // Array.from({ length: 20 }).flatMap(() =>
-                    reportDetail?.INT_ROWS?.map((row) => (
-                      <TableRow
-                        key={row.name}
+                  {reportDetail?.INT_ROWS?.map((row) => (
+                    <TableRow
+                      key={row?.name}
+                      sx={{
+                        "&:last-child td, &:last-child th": {
+                          border: 0,
+                          padding: "0 !important",
+                        },
+                      }}
+                    >
+                      <TableCell
+                        align="right"
                         sx={{
-                          "&:last-child td, &:last-child th": {
-                            border: 0,
-                            padding: "0 !important",
-                          },
+                          borderBottom: "none !important",
+                          padding: "0 !important",
+                        }}
+                      ></TableCell>
+                      <TableCell
+                        align="right"
+                        sx={{
+                          borderBottom: "none !important",
+                          padding: "0 !important",
                         }}
                       >
-                        <TableCell
-                          align="right"
-                          sx={{
-                            borderBottom: "none !important",
-                            padding: "0 !important",
-                          }}
-                        ></TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            borderBottom: "none !important",
-                            padding: "0 !important",
-                          }}
-                        >
-                          <pre>
-                            {reportDetail?.CR_INT_LABEL
-                              ? parseFloat(row.CT_INT).toFixed(2)
-                              : ""}
-                          </pre>
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            borderBottom: "none !important",
-                            padding: "0 !important",
-                          }}
-                        >
-                          <pre>
-                            {acctInfo?.PARENT_TYPE?.trim() !== "SB"
-                              ? parseFloat(row.A_INT).toFixed(2)
-                              : ""}
-                          </pre>
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            borderBottom: "none !important",
-                            padding: "0 !important",
-                          }}
-                        >
-                          <pre>
-                            {acctInfo?.PARENT_TYPE?.trim() !== "SB"
-                              ? parseFloat(row.P_INT).toFixed(2)
-                              : ""}
-                          </pre>
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            borderBottom: "none !important",
-                            padding: "0 !important",
-                          }}
-                        >
-                          <pre>{parseFloat(row.N_INT).toFixed(2)}</pre>
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            borderBottom: "none !important",
-                            padding: "0 !important",
-                          }}
-                        >
-                          <pre>{parseFloat(row.INT_RATE).toFixed(2)}</pre>
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            borderBottom: "none !important",
-                            padding: "0 !important",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          <pre>{parseFloat(row.TOT_INT).toFixed(2)}</pre>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                    // )
-                  }
+                        <pre>
+                          {reportDetail?.CR_INT_LABEL
+                            ? parseFloat(row?.CT_INT).toFixed(2)
+                            : ""}
+                        </pre>
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        sx={{
+                          borderBottom: "none !important",
+                          padding: "0 !important",
+                        }}
+                      >
+                        <pre>
+                          {acctInfo?.PARENT_TYPE?.trim() !== "SB"
+                            ? parseFloat(row?.A_INT).toFixed(2)
+                            : ""}
+                        </pre>
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        sx={{
+                          borderBottom: "none !important",
+                          padding: "0 !important",
+                        }}
+                      >
+                        <pre>
+                          {acctInfo?.PARENT_TYPE?.trim() !== "SB"
+                            ? parseFloat(row?.P_INT).toFixed(2)
+                            : ""}
+                        </pre>
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        sx={{
+                          borderBottom: "none !important",
+                          padding: "0 !important",
+                        }}
+                      >
+                        <pre>{parseFloat(row?.N_INT).toFixed(2)}</pre>
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        sx={{
+                          borderBottom: "none !important",
+                          padding: "0 !important",
+                        }}
+                      >
+                        <pre>{parseFloat(row?.INT_RATE).toFixed(2)}</pre>
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        sx={{
+                          borderBottom: "none !important",
+                          padding: "0 !important",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        <pre>{parseFloat(row?.TOT_INT).toFixed(2)}</pre>
+                      </TableCell>
+                    </TableRow>
+                  ))}
 
                   {/* Display Total in row */}
                   <TableRow
@@ -775,7 +756,7 @@ const SingleAccountInterestCustom = ({
                         {reportDetail?.CR_INT_LABEL
                           ? parseFloat(
                               reportDetail?.INT_ROWS?.reduce(
-                                (sum, row) => sum + (Number(row.CT_INT) || 0),
+                                (sum, row) => sum + (Number(row?.CT_INT) || 0),
                                 0
                               ) || 0
                             ).toFixed(2)
@@ -795,7 +776,7 @@ const SingleAccountInterestCustom = ({
                         {acctInfo?.PARENT_TYPE?.trim() !== "SB"
                           ? parseFloat(
                               reportDetail?.INT_ROWS?.reduce(
-                                (sum, row) => sum + (Number(row.A_INT) || 0),
+                                (sum, row) => sum + (Number(row?.A_INT) || 0),
                                 0
                               ) || 0
                             ).toFixed(2)
@@ -814,7 +795,7 @@ const SingleAccountInterestCustom = ({
                         {acctInfo?.PARENT_TYPE?.trim() !== "SB"
                           ? parseFloat(
                               reportDetail?.INT_ROWS?.reduce(
-                                (sum, row) => sum + (Number(row.P_INT) || 0),
+                                (sum, row) => sum + (Number(row?.P_INT) || 0),
                                 0
                               ) || 0
                             ).toFixed(2)
@@ -832,7 +813,7 @@ const SingleAccountInterestCustom = ({
                       <pre>
                         {parseFloat(
                           reportDetail?.INT_ROWS?.reduce(
-                            (sum, row) => sum + (Number(row.N_INT) || 0),
+                            (sum, row) => sum + (Number(row?.N_INT) || 0),
                             0
                           ) || 0
                         ).toFixed(2)}
@@ -856,7 +837,7 @@ const SingleAccountInterestCustom = ({
                       <pre>
                         {parseFloat(
                           reportDetail?.INT_ROWS?.reduce(
-                            (sum, row) => sum + (Number(row.TOT_INT) || 0),
+                            (sum, row) => sum + (Number(row?.TOT_INT) || 0),
                             0
                           ) || 0
                         ).toFixed(2)}
@@ -879,12 +860,12 @@ const SingleAccountInterestCustom = ({
                       Number(reportDetail?.CHARGE_BAL || 0) +
                       (acctInfo?.PARENT_TYPE?.trim() === "SB"
                         ? reportDetail?.INT_ROWS?.reduce(
-                            (sum, row) => sum + (Number(row.TOT_INT) || 0),
+                            (sum, row) => sum + (Number(row?.TOT_INT) || 0),
                             0
                           ) || 0
                         : -1 *
                             reportDetail?.INT_ROWS?.reduce(
-                              (sum, row) => sum + (Number(row.TOT_INT) || 0),
+                              (sum, row) => sum + (Number(row?.TOT_INT) || 0),
                               0
                             ) || 0)
                   ).toFixed(2)}
@@ -896,7 +877,7 @@ const SingleAccountInterestCustom = ({
                   <span style={{ fontWeight: "bold" }}>
                     {parseFloat(
                       (reportDetail?.INT_ROWS?.reduce(
-                        (sum, row) => sum + (Number(row.TOT_INT) || 0),
+                        (sum, row) => sum + (Number(row?.TOT_INT) || 0),
                         0
                       ) ||
                         0 - reportDetail?.HOLD_AMT) ??
@@ -916,19 +897,21 @@ const SingleAccountInterestCustom = ({
               }
             }}
           >
-            {"Print"}
+            {t("Print")}
           </GradientButton>
-          {reportDetail?.REVERT_BUTTON !== "Y" && (
-            <GradientButton onClick={handleApplyInt} color={"primary"}>
-              {"Apply"}
-            </GradientButton>
-          )}
-          {reportDetail?.REVERT_BUTTON === "Y" && (
+
+          {reportDetail?.REVERT_BUTTON === "Y" ? (
             <GradientButton onClick={handleRevertInt} color={"primary"}>
-              {"Revert"}
+              {t("Revert")}
+            </GradientButton>
+          ) : (
+            <GradientButton onClick={handleApplyInt} color={"primary"}>
+              {t("Apply")}
             </GradientButton>
           )}
-          <GradientButton onClick={() => closeDialog()}>Close</GradientButton>
+          <GradientButton onClick={() => closeDialog()}>
+            {t("Close")}
+          </GradientButton>
         </DialogActions>
       </Dialog>
     </Fragment>

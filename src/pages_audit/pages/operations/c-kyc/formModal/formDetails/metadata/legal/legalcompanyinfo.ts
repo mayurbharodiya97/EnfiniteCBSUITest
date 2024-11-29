@@ -60,7 +60,7 @@ export const company_info_meta_data = {
       isMaxWorkingDate: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["CommencementDateIsRequired"] }],
       },
       validate: (value, allField, flag) => {
         if (Boolean(value?.value) && !isValid(value?.value)) {
@@ -309,7 +309,7 @@ export const company_info_meta_data = {
       schemaValidation: {
         type: "string",
         rules: [
-          { name: "required", params: ["ThisFieldisrequired"] },
+          { name: "required", params: ["PanNoIsRequired"] },
           {
             name: "pancard",
             params: ["Please Enter Valid PAN Number"],
@@ -409,7 +409,7 @@ export const kyc_poa_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["AddressTypeIsRequired"] }],
       },
       _optionsKey: "currentAddType",
     },
@@ -422,7 +422,7 @@ export const kyc_poa_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["Line1IsRequired"] }],
       },
       placeholder: "",
       type: "text",
@@ -457,7 +457,7 @@ export const kyc_poa_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PINIsRequired"] }],
       },
       dependentFields: ["PAR_AREA_CD"],
       setValueOnDependentFieldsChange: (dependentFields) => {
@@ -539,7 +539,7 @@ export const kyc_poa_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["SubAreaIsRequired"] }],
       },
       placeholder: "",
       type: "text",
@@ -554,7 +554,7 @@ export const kyc_poa_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["CityIsRequired"] }],
       },
       isReadOnly: true,
       placeholder: "",
@@ -625,7 +625,7 @@ export const kyc_poa_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["ProofofAddressIsRequired"] }],
       },
       placeholder: "",
       type: "text",
@@ -681,7 +681,7 @@ export const kyc_poa_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["Line1IsRequired"] }],
       },
       placeholder: "",
       type: "text",
@@ -725,7 +725,7 @@ export const kyc_poa_legal_meta_data = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PINIsRequired"] }],
       },
     },
     {
@@ -814,7 +814,7 @@ export const kyc_poa_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["CityIsRequired"] }],
       },
       isReadOnly: true,
       placeholder: "",
@@ -885,7 +885,7 @@ export const kyc_poa_legal_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["ProofofAddressIsRequired"] }],
       },
       placeholder: "",
       options: () => API.getPMISCData("CKYC_LOC_POA"),

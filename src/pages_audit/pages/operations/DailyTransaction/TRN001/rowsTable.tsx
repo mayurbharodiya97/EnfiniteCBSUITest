@@ -67,6 +67,7 @@ const RowsTable = forwardRef<any, any>(
       removeRow,
       handleScrollBlur,
       onKeyUp,
+      onDoubleClick,
     },
     ref
   ) => {
@@ -328,6 +329,9 @@ const RowsTable = forwardRef<any, any>(
                           })
                         }
                         onKeyUp={(event) => onKeyUp(event, row?.unqID)}
+                        onDoubleClick={(event) =>
+                          onDoubleClick(event, row?.unqID)
+                        }
                         disabled={!Boolean(row?.accType?.value)}
                         onBlur={() => handleAccNoBlur(row?.unqID)}
                         loadingState={loadingStates[row?.unqID]?.["ACCTNO"]}

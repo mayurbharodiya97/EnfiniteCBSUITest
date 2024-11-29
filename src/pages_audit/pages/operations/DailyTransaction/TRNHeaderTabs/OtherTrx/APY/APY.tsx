@@ -1,49 +1,37 @@
-import { Fragment, useRef, useState } from "react";
-import { useQuery } from "react-query";
-import { APYGridMetaData } from "./gridMetadata";
-// import GridWrapper from "components/dataTableStatic";
-// import { GridMetaDataType } from "components/dataTable/types";
-import * as API from "./api";
+import {
+  Alert,
+  GridMetaDataType,
+  GridWrapper,
+  queryClient,
+} from "@acuteinfo/common-base";
 import { AuthContext } from "pages_audit/auth";
-import { AccDetailContext } from "pages_audit/auth";
-import { useContext } from "react";
-import { GridWrapper, GridMetaDataType, Alert } from "@acuteinfo/common-base";
+import { Fragment, useContext, useEffect } from "react";
+import { useQuery } from "react-query";
+import * as API from "./api";
+import { APYGridMetaData } from "./gridMetadata";
 export const APY = ({ reqData }) => {
-  const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
-  const [rows, setRows] = useState([]);
-
-  // api define
-  // const getAPYList = useMutation(API.getAPYList, {
-  //   onSuccess: (data) => {
-  //     console.log(data, " getAPYList detailssss");
-  //     setRows(data);
-  //   },
-  //   onError: (error) => {},
-  // });
-
-  // useEffect(() => {
-  //   tempStore?.accInfo?.ACCT_CD && getAPYList.mutate(tempStore.accInfo);
-  // }, [tempStore]);
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
   >(["getAPYList", { reqData }], () => API.getAPYList(reqData));
-
+  useEffect(() => {
+    return () => {
+      const keysToRemove = ["getAPYList"].map((key) => [
+        key,
+        authState?.user?.branchCode,
+      ]);
+      keysToRemove.forEach((key) => queryClient.removeQueries(key));
+    };
+  }, []);
   return (
-    <>
-      {" "}
+    <Fragment>
       {isError ? (
-        <Fragment>
-          <div style={{ width: "100%", paddingTop: "10px" }}>
-            <Alert
-              severity={error?.severity ?? "error"}
-              errorMsg={error?.error_msg ?? "Error"}
-              errorDetail={error?.error_detail ?? ""}
-            />
-          </div>
-        </Fragment>
+        <Alert
+          severity={error?.severity ?? "error"}
+          errorMsg={error?.error_msg ?? "Error"}
+          errorDetail={error?.error_detail ?? ""}
+        />
       ) : null}
       <GridWrapper
         key={`APYGridMetaData`}
@@ -51,9 +39,8 @@ export const APY = ({ reqData }) => {
         data={data ?? []}
         loading={isLoading || isFetching}
         setData={() => null}
-        // refetchData={() => {}}
-        ref={myGridRef}
+        refetchData={refetch}
       />
-    </>
+    </Fragment>
   );
 };
