@@ -53,7 +53,6 @@ export const Form15GHEntryGrid = ({ screenFlag }) => {
   const [open, setOpen] = useState(false);
   const retrievalParaRef = useRef<any>(null);
   const { MessageBox } = usePopupContext();
-  const [retrieveData, setRetrieveData] = useState<any>({});
 
   const {
     data: initialData,
@@ -142,7 +141,6 @@ export const Form15GHEntryGrid = ({ screenFlag }) => {
     onSuccess: (data, variables) => {
       setGridData([]);
       if (data.length === 1) {
-        setRetrieveData(data[0]);
         navigate("view-details", {
           state: { retrieveData: data[0] },
         });

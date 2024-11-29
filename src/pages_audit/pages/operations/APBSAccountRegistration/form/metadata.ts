@@ -117,7 +117,7 @@ export const APBSAcctRegristrationMetadata = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "ValidationFailed",
@@ -128,7 +128,7 @@ export const APBSAcctRegristrationMetadata = {
             } else if (postData[i]?.O_STATUS === "9") {
               formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
-                const { btnName, obj } = await getButtonName({
+                await getButtonName({
                   messageTitle: postData[i]?.O_MSG_TITLE?.length
                     ? postData[i]?.O_MSG_TITLE
                     : "Alert",
@@ -138,7 +138,7 @@ export const APBSAcctRegristrationMetadata = {
               }
             } else if (postData[i]?.O_STATUS === "99") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              const { btnName } = await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "Confirmation",
@@ -347,7 +347,7 @@ export const APBSAcctRegristrationMetadata = {
             for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
+                await getButtonName({
                   messageTitle: postData[i]?.O_MSG_TITLE?.length
                     ? postData[i]?.O_MSG_TITLE
                     : "ValidationFailed",
@@ -358,7 +358,7 @@ export const APBSAcctRegristrationMetadata = {
               } else if (postData[i]?.O_STATUS === "9") {
                 formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
-                  const { btnName, obj } = await getButtonName({
+                  await getButtonName({
                     messageTitle: postData[i]?.O_MSG_TITLE?.length
                       ? postData[i]?.O_MSG_TITLE
                       : "Alert",
@@ -369,7 +369,7 @@ export const APBSAcctRegristrationMetadata = {
                 returnVal = postData[i];
               } else if (postData[i]?.O_STATUS === "99") {
                 formState?.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
+                const { btnName } = await getButtonName({
                   messageTitle: postData[i]?.O_MSG_TITLE?.length
                     ? postData[i]?.O_MSG_TITLE
                     : "Confirmation",
@@ -553,7 +553,7 @@ export const APBSAcctRegristrationMetadata = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "ValidationFailed",
@@ -564,7 +564,7 @@ export const APBSAcctRegristrationMetadata = {
             } else if (postData[i]?.O_STATUS === "9") {
               formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
-                const { btnName, obj } = await getButtonName({
+                await getButtonName({
                   messageTitle: postData[i]?.O_MSG_TITLE?.length
                     ? postData[i]?.O_MSG_TITLE
                     : "Alert",
@@ -575,7 +575,7 @@ export const APBSAcctRegristrationMetadata = {
               returnVal = postData[i];
             } else if (postData[i]?.O_STATUS === "99") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              const { btnName } = await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "Confirmation",
@@ -909,13 +909,14 @@ export const APBSAcctRegristrationMetadata = {
         SelectProps: { IconComponent: () => null },
       },
       dependentFields: ["UNIQUE_ID", "UPLOAD", "VALIDATE_ACTIVE"],
-      validationRun: "onChange",
+      validationRun: "onChange", // If remove this it will not call api second time.
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
         authState,
         dependentFieldValues
       ) => {
+        if (formState?.isSubmitting) return {};
         if (
           Boolean(currentField?.value) &&
           currentField?.value !== dependentFieldValues?.VALIDATE_ACTIVE?.value
@@ -939,7 +940,7 @@ export const APBSAcctRegristrationMetadata = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "ValidationFailed",
@@ -950,7 +951,7 @@ export const APBSAcctRegristrationMetadata = {
             } else if (postData[i]?.O_STATUS === "9") {
               formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
-                const { btnName, obj } = await getButtonName({
+                await getButtonName({
                   messageTitle: postData[i]?.O_MSG_TITLE?.length
                     ? postData[i]?.O_MSG_TITLE
                     : "Alert",
@@ -960,7 +961,7 @@ export const APBSAcctRegristrationMetadata = {
               }
             } else if (postData[i]?.O_STATUS === "99") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              const { btnName } = await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "Confirmation",
