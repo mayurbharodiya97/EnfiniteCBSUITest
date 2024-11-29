@@ -1,7 +1,6 @@
 import {
   AppBar,
   Box,
-  Button,
   CircularProgress,
   Dialog,
   Stack,
@@ -12,10 +11,8 @@ import {
   Theme,
   Toolbar,
   Typography,
-  styled,
 } from "@mui/material";
 import { useContext, useRef, useState } from "react";
-import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { useLocation } from "react-router-dom";
@@ -60,28 +57,24 @@ export const FixDepositForm = ({
   handleDialogClose,
   isDataChangedRef,
 }) => {
-  const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
   const {
     FDState,
     setActiveStep,
-    updateFDParaDataOnChange,
     updateFDDetailsFormData,
     updateSourceAcctFormData,
-    resetAllData,
     setIsBackButton,
   } = useContext(FDContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   let currentPath = useLocation().pathname;
   const [steps, setSteps] = useState([
-    "Fixed Deposit Detail(s)",
-    "Source A/C Detail(s)",
+    t("FixedDepositDetails"),
+    t("SourceACDetails"),
   ]);
   const fdDetailsformRef: any = useRef(null);
   const sourceAcctformRef: any = useRef(null);
   const { authState } = useContext(AuthContext);
   const headerClasses = useTypeStyles();
-  const { state: rows }: any = useLocation();
 
   function ColorlibStepIcon(props: StepIconProps) {
     const { active, completed, className } = props;
@@ -248,7 +241,7 @@ export const FixDepositForm = ({
         ) {
           MessageBox({
             messageTitle: t("ValidationFailed"),
-            message: "Total amount can't be Zero/Negative.",
+            message: "TotalAmountCantbeZeroNegative",
             icon: "ERROR",
           });
         } else {
@@ -260,8 +253,8 @@ export const FixDepositForm = ({
       }
     } else {
       MessageBox({
-        messageTitle: t("ValidationFailed"),
-        message: "At least one row is required.",
+        messageTitle: "ValidationFailed",
+        message: "AtLeastOneRowRequired",
         icon: "ERROR",
       });
     }
@@ -285,16 +278,16 @@ export const FixDepositForm = ({
 
     if (parseFloat(data?.TOTAL_DR_AMOUNT) <= 0) {
       MessageBox({
-        messageTitle: t("ValidationFailed"),
-        message: "Total debit amount can't be Zero/Negative.",
+        messageTitle: "ValidationFailed",
+        message: "TotalDebitAmountCantBeZeroNegative",
         icon: "ERROR",
       });
     } else if (
       parseFloat(data?.TOTAL_DR_AMOUNT) !== parseFloat(data?.TOTAL_FD_AMOUNT)
     ) {
       MessageBox({
-        messageTitle: t("ValidationFailed"),
-        message: "Total debit amount should be equal to total FD amount.",
+        messageTitle: "ValidationFailed",
+        message: "TotalDebitAmountShouldBeEqualToTotalFDAmount",
         icon: "ERROR",
       });
     } else if (parseFloat(data?.DIFF_AMOUNT) === 0) {

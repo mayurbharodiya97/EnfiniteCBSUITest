@@ -346,7 +346,7 @@ export const FDDetailGrid = () => {
                 await MessageBox({
                   messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
                     ? allowModifyMutData?.O_MSG_TITLE
-                    : "Validation Failed",
+                    : "ValidationFailed",
                   message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -371,7 +371,7 @@ export const FDDetailGrid = () => {
                 await MessageBox({
                   messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
                     ? allowModifyMutData?.O_MSG_TITLE
-                    : "Validation Failed",
+                    : "ValidationFailed",
                   message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -533,7 +533,7 @@ export const FDDetailGrid = () => {
                 await MessageBox({
                   messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
                     ? allowModifyMutData?.O_MSG_TITLE
-                    : "Validation Failed",
+                    : "ValidationFailed",
                   message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -781,7 +781,7 @@ export const FDDetailGrid = () => {
                     await MessageBox({
                       messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
                         ? allowModifyMutData?.O_MSG_TITLE
-                        : "Validation Failed",
+                        : "ValidationFailed",
                       message: allowModifyMutData?.O_MESSAGE ?? "",
                       icon: "ERROR",
                     });

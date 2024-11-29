@@ -198,7 +198,6 @@ export const PayslipAndDDFormMetaData = {
           },
           _optionsKey: "getCommonTypeList",
           defaultValueKey: "billTypeDefaultVal",
-          isFieldFocused: true,
           runPostValidationHookAlways: true,
           dependentFields: ["PAYMENT_AMOUNT"],
           postValidationSetCrossFieldValues: async (
@@ -268,7 +267,7 @@ export const PayslipAndDDFormMetaData = {
                   ignoreUpdate: true,
                 },
                 PAYSLIP_NO: {
-                  value: currentField?.optionData?.[0]?.PAYSLIP_NO ?? "",
+                  value: currentField?.optionData?.[0]?.MST_TRAN_CD ?? "",
                   ignoreUpdate: false,
                 },
               };
@@ -393,13 +392,6 @@ export const PayslipAndDDFormMetaData = {
           type: "number",
           maxLength: 12,
           dependentFields: ["DEF_TRAN_CD"],
-          setValueOnDependentFieldsChange: (dependentFields) => {
-            return dependentFields?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
-              ?.MST_TRAN_CD
-              ? dependentFields?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]
-                  ?.MST_TRAN_CD
-              : "";
-          },
           postValidationSetCrossFieldValues: async (
             currentField,
             formState,
@@ -407,6 +399,7 @@ export const PayslipAndDDFormMetaData = {
             dependentFieldsValues
           ) => {
             if (formState?.isSubmitting) return {};
+
             if (
               currentField?.value &&
               dependentFieldsValues?.["PAYSLIPDD.DEF_TRAN_CD"]?.optionData?.[0]

@@ -28,7 +28,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -45,7 +45,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "Deposit Date",
+      columnName: "DepositDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
@@ -56,7 +56,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TOT_AMT",
-      columnName: "Principal Amt.",
+      columnName: "PrincipalAmount",
       sequence: 3,
       alignment: "right",
       componentType: "currency",
@@ -68,7 +68,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAID_DT",
-      columnName: "Paid Date",
+      columnName: "PaidDate",
       sequence: 4,
       alignment: "center",
       componentType: "date",
@@ -89,7 +89,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAYMENT_AMT",
-      columnName: "Payment Amt.",
+      columnName: "PaymentAmount",
       sequence: 6,
       alignment: "right",
       componentType: "currency",
@@ -99,7 +99,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "MATURITY_DT",
-      columnName: "Maturity Date",
+      columnName: "MaturityDate",
       sequence: 7,
       alignment: "center",
       componentType: "date",
@@ -110,7 +110,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "FD_NO",
-      columnName: "FD no.",
+      columnName: "FDNo",
       sequence: 8,
       alignment: "right",
       componentType: "default",
@@ -130,7 +130,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "INT_RATE",
-      columnName: "Rate(%)",
+      columnName: "Rate",
       sequence: 10,
       alignment: "right",
       componentType: "default",
@@ -150,7 +150,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "INT_AMT",
-      columnName: "Fin. Int. Amt.",
+      columnName: "FinIntAmt",
       sequence: 12,
       alignment: "right",
       componentType: "currency",
@@ -162,7 +162,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ENTERED_DATE",
-      columnName: "Issue Date",
+      columnName: "IssueDate",
       sequence: 13,
       alignment: "center",
       componentType: "date",
@@ -173,7 +173,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "FD_REMARK",
-      columnName: "Fd Remark",
+      columnName: "FDRemark",
       sequence: 14,
       alignment: "left",
       componentType: "default",
@@ -184,7 +184,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "MATURITY_AMT",
-      columnName: "Maturity Amt.",
+      columnName: "MaturityAmount",
       sequence: 15,
       alignment: "right",
       componentType: "currency",
@@ -196,7 +196,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TOT_TDS_RECO_INT_AMT",
-      columnName: "TDS Recover Amt.",
+      columnName: "TDSRecoverAmount",
       sequence: 16,
       alignment: "right",
       componentType: "currency",
@@ -208,7 +208,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "RENEW_REMARK",
-      columnName: "Renew Remark",
+      columnName: "RenewRemark",
       sequence: 17,
       alignment: "left",
       componentType: "default",
@@ -219,7 +219,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "SR_CD",
-      columnName: "Serial Code",
+      columnName: "SerialCode",
       sequence: 18,
       alignment: "left",
       componentType: "default",
@@ -230,7 +230,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
 
     {
       accessor: "MATURE_INST",
-      columnName: "Mature Instruction",
+      columnName: "MatureInstruction",
       sequence: 19,
       alignment: "left",
       componentType: "default",
@@ -245,7 +245,7 @@ export const PaidFDGridMetaData: GridMetaDataType = {
       componentType: "buttonRowCell",
       accessor: "VIEW_ADVICE",
       sequence: 20,
-      buttonLabel: "View Advice",
+      buttonLabel: "ViewAdvice",
       width: 100,
       minWidth: 80,
       maxWidth: 110,

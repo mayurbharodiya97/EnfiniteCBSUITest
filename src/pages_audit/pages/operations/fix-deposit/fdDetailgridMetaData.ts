@@ -29,7 +29,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -46,7 +46,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "Ason Date",
+      columnName: "asonDate",
       sequence: 2,
       alignment: "center",
       componentType: "date",
@@ -57,7 +57,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "MATURITY_DT",
-      columnName: "Maturity Date",
+      columnName: "maturityDate",
       sequence: 3,
       alignment: "center",
       componentType: "date",
@@ -68,7 +68,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TOT_AMT",
-      columnName: "Principal Amt.",
+      columnName: "PrincipalAmount",
       sequence: 4,
       alignment: "right",
       componentType: "currency",
@@ -80,7 +80,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "MATURITY_AMT",
-      columnName: "Maturity Amt.",
+      columnName: "MaturityAmount",
       sequence: 5,
       alignment: "right",
       componentType: "currency",
@@ -92,7 +92,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "FD_NO",
-      columnName: "FD no.",
+      columnName: "FDNo",
       sequence: 6,
       alignment: "right",
       componentType: "default",
@@ -112,7 +112,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "INT_RATE",
-      columnName: "Rate(%)",
+      columnName: "Rate",
       sequence: 8,
       alignment: "right",
       componentType: "default",
@@ -132,7 +132,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CR_AC_DTL",
-      columnName: "Cr.Type/Ac.No.",
+      columnName: "CrTypeAcNo",
       sequence: 10,
       alignment: "left",
       componentType: "default",
@@ -142,7 +142,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "INT_AMT",
-      columnName: "Fin. Int. Amt.",
+      columnName: "FinIntAmt",
       sequence: 11,
       alignment: "right",
       componentType: "currency",
@@ -154,7 +154,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ENTERED_DATE",
-      columnName: "Issue Date",
+      columnName: "IssueDate",
       sequence: 12,
       alignment: "center",
       componentType: "date",
@@ -175,7 +175,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "FD_REMARK",
-      columnName: "Fd Remark",
+      columnName: "FDRemark",
       sequence: 14,
       alignment: "left",
       componentType: "default",
@@ -186,7 +186,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONF_DISPLAY",
-      columnName: "Conf.Status",
+      columnName: "ConfStatus",
       sequence: 15,
       alignment: "left",
       componentType: "default",
@@ -197,7 +197,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TOT_TDS_RECO_INT_AMT",
-      columnName: "TDS Recover Amt",
+      columnName: "TDSRecoverAmt",
       sequence: 16,
       alignment: "right",
       componentType: "currency",
@@ -209,7 +209,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "RENEW_REMARK",
-      columnName: "Renew Remark",
+      columnName: "RenewRemark",
       sequence: 17,
       alignment: "left",
       componentType: "default",
@@ -220,7 +220,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "FD_LIEN_AMT",
-      columnName: "Lien Amount",
+      columnName: "LienAmount",
       sequence: 18,
       alignment: "right",
       componentType: "currency",
@@ -232,7 +232,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "NO_OF_UNIT",
-      columnName: "No. Of Unit",
+      columnName: "NoOfUnit",
       sequence: 19,
       alignment: "right",
       componentType: "default",
@@ -244,7 +244,7 @@ export const FDDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TOT_INVEST_AMT",
-      columnName: "Total Invested Amount",
+      columnName: "TotalInvestedAmount",
       sequence: 20,
       alignment: "right",
       componentType: "currency",

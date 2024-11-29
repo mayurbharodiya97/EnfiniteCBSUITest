@@ -1,4 +1,4 @@
-import { AppBar, Dialog } from "@mui/material";
+import { Dialog } from "@mui/material";
 import {
   LoaderPaperComponent,
   PDFViewer,
@@ -7,10 +7,9 @@ import {
   utilFunction,
 } from "@acuteinfo/common-base";
 import { useContext, useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { printPaymentAdvice } from "../api";
 import { AuthContext } from "pages_audit/auth";
-import { t } from "i18next";
 
 export const FdPaymentAdvicePrint = ({
   closeDialog,
@@ -27,13 +26,22 @@ export const FdPaymentAdvicePrint = ({
     () => printPaymentAdvice(requestData),
     {
       onSuccess: async (data) => {
-        let blobData = utilFunction.blobToFile(data, "");
-        if (blobData) {
-          setFileBlobData(blobData);
+        if (data?.[0]?.STATUS === "999") {
+          {
+            await MessageBox({
+              messageTitle: "ValidationFailed",
+              message: data?.[0]?.MESSAGE ?? "",
+              icon: "ERROR",
+            });
+          }
+        } else {
+          let blobData = utilFunction.blobToFile(data, "");
+          if (blobData) {
+            setFileBlobData(blobData);
+          }
         }
       },
       onError: async (error) => {
-        console.log("error", error, error?.error_msg);
         await MessageBox({
           messageTitle: "ValidationFailed",
           message: error?.error_msg ?? "",
@@ -43,7 +51,6 @@ export const FdPaymentAdvicePrint = ({
       },
     }
   );
-  console.log("requestData", requestData);
 
   useEffect(() => {
     return () => {
@@ -64,6 +71,7 @@ export const FdPaymentAdvicePrint = ({
         `\u00A0\u00A0\u00A0\u00A0` +
         "FD No.:" +
         requestData?.FD_NO;
+
   return (
     <>
       {isLoading || isFetching ? (
@@ -73,36 +81,34 @@ export const FdPaymentAdvicePrint = ({
             style: {
               overflow: "auto",
               padding: "10px",
-              width: "600px",
+              width: "100%",
               height: "100px",
             },
           }}
-          maxWidth="md"
+          maxWidth="xl"
         >
           <LoaderPaperComponent />
         </Dialog>
-      ) : (
-        Boolean(fileBlobData && fileBlobData?.type?.includes("pdf")) && (
-          <Dialog
-            open={true}
-            PaperProps={{
-              style: {
-                width: "100%",
-                overflow: "auto",
-                padding: "10px",
-                height: "100%",
-              },
-            }}
-            maxWidth="xl"
-          >
-            <PDFViewer
-              blob={fileBlobData}
-              fileName={`${printFormFileName}`}
-              onClose={() => closeDialog()}
-            />
-          </Dialog>
-        )
-      )}
+      ) : Boolean(fileBlobData && fileBlobData?.type?.includes("pdf")) ? (
+        <Dialog
+          open={true}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+              padding: "10px",
+              height: "100%",
+            },
+          }}
+          maxWidth="xl"
+        >
+          <PDFViewer
+            blob={fileBlobData}
+            fileName={`${printFormFileName}`}
+            onClose={() => closeDialog()}
+          />
+        </Dialog>
+      ) : null}
     </>
   );
 };
