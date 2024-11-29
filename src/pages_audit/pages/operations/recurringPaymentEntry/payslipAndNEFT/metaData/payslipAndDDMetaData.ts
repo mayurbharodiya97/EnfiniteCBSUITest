@@ -1,4 +1,3 @@
-import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../api";
 import { t } from "i18next";
 

@@ -49,10 +49,8 @@ export const FDDetailForm = forwardRef<any, any>(
     const {
       data: paraDtlData,
       isLoading: paraDtlDataIsLoading,
-      isFetching: paraDtlDataIsFetching,
       isError: paraDtlDataIsError,
       error: paraDtlDataError,
-      refetch: paraDtlDataRefetch,
     } = useQuery<any, any>(
       ["getFDParaDetail", authState?.user?.branchCode],
       () =>
@@ -98,7 +96,6 @@ export const FDDetailForm = forwardRef<any, any>(
       isFetching: renewDataisFetching,
       isError: renewDataisError,
       error: renewDataError,
-      refetch: renewDataRefetch,
     } = useQuery<any, any>(
       ["getFDRenewData", authState?.user?.branchCode],
       () =>
@@ -127,10 +124,8 @@ export const FDDetailForm = forwardRef<any, any>(
     const {
       data: maturityAmtData,
       isLoading: maturityAmtDataLoading,
-      isFetching: maturityAmtDataisFetching,
       isError: maturityAmtDataisError,
       error: maturityAmtDataError,
-      refetch: maturityAmtDataRefetch,
     } = useQuery<any, any>(
       ["getFDRenewMaturityAmt", authState?.user?.branchCode],
       () =>

@@ -162,7 +162,7 @@ const CategoryMasterForm = ({
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
-                    disabled={isSubmitting || disableButton}
+                    disabled={isSubmitting || disableButton || mutation.isError}
                     endIcon={
                       isSubmitting ? <CircularProgress size={20} /> : null
                     }
