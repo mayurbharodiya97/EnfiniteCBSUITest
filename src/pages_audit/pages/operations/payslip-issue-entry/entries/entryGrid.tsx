@@ -1,18 +1,9 @@
-import {
-  FC,
-  useRef,
-  useCallback,
-  useContext,
-  Fragment,
-  useState,
-  useEffect,
-} from "react";
-import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { FC, useRef, useCallback, useContext, Fragment } from "react";
+import { useMutation } from "react-query";
 import * as API from "./api";
 import { RetrieveFormConfigMetaData, RetrieveGridMetaData } from "./metaData";
-import { AppBar, Dialog, Toolbar, Typography } from "@mui/material";
+import { Dialog, Toolbar, Typography } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
-import { format } from "date-fns";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
 import {
@@ -28,8 +19,6 @@ import {
 } from "@acuteinfo/common-base";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import i18n from "components/multiLanguage/languagesConfiguration";
-import { Theme } from "@mui/system";
-import { makeStyles } from "@mui/styles";
 import { PaySlipIssueEntry } from "../paySlipIssueEntryGrid";
 import { EntryForm } from "./entryForm";
 import { Payslipissueconfirmation } from "../../payslipissueconfirmation/payslipissueconfirmationGrid";
@@ -41,19 +30,6 @@ const actions: ActionTypes[] = [
     rowDoubleClick: true,
   },
 ];
-const useTypeStyles: any = makeStyles((theme: Theme) => ({
-  root: {
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color5)",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--white)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-}));
 export const RetriveGridForm: FC<{
   screenFlag: string;
   headerLabel: string;
@@ -62,14 +38,12 @@ export const RetriveGridForm: FC<{
   close(): void;
   trans_type: string;
 }> = ({ screenFlag, opem, close, headerLabel, apiReqFlag, trans_type }) => {
-  const headerClasses = useTypeStyles();
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const indexRef = useRef(0);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const retrievalParaRef = useRef<any>(null);
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "view-detail") {
       indexRef.current = Number(data?.rows?.[0].id);
@@ -108,7 +82,6 @@ export const RetriveGridForm: FC<{
         ],
       });
     }, 0);
-    // queryClient.clear();
   }, [mutation?.data]);
   const handleNext = useCallback(() => {
     navigate(".");
@@ -124,7 +97,6 @@ export const RetriveGridForm: FC<{
         ],
       });
     }, 0);
-    // queryClient.clear();
   }, [mutation?.data]);
 
   const onSubmitHandler: SubmitFnType = async (

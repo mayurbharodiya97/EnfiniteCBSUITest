@@ -197,3 +197,25 @@ export const getLockerTrnsReciept = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getLockerOperationReciept = async ({
+  COMP_CD,
+  BRANCH_CD,
+  ACCT_TYPE,
+  ACCT_CD,
+  WORKING_DT,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETLOCKEROPERATIONRECEIPT", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      ACCT_TYPE: ACCT_TYPE,
+      ACCT_CD: ACCT_CD,
+      WORKING_DT: WORKING_DT,
+    });
+
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

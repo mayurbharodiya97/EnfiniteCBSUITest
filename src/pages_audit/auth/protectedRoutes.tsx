@@ -127,8 +127,6 @@ export const ProtectedRoutes = ({ children }) => {
     if (allScreenMatch || ScreenMatch) {
       const userCode = allScreenMatch?.user_code;
       if (userCode) {
-        console.log(authState.uniqueAppId);
-
         saveCurrScrDt.mutate({
           branchCode: authState.user.branchCode,
           flag: "I",

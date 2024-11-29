@@ -1788,6 +1788,8 @@ export const en_language_data = {
   EnterOtherReason: "Enter Other Reason",
   //payslip issue entry
   branchCode: "Branch Code",
+  enterBranchCode: "Enter Account Branch.",
+  enterAccountType: "Enter Account Type.",
   addRegionMSG: "Are you sure to add region ?",
   confirmEntryRestrictionMsg: "Cannot make changes in confirmed entry",
   delete: "Delete",
@@ -2039,6 +2041,9 @@ export const en_language_data = {
     "Due Date should be Greater than Date of Insurance",
 
   //standing instruction entry
+  totalNoOfRaws: "Total No. Of Raws :",
+  totalNoOfActiveSI: "Total No. Of Active SI :",
+  totalNoOfInActiveSI: "Total No. Of In-Active SI :",
   CommisionType: "Commision Type",
   NoofRecords: "No. of Records",
   CreditBranchCode: "Credit A/C Branch Code",
@@ -2146,6 +2151,18 @@ export const en_language_data = {
   DisburseAmountisrequired: "Disburse Amount is required",
 
   //fd interest calculator
+  enterType: "Enter Type",
+  enterDays: "Enter Days",
+  periodNumberRequired: "Period Number is Required",
+  enterMonths: "Enter Months",
+  enterYears: "Enter Years",
+  selectCategory: "Select Category",
+  selectDefination: "Select Defination",
+  selectTerm: "Select Term",
+  selectRateDefination: "Select Rate Defination",
+  enterRate: "Enter Rate",
+  enterPrincipalAmount: "Enter Principal Amount",
+  selectMaturityDate: "Select Maturity Date",
   rateRequired: "Rate is required",
   normalPremature: "Normal/Premature",
   realizePending: "Realize Pending",
@@ -2472,7 +2489,15 @@ export const en_language_data = {
   DocumentAmount: "Document Amount",
 
   //locker Transaction Entry
+  dateTime: "Date & Time",
+  receiptPrintCnfmMsg: "Do You Want To Print Receipt ?",
+  OfficerSign: "Officer Signature",
+  staffName: "Staff Name",
+  visitor: "Visitor",
+  todaysVisitor: "Today's Visit(s)",
+  officerSignatureStaffName: "fficer\nSignature\nStaff Name",
   lockerNumber: "Locker No.",
+  recieptPrinting: "Receipt Printing",
   selectOPerationMsg: "Please Select an Operation",
   lockerSize: "Locker Size",
   keyNumber: "Key No",

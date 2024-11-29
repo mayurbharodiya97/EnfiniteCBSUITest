@@ -4,12 +4,10 @@ import {
   addYears,
   differenceInDays,
   format,
-  parse,
 } from "date-fns";
 import * as API from "./api";
-import { Label, Placeholder } from "reactstrap";
-import { first } from "lodash";
 import { utilFunction } from "@acuteinfo/common-base";
+import { es } from "date-fns/locale";
 export const metaData = {
   form: {
     name: "",
@@ -60,7 +58,6 @@ export const metaData = {
       },
       name: "CALCSWITCH",
       label: "",
-      // defaultValue: "P",
       RadioGroupProps: { row: true },
       options: [
         {
@@ -98,7 +95,6 @@ export const metaData = {
       label: "",
     },
     // ------------Date-----------------//
-
     {
       render: {
         componentType: "hidden",
@@ -218,8 +214,8 @@ export const metaData = {
           PERIOD_NO: dependentFields?.PERIOD_NO_D?.value ?? "",
           PRE_INT_FLAG: dependentFields?.PRE_INT_FLG_D?.value ?? "",
           PRINCIPAL_AMT: dependentFields?.PRINCIPAL_AMT_D?.value ?? "",
-          INT_RATE: dependentFields?.INT_RATE_D?.value ?? "", // Rate from dependent fields
-          TERM_CD: dependentFields?.INT_RATE_D?.value ?? "", // Term code from field directly
+          INT_RATE: dependentFields?.INT_RATE_D?.value ?? "",
+          TERM_CD: dependentFields?.INT_RATE_D?.value ?? "",
         });
 
         return postData?.[0]?.MATURITY_AMT
@@ -230,10 +226,9 @@ export const metaData = {
                 ignoreUpdate: true,
               },
             }
-          : {}; // Return empty object if no MATURITY_AMT
+          : {};
       },
     },
-    // -------------------
     {
       render: {
         componentType: "hidden",
@@ -260,8 +255,6 @@ export const metaData = {
         auth,
         dependentFields
       ) => {
-        //@ts-nocheck
-
         if (
           dependentFields?.COMP_CD?.value &&
           dependentFields?.BRANCH_CD?.value &&
@@ -371,7 +364,7 @@ export const metaData = {
                   "dd/MMM/yyyy"
                 )
               : "",
-            PERIOD_CD: "D", // Fixed value
+            PERIOD_CD: "D",
             PERIOD_NO: `${dependentFields?.PERIOD_NO_P?.value}`,
             PRE_INT_FLAG: dependentFields?.PRE_INT_FLG_P?.value,
             PRINCIPAL_AMT: dependentFields?.PRINCIPAL_AMT_P?.value,
@@ -416,6 +409,7 @@ export const metaData = {
       name: "ACCT_TYPE_D",
       label: "Type",
       _optionsKey: "gettypeDDWdata",
+      placeholder: "enterType",
       required: true,
       schemaValidation: {
         type: "string",
@@ -452,6 +446,7 @@ export const metaData = {
       render: { componentType: "autocomplete" },
       name: "CATEG_CD_D",
       label: "Category",
+      placeholder: "selectCategory",
       _optionsKey: "getCategoryDDWdata",
       options: (dependentValue, formState, _, authState) => {
         return API.getCategoryDDWdata({
@@ -558,8 +553,10 @@ export const metaData = {
         rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
       },
       GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1, xl: 1 },
-      dependentFields: ["CALCSWITCH"],
+      dependentFields: ["CALCSWITCH", "PERIOD_CD_D"],
       FormatProps: {
+        allowNegative: false,
+        decimalScale: 0,
         isAllowed: (values) => {
           if (values?.value?.length > 10) {
             return false;
@@ -576,12 +573,12 @@ export const metaData = {
         console.log(duration);
 
         return duration === "D"
-          ? { label: "Day(s)" }
+          ? { label: "Day(s)", placeholder: "enterDays" }
           : duration === "M"
-          ? { label: "Month(s)" }
+          ? { label: "Month(s)", placeholder: "enterMonths" }
           : duration === "Y"
-          ? { label: "Year(s)" }
-          : { label: "Day(s)" };
+          ? { label: "Year(s)", placeholder: "enterYears" }
+          : { label: "Day(s)", placeholder: "enterDays" };
       },
       postValidationSetCrossFieldValues: async (
         field,
@@ -611,6 +608,7 @@ export const metaData = {
         type: "string",
         rules: [{ name: "required", params: ["principleAmtrequire"] }],
       },
+      placeholder: "enterPrincipalAmount",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       dependentFields: ["CALCSWITCH"],
       shouldExclude: (val1, dependent) => {
@@ -636,8 +634,8 @@ export const metaData = {
       },
       name: "INT_RATE_D",
       label: "Rate",
+      placeholder: "enterRate",
       defaultValue: "0.00",
-      Placeholder: "0.00",
       GridProps: { xs: 3, sm: 3, md: 3, lg: 2, xl: 2 },
       required: true,
       schemaValidation: {
@@ -666,6 +664,7 @@ export const metaData = {
       render: { componentType: "autocomplete" },
       name: "TERM_CD_D",
       label: "term",
+      placeholder: "selectTerm",
       options: [
         { label: "Monthly", value: "M" },
         { label: "Quarterly", value: "Q" },
@@ -721,33 +720,26 @@ export const metaData = {
           10
         );
         const tranDateValue = dependentFields.TRAN_DT_D?.value;
-        // If any of the required fields are missing, return undefined early
         if (!tranDateValue || isNaN(periodNumber) || !duration) {
-          console.error("Missing or invalid required fields.");
           return undefined;
         }
 
-        try {
-          const tranDate = new Date(tranDateValue);
+        const tranDate = new Date(tranDateValue);
 
-          if (isNaN(tranDate.getTime())) {
-            return "";
-          }
+        if (isNaN(tranDate.getTime())) {
+          return "";
+        }
 
-          switch (duration) {
-            case "D":
-              return format(addDays(tranDate, periodNumber), "dd/MMM/yyyy");
-            case "M":
-              return format(addMonths(tranDate, periodNumber), "dd/MMM/yyyy");
-            case "Y":
-              return format(addYears(tranDate, periodNumber), "dd/MMM/yyyy");
-            default:
-              console.error("Invalid duration:", duration);
-              return undefined;
-          }
-        } catch (error) {
-          console.error("Error processing date:", error);
-          return undefined;
+        switch (duration) {
+          case "D":
+            return format(addDays(tranDate, periodNumber), "dd/MMM/yyyy");
+          case "M":
+            return format(addMonths(tranDate, periodNumber), "dd/MMM/yyyy");
+          case "Y":
+            return format(addYears(tranDate, periodNumber), "dd/MMM/yyyy");
+          default:
+            console.error("Invalid duration:", duration);
+            return undefined;
         }
       },
 
@@ -845,6 +837,7 @@ export const metaData = {
       render: { componentType: "autocomplete" },
       name: "ACCT_TYPE_P",
       label: "Type",
+      placeholder: "enterType",
       validationRun: "onBlur",
       required: true,
       _optionsKey: "gettypeDDWdata",
@@ -883,6 +876,7 @@ export const metaData = {
       render: { componentType: "autocomplete" },
       name: "CATEG_CD_P",
       label: "Category",
+      placeholder: "selectCategory",
       _optionsKey: "getCategoryDDWdata",
       options: (dependentValue, formState, _, authState) => {
         return API.getCategoryDDWdata({
@@ -946,6 +940,7 @@ export const metaData = {
       },
       name: "MATURITY_DT_P",
       label: "maturityDate",
+      placeholder: "selectMaturityDate",
       required: true,
       fullWidth: true,
       format: "dd/MM/yyyy",
@@ -961,15 +956,15 @@ export const metaData = {
           PERIODRATEAPI: { value: Date.now() },
         };
       },
-      // validate: (currentField, dependentField) => {
-      //   if (
-      //     new Date(currentField?.value) <
-      //     new Date(dependentField?.TRAN_DT_P?.value)
-      //   ) {
-      //     return "maturityDateValidationMsg";
-      //   }
-      //   return "";
-      // },
+      validate: (currentField, dependentField) => {
+        if (
+          new Date(currentField?.value) <
+          new Date(dependentField?.TRAN_DT_P?.value)
+        ) {
+          return "maturityDateValidationMsg";
+        }
+        return "";
+      },
 
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "P") {
@@ -1028,7 +1023,7 @@ export const metaData = {
           utilFunction.isValidDate(startDate) &&
           utilFunction.isValidDate(endDate)
         ) {
-          const formattedInitialDate = format(startDate, "yyyy-MM-dd"); // Format to YYYY-MM-DD
+          const formattedInitialDate = format(startDate, "yyyy-MM-dd");
           const start = new Date(formattedInitialDate);
           const end = new Date(endDate);
 
@@ -1060,6 +1055,7 @@ export const metaData = {
       name: "PRINCIPAL_AMT_P",
       required: true,
       label: "PrincipalAmount",
+      placeholder: "enterPrincipalAmount",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["principleAmtrequire"] }],
@@ -1090,7 +1086,7 @@ export const metaData = {
       name: "INT_RATE_P",
       label: "Rate",
       defaultValue: "0.00",
-      Placeholder: "0.00",
+      placeholder: "0.00",
       required: true,
       schemaValidation: {
         type: "string",
@@ -1121,6 +1117,7 @@ export const metaData = {
       name: "TERM_CD_P",
       label: "term",
       required: true,
+      placeholder: "selectTerm",
       options: [
         { label: "Monthly", value: "M" },
         { label: "Quarterly", value: "Q" },
@@ -1257,6 +1254,10 @@ export const metaData = {
       name: "PERIOD_NO_S",
       label: "",
       required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["periodNumberRequired"] }],
+      },
       GridProps: { xs: 1.5, sm: 1.5, md: 1.5, lg: 1, xl: 1 },
       preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       dependentFields: ["CALCSWITCH", "PERIOD_NO_DISP_S"],
@@ -1265,12 +1266,12 @@ export const metaData = {
         console.log(duration);
 
         return duration === "D"
-          ? { label: "Day(s)" }
+          ? { label: "Day(s)", placeholder: "enterDays" }
           : duration === "M"
-          ? { label: "Month(s)" }
+          ? { label: "Month(s)", placeholder: "enterMonths" }
           : duration === "Y"
-          ? { label: "Year(s)" }
-          : { label: "Day(s)" };
+          ? { label: "Year(s)", placeholder: "enterYears" }
+          : { label: "Day(s)", placeholder: "enterDays" };
       },
       shouldExclude: (val1, dependent) => {
         if (dependent?.CALCSWITCH?.value === "S") {
@@ -1315,52 +1316,38 @@ export const metaData = {
         let duration = dependentFields.PERIOD_NO_DISP_S?.value;
         let periodNumber = parseInt(dependentFields.PERIOD_NO_S?.value, 10);
         let tranDateValue = dependentFields?.TRAN_DT_S?.value;
-
         let newDate = "";
 
-        try {
-          if (tranDateValue) {
-            // Convert tranDateValue to a Date object
-            const tranDate = new Date(tranDateValue);
+        if (utilFunction.isValidDate(tranDateValue)) {
+          const tranDate = new Date(tranDateValue);
 
-            // Check if tranDate is a valid date
-            if (!isNaN(tranDate.getTime())) {
-              // Adjust the date based on the duration
-              switch (duration) {
-                case "D":
-                  newDate = format(
-                    addDays(tranDate, periodNumber),
-                    "dd/MMM/yyyy"
-                  );
-                  break;
-                case "M":
-                  newDate = format(
-                    addMonths(tranDate, periodNumber),
-                    "dd/MMM/yyyy"
-                  );
-                  break;
-                case "Y":
-                  newDate = format(
-                    addYears(tranDate, periodNumber),
-                    "dd/MMM/yyyy"
-                  );
-                  break;
-                default:
-                  console.error("Invalid duration");
-                  break;
-              }
-            } else {
-              console.error("Invalid date value");
+          if (!isNaN(tranDate.getTime())) {
+            let manipulatedDate;
+
+            switch (duration) {
+              case "D":
+                manipulatedDate = addDays(tranDate, periodNumber);
+                break;
+              case "M":
+                manipulatedDate = addMonths(tranDate, periodNumber);
+                break;
+              case "Y":
+                manipulatedDate = addYears(tranDate, periodNumber);
+                break;
+              default:
+                break;
             }
-          } else {
-            console.error("Transaction date value is missing");
-          }
-        } catch (error) {
-          console.error("Error processing date:", error);
-        }
-        console.log(newDate);
 
-        return newDate;
+            if (!isNaN(manipulatedDate.getTime())) {
+              newDate = format(manipulatedDate, "dd/MMM/yyyy");
+            } else {
+              console.error("Invalid date after manipulation", manipulatedDate);
+            }
+          }
+        }
+        if (utilFunction.isValidDate(newDate)) {
+          return newDate;
+        } else return "";
       },
 
       shouldExclude: (val1, dependent) => {
@@ -1370,7 +1357,6 @@ export const metaData = {
         return true;
       },
     },
-
     {
       render: {
         componentType: "autocomplete",
@@ -1378,6 +1364,7 @@ export const metaData = {
       name: "RATE_DEFINATION_S",
       label: "rateDefination",
       _optionsKey: "getFdRateDefination",
+      placeholder: "selectRateDefination",
       options: (dependentValue, formState, _, authState) => {
         return API.getFdRateDefination({
           COMP_CD: authState?.companyID,
@@ -1416,6 +1403,7 @@ export const metaData = {
       name: "CATEG_CD_F",
       label: "Category",
       _optionsKey: "getCategoryDDWdata",
+      placeholder: "selectCategory",
       options: (dependentValue, formState, _, authState) => {
         return API.getCategoryDDWdata({
           COMP_CD: authState?.companyID,
@@ -1462,6 +1450,7 @@ export const metaData = {
       },
       name: "RATE_DEFINATION_F",
       label: "Defination",
+      placeholder: "selectDefination",
       _optionsKey: "getFdDefinationDdw",
       options: (dependentValue, formState, _, authState) => {
         return API.getFdDefinationDdw({

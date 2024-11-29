@@ -85,7 +85,6 @@ const PayslipIsuueEntryform = ({
   const isErrorFuncRef = useRef<any>(null);
   const formDataRef = useRef<any>(null);
   const billType = useRef<any>(null);
-  const dummyCheckData = useRef<any>(null);
   const headerClasses = useTypeStyles();
   const { authState } = useContext(AuthContext);
   const [formMode, setFormMode] = useState(defaultView);
@@ -94,7 +93,6 @@ const PayslipIsuueEntryform = ({
   const [OpenSignature, setOpenSignature] = useState(false);
   const [jointDtlData, setjointDtlData] = useState([]);
   const [openForm, setopenForm] = useState(true);
-  const [accNumber, setAccNumber] = useState({});
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [mstState, setMstState] = useState<any>({
     PAYSLIP_MST_DTL: [
@@ -178,7 +176,7 @@ const PayslipIsuueEntryform = ({
       });
     },
     onSuccess: (data) => {
-      enqueueSnackbar("RecordRemovedMsg", {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       slipdataRefetch();
@@ -216,7 +214,7 @@ const PayslipIsuueEntryform = ({
         const btnName = await MessageBox({
           message: data[0]?.VOUCHER_MSG,
           messageTitle: t("voucherConfirmationMSG"),
-          icon: "CONFIRM",
+          icon: "INFO",
           buttonNames: ["Ok"],
         });
       }
@@ -248,7 +246,7 @@ const PayslipIsuueEntryform = ({
       }
 
       slipdataRefetch();
-      enqueueSnackbar("RecordInsertedMsg", {
+      enqueueSnackbar(t("RecordInsertedMsg"), {
         variant: "success",
       });
       closeDialog();
@@ -332,7 +330,7 @@ const PayslipIsuueEntryform = ({
       regionRefetch();
       setregionRefetch((prev) => prev + 1);
       setregionDialouge(false);
-      enqueueSnackbar("insertSuccessfully", {
+      enqueueSnackbar(t("insertSuccessfully"), {
         variant: "success",
       });
       CloseMessageBox();
@@ -587,6 +585,20 @@ const PayslipIsuueEntryform = ({
       queryClient.removeQueries(["draftdata"]);
       queryClient.removeQueries(["headerData"]);
       queryClient.removeQueries(["getSlipNo"]);
+    };
+  }, []);
+  useEffect(() => {
+    const handleKeyDown = async (event) => {
+      if ((event.ctrlKey && event.key === "j") || event.key === "J") {
+        setjointDtl(true);
+        event.preventDefault();
+      } else if (event && event?.key === "Escape") {
+        setjointDtl(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown, true);
     };
   }, []);
 
@@ -857,7 +869,6 @@ const PayslipIsuueEntryform = ({
               }}
               setDataOnFieldChange={async (action, paylod) => {
                 if (action === "DEF_TRAN_CD") {
-                  // setBillType(paylod.BILL_TYPE_CD)
                   billType.current = {
                     paylod,
                   };
@@ -888,6 +899,15 @@ const PayslipIsuueEntryform = ({
                 FLAG: rows?.[0]?.data.PENDING_FLAG === "Confirmed" ? "Y" : "N",
               }}
             />
+            {/* <Typography
+              sx={{
+                fontSize: "15px",
+                marginLeft: "20px",
+                display: "inline-block",
+              }}
+            >
+              {t("PressCtrlJToViewJointInformation")}
+            </Typography> */}
           </>
         ) : (
           <Paper sx={{ display: "flex", justifyContent: "center" }}>

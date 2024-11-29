@@ -15,7 +15,7 @@ import { t } from "i18next";
 import { LockerTrnsFormView } from "./lockerTrnsForm";
 import { LockerViewDetailsGrid } from "./lockerViewDetailsGrid";
 import { LockerTrnsEntry } from "./lockerTrnsEntry";
-import JointDetails from "../payslip-issue-entry/JointDetails";
+import JointDetails from "../DailyTransaction/TRNHeaderTabs/JointDetails";
 import { useMutation } from "react-query";
 import { getJointDetailsList } from "../payslip-issue-entry/api";
 export const dataContext = createContext<any>(null);
@@ -51,10 +51,9 @@ const LockerOperationTrns = () => {
   let currentPath = useLocation().pathname;
   const headerClasses = useTypeStyles();
   const { authState } = useContext(AuthContext);
-  const reqParaRef = useRef<any>({});
   const [payload, setPayload] = useState<any>();
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const [activeView, setActiveView] = useState<string>("master"); // "master", "detail", or "joint"
+  const [activeView, setActiveView] = useState<string>("master");
   const saveData = (values) => {
     setPayload(values);
   };
@@ -113,8 +112,10 @@ const LockerOperationTrns = () => {
                     </Grid>
                   </Grid>
                 </Typography>
-                <GradientButton>{t("Delete")}</GradientButton>
-                <GradientButton>{t("Save")}</GradientButton>
+                <GradientButton onClick={() => {}}>
+                  {t("delete")}
+                </GradientButton>
+                <GradientButton onClick={() => {}}>{t("Save")}</GradientButton>
               </Toolbar>
             </AppBar>
             <Box className={headerClasses.activeView}>
@@ -122,11 +123,21 @@ const LockerOperationTrns = () => {
               {activeView === "detail" && <LockerViewDetailsGrid />}
               {activeView === "joint" && (
                 <JointDetails
-                  data={jointDetailMutation?.data}
-                  loading={false}
-                  onClose={() => {}}
-                  hideHeader={true}
+                  reqData={{
+                    COMP_CD: authState?.companyID,
+                    BRANCH_CD: authState?.user?.branchCode,
+                    ACCT_CD: payload?.ACCT_CD,
+                    ACCT_TYPE: payload?.ACCT_TYPE,
+                    ACCT_NM: payload?.ACCT_NM ?? "",
+                    BTN_FLAG: "N",
+                  }}
                 />
+                // <JointDetails
+                //   data={jointDetailMutation?.data}
+                //   loading={false}
+                //   onClose={() => {}}
+                //   hideHeader={true}
+                // />
               )}
             </Box>
 

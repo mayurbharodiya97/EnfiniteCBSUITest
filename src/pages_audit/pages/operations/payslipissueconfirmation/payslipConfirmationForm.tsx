@@ -94,7 +94,7 @@ function PayslipConfirmationForm({
       },
       onError: async (error: any) => {
         await MessageBox({
-          message: error?.error_msg,
+          message: error?.error_detail,
           messageTitle: "Error",
           icon: "ERROR",
           buttonNames: ["Ok"],
@@ -105,7 +105,7 @@ function PayslipConfirmationForm({
   const rejectMutaion = useMutation("rejectMutaion", API.getEntryReject, {
     onSuccess: (data) => {
       SetDeleteRemark(false);
-      enqueueSnackbar(`${data}`, {
+      enqueueSnackbar(`${t("RecordRemovedMsg")}`, {
         variant: "success",
       });
       slipdataRefetch();
@@ -113,7 +113,7 @@ function PayslipConfirmationForm({
       closeDialog();
     },
     onError: async (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
@@ -364,6 +364,7 @@ function PayslipConfirmationForm({
               messageTitle: t("Confirmation"),
               message: t("DoYouWantDeleteRow"),
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
               defFocusBtnName: "Yes",
               loadingBtnName: ["Yes"],
             });

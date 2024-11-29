@@ -60,10 +60,10 @@ export const getCategoryDDWdata = async ({ COMP_CD, BRANCH_CD }) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ CATEG_NM, CATEG_CD, ...others }) => {
+      responseData = responseData.map(({ DISPLAY_NM, CATEG_CD, ...others }) => {
         return {
+          label: DISPLAY_NM,
           value: CATEG_CD,
-          label: CATEG_NM,
           ...others,
         };
       });

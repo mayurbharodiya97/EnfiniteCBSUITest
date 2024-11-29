@@ -236,18 +236,5 @@ export const selectConfigGridMetaData = {
       },
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
-    {
-      render: {
-        componentType: "textField",
-      },
-      dependentFields: ["DESCRIPTION"],
-      name: "TRAN_CD",
-      label: "TRAN_CD",
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        console.log(dependentFields);
-
-        return dependentFields?.DESCRIPTION?.optionData?.[0]?.DESCRIPTION ?? "";
-      },
-    },
   ],
 };

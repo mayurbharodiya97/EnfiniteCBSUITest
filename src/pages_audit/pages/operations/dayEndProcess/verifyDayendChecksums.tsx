@@ -337,7 +337,7 @@ export const VerifyDayendChecksums = ({
       for (const response of sessionDtl[0]?.MSG ?? []) {
         if (response?.O_STATUS === "999") {
           await MessageBox({
-            messageTitle: "ValidationFailed",
+            messageTitle: t("ValidationFailed"),
             message: response?.O_MESSAGE ?? "",
             icon: "ERROR",
           });
@@ -445,7 +445,7 @@ export const VerifyDayendChecksums = ({
           updateEodRunningStatus();
 
           await MessageBox({
-            messageTitle: "Validation Failed.",
+            messageTitle: `${t("ValidationFailed")}`,
             message:
               "At least one Mandatory CheckSum should be completed successfully.\nSorry for the inconvenience." +
               errCount.current,
@@ -479,6 +479,7 @@ export const VerifyDayendChecksums = ({
         for (const response of responses) {
           const status = response.O_STATUS;
           const message = response.O_MESSAGE;
+          const title = response.O_MSG_TITLE;
 
           if (status === "999") {
             const buttonName = await MessageBox({
@@ -490,13 +491,13 @@ export const VerifyDayendChecksums = ({
             if (buttonName === "Ok") close();
           } else if (status === "9") {
             await MessageBox({
-              messageTitle: "Alert",
+              messageTitle: title,
               message: message,
               icon: "WARNING",
             });
           } else if (status === "99") {
             const buttonName = await MessageBox({
-              messageTitle: "Confirmation",
+              messageTitle: title,
               message: message,
               icon: "CONFIRM",
               buttonNames: ["Yes", "No"],

@@ -14,6 +14,7 @@ import {
 } from "./api";
 import { MasterDetailsMetaData, utilFunction } from "@acuteinfo/common-base";
 import { validateHOBranch } from "components/utilFunction/function";
+import { t } from "i18next";
 
 export const RetrieveGridMetaData = {
   gridConfig: {
@@ -383,8 +384,6 @@ export const PayslipdetailsFormMetaData = {
       GridProps: { xs: 6, sm: 6, md: 6, lg: 2, xl: 1.5 },
       setValueOnDependentFieldsChange: (dependentFields) => {
         let totalValue = 0;
-
-        // Iterate through each row in PAYSLIP_MST_DTL
         dependentFields.PAYSLIP_MST_DTL.forEach((row) => {
           const amount = parseFloat(row?.AMOUNT?.value) || 0;
           const commission = parseFloat(row?.COMMISSION?.value) || 0;
@@ -521,8 +520,8 @@ export const AccdetailsFormMetaData = {
                   ?.length === 0
               ) {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "ValidationFailed",
-                  message: "Enter Account Branch.",
+                  messageTitle: t("ValidationFailed"),
+                  message: t("enterBranchCode"),
                   buttonNames: ["Ok"],
                   icon: "ERROR",
                 });
@@ -572,8 +571,8 @@ export const AccdetailsFormMetaData = {
                   ?.length === 0
               ) {
                 let buttonName = await formState?.MessageBox({
-                  messageTitle: "ValidationFailed",
-                  message: "Enter Account Type.",
+                  messageTitle: t("ValidationFailed"),
+                  message: t("enterAccountType"),
                   buttonNames: ["Ok"],
                   icon: "ERROR",
                 });
@@ -615,17 +614,12 @@ export const AccdetailsFormMetaData = {
 
                 let btn99, returnVal;
 
-                const getButtonName = async (obj) => {
-                  let btnName = await formState.MessageBox(obj);
-                  return { btnName, obj };
-                };
-
                 for (let i = 0; i < postData?.MSG.length; i++) {
                   if (postData?.MSG[i]?.O_STATUS === "999") {
                     const btnName = await formState.MessageBox({
                       messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
                       message: postData?.MSG[i]?.O_MESSAGE,
-                      icon: "CONFIRM",
+                      icon: "ERROR",
                     });
                     returnVal = "";
                   } else if (postData?.MSG[i]?.O_STATUS === "99") {
@@ -687,7 +681,6 @@ export const AccdetailsFormMetaData = {
                 };
               }
             },
-
             fullWidth: true,
             GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           },
@@ -1140,21 +1133,6 @@ export const AccdetailsFormMetaData = {
               return false;
             }
           },
-          // setValueOnDependentFieldsChange: (dependentFields) => {
-
-          //   if (dependentFields["PAYSLIP_MST_DTL"].length === 1) {
-          //     return ""
-          //   }
-          //   else {
-          //     const cctValue = dependentFields["PAYSLIP_MST_DTL.C_C_T"]?.value;
-
-          //     if (cctValue === "R") {
-          //       return false
-          //     }
-          //     return true
-          //   }
-          // },
-
           GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
         },
       ],
@@ -1376,7 +1354,6 @@ export const DraftdetailsFormMetaData = {
           FormatProps: {
             allowLeadingZeros: true,
             isAllowed: (values) => {
-              //@ts-ignore
               if (values?.value?.length > 12) {
                 return false;
               }
@@ -1469,9 +1446,7 @@ export const DraftdetailsFormMetaData = {
                   },
                 };
               } else if (!currentField?.value) {
-                return {
-                  // PAYSLIP_NO: { value: "", ignoreUpdate: true },
-                };
+                return {};
               }
               return {};
             }
@@ -1715,15 +1690,12 @@ export const DraftdetailsFormMetaData = {
                 },
               };
             }
-
-            return {};
           },
 
           FormatProps: {
             allowLeadingZeros: false,
             allowNegative: false,
             isAllowed: (values) => {
-              //@ts-ignore
               if (values?.value?.length > 13) {
                 return false;
               }
@@ -1849,12 +1821,6 @@ export const DraftdetailsFormMetaData = {
               return true;
             }
           },
-          // setValueOnDependentFieldsChange: (dependentFields) => {
-          //   if (dependentFields?.["PAYSLIP_DRAFT_DTL.C_C_T"]?.value !== "C") {
-          //     return ""
-          //   }
-          //   else return
-          // }
         },
         {
           render: { componentType: "autocomplete" },
@@ -2488,14 +2454,6 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
           return value;
         },
       },
-      // {
-      //   render: {
-      //     componentType: "hidden",
-      //   },
-      //   name: "COMM_TYPE_CD",
-      //   label: "TRAN_CD",
-
-      // },
     ],
   },
   detailsGrid: {
@@ -2507,7 +2465,6 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
       allowColumnReordering: true,
       hideHeader: true,
       disableGroupBy: true,
-      // enablePagination: true,
       containerHeight: { min: "40vh", max: "40vh" },
       allowRowSelection: false,
       hiddenFlag: "_hidden",
@@ -2545,16 +2502,6 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
         minWidth: 160,
         maxWidth: 200,
       },
-
-      // {
-      //   columnName: "Action",
-      //   componentType: "deleteRowCell",
-      //   accessor: "_hidden",
-      //   sequence: 6,
-      //   width: 160,
-      //   minWidth: 160,
-      //   maxWidth: 200,
-      // },
     ],
   },
 };
