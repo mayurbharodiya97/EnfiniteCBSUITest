@@ -27,7 +27,6 @@ import {
   ColorlibStepIconRoot,
 } from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
-import { enqueueSnackbar } from "notistack";
 import { PayslipAndDDForm } from "../payslipAndNEFT/payslipAndDDForm";
 import { BeneficiaryAcctDetailsForm } from "../payslipAndNEFT/beneficiaryAcctDetailsForm";
 import ClosingAdvice from "../closingAdvice";
@@ -39,9 +38,7 @@ import {
   usePopupContext,
   queryClient,
   utilFunction,
-  LoaderPaperComponent,
   SubmitFnType,
-  ActionTypes,
 } from "@acuteinfo/common-base";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -79,7 +76,6 @@ const RecurringPaymentStepperForm = ({
     updateSaveValidationData,
     updateBeneficiaryAcctData,
     updatePayslipAndDDData,
-    updateClosingAdviceData,
     updateDataForJasperParam,
     updateRecurPmtTransferData,
   } = useContext(RecurringContext);
@@ -518,7 +514,7 @@ const RecurringPaymentStepperForm = ({
         await MessageBox({
           messageTitle: "PaymentAmountNotTally",
           message: "PayslipAmountShouldTallyWithPaymentAmount",
-          icon: "WARNING",
+          icon: "ERROR",
         });
         return;
       } else {
@@ -551,7 +547,7 @@ const RecurringPaymentStepperForm = ({
         await MessageBox({
           message: "NEFTAmountShouldTallyWithPaymentAmount",
           messageTitle: "PaymentAmountNotTally",
-          icon: "WARNING",
+          icon: "ERROR",
         });
         return;
       } else {

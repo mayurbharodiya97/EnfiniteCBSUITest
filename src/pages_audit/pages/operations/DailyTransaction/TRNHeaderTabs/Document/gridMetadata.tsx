@@ -30,7 +30,7 @@ export const DocumentGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      columnName: "Sr No.",
+      columnName: "SrNo",
       accessor: "SR_CD",
       sequence: 1,
       componentType: "default",
@@ -57,7 +57,7 @@ export const DocumentGridMetaData: GridMetaDataType = {
       maxWidth: 140,
     },
     {
-      columnName: "Valid Upto",
+      columnName: "ValidUpto",
       accessor: "VALID_UPTO",
       sequence: 4,
       componentType: "date",
@@ -66,21 +66,21 @@ export const DocumentGridMetaData: GridMetaDataType = {
       width: 120,
     },
     {
-      columnName: "Entered From",
+      columnName: "EnteredFrom",
       accessor: "DOC_TYPE",
       sequence: 5,
       componentType: "default",
       width: 120,
     },
     {
-      columnName: "Document Type",
+      columnName: "DocumentType",
       accessor: "TEMPLATE_DOC_TYPE",
       sequence: 6,
       componentType: "default",
       width: 200,
     },
     {
-      columnName: "Document Amount",
+      columnName: "DocumentAmount",
       accessor: "DOC_AMOUNT",
       sequence: 7,
       componentType: "currency",
