@@ -1,1 +1,0 @@
-export { SingleDeno as default } from "./singleDeno";
