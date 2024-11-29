@@ -788,7 +788,6 @@ export const InwardClearing = () => {
                 })
               : null
           }
-          actionContextAtBottom={true}
           disableMultipleRowSelect={true}
           onClickActionEvent={async (index, id, data) => {
             if (id === "SIGN_PATH") {
@@ -831,7 +830,7 @@ export const InwardClearing = () => {
                       authState?.role < "2"
                         ? ["Yes", "No"]
                         : ["Yes", "No", "Cancel"],
-                    loadingBtnName: ["Yes" || "No"],
+                    loadingBtnName: ["Yes", "No"],
                   });
                   const postData = {
                     COMP_CD: data?.COMP_CD,

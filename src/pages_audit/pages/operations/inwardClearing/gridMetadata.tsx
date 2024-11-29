@@ -123,6 +123,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
+    hideActionBar: true,
   },
   filters: [],
 
