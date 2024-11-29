@@ -65,10 +65,8 @@ export const LockerViewDetailsGrid = () => {
         setData={() => null}
         onClickActionEvent={(index, id, currentData) => {
           if (id === "DELETE") {
-            alert("removed successfully...!");
           }
           if (id === "SIGN") {
-            alert("SIGN Opened successfully...!");
           }
         }}
         hideHeader={true}
