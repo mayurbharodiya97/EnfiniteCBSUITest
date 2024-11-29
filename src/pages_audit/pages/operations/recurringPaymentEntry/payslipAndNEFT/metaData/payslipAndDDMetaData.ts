@@ -388,6 +388,7 @@ export const PayslipAndDDFormMetaData = {
           label: "payslipNumber",
           placeholder: "EnterPayslipNumber",
           className: "textInputFromRight",
+          isFieldFocused: true,
           type: "number",
           maxLength: 12,
           dependentFields: ["DEF_TRAN_CD"],

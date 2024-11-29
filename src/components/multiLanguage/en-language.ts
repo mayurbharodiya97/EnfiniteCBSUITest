@@ -976,7 +976,7 @@ export const en_language_data = {
   stopDate: "Stop Date",
   realeaseDate: "Realease Date",
   Realease: "Realease",
-  AccountTypeReqired: "Account Type is Required",
+  AccountTypeReqired: "Account Type is required",
   AccountTypePlaceHolder: "Select Account Type",
   AccountNumber: "Account Code",
   AccountNumberReqired: "Account Code is Required",
