@@ -97,7 +97,6 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [isDeleteRemark, SetDeleteRemark] = useState(false);
   const [isChequeSign, setIsChequeSign] = useState<any>(false);
-  const [isVisibleSign, setIsVisibleSign] = useState<any>(false);
   const [isConfHistory, setIsConfHistory] = useState<any>(false);
   let currentPath = useLocation().pathname;
   const { data, isLoading, isError, error } = useQuery<any, any>(
@@ -365,7 +364,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       <GradientButton
                         onClick={() => {
                           mutation.mutate({
-                            COMP_CD: data?.[0]?.COMP_CD,
+                            COMP_CD: data?.[0]?.COMP_CD ?? authState?.companyID,
                             ENTERED_COMP_CD: data?.[0]?.ENTERED_COMP_CD,
                             ENTERED_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
                             BRANCH_CD: data?.[0]?.BRANCH_CD,
@@ -375,11 +374,10 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                             TRAN_CD: data?.[0]?.CHEQUE_DETAIL?.[0]?.CP_TRAN_CD,
                             TRAN_DT: data?.[0]?.TRAN_DT,
                             TRAN_FLAG: "E",
-                            WITH_SIGN: "Y",
+                            WITH_SIGN: "N",
                             ENTERED_BY: data?.[0]?.ENTERED_BY,
                           });
                           setIsChequeSign(true);
-                          setIsVisibleSign(false);
                         }}
                       >
                         {t("ViewCheque")}
@@ -620,7 +618,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                           <div style={{ paddingTop: 10 }}>
                             <ChequeSignImage
                               imgData={mutation?.data}
-                              // isVisibleSign={isVisibleSign}
+                              formData={{ WITH_SIGN: "N" }}
                             />
                           </div>
                         )}
