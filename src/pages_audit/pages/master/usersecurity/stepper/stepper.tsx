@@ -183,7 +183,7 @@ const CombinedStepper = ({ defaultView }) => {
           applicationdata: userRef?.current?.appContextData,
           branchdata: userRef?.current?.branchContextData,
           productdata: userRef?.current?.productContextData,
-          loginshiftdata: userRef?.current?.grid4,
+          loginshiftdata: userState?.grid4,
           biometricdata: userRef?.current?.grid5,
         });
       }
@@ -252,10 +252,15 @@ const CombinedStepper = ({ defaultView }) => {
           .map((row) => {
             return row;
           });
-        const filtered = UpdatedNewRecords.map((row) => ({
+        const filtered = appData?.map((row) => ({
           USER_NAME: UserId,
           APP_NM: row?.APP_NM,
-          LOGIN_ACCESS: row?.LOGIN_ACCESS ? "Y" : row?.LOGIN_ACCESS,
+          LOGIN_ACCESS:
+            row?.LOGIN_ACCESS === true
+              ? "Y"
+              : row?.LOGIN_ACCESS === false
+              ? "N"
+              : row?.LOGIN_ACCESS,
           APP_TRAN_CD: row?.TRAN_CD,
         }));
         let OldData = [];
@@ -265,7 +270,7 @@ const CombinedStepper = ({ defaultView }) => {
           ["APP_NM"]
         );
         dispatchCommon("commonType", { appContextData: CompareData });
-        if (filtered.length > 0) {
+        if (UpdatedNewRecords.length > 0) {
           setActiveStep(userState?.activeStep + 1);
         } else {
           return;
@@ -648,7 +653,7 @@ const CombinedStepper = ({ defaultView }) => {
             </Step>
           ))}
         </Stepper>
-        <Box style={{ marginTop: "0px" }}>
+        <Box style={{ margin: "0px 0px 2px 0px" }}>
           {userState?.activeStep === 0 ? (
             <OnBoard
               ref={FormData}
@@ -699,7 +704,7 @@ const CombinedStepper = ({ defaultView }) => {
             ) : (
               <BiometricLogins
                 ref={loginBiometricRef}
-                username={UserName}
+                username={rows?.[0]?.data}
                 defaultView={defaultView}
                 userId={UserId}
               />
@@ -711,44 +716,40 @@ const CombinedStepper = ({ defaultView }) => {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
-            pt: 2,
-            marginTop: "0px !important",
-            position: "relative",
+            margin: "3px 10px 0px 0px !important",
+            justifyContent: "right",
           }}
         >
-          <Box style={{ position: "fixed", bottom: "20px", right: "10px" }}>
-            {userState?.activeStep === 0 ? null : (
-              <GradientButton
-                onClick={() => {
-                  setIsBackButton(true);
-                  setActiveStep(userState?.activeStep - 1);
-                }}
-              >
-                Back
-              </GradientButton>
-            )}
-            {(defaultView === "edit" || defaultView === "new") && (
-              <>
-                {userState?.activeStep !== steps.length - 1 ? (
-                  <GradientButton onClick={handleComplete}>
-                    Save & Next
-                  </GradientButton>
-                ) : (
-                  <GradientButton onClick={handleComplete}>
-                    Finish
-                  </GradientButton>
-                )}
-              </>
-            )}
-            {defaultView === "view" && (
-              <>
-                {userState?.activeStep !== steps.length - 1 ? (
-                  <GradientButton onClick={handleComplete}>Next</GradientButton>
-                ) : null}
-              </>
-            )}
-          </Box>
+          {/* <Box style={{ position: "fixed", bottom: "20px", right: "10px" }}> */}
+          {userState?.activeStep === 0 ? null : (
+            <GradientButton
+              onClick={() => {
+                setIsBackButton(true);
+                setActiveStep(userState?.activeStep - 1);
+              }}
+            >
+              Previous
+            </GradientButton>
+          )}
+          {(defaultView === "edit" || defaultView === "new") && (
+            <>
+              {userState?.activeStep !== steps.length - 1 ? (
+                <GradientButton onClick={handleComplete}>
+                  Save & Next
+                </GradientButton>
+              ) : (
+                <GradientButton onClick={handleComplete}>Finish</GradientButton>
+              )}
+            </>
+          )}
+          {defaultView === "view" && (
+            <>
+              {userState?.activeStep !== steps.length - 1 ? (
+                <GradientButton onClick={handleComplete}>Next</GradientButton>
+              ) : null}
+            </>
+          )}
+          {/* </Box> */}
         </Box>
       </Stack>
     </Fragment>

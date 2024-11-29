@@ -2925,6 +2925,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/VALIDATEACCOUNTDTL",
     packageName: "",
   },
+  VALIDATECUSTID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATECUSTID",
+    packageName: "",
+  },
   GETBRANCHDDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHDDDW",
     packageName: "",
