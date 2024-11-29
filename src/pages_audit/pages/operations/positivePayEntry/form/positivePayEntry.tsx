@@ -231,7 +231,9 @@ export const PositivePayEntry = ({
             for (let i = 0; i < data?.length; i++) {
               if (data[i]?.O_STATUS === "999") {
                 const btnName = await MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: data[i]?.O_MSG_TITLE
+                    ? data[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Ok"],
                   icon: "ERROR",
@@ -240,14 +242,18 @@ export const PositivePayEntry = ({
                   endSubmit(true);
                 }
               } else if (data[i]?.O_STATUS === "9") {
-                const btnName = await MessageBox({
-                  messageTitle: "Alert",
+                await MessageBox({
+                  messageTitle: data[i]?.O_MSG_TITLE
+                    ? data[i]?.O_MSG_TITLE
+                    : "Alert",
                   message: data[i]?.O_MESSAGE,
                   icon: "WARNING",
                 });
               } else if (data[i]?.O_STATUS === "99") {
                 const btnName = await MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: data[i]?.O_MSG_TITLE
+                    ? data[i]?.O_MSG_TITLE
+                    : "Confirmation",
                   message: data[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "CONFIRM",
@@ -551,21 +557,27 @@ export const PositivePayEntry = ({
                       onSuccess: async (data, variables) => {
                         for (let i = 0; i < data?.length; i++) {
                           if (data[i]?.O_STATUS === "999") {
-                            const btnName = await MessageBox({
-                              messageTitle: "ValidationFailed",
+                            await MessageBox({
+                              messageTitle: data[i]?.O_MSG_TITLE
+                                ? data[i]?.O_MSG_TITLE
+                                : "ValidationFailed",
                               message: data[i]?.O_MESSAGE,
                               buttonNames: ["Ok"],
                               icon: "ERROR",
                             });
                           } else if (data[i]?.O_STATUS === "9") {
-                            const btnName = await MessageBox({
-                              messageTitle: "Alert",
+                            await MessageBox({
+                              messageTitle: data[i]?.O_MSG_TITLE
+                                ? data[i]?.O_MSG_TITLE
+                                : "Alert",
                               message: data[i]?.O_MESSAGE,
                               icon: "WARNING",
                             });
                           } else if (data[i]?.O_STATUS === "99") {
                             const btnName = await MessageBox({
-                              messageTitle: "Confirmation",
+                              messageTitle: data[i]?.O_MSG_TITLE
+                                ? data[i]?.O_MSG_TITLE
+                                : "Confirmation",
                               message: data[i]?.O_MESSAGE,
                               buttonNames: ["Yes", "No"],
                             });

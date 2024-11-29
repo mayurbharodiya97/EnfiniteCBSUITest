@@ -16,7 +16,7 @@ export const ResponseParametersForm = ({
   closeDialog,
   retrievalParaValues,
 }) => {
-  const { MessageBox, CloseMessageBox } = usePopupContext();
+  const { MessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
   const retrieveDataRef = useRef<any>(null);

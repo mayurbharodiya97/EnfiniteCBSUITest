@@ -123,6 +123,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
+    hideActionBar: true,
   },
   filters: [],
 
@@ -210,13 +211,17 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     {
       columnName: "",
       componentType: "buttonRowCell",
-      accessor: "SIGN_PATH",
+      accessor: "WITH_SIGN",
       sequence: 7,
-      buttonLabel: "ChequeSign",
       isVisible: true,
       width: 100,
       minWidth: 120,
       maxWidth: 140,
+      setButtonName: (initialValue) => {
+        if (initialValue) {
+          return initialValue === "Y" ? "ChequeSign" : "ViewCheque";
+        }
+      },
     },
     {
       columnName: "",

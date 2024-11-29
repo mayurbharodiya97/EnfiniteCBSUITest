@@ -177,7 +177,7 @@ export const APBSAcctRegistrationForm = ({
               Boolean(variables?._isNewRow)
                 ? await MessageBox({
                     messageTitle: "Confirmation",
-                    message: `Request accepted, Registration No is ${format(
+                    message: `${t("RequestAcceptedRegistrationNo")} ${format(
                       new Date(authState?.workingDate),
                       "yyyy/MMM/dd"
                     )} - ${Boolean(data?.[0]?.TRAN_CD) ? tranCd : ""}`,
@@ -337,7 +337,7 @@ export const APBSAcctRegistrationForm = ({
                     }}
                     color={"primary"}
                   >
-                    {t("View UID Response")}
+                    {t("ViewUIDResponse")}
                   </GradientButton>
                 ) : null}
                 <GradientButton
@@ -451,7 +451,7 @@ export const APBSAcctRegistrationForm = ({
                     }}
                     color={"primary"}
                   >
-                    {t("View UID Response")}
+                    {t("ViewUIDResponse")}
                   </GradientButton>
                 ) : null}
                 {rows?.[0]?.data?.ALLOW_DELETE === "Y" ? (
