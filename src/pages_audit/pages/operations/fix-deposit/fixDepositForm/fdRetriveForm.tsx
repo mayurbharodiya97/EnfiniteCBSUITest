@@ -10,6 +10,7 @@ import {
   FormWrapper,
   MetaDataType,
 } from "@acuteinfo/common-base";
+import { useTranslation } from "react-i18next";
 
 export const FDRetriveForm = ({ handleDialogClose, getFDViewDtlMutation }) => {
   const {
@@ -21,6 +22,7 @@ export const FDRetriveForm = ({ handleDialogClose, getFDViewDtlMutation }) => {
   } = useContext(FDContext);
   const { MessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -83,10 +85,10 @@ export const FDRetriveForm = ({ handleDialogClose, getFDViewDtlMutation }) => {
               disabled={isSubmitting || FDState?.disableButton}
               color={"primary"}
             >
-              Ok
+              {t("Ok")}
             </GradientButton>
             <GradientButton onClick={() => handleDialogClose(false)}>
-              Close
+              {t("Close")}
             </GradientButton>
           </>
         )}

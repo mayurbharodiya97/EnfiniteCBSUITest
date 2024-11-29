@@ -1,5 +1,5 @@
 import { Dialog } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
 import { FDContext } from "../context/fdContext";
 import { PaymentRenewBtnsMetadata } from "./metaData/fdPaymentMetadata";
@@ -13,8 +13,8 @@ import {
   MetaDataType,
   usePopupContext,
 } from "@acuteinfo/common-base";
-import { useTranslation } from "react-i18next";
 import FDPaymentStepperForm from "./fdPaymentStepper";
+import { useTranslation } from "react-i18next";
 
 type FDPaymentProps = {
   handleDialogClose?: any;
@@ -25,7 +25,6 @@ type FDPaymentProps = {
 export const FDPaymentBtns: React.FC<FDPaymentProps> = ({
   handleDialogClose,
   isDataChangedRef,
-  openIntPayment,
 }) => {
   const { FDState, updateFDPaymentData } = useContext(FDContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
@@ -140,7 +139,7 @@ export const FDPaymentBtns: React.FC<FDPaymentProps> = ({
           }}
         >
           <GradientButton onClick={() => handleDialogClose()}>
-            Close
+            {t("Close")}
           </GradientButton>
         </FormWrapper>
       </Dialog>

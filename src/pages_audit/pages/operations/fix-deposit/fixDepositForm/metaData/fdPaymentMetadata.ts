@@ -1,13 +1,13 @@
 import * as API from "../../api";
 import { checkTokenValidate } from "pages_audit/pages/operations/recurringPaymentEntry/api";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { utilFunction } from "@acuteinfo/common-base";
 
 //FD Payment/Renew buttons form metadata
 export const PaymentRenewBtnsMetadata = {
   form: {
     name: "paymentbtns",
-    label: "FD Payment/Renew",
+    label: "FDPaymentRenew",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -39,7 +39,7 @@ export const PaymentRenewBtnsMetadata = {
         componentType: "formbutton",
       },
       name: "FD_PAYMENT",
-      label: "FD Payment",
+      label: "FDPayment",
       endIcon: "CircularProgress",
       GridProps: { xs: 6, sm: 6, md: 6, lg: 6, xl: 6 },
     },
@@ -48,7 +48,7 @@ export const PaymentRenewBtnsMetadata = {
         componentType: "formbutton",
       },
       name: "RENEW_FD",
-      label: "Renew FD",
+      label: "RenewFD",
       endIcon: "CircularProgress",
       GridProps: { xs: 6, sm: 6, md: 6, lg: 6, xl: 6 },
     },
@@ -59,7 +59,7 @@ export const PaymentRenewBtnsMetadata = {
 export const FDPaymentMetadata = {
   form: {
     name: "FDPayment",
-    label: "FD Details",
+    label: "FDDetails",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -138,7 +138,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "FIN_START_DATE_HEADER",
-      label: "Financial Start Date",
+      label: "FinancialStartDate",
       TypographyProps: {
         variant: "subtitle2",
         style: {
@@ -182,7 +182,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "TDS_AND_SURCH_HEADER",
-      label: "TDS & Surcharge",
+      label: "TDSAndSurcharge",
       TypographyProps: {
         variant: "subtitle2",
         style: {
@@ -226,7 +226,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "TDS_UPTO_TYPO",
-      label: "TDS Up To :",
+      label: "TDSUpToWithColon",
       TypographyProps: {
         variant: "subtitle2",
         style: {
@@ -542,7 +542,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "INT_PAID_TYPO",
-      label: "Int Paid :",
+      label: "IntPaidWithColon",
       TypographyProps: {
         variant: "subtitle2",
         style: {
@@ -699,7 +699,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "INT_PROV_TYPO",
-      label: "Int Prov. :",
+      label: "IntProvWithColon",
       TypographyProps: {
         variant: "subtitle2",
         style: {
@@ -806,7 +806,7 @@ export const FDPaymentMetadata = {
           ) {
             let btnName = await formState.MessageBox({
               messageTitle: "ValidationFailed",
-              message: "Invalid Amount",
+              message: "InvalidAmount",
               icon: "ERROR",
             });
             if (btnName === "Ok") {
@@ -879,7 +879,7 @@ export const FDPaymentMetadata = {
           ) {
             let btnName = await formState.MessageBox({
               messageTitle: "ValidationFailed",
-              message: "Invalid Amount",
+              message: "InvalidAmount",
               icon: "ERROR",
             });
             if (btnName === "Ok") {
@@ -898,7 +898,7 @@ export const FDPaymentMetadata = {
           ) {
             let btnName = await formState.MessageBox({
               messageTitle: "ValidationFailed",
-              message: "Invalid Amount",
+              message: "InvalidAmount",
               icon: "ERROR",
             });
             if (btnName === "Ok") {
@@ -980,7 +980,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "INT_FROM_TYPO",
-      label: "Int From :",
+      label: "IntFromWithColon",
       TypographyProps: {
         variant: "subtitle2",
         style: {
@@ -1121,7 +1121,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "MAT_INT_RATE",
-      label: "Mat Int Rate :",
+      label: "MatIntRateWithColon",
       shouldExclude: (_, dependentFieldsValues, formState) => {
         if (Boolean(formState?.openIntPayment)) {
           return true;
@@ -1276,7 +1276,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "TO",
-      label: "To :",
+      label: "ToWithColon",
       TypographyProps: {
         variant: "subtitle2",
         style: {
@@ -1436,6 +1436,12 @@ export const FDPaymentMetadata = {
         }
         return {};
       },
+      validate: (currentField, dependentFields, formState) => {
+        if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+          return "Mustbeavaliddate";
+        }
+        return "";
+      },
       isReadOnly(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.DISABLE_PAID_DT?.value?.trim() === "Y") {
           return true;
@@ -1459,7 +1465,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "RATE%",
-      label: "Rate :",
+      label: "RateWithColon",
       TypographyProps: {
         variant: "subtitle2",
         style: {
@@ -1549,7 +1555,7 @@ export const FDPaymentMetadata = {
           };
           const buttonName = await formState?.MessageBox({
             messageTitle: "Confirmation",
-            message: "Ason Calculation Required?",
+            message: "AsonCalculationRequired",
             buttonNames: ["Yes", "No"],
             defFocusBtnName: "Yes",
             icon: "CONFIRM",
@@ -1700,7 +1706,7 @@ export const FDPaymentMetadata = {
           ) {
             let btnName = await formState.MessageBox({
               messageTitle: "ValidationFailed",
-              message: "Invalid Amount",
+              message: "InvalidAmount",
               icon: "ERROR",
             });
             if (btnName === "Ok") {
@@ -1773,7 +1779,7 @@ export const FDPaymentMetadata = {
           ) {
             let btnName = await formState.MessageBox({
               messageTitle: "ValidationFailed",
-              message: "Invalid Amount",
+              message: "InvalidAmount",
               icon: "ERROR",
             });
             if (btnName === "Ok") {
@@ -1855,7 +1861,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "BALANCE_TYPO",
-      label: "Balance :",
+      label: "BalanceWithColon",
       shouldExclude: (_, dependentFieldsValues, formState) => {
         if (Boolean(formState?.openIntPayment)) {
           return true;
@@ -2037,7 +2043,7 @@ export const FDPaymentMetadata = {
           ) {
             let btnName = await formState.MessageBox({
               messageTitle: "ValidationFailed",
-              message: "Invalid Amount",
+              message: "InvalidAmount",
               icon: "ERROR",
             });
             if (btnName === "Ok") {
@@ -2124,7 +2130,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "TOTAL_AMT_TYPO",
-      label: "Total Amt. :",
+      label: "TotalAmt",
       TypographyProps: {
         variant: "subtitle2",
         style: {
@@ -2150,7 +2156,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "TOKEN_NO_TYPO",
-      label: "Token No. :",
+      label: "TokenNoWithColon",
       dependentFields: ["CASH_TOTAL"],
       shouldExclude: (_, dependentFieldsValues, __) => {
         if (Boolean(dependentFieldsValues?.CASH_TOTAL?.value)) {
@@ -2211,7 +2217,7 @@ export const FDPaymentMetadata = {
       FormatProps: {
         allowLeadingZeros: false,
         allowNegative: false,
-        placeholder: "Enter Token Number",
+        placeholder: "EnterTokenNumber",
         isAllowed: (values) => {
           if (values?.value?.length > 10) {
             return false;
@@ -2511,7 +2517,7 @@ export const FDPaymentMetadata = {
         componentType: "typography",
       },
       name: "FD_REM_TYPO",
-      label: "FD Remark :",
+      label: "FDRemarkWithColon",
       shouldExclude: (_, dependentFieldsValues, formState) => {
         if (Boolean(formState?.openIntPayment)) {
           return true;
@@ -2566,6 +2572,7 @@ export const FDPaymentMetadata = {
       },
       name: "FD_REMARK",
       label: "",
+      placeholder: "EnterFDRemark",
       shouldExclude: (_, dependentFieldsValues, formState) => {
         if (Boolean(formState?.openIntPayment)) {
           return true;
@@ -2608,7 +2615,7 @@ export const FDPaymentMetadata = {
     {
       render: { componentType: "checkbox" },
       name: "PAYSLIP",
-      label: "By Payslip",
+      label: "ByPayslipDD",
       dependentFields: ["TRANSFER_TOTAL", "RTGS_NEFT"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
         if (Number(dependentFieldsValues?.TRANSFER_TOTAL?.value) > 0) {
@@ -2670,7 +2677,7 @@ export const FDPaymentMetadata = {
     {
       render: { componentType: "checkbox" },
       name: "RTGS_NEFT",
-      label: "By NEFT",
+      label: "ByNEFT",
       dependentFields: ["TRANSFER_TOTAL", "PAYSLIP"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
         if (Number(dependentFieldsValues?.TRANSFER_TOTAL?.value) > 0) {
