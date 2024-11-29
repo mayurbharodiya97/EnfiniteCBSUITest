@@ -25,15 +25,10 @@ export const CounterContext = createContext<any>(null);
 export const EMICalculatorForm = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
-  const emiCalRef = useRef<any>(null);
-  const dataRef = useRef<any>(null);
   const emiHeaderRef = useRef<any>(null);
   const [disburseData, setDisburseData] = useState<any>(null);
   const [refreshForm, setRefreshForm] = useState<number>(0);
-  const [disbursementFlag, setDisbursementFlag] = useState<boolean>(false);
-  const scheduleDtlref = useRef<any>({});
   const calculateData = useRef<any>({});
-  const [open, setOpen] = useState(false);
   const [mergedData, setMergedData] = useState<any>([]);
   const [fileBlob, setFileBlob] = useState<any>(null);
   const [openPrint, setOpenPrint] = useState<any>(null);
@@ -84,6 +79,7 @@ export const EMICalculatorForm = () => {
       ],
     });
   };
+  console.log(calculateData.current, "refData");
 
   const mutation = useMutation(emiCalculateData, {
     onError: (error: any) => {},
@@ -134,44 +130,41 @@ export const EMICalculatorForm = () => {
       SCHEDULE_DTL:
         calculateData.current[0]?.length === 1
           ? [calculateData.current[3]]
-          : calculateData.current[0],
+          : calculateData.current[2],
       A_GD_DATE: authState?.workingDate ?? "",
       SCREEN_REF: "RPT/1199",
     };
     mutation.mutate(requestData, {
       onSuccess: async (data) => {
-        ReportMutation.mutate(requestData);
-        // for (let i = 0; i < data?.length; i++) {
-        //   if (data[i]?.O_STATUS === "999") {
-        //     const btnName = await MessageBox({
-        //       messageTitle: data[i]?.O_MSG_TITLE || "ValidationFailed",
-        //       message: data[i]?.O_MESSAGE,
-        //       buttonNames: ["Ok"],
-        //       icon: "ERROR",
-        //     });
-        //   } else if (data[i]?.O_STATUS === "9") {
-        //     const btnName = await MessageBox({
-        //       messageTitle: data[i]?.O_MSG_TITLE || "Alert",
-        //       message: data[i]?.O_MESSAGE,
-        //       icon: "WARNING",
-        //     });
-        //   } else if (data[i]?.O_STATUS === "99") {
-        //     const btnName = await MessageBox({
-        //       messageTitle: data[i]?.O_MSG_TITLE || "Confirmation",
-        //       message: data[i]?.O_MESSAGE,
-        //       buttonNames: ["Yes", "No"],
-        //       icon: "CONFIRM",
-        //     });
-        //     if (btnName === "No") {
-        //       break;
-        //     }
-        //   } else if (
-        //     Boolean(data[i]?.V_MSG) &&
-        //     data[i]?.V_MSG[0].O_STATUS === "0"
-        //   ) {
-        //     ReportMutation.mutate(requestData);
-        //   }
-        // }
+        // ReportMutation.mutate(requestData);
+        for (let i = 0; i < data?.length; i++) {
+          if (data[i]?.O_STATUS === "999") {
+            const btnName = await MessageBox({
+              messageTitle: data[i]?.O_MSG_TITLE || "ValidationFailed",
+              message: data[i]?.O_MESSAGE,
+              buttonNames: ["Ok"],
+              icon: "ERROR",
+            });
+          } else if (data[i]?.O_STATUS === "9") {
+            const btnName = await MessageBox({
+              messageTitle: data[i]?.O_MSG_TITLE || "Alert",
+              message: data[i]?.O_MESSAGE,
+              icon: "WARNING",
+            });
+          } else if (data[i]?.O_STATUS === "99") {
+            const btnName = await MessageBox({
+              messageTitle: data[i]?.O_MSG_TITLE || "Confirmation",
+              message: data[i]?.O_MESSAGE,
+              buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
+            });
+            if (btnName === "No") {
+              break;
+            }
+          } else {
+            ReportMutation.mutate(requestData);
+          }
+        }
       },
       onError: (data) => {},
     });

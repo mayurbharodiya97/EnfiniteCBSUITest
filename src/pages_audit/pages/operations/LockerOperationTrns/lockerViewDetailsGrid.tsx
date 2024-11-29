@@ -63,6 +63,14 @@ export const LockerViewDetailsGrid = () => {
         finalMetaData={lockerDeatilsViewMetadata as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
+        onClickActionEvent={(index, id, currentData) => {
+          if (id === "DELETE") {
+            alert("removed successfully...!");
+          }
+          if (id === "SIGN") {
+            alert("SIGN Opened successfully...!");
+          }
+        }}
         hideHeader={true}
         actions={[]}
         loading={isLoading || isFetching}

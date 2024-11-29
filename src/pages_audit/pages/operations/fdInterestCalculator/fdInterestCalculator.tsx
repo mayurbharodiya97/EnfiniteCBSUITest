@@ -103,7 +103,6 @@ const FdInterestCalculator = () => {
           COMP_CD: authState?.companyID,
           BRANCH_CD: authState?.user?.branchCode,
           HANDBOOK_FLG: "Y",
-          // FR_DT: data?.TRAN_DT_S,
           FR_DT: format(new Date(data?.TRAN_DT_S), "dd/MMM/yyyy"),
           PERIOD_CD:
             data?.PERIOD_NO_DISP_S === "D"

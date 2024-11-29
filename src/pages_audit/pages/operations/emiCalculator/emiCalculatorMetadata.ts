@@ -70,7 +70,6 @@ export const EmiCalculatorFormMetadata = {
           INST_PERIOD: dependentFieldValues?.INST_PERIOD?.value ?? "",
           INSTALLMENT_NO: dependentFieldValues?.INSTALLMENT_NO?.value ?? "",
           DATA_VAL: dependentFieldValues?.DATA_VAL?.value ?? "",
-          LOAN_AMT_MAIN: dependentFieldValues?.LOAN_AMT_MAIN?.value ?? "",
         });
         formState.setDataOnFieldChange("RESET_DATA", { RESET_DATA: false });
       },

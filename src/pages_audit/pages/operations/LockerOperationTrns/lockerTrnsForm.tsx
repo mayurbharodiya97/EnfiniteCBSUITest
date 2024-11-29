@@ -5,7 +5,6 @@ import {
   MetaDataType,
   SubmitFnType,
   usePopupContext,
-  utilFunction,
 } from "@acuteinfo/common-base";
 import { Fragment } from "react/jsx-runtime";
 import { useContext, useEffect, useState } from "react";
@@ -20,7 +19,7 @@ const LockerTrnsForm = () => {
   const [formMode, setFormMode] = useState("add");
   const { authState } = useContext(AuthContext);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const { payload } = useContext(dataContext);
+  const { saveData, payload } = useContext(dataContext);
   const [callCount, setCallCount] = useState(0);
 
   const viewMasterMutation = useMutation(getLockerViewMst, {
@@ -37,7 +36,10 @@ const LockerTrnsForm = () => {
       });
     },
     onSuccess: (data) => {
-      console.log(data, "Master View Data");
+      saveData((prev) => ({
+        ...prev,
+        ACCT_NM: data[0].ACCT_NM,
+      }));
     },
   });
 
@@ -53,8 +55,6 @@ const LockerTrnsForm = () => {
       });
     }
   }, [payload?.ACCT_CD]);
-
-  console.log(callCount, "counter");
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,

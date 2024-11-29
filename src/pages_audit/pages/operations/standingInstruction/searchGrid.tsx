@@ -4,7 +4,7 @@ import { searchButttonGridMetaData } from "./metaData/gridMetaData";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { useQuery } from "react-query";
-import { Dialog } from "@mui/material";
+import { Dialog, Paper, Typography } from "@mui/material";
 import SiExecuteDetailView from "./siExecuteDetailView";
 import { DeleteDialog } from "./deleteDialog";
 import {
@@ -14,6 +14,7 @@ import {
   GridMetaDataType,
   LoaderPaperComponent,
 } from "@acuteinfo/common-base";
+import { t } from "i18next";
 const actions: ActionTypes[] = [
   {
     actionName: "view-all",
@@ -117,22 +118,31 @@ const SearchGrid = ({ open, onClose, mainRefetch }) => {
         maxWidth="lg"
       >
         {apidata ? (
-          <GridWrapper
-            key={"searchButttonGridMetaData"}
-            finalMetaData={searchButttonGridMetaData as GridMetaDataType}
-            loading={isLoading || isFetching}
-            data={uniqueData ?? []}
-            setData={() => null}
-            actions={actions}
-            setAction={setCurrentAction}
-            refetchData={() => sirefetch()}
-            onClickActionEvent={(index, id, currentData) => {
-              if (id === "delete") {
-                setDeleteOpen(true);
-                setCurrentRowData(currentData);
-              }
-            }}
-          />
+          <>
+            <GridWrapper
+              key={"searchButttonGridMetaData"}
+              finalMetaData={searchButttonGridMetaData as GridMetaDataType}
+              loading={isLoading || isFetching}
+              data={uniqueData ?? []}
+              setData={() => null}
+              actions={actions}
+              setAction={setCurrentAction}
+              refetchData={() => sirefetch()}
+              onClickActionEvent={(index, id, currentData) => {
+                if (id === "delete") {
+                  setDeleteOpen(true);
+                  setCurrentRowData(currentData);
+                }
+              }}
+            />
+            <Paper>
+              <Typography
+                color="inherit"
+                variant={"h4"}
+                component="div"
+              ></Typography>
+            </Paper>
+          </>
         ) : (
           <LoaderPaperComponent />
         )}
