@@ -46,9 +46,8 @@ export const ChequeSignImage: FC<{
   loading?: any;
   error?: any;
   acSignImage?: any;
-  isVisibleSign?: any;
   formData?: any;
-}> = ({ imgData, loading, error, acSignImage, isVisibleSign, formData }) => {
+}> = ({ imgData, acSignImage, formData }) => {
   const [chequeImageURL, setChequeImageURL] = useState<any>(null);
   const [signImageURL, setSignImageURL] = useState<any>();
   const urlObj = useRef<any>(null);
@@ -68,7 +67,6 @@ export const ChequeSignImage: FC<{
     const newRotateValue = (rotateImg + 90) % 360;
     setRotate(newRotateValue);
   };
-
   useEffect(() => {
     const img = new Image();
     img.src = selectedImageUrl;
@@ -339,7 +337,7 @@ export const ChequeSignImage: FC<{
           </Carousel>{" "}
         </Grid>
         <>
-          {isVisibleSign === undefined ? (
+          {formData?.WITH_SIGN === "Y" ? (
             <>
               <Grid item xs={12} md={4} sm={4} lg={4} xl={4}>
                 <div style={{ paddingRight: "40px" }}>

@@ -26,7 +26,7 @@ export const ChequeSignForm: FC<{
     TRAN_CD: reqDataRef.current?.TRAN_CD ?? "",
     TRAN_DT: format(new Date(reqDataRef.current?.TRAN_DT), "dd/MMM/yyyy") ?? "",
     TRAN_FLAG: "E",
-    WITH_SIGN: "Y",
+    WITH_SIGN: reqDataRef?.current?.WITH_SIGN ?? "",
     ENTERED_BY: reqDataRef.current?.ENTERED_BY ?? "",
   };
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<

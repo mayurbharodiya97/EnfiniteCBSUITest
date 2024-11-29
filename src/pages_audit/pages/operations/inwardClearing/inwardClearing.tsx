@@ -790,7 +790,7 @@ export const InwardClearing = () => {
           }
           disableMultipleRowSelect={true}
           onClickActionEvent={async (index, id, data) => {
-            if (id === "SIGN_PATH") {
+            if (id === "WITH_SIGN") {
               mysubdtlRef.current = data;
               setState((prevState) => ({
                 ...prevState,
