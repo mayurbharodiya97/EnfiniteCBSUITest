@@ -92,7 +92,7 @@ export const kyc_proof_of_identity_meta_data = {
       schemaValidation: {
         type: "string",
         rules: [
-          { name: "required", params: ["ThisFieldisrequired"] },
+          { name: "required", params: ["PanNoIsRequired"] },
           {
             name: "pancard",
             params: ["Please Enter Valid PAN Number"],
@@ -121,7 +121,7 @@ export const kyc_proof_of_identity_meta_data = {
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["AdhaarIsRequired"] }],
       },
       validate: (columnValue, allField, flag) =>
         API.validateUniqueId(columnValue, allField, flag),
@@ -570,7 +570,7 @@ export const kyc_proof_of_address_meta_data = {
       maxLength: 50,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["Line1IsRequired"] }],
       },
       validate: (columnValue, allField, flag) =>
         API.AlphaNumericValidate(columnValue),
@@ -616,7 +616,7 @@ export const kyc_proof_of_address_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PINIsRequired"] }],
       },
       maxLength: 6,
       FormatProps: {
@@ -726,7 +726,7 @@ export const kyc_proof_of_address_meta_data = {
       label: "City",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["CityIsRequired"] }],
       },
       isReadOnly: true,
       placeholder: "",
@@ -874,7 +874,7 @@ export const kyc_proof_of_address_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["ProofofAddressIsRequired"] }],
       },
       placeholder: "",
       type: "text",
@@ -998,7 +998,7 @@ export const kyc_proof_of_address_meta_data = {
       maxLength: 50,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["Line1IsRequired"] }],
       },
       validate: (columnValue, allField, flag) =>
         API.AlphaNumericValidate(columnValue),
@@ -1123,7 +1123,7 @@ export const kyc_proof_of_address_meta_data = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PINIsRequired"] }],
       },
       validate: (columnValue) => {
         const PIN = columnValue.value;
@@ -1566,7 +1566,7 @@ export const kyc_proof_of_address_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["MobileNoIsRequired"] }],
       },
       placeholder: "",
       maxLength: 3,
@@ -1588,7 +1588,7 @@ export const kyc_proof_of_address_meta_data = {
       name: "CONTACT2",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["MobileNoIsRequired"] }],
       },
       label: "",
       required: true,
@@ -1665,7 +1665,7 @@ export const kyc_proof_of_address_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["EmailIDIsRequired"] }],
       },
       maxLength: 60,
       // validate: (columnValue, allField, flag) => API.validateEmailID(columnValue),
@@ -1799,7 +1799,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["Line1IsRequired"] }],
       },
       placeholder: "",
       maxLength: 50,
@@ -1843,7 +1843,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PINIsRequired"] }],
       },
       maxLength: 6,
       FormatProps: {
@@ -2024,7 +2024,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["CityIsRequired"] }],
       },
       isReadOnly: true,
       placeholder: "",
@@ -2109,7 +2109,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["ProofofAddressIsRequired"] }],
       },
       placeholder: "",
       type: "text",
@@ -2189,7 +2189,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["Line1IsRequired"] }],
       },
       maxLength: 50,
       validate: (columnValue, allField, flag) =>
@@ -2251,7 +2251,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       // },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["PINIsRequired"] }],
       },
     },
     {
@@ -2682,7 +2682,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["EmailIDIsRequired"] }],
       },
       maxLength: 60,
       validate: (columnValue, allField, flag) => {
@@ -2706,7 +2706,7 @@ export const kyc_legal_proof_of_add_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["EmailIDIsRequired"] }],
       },
       maxLength: 60,
       validate: (columnValue, allField, flag) => {
