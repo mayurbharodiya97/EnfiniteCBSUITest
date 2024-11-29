@@ -129,7 +129,7 @@ export const VerifyDayendChecksums = ({
       }
 
       const confirmation = await MessageBox({
-        messageTitle: "EOD CheckSum having Warning(s).",
+        messageTitle: t("eodChecksomWarningMsg"),
         message: `${message}\nAre you sure to Continue?`,
         icon: "WARNING",
         buttonNames: ["Yes", "No"],
@@ -171,100 +171,90 @@ export const VerifyDayendChecksums = ({
       return updatedGridData;
     });
 
-    try {
-      const response = await API.executeChecksums({
-        FLAG: flag,
-        SCREEN_REF: "TRN/399",
-        FOR_BRANCH: currentBranch.current,
-        EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
-        CHKSM_TYPE: record.CHKSM_TYPE,
-        SR_CD: record.SR_CD,
-        MENDETORY: record.MENDETORY,
-        EOD_VER_ID: record.EOD_VER_ID,
+    const response = await API.executeChecksums({
+      FLAG: flag,
+      SCREEN_REF: "TRN/399",
+      FOR_BRANCH: currentBranch.current,
+      EOD_EOS_FLG: reqData[0]?.EOD_EOS_FLG,
+      CHKSM_TYPE: record.CHKSM_TYPE,
+      SR_CD: record.SR_CD,
+      MENDETORY: record.MENDETORY,
+      EOD_VER_ID: record.EOD_VER_ID,
+    });
+
+    const endTime = new Date();
+    const elapsedTime = formatTime(endTime);
+
+    if (response[0]?.CLR) {
+      setGridData((prevGridData) => {
+        const updatedGridData = [...prevGridData];
+        updatedGridData[index] = {
+          ...updatedGridData[index],
+          CLR: response[0].CLR,
+          PROCESS: "",
+          ED_TIME: elapsedTime,
+        };
+        return updatedGridData;
+      });
+    }
+
+    if (flag === "D" && response[0]?.CLR === "E" && record?.MENDETORY == "Y") {
+      await MessageBox({
+        messageTitle: "Error",
+        message: response[0]?.MESSAGE,
+        icon: "ERROR",
+        buttonNames: ["Ok"],
+      });
+      CloseMessageBox();
+      setLoopStart(true);
+      setBranchloopStop(true);
+      setSwitchBranchPara(false);
+      return "stop";
+    }
+
+    if (flag === "C" && response[0]?.MESSAGE !== "") {
+      const buttonName = await MessageBox({
+        messageTitle: "Error",
+        message: response[0]?.MESSAGE,
+        icon: "ERROR",
+        buttonNames: ["Ok"],
       });
 
-      const endTime = new Date();
-      const elapsedTime = formatTime(endTime);
-
-      if (response[0]?.CLR) {
-        setGridData((prevGridData) => {
-          const updatedGridData = [...prevGridData];
-          updatedGridData[index] = {
-            ...updatedGridData[index],
-            CLR: response[0].CLR,
-            PROCESS: "",
-            ED_TIME: elapsedTime,
-          };
-          return updatedGridData;
-        });
-      }
-
-      if (
-        flag === "D" &&
-        response[0]?.CLR === "E" &&
-        record?.MENDETORY == "Y"
-      ) {
-        await MessageBox({
-          messageTitle: "Error",
-          message: response[0]?.MESSAGE,
-          icon: "ERROR",
-          buttonNames: ["Ok"],
-        });
-        CloseMessageBox();
-        setLoopStart(true);
-        setBranchloopStop(true);
-        setSwitchBranchPara(false);
+      if (buttonName !== "Ok") {
         return "stop";
       }
-
-      if (flag === "C" && response[0]?.MESSAGE !== "") {
-        const buttonName = await MessageBox({
-          messageTitle: "Error",
-          message: response[0]?.MESSAGE,
-          icon: "ERROR",
-          buttonNames: ["Ok"],
-        });
-
-        if (buttonName !== "Ok") {
-          return "stop";
-        }
-      }
-      if (
-        flag === "D" &&
-        isHOLoggined &&
-        processFlag === t("DayEnd") &&
-        response[0]?.CLR === "W"
-      ) {
-        const buttonName = await MessageBox({
-          messageTitle: "Error",
-          message: "Would you like to see warnings of this Checksum?",
-          icon: "WARNING",
-          buttonNames: ["Yes", "No"],
-        });
-        if (buttonName !== "No") {
-          setLoopStart(true);
-          return "stop";
-        }
-      }
-      if (response[0]?.CLR === "W") {
-        warningCountRef.current += 1;
-      }
-      if (response[0]?.CLR === "Y" && record.MENDETORY === "Y") {
-        errCount.current += 1;
-      }
-
-      if (
-        (index + 1) % 11 === 0 ||
-        (index + 1) % 12 === 0 ||
-        (index + 1) % 13 === 0 ||
-        ((index + 1) % 20 === 0 || (index + 1) % 21) === 0
-      ) {
-        setBatchCount((prevCount) => prevCount + 1);
-      }
-    } catch (error) {
-      enqueueSnackbar("Error executing EOD for record", {
-        variant: "error",
+    }
+    if (
+      flag === "D" &&
+      isHOLoggined &&
+      processFlag === t("DayEnd") &&
+      response[0]?.CLR === "W"
+    ) {
+      const buttonName = await MessageBox({
+        messageTitle: "Error",
+        message: t("dayendWarningShowMsg"),
+        icon: "WARNING",
+        buttonNames: ["Yes", "No"],
       });
+      if (buttonName !== "No") {
+        setLoopStart(true);
+        return "stop";
+      }
+    }
+    if (response[0]?.CLR === "W") {
+      warningCountRef.current += 1;
+    }
+    if (response[0]?.CLR === "Y" && record.MENDETORY === "Y") {
+      errCount.current += 1;
+    }
+
+    if (
+      (index + 1) % 11 === 0 ||
+      (index + 1) % 12 === 0 ||
+      (index + 1) % 13 === 0 ||
+      ((index + 1) % 20 === 0 || (index + 1) % 21) === 0
+    ) {
+      setBatchCount((prevCount) => prevCount + 1);
     }
 
     return "continue";
@@ -282,7 +272,14 @@ export const VerifyDayendChecksums = ({
     return true;
   };
   const DoEodMutation = useMutation(API.doEod, {
-    onError: (error: any) => {},
+    onError: async (error: any) => {
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
+      });
+    },
     onSuccess: async (data) => {
       let btn99, returnVal;
 
@@ -296,12 +293,14 @@ export const VerifyDayendChecksums = ({
           const { btnName, obj } = await getButtonName({
             messageTitle: t("ValidationFailed"),
             message: data[i]?.O_MESSAGE,
+            icon: "ERROR",
           });
           returnVal = "";
         } else if (data[i]?.O_STATUS === "99") {
           const { btnName, obj } = await getButtonName({
             messageTitle: t("Confirmation"),
             message: data[i]?.O_MESSAGE,
+            icon: "CONFIRM",
             buttonNames: ["Yes", "No"],
           });
           btn99 = btnName;
@@ -313,6 +312,7 @@ export const VerifyDayendChecksums = ({
             const { btnName, obj } = await getButtonName({
               messageTitle: t("Alert"),
               message: data[i]?.O_MESSAGE,
+              icon: "WARNING",
             });
           }
           returnVal = "";
@@ -321,6 +321,7 @@ export const VerifyDayendChecksums = ({
             messageTitle: t("Confirmation"),
             message: data[i]?.O_MESSAGE,
             buttonNames: ["Ok"],
+            icon: "CONFIRM",
           });
           btn99 = btnName;
           if (btnName === "Ok") {
@@ -338,16 +339,19 @@ export const VerifyDayendChecksums = ({
           await MessageBox({
             messageTitle: "ValidationFailed",
             message: response?.O_MESSAGE ?? "",
+            icon: "ERROR",
           });
         } else if (response?.O_STATUS === "9") {
           await MessageBox({
             messageTitle: "Alert",
             message: response?.O_MESSAGE ?? "",
+            icon: "WARNING",
           });
         } else if (response?.O_STATUS === "99") {
           const buttonName = await MessageBox({
             messageTitle: "Confirmation",
             message: response?.O_MESSAGE ?? "",
+            icon: "CONFIRM",
             buttonNames: [t("openNewSession"), t("DayEnd")],
           });
           if (buttonName === "openNewSession") {
@@ -408,13 +412,13 @@ export const VerifyDayendChecksums = ({
   });
 
   const checkSumsDataMutation = useMutation(API.getCheckSums, {
-    onError: (error: any) => {
-      const errorMsg =
-        typeof error === "object"
-          ? error?.error_msg || "Unknown error occurred"
-          : "Unknown error occurred";
-      enqueueSnackbar(errorMsg, { variant: "error" });
-      CloseMessageBox();
+    onError: async (error: any) => {
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
+      });
     },
     onSuccess: async (data: Item[]) => {
       setGridData(data);
@@ -430,7 +434,7 @@ export const VerifyDayendChecksums = ({
         setLoopStart(true);
         await MessageBox({
           messageTitle: "Success",
-          message: "EOD CheckSum completed successfully.",
+          message: t("eodCheckumsCompletedMsg"),
           buttonNames: ["Ok"],
           icon: "SUCCESS",
         });
@@ -488,11 +492,13 @@ export const VerifyDayendChecksums = ({
             await MessageBox({
               messageTitle: "Alert",
               message: message,
+              icon: "WARNING",
             });
           } else if (status === "99") {
             const buttonName = await MessageBox({
               messageTitle: "Confirmation",
               message: message,
+              icon: "CONFIRM",
               buttonNames: ["Yes", "No"],
               defFocusBtnName: "Yes",
             });
@@ -530,7 +536,14 @@ export const VerifyDayendChecksums = ({
           }
         }
       },
-      onError: (error) => {},
+      onError: async (error: any) => {
+        await MessageBox({
+          message: error?.error_msg,
+          messageTitle: "Error",
+          icon: "ERROR",
+          buttonNames: ["Ok"],
+        });
+      },
     }
   );
   useEffect(() => {
@@ -538,7 +551,7 @@ export const VerifyDayendChecksums = ({
       setReqData(validatedData);
     }
   }, [validatedData]);
-  // Process array of items and add CLR from API response
+
   const processArray = async (data: Item[]): Promise<void> => {
     const results: (Item & { CLR?: string })[] = [...gridData]; // Initialize with existing gridData
 
@@ -587,6 +600,7 @@ export const VerifyDayendChecksums = ({
       await MessageBox({
         message: error?.error_msg ?? "Error occurred",
         messageTitle: "Error",
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
     },

@@ -74,6 +74,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
         ]
       : [];
   });
+  console.log(initialRows[0]?.LOAN_AMT_MAIN, "rows");
 
   useEffect(() => {
     if (resetDaa === true) {
@@ -91,7 +92,7 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
         },
       ]);
     }
-  }, [resetDaa]);
+  }, [resetDaa, initialRows[0]?.LOAN_AMT_MAIN]);
 
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = useState();

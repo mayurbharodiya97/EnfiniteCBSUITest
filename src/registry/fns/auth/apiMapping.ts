@@ -2949,6 +2949,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERTRXDDDW",
     packageName: "",
   },
+  VALIDATELOCKERNO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATELOCKERNO",
+    packageName: "",
+  },
+  VALIDATELOCKEROPERATION: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATELOCKEROPERATION",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONRECEIPT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONRECEIPT",
+    packageName: "",
+  },
   GETSTPCHQISSUEUSED: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTPCHQISSUEUSED",
     packageName: "",

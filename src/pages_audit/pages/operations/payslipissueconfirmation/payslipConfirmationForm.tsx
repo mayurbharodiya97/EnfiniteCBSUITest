@@ -69,15 +69,12 @@ function PayslipConfirmationForm({
 
   const jointDetailMutation = useMutation(getJointDetailsList, {
     onError: async (error: any) => {
-      let errorMsg = "Unknownerroroccured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
       });
-      CloseMessageBox();
-      closeDialog();
     },
     onSuccess: async (data) => {
       setjointDtlData(data);
@@ -95,16 +92,13 @@ function PayslipConfirmationForm({
         CloseMessageBox();
         closeDialog();
       },
-      onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+      onError: async (error: any) => {
+        await MessageBox({
+          message: error?.error_msg,
+          messageTitle: "Error",
+          icon: "ERROR",
+          buttonNames: ["Ok"],
         });
-        CloseMessageBox();
-        closeDialog();
       },
     }
   );
@@ -118,13 +112,16 @@ function PayslipConfirmationForm({
       CloseMessageBox();
       closeDialog();
     },
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = "Unknownerroroccured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
       });
       CloseMessageBox();
       closeDialog();

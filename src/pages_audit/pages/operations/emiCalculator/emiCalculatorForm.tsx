@@ -13,7 +13,6 @@ import {
   GradientButton,
 } from "@acuteinfo/common-base";
 
-import { CustomGridTable } from "./emiScheduleSection";
 import { CircularProgress, Dialog } from "@mui/material";
 import { format } from "date-fns";
 import { useMutation } from "react-query";
