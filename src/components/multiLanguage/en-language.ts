@@ -2391,4 +2391,11 @@ export const en_language_data = {
   UIDResult: "UID Result",
   YouCanNotConfirmYourOwnPostedTransaction:
     "You can't confirm your own posted transaction.",
+  RequestAcceptedRegistrationNo: "Request accepted, Registration No is",
+  ViewUIDResponse: "View UID Response",
+  AadhaarNumberIsRequired: "Aadhaar Number is required.",
+  EnterAadhaarNo: "Enter Aadhaar No.",
+  FreshRegistrationIsRequired: "Fresh Registration is required.",
+  PreviousBankIINIsRequired: "Previous Bank IIN is required.",
+  DeActiveDate: "De-Active Date",
 };
