@@ -6,7 +6,7 @@ import { validateHOBranch } from "components/utilFunction/function";
 export const FDRetriveMetadata = {
   form: {
     name: "enterparameters",
-    label: "Enter Parameters",
+    label: "EnterParameters",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -30,19 +30,7 @@ export const FDRetriveMetadata = {
       textField: {
         fullWidth: true,
       },
-      select: {
-        fullWidth: true,
-      },
-      datePicker: {
-        fullWidth: true,
-      },
       numberFormat: {
-        fullWidth: true,
-      },
-      inputMask: {
-        fullWidth: true,
-      },
-      datetimePicker: {
         fullWidth: true,
       },
     },
@@ -104,7 +92,7 @@ export const FDRetriveMetadata = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "ValidationFailed",
-              message: "Enter Account Branch.",
+              message: "EnterAccountBranch",
               buttonNames: ["Ok"],
               icon: "ERROR",
             });
@@ -191,7 +179,7 @@ export const FDRetriveMetadata = {
           ) {
             let buttonName = await formState?.MessageBox({
               messageTitle: "ValidationFailed",
-              message: "Enter Account Type.",
+              message: "EnterAccountType",
               buttonNames: ["Ok"],
               icon: "ERROR",
             });

@@ -68,17 +68,15 @@ export const PendinGTrns = ({ open, close }) => {
     onError: async (error: any) => {
       await MessageBox({
         message: error?.error_msg,
-        messageTitle: "error",
+        messageTitle: "Error",
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
     },
     onSuccess: async (data) => {
       setDocData(data);
-
-      // Ensure URL is valid
       const url = `/cbsenfinity/${data[0]?.DOCUMENT_URL}`;
       const newWindow = window.open(url, "_blank");
-
       if (newWindow) {
         setOpenedWindow(newWindow);
         newWindow.focus();
@@ -90,8 +88,9 @@ export const PendinGTrns = ({ open, close }) => {
   const reportMutation = useMutation(API.getpendingtrnReport, {
     onError: async (error: any) => {
       await MessageBox({
-        message: error?.error_msg ?? "Error occurred",
+        message: error?.error_msg,
         messageTitle: "Error",
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
     },

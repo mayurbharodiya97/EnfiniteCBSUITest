@@ -14,7 +14,7 @@ import * as API from "./api/api";
 import { ActionTypes, Alert } from "@acuteinfo/common-base";
 import { useNavigate } from "react-router-dom";
 import { loginBiometric } from "./metaData/metaDataGrid";
-import { Dialog } from "@mui/material";
+import { Box, Dialog } from "@mui/material";
 import FingerprintIcon from "@mui/icons-material/Fingerprint";
 import CryptoJS from "crypto-js";
 import {
@@ -53,260 +53,274 @@ const encryptString = (plainText) => {
   const encrypted = CryptoJS.AES.encrypt(plainText, key, { iv: iv });
   return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
 };
-const BiometricLogins = forwardRef<any, any>(({ defaultView, userId }, ref) => {
-  const { MessageBox } = usePopupContext();
-  const { userState, dispatchCommon } = useContext(SecurityContext);
-  const navigate = useNavigate();
-  const [opens, setOpens] = useState(false);
-  const [gridData, setGridData] = useState<any>([]);
-  const formRef = useRef<any>(null);
-  const SubmitData = useRef<any>(null);
-  const [formData, setFormData] = useState<any>(null);
-  const [fingerprintImage, setFingerprintImage] = useState<string>("");
-  const [isCapturing, setIsCapturing] = useState(false);
-  const [captureError, setCaptureError] = useState<string>("");
-
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
-    any,
-    any
-  >(
-    ["getBiometric", userId],
-    () => {
-      if (defaultView === "edit" || defaultView === "view") {
-        return API.getBiometric({ userid: userId });
-      }
-    },
-    {
-      onSuccess(data) {
-        if (Array.isArray(data) && data.length > 0) {
-          let newData = data.map((row) => {
-            return {
-              ...row,
-            };
-          });
-          setGridData(newData);
-        } else {
-          setGridData([]);
+const BiometricLogins = forwardRef<any, any>(
+  ({ defaultView, userId, username }, ref) => {
+    const { MessageBox } = usePopupContext();
+    const { userState, dispatchCommon } = useContext(SecurityContext);
+    const navigate = useNavigate();
+    const [opens, setOpens] = useState(false);
+    const [gridData, setGridData] = useState<any>([]);
+    const formRef = useRef<any>(null);
+    const SubmitData = useRef<any>(null);
+    const [formData, setFormData] = useState<any>(null);
+    const [fingerprintImage, setFingerprintImage] = useState<string>("");
+    const [isCapturing, setIsCapturing] = useState(false);
+    const [captureError, setCaptureError] = useState<string>("");
+    const Usernames = username?.USER_NAME;
+    const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+      any,
+      any
+    >(
+      ["getBiometric", Usernames],
+      () => {
+        if (defaultView === "edit" || defaultView === "view") {
+          return API.getBiometric({ userid: Usernames });
         }
       },
-    }
-  );
-
-  const CaptureMutation = useMutation(API.BioCapture, {
-    onSuccess: async (data) => {
-      if (data?.ErrorDescription) {
-        setCaptureError(data.ErrorDescription);
-      } else {
-        const Saving = data.IsoTemplate;
-        const encryptedTemplate = encryptString(Saving);
-        SubmitData.current = encryptedTemplate;
-        setFingerprintImage(data.BitmapData);
+      {
+        onSuccess(data) {
+          if (Array.isArray(data) && data.length > 0) {
+            let newData = data.map((row) => {
+              return {
+                ...row,
+              };
+            });
+            setGridData(newData);
+          } else {
+            setGridData([]);
+          }
+        },
       }
-      setIsCapturing(false);
-    },
-  });
+    );
 
-  const setCurrentAction = useCallback(
-    (data) => {
-      if (data.name === "add") {
-        setOpens(true);
-        setFormData(null);
+    const CaptureMutation = useMutation(API.BioCapture, {
+      onSuccess: async (data) => {
+        if (data?.ErrorDescription) {
+          setCaptureError(data.ErrorDescription);
+        } else {
+          const Saving = data.IsoTemplate;
+          const encryptedTemplate = encryptString(Saving);
+          SubmitData.current = encryptedTemplate;
+          setFingerprintImage(data.BitmapData);
+        }
+        setIsCapturing(false);
+      },
+    });
+
+    const setCurrentAction = useCallback(
+      (data) => {
+        if (data.name === "add") {
+          setOpens(true);
+          setFormData(null);
+        } else {
+          navigate(data?.name, {
+            state: data?.rows,
+          });
+        }
+      },
+      [navigate]
+    );
+
+    const handleCaptureClick = () => {
+      setIsCapturing(true);
+      setCaptureError("");
+      CaptureMutation.mutate();
+    };
+
+    const onSubmitHandler: SubmitFnType = (
+      data: any,
+      displayData,
+      endSubmit,
+      setFieldError,
+      actionFlag
+    ) => {
+      endSubmit(true);
+      if (formData) {
+        // Update existing row
+        setGridData((old) => {
+          const updatedData = old.map((row) =>
+            row.SR_CD === formData.SR_CD
+              ? { ...row, ...data, FINGER_BIO: SubmitData?.current }
+              : row
+          );
+          return updatedData;
+        });
       } else {
-        navigate(data?.name, {
-          state: data?.rows,
+        // Add new row
+        setGridData((old) => {
+          const srCd =
+            Number.parseInt(old?.[old?.length - 1]?.SR_CD ?? "0") + 1;
+          return [
+            ...old,
+            { ...data, SR_CD: srCd, FINGER_BIO: SubmitData?.current },
+          ];
         });
       }
-    },
-    [navigate]
-  );
-
-  const handleCaptureClick = () => {
-    setIsCapturing(true);
-    setCaptureError("");
-    CaptureMutation.mutate();
-  };
-
-  const onSubmitHandler: SubmitFnType = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    actionFlag
-  ) => {
-    endSubmit(true);
-    if (formData) {
-      // Update existing row
-      setGridData((old) => {
-        const updatedData = old.map((row) =>
-          row.SR_CD === formData.SR_CD
-            ? { ...row, ...data, FINGER_BIO: SubmitData?.current }
-            : row
-        );
-        return updatedData;
-      });
-    } else {
-      // Add new row
-      setGridData((old) => {
-        const srCd = Number.parseInt(old?.[old?.length - 1]?.SR_CD ?? "0") + 1;
-        return [
-          ...old,
-          { ...data, SR_CD: srCd, FINGER_BIO: SubmitData?.current },
-        ];
-      });
-    }
-    setFormData(null);
-  };
-  useEffect(() => {
-    if (userState?.grid5?.isNewRow?.length > 0) {
-      const contextData = userState?.grid5?.isNewRow;
-      const combined = [...(data ?? ""), ...(contextData ?? "")];
-      setGridData(combined);
-    } else {
-      setGridData(data);
-    }
-  }, [userState?.grid1?.isNewRow, data]);
-  const updateBiometric = {
-    ...LoginBiometricForm,
-    fields: LoginBiometricForm.fields.map((field) => {
-      if (field.name === "USER_NAME") {
-        return {
-          ...field,
-          defaultValue: userId,
-        };
+      setFormData(null);
+    };
+    useEffect(() => {
+      if (userState?.grid5?.isNewRow?.length > 0) {
+        const contextData = userState?.grid5?.isNewRow;
+        const combined = [...(data ?? ""), ...(contextData ?? "")];
+        setGridData(combined);
+      } else {
+        setGridData(data);
       }
-      return field;
-    }),
-  };
-
-  useEffect(() => {
-    if (data) {
-      dispatchCommon("commonType", { oldData3: data });
-    }
-  }, [data]);
-
-  return (
-    <Fragment>
-      {isError && (
-        <Alert
-          severity="error"
-          errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
-          errorDetail={error?.error_detail}
-          color="error"
-        />
-      )}
-      <GridWrapper
-        key={"LoginBiometrics"}
-        finalMetaData={
-          extractGridMetaData(loginBiometric, defaultView) as GridMetaDataType
+    }, [userState?.grid1?.isNewRow, data]);
+    const updateBiometric = {
+      ...LoginBiometricForm,
+      fields: LoginBiometricForm.fields.map((field) => {
+        if (field.name === "USER_NAME") {
+          return {
+            ...field,
+            defaultValue: userId,
+          };
         }
-        actions={defaultView === "edit" || defaultView === "new" ? actions : []}
-        setAction={setCurrentAction}
-        data={gridData ?? []}
-        loading={isLoading || isFetching}
-        setData={setGridData}
-        hideHeader={true}
-        onClickActionEvent={(index, id, currentData) => {
-          if (id === "Edit") {
-            formRef?.current?.cleanData?.();
-            setFormData(currentData);
-            setOpens(true);
-          } else if (id === "Delete") {
-            setGridData((old) => {
-              return [...old, { ...data }];
-            });
-            let newData = gridData.filter(
-              (row) => row.SR_CD !== currentData?.SR_CD
-            );
-            setGridData(newData);
-          }
-        }}
-        ref={ref}
-        refetchData={() => {
-          refetch();
-        }}
-      />
-      <Dialog open={opens} onClose={() => setOpens(false)}>
-        <>
-          <FormWrapper
-            key={"BiometricLogin"}
-            metaData={updateBiometric as MetaDataType}
-            initialValues={formData ?? ({} as InitialValuesType)}
-            onSubmitHandler={onSubmitHandler}
-            formStyle={{ height: "180px" }}
-            formState={{ MessageBox: MessageBox }}
-            ref={formRef}
-          >
-            {({ isSubmitting, handleSubmit }) => (
-              <>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                    setOpens(false);
-                  }}
-                  disabled={isSubmitting}
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
-                <GradientButton
-                  onClick={handleCaptureClick}
-                  disabled={isSubmitting}
-                  color={"primary"}
-                >
-                  Capture
-                </GradientButton>
-                <GradientButton
-                  onClick={() => {
-                    setFormData(null);
-                    setOpens(false);
-                  }}
-                  color={"primary"}
-                >
-                  Cancel
-                </GradientButton>
-              </>
-            )}
-          </FormWrapper>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "300px",
-              marginBottom: "10px",
+        return field;
+      }),
+    };
+
+    useEffect(() => {
+      if (data) {
+        dispatchCommon("commonType", { oldData3: data });
+      }
+    }, [data]);
+
+    return (
+      <Fragment>
+        {isError && (
+          <Alert
+            severity="error"
+            errorMsg={error?.error_msg ?? t("Somethingwenttowrong")}
+            errorDetail={error?.error_detail}
+            color="error"
+          />
+        )}
+        <Box
+          style={{
+            padding: "0 10px 0px 10px",
+          }}
+        >
+          <GridWrapper
+            key={"LoginBiometrics"}
+            finalMetaData={
+              extractGridMetaData(
+                loginBiometric,
+                defaultView
+              ) as GridMetaDataType
+            }
+            actions={
+              defaultView === "edit" || defaultView === "new" ? actions : []
+            }
+            setAction={setCurrentAction}
+            data={gridData ?? []}
+            loading={isLoading || isFetching}
+            setData={setGridData}
+            hideHeader={true}
+            onClickActionEvent={(index, id, currentData) => {
+              if (id === "Edit") {
+                formRef?.current?.cleanData?.();
+                setFormData(currentData);
+                setOpens(true);
+              } else if (id === "Delete") {
+                setGridData((old) => {
+                  return [...old, { ...data }];
+                });
+                let newData = gridData.filter(
+                  (row) => row.SR_CD !== currentData?.SR_CD
+                );
+                setGridData(newData);
+              }
             }}
-          >
+            ref={ref}
+            refetchData={() => {
+              refetch();
+            }}
+          />
+        </Box>
+        <Dialog open={opens} onClose={() => setOpens(false)}>
+          <>
+            <FormWrapper
+              key={"BiometricLogin"}
+              metaData={updateBiometric as MetaDataType}
+              initialValues={formData ?? ({} as InitialValuesType)}
+              onSubmitHandler={onSubmitHandler}
+              formStyle={{ height: "180px" }}
+              formState={{ MessageBox: MessageBox }}
+              ref={formRef}
+            >
+              {({ isSubmitting, handleSubmit }) => (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                      setOpens(false);
+                    }}
+                    disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Save
+                  </GradientButton>
+                  <GradientButton
+                    onClick={handleCaptureClick}
+                    disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Capture
+                  </GradientButton>
+                  <GradientButton
+                    onClick={() => {
+                      setFormData(null);
+                      setOpens(false);
+                    }}
+                    color={"primary"}
+                  >
+                    Cancel
+                  </GradientButton>
+                </>
+              )}
+            </FormWrapper>
             <div
               style={{
-                border: "2px solid black",
-                width: "300px",
-                height: "300px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                height: "300px",
+                marginBottom: "10px",
               }}
             >
-              {isCapturing ? (
-                <p>Capturing...</p>
-              ) : captureError ? (
-                <p>Error: {captureError}</p>
-              ) : fingerprintImage ? (
-                <img
-                  id="imgFinger"
-                  width="200px"
-                  height="200px"
-                  alt="Finger Image"
-                  src={`data:image/bmp;base64,${fingerprintImage}`}
-                />
-              ) : (
-                <FingerprintIcon style={{ fontSize: "100px" }} />
-              )}
+              <div
+                style={{
+                  border: "2px solid black",
+                  width: "300px",
+                  height: "300px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {isCapturing ? (
+                  <p>Capturing...</p>
+                ) : captureError ? (
+                  <p>Error: {captureError}</p>
+                ) : fingerprintImage ? (
+                  <img
+                    id="imgFinger"
+                    width="200px"
+                    height="200px"
+                    alt="Finger Image"
+                    src={`data:image/bmp;base64,${fingerprintImage}`}
+                  />
+                ) : (
+                  <FingerprintIcon style={{ fontSize: "100px" }} />
+                )}
+              </div>
             </div>
-          </div>
-        </>
-      </Dialog>
-    </Fragment>
-  );
-});
+          </>
+        </Dialog>
+      </Fragment>
+    );
+  }
+);
 
 export default BiometricLogins;

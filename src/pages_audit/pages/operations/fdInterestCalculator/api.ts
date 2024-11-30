@@ -60,10 +60,10 @@ export const getCategoryDDWdata = async ({ COMP_CD, BRANCH_CD }) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ CATEG_NM, CATEG_CD, ...others }) => {
+      responseData = responseData.map(({ DISPLAY_NM, CATEG_CD, ...others }) => {
         return {
+          label: DISPLAY_NM,
           value: CATEG_CD,
-          label: CATEG_NM,
           ...others,
         };
       });
@@ -214,6 +214,7 @@ export const getCompareSheetReport = async ({
       TO_DT: TO_DT,
       GD_TODAY: GD_TODAY,
       SPL_AMT_FLG: SPL_AMT_FLG,
+      SCREEN_REF: "RPT/405",
     });
   if (status === "0") {
     console.log(data, "123");
@@ -230,6 +231,7 @@ export const getRecurringFdReport = async ({
   TRAN_CD,
   CATEG_CD,
   PROPOSED,
+  SCREEN_REF,
 }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("RECCURRINGTOFDCALCULATORJASPER", {
@@ -239,6 +241,7 @@ export const getRecurringFdReport = async ({
       TRAN_CD: TRAN_CD,
       CATEG_CD: CATEG_CD,
       PROPOSED: PROPOSED,
+      SCREEN_REF: SCREEN_REF,
     });
   if (status === "0") {
     let responseData = data;

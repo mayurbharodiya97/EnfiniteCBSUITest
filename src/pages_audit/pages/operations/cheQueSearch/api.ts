@@ -87,6 +87,7 @@ export const getChequeSearchData = async ({ ...reqData }) => {
       responseData = responseData.map((items, index) => ({
         ...items,
         DISPLAY_ACC_NO: `${items.COMP_CD}-${items.BRANCH_CD}-${items.ACCT_TYPE}-${items.ACCT_CD}`,
+        INDEX: `${index}`,
       }));
     }
     return responseData;

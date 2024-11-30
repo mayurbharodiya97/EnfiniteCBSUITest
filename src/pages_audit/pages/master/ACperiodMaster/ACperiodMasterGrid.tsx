@@ -95,7 +95,7 @@ const ACperiodMasterGrid = () => {
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar(t("deleteSuccessfully"), {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       refetch();

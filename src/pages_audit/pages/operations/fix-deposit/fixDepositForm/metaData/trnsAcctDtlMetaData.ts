@@ -3,6 +3,7 @@ import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../../api";
 import { validateHOBranch } from "components/utilFunction/function";
 import { t } from "i18next";
+import { isValid } from "date-fns";
 
 export const TransferAcctDetailFormMetadata = {
   form: {
@@ -30,19 +31,10 @@ export const TransferAcctDetailFormMetadata = {
       textField: {
         fullWidth: true,
       },
-      select: {
-        fullWidth: true,
-      },
       datePicker: {
         fullWidth: true,
       },
       numberFormat: {
-        fullWidth: true,
-      },
-      inputMask: {
-        fullWidth: true,
-      },
-      datetimePicker: {
         fullWidth: true,
       },
     },
@@ -135,7 +127,7 @@ export const TransferAcctDetailFormMetadata = {
         componentType: "amountField",
       },
       name: "TOTAL_DR_AMOUNT",
-      label: "Total Debit Amount",
+      label: "TotalDebitAmount",
       placeholder: "",
       isReadOnly: true,
       fullWidth: true,
@@ -258,7 +250,7 @@ export const TransferAcctDetailFormMetadata = {
               ) {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: "Enter Account Branch.",
+                  message: "EnterAccountBranch",
                   buttonNames: ["Ok"],
                   icon: "ERROR",
                 });
@@ -306,7 +298,7 @@ export const TransferAcctDetailFormMetadata = {
               ) {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: "Enter Account Type.",
+                  message: "EnterAccountType",
                   buttonNames: ["Ok"],
                   icon: "ERROR",
                 });
@@ -451,7 +443,7 @@ export const TransferAcctDetailFormMetadata = {
             componentType: "textField",
           },
           name: "ACCT_NM",
-          label: "Account Name",
+          label: "AccountName",
           type: "text",
           fullWidth: true,
           isReadOnly: true,
@@ -462,7 +454,7 @@ export const TransferAcctDetailFormMetadata = {
             componentType: "amountField",
           },
           name: "TRAN_BAL",
-          label: "Trn.Balance",
+          label: "TranBalance",
           placeholder: "",
           type: "text",
           isReadOnly: true,
@@ -473,8 +465,8 @@ export const TransferAcctDetailFormMetadata = {
             componentType: "numberFormat",
           },
           name: "CHEQUE_NO",
-          label: "Cheque No.",
-          placeholder: "Cheque No.",
+          label: "ChequeNo",
+          placeholder: "FromChequeNo",
           type: "text",
           autoComplete: "off",
           required: true,
@@ -493,7 +485,7 @@ export const TransferAcctDetailFormMetadata = {
             ) {
               let buttonName = await formState?.MessageBox({
                 messageTitle: "ValidationFailed",
-                message: "Enter Account Information.",
+                message: "EnterAccountInformation",
                 buttonNames: ["Ok"],
                 icon: "ERROR",
               });
@@ -612,7 +604,7 @@ export const TransferAcctDetailFormMetadata = {
           },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value.trim())) {
-              return "Cheque No. is Required.";
+              return "ChequeNorequired";
             }
             return "";
           },
@@ -623,7 +615,7 @@ export const TransferAcctDetailFormMetadata = {
             componentType: "datePicker",
           },
           name: "CHEQUE_DATE",
-          label: "Cheque Date",
+          label: "ChequeDate",
           placeholder: "",
           defaultValue: new Date(),
           isWorkingDate: true,
@@ -636,6 +628,12 @@ export const TransferAcctDetailFormMetadata = {
             } else {
               return false;
             }
+          },
+          validate: (currentField, dependentFields, formState) => {
+            if (Boolean(currentField?.value) && !isValid(currentField?.value)) {
+              return "Mustbeavaliddate";
+            }
+            return "";
           },
           GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.3 },
         },
@@ -669,8 +667,7 @@ export const TransferAcctDetailFormMetadata = {
             ) {
               let buttonName = await formState?.MessageBox({
                 messageTitle: "ValidationFailed",
-                message:
-                  "You can not enter amount more than Withdrawable Balance.",
+                message: "NotEnterAmountMoreThanWithdrawableBalance",
                 buttonNames: ["Ok"],
                 icon: "ERROR",
               });
@@ -744,9 +741,9 @@ export const TransferAcctDetailFormMetadata = {
           },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value)) {
-              return "Amount is Required.";
+              return "amountRequired";
             } else if (columnValue.value <= 0) {
-              return "Amount must be greater than zero.";
+              return "AmountMustGreaterThanZero";
             }
             return "";
           },
@@ -774,7 +771,7 @@ export const TransferAcctDetailFormMetadata = {
 export const RenewTransferMetadata = {
   form: {
     name: "renewTransfer",
-    label: "Renew Amount",
+    label: "RenewAmount",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -806,7 +803,7 @@ export const RenewTransferMetadata = {
         componentType: "amountField",
       },
       name: "PAYMENT_AMOUNT",
-      label: "Payment Amount",
+      label: "PaymentAmount",
       placeholder: "",
       isReadOnly: true,
       fullWidth: true,
@@ -833,7 +830,7 @@ export const RenewTransferMetadata = {
         componentType: "amountField",
       },
       name: "RENEW_AMT",
-      label: "Renew Amount",
+      label: "RenewAmount",
       isFieldFocused: true,
       placeholder: "",
       type: "text",
@@ -852,8 +849,7 @@ export const RenewTransferMetadata = {
         ) {
           let buttonName = await formState?.MessageBox({
             messageTitle: "ValidationFailed",
-            message:
-              "Renewal amount should be less or equals to Payment amount.",
+            message: "RenewalAmountShouldLessOrEqualsPaymentAmount",
             buttonNames: ["Ok"],
             icon: "ERROR",
           });
@@ -876,9 +872,9 @@ export const RenewTransferMetadata = {
       },
       validate: (columnValue) => {
         if (!Boolean(columnValue.value)) {
-          return "Amount is Required.";
+          return "AmountIsRequired";
         } else if (columnValue.value <= 0) {
-          return "Amount can't be Negative or Zero.";
+          return "AmountCantNegativeOrZero";
         }
         return "";
       },

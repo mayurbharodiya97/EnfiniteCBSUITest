@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { format } from "date-fns";
+
 export const FDDetailForm = forwardRef<any, any>(
   (
     {
@@ -34,12 +35,8 @@ export const FDDetailForm = forwardRef<any, any>(
     },
     ref: any
   ) => {
-    const {
-      FDState,
-      updateFDDetailsFormData,
-      setActiveStep,
-      updateSourceAcctFormData,
-    } = useContext(FDContext);
+    const { FDState, updateFDDetailsFormData, updateSourceAcctFormData } =
+      useContext(FDContext);
     const { authState } = useContext(AuthContext);
     let currentPath = useLocation().pathname;
     const { t } = useTranslation();
@@ -52,10 +49,8 @@ export const FDDetailForm = forwardRef<any, any>(
     const {
       data: paraDtlData,
       isLoading: paraDtlDataIsLoading,
-      isFetching: paraDtlDataIsFetching,
       isError: paraDtlDataIsError,
       error: paraDtlDataError,
-      refetch: paraDtlDataRefetch,
     } = useQuery<any, any>(
       ["getFDParaDetail", authState?.user?.branchCode],
       () =>
@@ -101,7 +96,6 @@ export const FDDetailForm = forwardRef<any, any>(
       isFetching: renewDataisFetching,
       isError: renewDataisError,
       error: renewDataError,
-      refetch: renewDataRefetch,
     } = useQuery<any, any>(
       ["getFDRenewData", authState?.user?.branchCode],
       () =>
@@ -130,10 +124,8 @@ export const FDDetailForm = forwardRef<any, any>(
     const {
       data: maturityAmtData,
       isLoading: maturityAmtDataLoading,
-      isFetching: maturityAmtDataisFetching,
       isError: maturityAmtDataisError,
       error: maturityAmtDataError,
-      refetch: maturityAmtDataRefetch,
     } = useQuery<any, any>(
       ["getFDRenewMaturityAmt", authState?.user?.branchCode],
       () =>
@@ -357,7 +349,7 @@ export const FDDetailForm = forwardRef<any, any>(
               const buttonName = await MessageBox({
                 messageTitle: response?.O_MSG_TITLE?.length
                   ? response?.O_MSG_TITLE
-                  : "Voucher(s) Confirmation",
+                  : "VouchersConfirmation",
                 message: response?.VOUCHER_MSG ?? "",
                 buttonNames: ["Ok"],
               });
@@ -421,7 +413,7 @@ export const FDDetailForm = forwardRef<any, any>(
           ) {
             MessageBox({
               messageTitle: t("ValidationFailed"),
-              message: "Total amount can't be Zero/Negative.",
+              message: "TotalAmountCantbeZeroNegative",
               icon: "ERROR",
             });
           } else {
@@ -477,8 +469,8 @@ export const FDDetailForm = forwardRef<any, any>(
         }
       } else {
         MessageBox({
-          messageTitle: t("ValidationFailed"),
-          message: "At least one row is required.",
+          messageTitle: "ValidationFailed",
+          message: "AtLeastOneRowRequired",
           icon: "ERROR",
         });
       }
@@ -496,7 +488,7 @@ export const FDDetailForm = forwardRef<any, any>(
         FDState?.retrieveFormData?.ACCT_CD?.trim() ?? ""
       } ${FDState?.retrieveFormData?.ACCT_NM?.trim() ?? ""}`;
       FixDepositDetailFormMetadata.form.label = Boolean(openDepositForRenew)
-        ? "Renew Deposit Details"
+        ? t("RenewDepositDetails")
         : label2;
     }, []);
 
@@ -674,8 +666,8 @@ export const FDDetailForm = forwardRef<any, any>(
                       parseFloat(data?.TOTAL_FD_AMOUNT) <= 0
                     ) {
                       return await MessageBox({
-                        messageTitle: t("ValidationFailed"),
-                        message: "Required value missing.",
+                        messageTitle: "ValidationFailed",
+                        message: "RequiredValueMissing",
                         icon: "ERROR",
                       });
                     } else {

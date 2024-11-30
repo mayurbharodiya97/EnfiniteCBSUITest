@@ -22,6 +22,7 @@ import {
   queryClient,
   ClearCacheProvider,
   GridMetaDataType,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
   {
@@ -61,6 +62,7 @@ interface PayslipData {
 const PayslipissueconfirmationGrid = ({ onClose }) => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const [dateDialog, setDateDialog] = useState(true); // Changed to false to not show dialog initially
   const [actionMenu, setActionMenu] = useState(actions);
   const [activeSiFlag, setActiveSiFlag] = useState("Y");
@@ -96,14 +98,17 @@ const PayslipissueconfirmationGrid = ({ onClose }) => {
   );
 
   const retrieveDataMutation = useMutation(API.getPayslipCnfRetrieveData, {
-    onError: (error: any) => {
+    onError: async (error: any) => {
       setGridData([]);
       let errorMsg = "Unknown error occurred";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
       });
     },
     onSuccess: (data) => {
