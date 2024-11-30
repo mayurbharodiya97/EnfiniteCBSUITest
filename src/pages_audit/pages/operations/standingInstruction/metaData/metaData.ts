@@ -251,16 +251,13 @@ export const StandingInstructionMainMetaData = {
                   FEQ_TYPE: {
                     value: returnVal?.FEQ_TYPE ?? "",
                   },
-                  // START_DT:{
-                  //   value: returnVal?.START_DT ?? "",
-                  // },
+                  START_DT: {
+                    value: returnVal?.START_DT ?? "",
+                  },
                 };
               }
             },
-            AlwaysRunPostValidationSetCrossFieldValues: {
-              alwaysRun: true,
-              touchAndValidate: false,
-            },
+
             runPostValidationHookAlways: false,
             FormatProps: {
               isAllowed: (values) => {
@@ -508,10 +505,7 @@ export const StandingInstructionMainMetaData = {
                 };
               }
             },
-            AlwaysRunPostValidationSetCrossFieldValues: {
-              alwaysRun: true,
-              touchAndValidate: false,
-            },
+
             runPostValidationHookAlways: false,
             FormatProps: {
               isAllowed: (values) => {
@@ -1346,10 +1340,7 @@ export const StandingInstructionViewMetaData: any = {
             // }
           }
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
+
         runPostValidationHookAlways: false,
         runValidationOnDependentFieldsChange: false,
         FormatProps: {
@@ -1563,10 +1554,6 @@ export const StandingInstructionViewMetaData: any = {
       GridProps: { xs: 6, sm: 6, md: 2, lg: 2, xl: 2 },
       runPostValidationHookAlways: false,
       runValidationOnDependentFieldsChange: false,
-      AlwaysRunPostValidationSetCrossFieldValues: {
-        alwaysRun: true,
-        touchAndValidate: false,
-      },
     },
     {
       render: {
@@ -1682,6 +1669,7 @@ export const siasExecute = {
         label: "EnterDebitAccountNo",
         name: "ACCT_CD",
         autoComplete: "off",
+
         maxLength: 20,
         dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
         postValidationSetCrossFieldValues: async (
@@ -1711,39 +1699,34 @@ export const siasExecute = {
 
             let btn99, returnVal;
 
-            const getButtonName = async (obj) => {
-              let btnName = await formState.MessageBox(obj);
-              return { btnName, obj };
-            };
-
-            for (let i = 0; i < postData.MSG.length; i++) {
-              if (postData.MSG[i]?.O_STATUS === "999") {
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: t("ValidationFailed"),
-                  message: postData.MSG[i]?.O_MESSAGE,
+            for (let i = 0; i < postData?.MSG.length; i++) {
+              if (postData?.MSG[i]?.O_STATUS === "999") {
+                const btnName = await formState.MessageBox({
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
+                  message: postData?.MSG[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
-              } else if (postData.MSG[i]?.O_STATUS === "99") {
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: t("Confirmation"),
-                  message: postData[i]?.O_MESSAGE,
+              } else if (postData?.MSG[i]?.O_STATUS === "99") {
+                const btnName = await formState.MessageBox({
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
+                  message: postData?.MSG[i]?.O_MESSAGE,
+                  icon: "CONFIRM",
                   buttonNames: ["Yes", "No"],
                 });
                 btn99 = btnName;
                 if (btnName === "No") {
                   returnVal = "";
                 }
-              } else if (postData.MSG[i]?.O_STATUS === "9") {
+              } else if (postData?.MSG[i]?.O_STATUS === "9") {
+                const btnName = await formState.MessageBox({
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
+                  message: postData?.MSG[i]?.O_MESSAGE,
+                  icon: "WARNING",
+                });
+              } else if (postData?.MSG[i]?.O_STATUS === "0") {
                 if (btn99 !== "No") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: t("Alert"),
-                    message: postData.MSG[i]?.O_MESSAGE,
-                  });
-                }
-                returnVal = postData[i];
-              } else if (postData.MSG[i]?.O_STATUS === "0") {
-                if (btn99 !== "No") {
-                  returnVal = postData[i];
+                  returnVal = postData;
                 } else {
                   returnVal = "";
                 }
@@ -1771,10 +1754,7 @@ export const siasExecute = {
             };
           }
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
+
         // runPostValidationHookAlways: true,
         FormatProps: {
           isAllowed: (values) => {
@@ -1983,6 +1963,9 @@ export const AddSubDataMetaData = {
               SI_AMOUNT: {
                 value: returnVal?.SI_AMOUNT ?? "",
               },
+              START_DT: {
+                value: returnVal?.START_DT ?? "",
+              },
               SI_CHARGE: {
                 value: returnVal?.SI_CHARGE ?? "",
               },
@@ -2006,10 +1989,6 @@ export const AddSubDataMetaData = {
         },
 
         runPostValidationHookAlways: false,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         FormatProps: {
           isAllowed: (values) => {
             //@ts-ignore
@@ -2245,10 +2224,6 @@ export const AddSubDataMetaData = {
                     },
             };
           }
-        },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
         },
         runPostValidationHookAlways: false,
         FormatProps: {
@@ -2612,10 +2587,7 @@ export const EditSubDataMetaData = {
         },
 
         runPostValidationHookAlways: false,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
+
         FormatProps: {
           isAllowed: (values) => {
             //@ts-ignore
@@ -2814,10 +2786,7 @@ export const EditSubDataMetaData = {
             };
           }
         },
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: false,
-        },
+
         runPostValidationHookAlways: false,
         FormatProps: {
           isAllowed: (values) => {

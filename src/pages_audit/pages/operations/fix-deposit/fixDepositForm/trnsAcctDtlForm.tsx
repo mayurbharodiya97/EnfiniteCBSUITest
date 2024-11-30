@@ -88,8 +88,8 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
           xl: 2,
         };
         TransferAcctDetailFormMetadata.fields[5]._fields[5].label =
-          "Credit Amount";
-        TransferAcctDetailFormMetadata.fields[2].label = "Total Credit Amount";
+          t("CreditAmount");
+        TransferAcctDetailFormMetadata.fields[2].label = t("TotalCreditAmount");
         TransferAcctDetailFormMetadata.form.label = `A/c No.: ${
           rows?.[0]?.data?.BRANCH_CD?.trim() ?? ""
         }-${rows?.[0]?.data?.ACCT_TYPE?.trim() ?? ""}-${
@@ -126,8 +126,8 @@ export const TransferAcctDetailForm = forwardRef<any, any>(
           xl: 1.5,
         };
         TransferAcctDetailFormMetadata.fields[5]._fields[5].label =
-          "Debit Amount";
-        TransferAcctDetailFormMetadata.fields[2].label = "Total Debit Amount";
+          t("DebitAmount");
+        TransferAcctDetailFormMetadata.fields[2].label = t("TotalDebitAmount");
 
         TransferAcctDetailFormMetadata.form.label = `A/c No.: ${
           FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""

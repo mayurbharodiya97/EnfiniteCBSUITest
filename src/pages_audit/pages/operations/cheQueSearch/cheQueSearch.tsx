@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import * as API from "./api";
 import { useMutation } from "react-query";
 import { RetrieveGridMetaData } from "./gridMetaData";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ReturnChequeForm } from "./returnChequeForm";
 import { t } from "i18next";
 
@@ -22,7 +22,7 @@ import {
   ClearCacheProvider,
   utilFunction,
 } from "@acuteinfo/common-base";
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { AppBar, LinearProgress, Toolbar, Typography } from "@mui/material";
 import { Theme } from "@mui/system";
 import { makeStyles } from "@mui/styles";
 
@@ -99,6 +99,7 @@ const ChequeSearchMain = () => {
         const buttonName = await MessageBox({
           messageTitle: "ValidationFailed",
           message: response[0]?.O_MESSAGE ?? "",
+          icon: "ERROR",
           buttonNames: ["Ok"],
         });
       }
@@ -168,6 +169,7 @@ const ChequeSearchMain = () => {
           </Typography>
         </Toolbar>
       </AppBar>
+      {checkDuplicateMutation.isLoading ? <LinearProgress /> : ""}
 
       <FormWrapper
         key="retrieveForm"

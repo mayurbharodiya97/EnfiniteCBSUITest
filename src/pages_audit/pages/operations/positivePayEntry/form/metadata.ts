@@ -1,11 +1,8 @@
 import { format, isValid } from "date-fns";
 import { GeneralAPI } from "registry/fns/functions";
 import { getPMISCData, GetPositivePayImportDdwn } from "../api";
-import {
-  utilFunction,
-  GridColumnType,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+import { utilFunction, GridMetaDataType } from "@acuteinfo/common-base";
+import { validateHOBranch } from "components/utilFunction/function";
 export const PositivePayEntryFormMetadata = {
   form: {
     name: "positivePayEntry",
@@ -51,11 +48,25 @@ export const PositivePayEntryFormMetadata = {
           authState,
           dependentFieldValues
         ) => {
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             ACCT_NM: { value: "" },
-            ACCT_TYPE: { value: "", isFieldFocused: true },
-            ACCT_CD: { value: "" },
-            CHEQUE_NO: { value: "" },
+            ACCT_TYPE: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
+            CHEQUE_NO: { value: "", ignoreUpdate: false },
           };
         },
         GridProps: { xs: 12, sm: 6, md: 4, lg: 2.5, xl: 2.5 },
@@ -98,15 +109,15 @@ export const PositivePayEntryFormMetadata = {
                 CHEQUE_NO: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
               };
             }
           } else {
             return {
-              ACCT_CD: { value: "" },
+              ACCT_CD: { value: "", ignoreUpdate: false },
               ACCT_NM: { value: "" },
-              CHEQUE_NO: { value: "" },
+              CHEQUE_NO: { value: "", ignoreUpdate: false },
             };
           }
         },
@@ -140,7 +151,7 @@ export const PositivePayEntryFormMetadata = {
                 ACCT_CD: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
                 ACCT_TYPE: {
                   value: "",
@@ -175,8 +186,10 @@ export const PositivePayEntryFormMetadata = {
             for (let i = 0; i < postData?.MSG?.length; i++) {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
+                await getButtonName({
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
@@ -184,8 +197,10 @@ export const PositivePayEntryFormMetadata = {
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
                 formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
+                  await getButtonName({
+                    messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                      ? postData?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
                     icon: "WARNING",
                   });
@@ -193,8 +208,10 @@ export const PositivePayEntryFormMetadata = {
                 returnVal = postData;
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 formState?.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
+                const { btnName } = await getButtonName({
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "CONFIRM",
@@ -229,14 +246,14 @@ export const PositivePayEntryFormMetadata = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",
                 ignoreUpdate: true,
               },
               TYPE_CD: { value: returnVal?.TYPE_CD ?? "" },
-              CHEQUE_NO: { value: "" },
+              CHEQUE_NO: { value: "", ignoreUpdate: false },
             };
           } else if (!currentField?.value) {
             formState?.handleButtonDisable(false);
@@ -244,8 +261,7 @@ export const PositivePayEntryFormMetadata = {
               ACCT_NM: { value: "", isFieldFocused: false },
               CHEQUE_NO: {
                 value: "",
-                isFieldFocused: true,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
             };
           }
@@ -327,7 +343,7 @@ export const PositivePayEntryFormMetadata = {
               CHEQUE_NO: {
                 value: "",
                 isFieldFocused: false,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
             };
           }
@@ -351,7 +367,7 @@ export const PositivePayEntryFormMetadata = {
               CHEQUE_NO: {
                 value: "",
                 isFieldFocused: false,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
             };
           }
@@ -375,7 +391,7 @@ export const PositivePayEntryFormMetadata = {
               CHEQUE_NO: {
                 value: "",
                 isFieldFocused: false,
-                ignoreUpdate: true,
+                ignoreUpdate: false,
               },
             };
           }
@@ -409,7 +425,7 @@ export const PositivePayEntryFormMetadata = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.ERR_CODE === "999") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              await getButtonName({
                 messageTitle: "ValidationFailed",
                 message: postData[i]?.ERR_MSG,
                 icon: "ERROR",
@@ -418,7 +434,7 @@ export const PositivePayEntryFormMetadata = {
             } else if (postData[i]?.ERR_CODE === "9") {
               formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
-                const { btnName, obj } = await getButtonName({
+                await getButtonName({
                   messageTitle: "Alert",
                   message: postData[i]?.ERR_MSG,
                   icon: "WARNING",
@@ -427,7 +443,7 @@ export const PositivePayEntryFormMetadata = {
               returnVal = postData;
             } else if (postData[i]?.ERR_CODE === "99") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              const { btnName } = await getButtonName({
                 messageTitle: "Confirmation",
                 message: postData[i]?.ERR_MSG,
                 buttonNames: ["Yes", "No"],
@@ -458,13 +474,13 @@ export const PositivePayEntryFormMetadata = {
                 : {
                     value: "",
                     isFieldFocused: true,
-                    ignoreUpdate: true,
+                    ignoreUpdate: false,
                   },
           };
         } else if (!currentField?.value) {
           formState?.handleButtonDisable(false);
           return {
-            CHEQUE_NO: { value: "" },
+            CHEQUE_NO: { value: "", ignoreUpdate: false },
           };
         }
         return {};
@@ -775,10 +791,24 @@ export const ResponseParameterFormMetaData = {
           authState,
           dependentFieldValues
         ) => {
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
             ACCT_NM: { value: "" },
             ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
           };
         },
         validationRun: "onChange",
@@ -827,7 +857,7 @@ export const ResponseParameterFormMetaData = {
             }
           } else {
             return {
-              ACCT_CD: { value: "" },
+              ACCT_CD: { value: "", ignoreUpdate: false },
               ACCT_NM: { value: "" },
             };
           }
@@ -900,8 +930,10 @@ export const ResponseParameterFormMetaData = {
             for (let i = 0; i < postData?.MSG?.length; i++) {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
+                await getButtonName({
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
@@ -909,8 +941,10 @@ export const ResponseParameterFormMetaData = {
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
                 formState.handleButtonDisable(false);
                 if (btn99 !== "No") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
+                  await getButtonName({
+                    messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                      ? postData?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
                     icon: "WARNING",
                   });
@@ -918,8 +952,10 @@ export const ResponseParameterFormMetaData = {
                 returnVal = postData;
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 formState.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
+                const { btnName } = await getButtonName({
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "CONFIRM",
@@ -954,7 +990,7 @@ export const ResponseParameterFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               ACCT_NM: {
                 value: returnVal?.ACCT_NM ?? "",

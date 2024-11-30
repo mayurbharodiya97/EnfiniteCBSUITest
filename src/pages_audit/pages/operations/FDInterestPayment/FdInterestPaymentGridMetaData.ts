@@ -1,4 +1,5 @@
 import { GridMetaDataType, utilFunction } from "@acuteinfo/common-base";
+import { validateHOBranch } from "components/utilFunction/function";
 import { GeneralAPI } from "registry/fns/functions";
 
 export const accountFindmetaData = {
@@ -33,8 +34,6 @@ export const accountFindmetaData = {
       render: { componentType: "_accountNumber" },
       branchCodeMetadata: {
         name: "BRANCH_CD",
-        isFieldFocused: true,
-        validationRun: "onChange",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -43,9 +42,23 @@ export const accountFindmetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
           return {
-            ACCT_TYPE: { value: "" },
-            ACCT_CD: { value: "" },
+            ACCT_TYPE: { value: "", ignoreUpdate: false },
+            ACCT_CD: { value: "", ignoreUpdate: false },
             ACCT_NM: { value: "" },
             TRAN_BAL: { value: "" },
           };
@@ -56,7 +69,6 @@ export const accountFindmetaData = {
         name: "ACCT_TYPE",
         isFieldFocused: true,
         dependentFields: ["BRANCH_CD"],
-        validationRun: "onChange",
         runPostValidationHookAlways: true,
         postValidationSetCrossFieldValues: async (
           currentField,
@@ -107,9 +119,9 @@ export const accountFindmetaData = {
             }
           }
           return {
-            ACCT_CD: { value: "" },
-            ACCT_NM: { value: "" },
-            TRAN_BAL: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
+            ACCT_NM: { value: "", ignoreUpdate: false },
+            TRAN_BAL: { value: "", ignoreUpdate: false },
           };
         },
         GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 4 },
@@ -119,10 +131,6 @@ export const accountFindmetaData = {
         autoComplete: "off",
         dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
         runPostValidationHookAlways: true,
-        AlwaysRunPostValidationSetCrossFieldValues: {
-          alwaysRun: true,
-          touchAndValidate: true,
-        },
         postValidationSetCrossFieldValues: async (
           currentField,
           formState,
@@ -130,18 +138,6 @@ export const accountFindmetaData = {
           dependentFieldValues
         ) => {
           if (formState?.isSubmitting) return {};
-          if (
-            !Boolean(currentField?.displayValue) &&
-            !Boolean(currentField?.value)
-          ) {
-            return {
-              ACCT_NM: { value: "" },
-              TRAN_BAL: { value: "" },
-            };
-          } else if (!Boolean(currentField?.displayValue)) {
-            return {};
-          }
-
           if (
             currentField?.value &&
             dependentFieldValues?.ACCT_TYPE?.value?.length === 0
@@ -168,13 +164,14 @@ export const accountFindmetaData = {
                 TRAN_BAL: {
                   value: "",
                   isFieldFocused: false,
-                  ignoreUpdate: true,
+                  ignoreUpdate: false,
                 },
               };
             }
           } else if (
             Boolean(dependentFieldValues?.BRANCH_CD?.value) &&
-            Boolean(dependentFieldValues?.ACCT_TYPE?.value)
+            Boolean(dependentFieldValues?.ACCT_TYPE?.value) &&
+            currentField?.value
           ) {
             formState?.handleButtonDisable(true);
             const reqParameters = {
@@ -247,7 +244,7 @@ export const accountFindmetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
 
               ACCT_NM: {
@@ -263,8 +260,8 @@ export const accountFindmetaData = {
             };
           } else if (!currentField?.value) {
             return {
-              ACCT_NM: { value: "" },
-              TRAN_BAL: { value: "" },
+              ACCT_NM: { value: "", ignoreUpdate: false },
+              TRAN_BAL: { value: "", ignoreUpdate: false },
             };
           }
         },

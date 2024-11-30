@@ -4,7 +4,11 @@ import {
   getLockerOperationDDWdata,
   getLockerSizeDDWdata,
   getLockerTrxDDWdata,
+  validateLockerNo,
+  validateLockerOperation,
 } from "./api";
+import { getRelationshipManagerOptions } from "../c-kyc/api";
+import { t } from "i18next";
 
 export const lockerTrnsViewFormMetadata = {
   form: {
@@ -346,11 +350,15 @@ export const lockerTrnsEntryFormMetadata = {
   fields: [
     {
       render: {
-        componentType: "divider",
+        componentType: "hidden",
       },
-      name: "DEVIDER_A",
-      label: "Locker Account",
-      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      name: "MAIN_ACCT_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "MAIN_ACCT_TYPE",
     },
     {
       render: {
@@ -382,6 +390,92 @@ export const lockerTrnsEntryFormMetadata = {
       name: "LOCKER_NO_",
       label: "lockerNumber",
       placeholder: "lockerNumber",
+      dependentFields: ["ACCT_TYPE_"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        auth,
+        dependentFieldsValues
+      ) => {
+        if (field.value && dependentFieldsValues?.ACCT_TYPE_?.value.length) {
+          if (formState?.isSubmitting) return {};
+          let postData = await validateLockerNo({
+            ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE_?.value,
+            COMP_CD: auth?.companyID ?? "",
+            BRANCH_CD: auth?.user?.branchCode ?? "",
+            LOCKER_NO: field.value,
+          });
+          let btn99;
+
+          const getButtonName = async (obj) => {
+            let btnName = await formState.MessageBox(obj);
+            return { btnName, obj };
+          };
+          for (let i = 0; i < postData.length; i++) {
+            if (postData[i]?.O_STATUS === "999") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: postData[i]?.O_MSG_TITLE,
+                message: postData[i]?.O_MESSAGE,
+                icon: "ERROR",
+              });
+              if (btnName === "Ok") {
+                return {
+                  LOCKER_NO_: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                  REMARKS: {
+                    value: "",
+                  },
+                };
+              }
+            } else if (postData[i]?.ERR_CODE === "9") {
+              if (btn99 !== "No") {
+                const { btnName, obj } = await getButtonName({
+                  messageTitle: postData[i]?.O_MSG_TITLE,
+                  message: postData[i]?.O_MESSAGE,
+                  icon: "ERROR",
+                });
+              }
+            } else if (postData[i]?.ERR_CODE === "99") {
+              const { btnName, obj } = await getButtonName({
+                messageTitle: postData[i]?.O_MSG_TITLE,
+                message: postData[i]?.O_MESSAGE,
+                icon: "INFO",
+                buttonNames: ["Yes", "No"],
+              });
+
+              btn99 = btnName;
+              if (btnName === "No") {
+                return {
+                  LOCKER_NO_: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: true,
+                  },
+                  REMARKS: {
+                    value: "",
+                  },
+                };
+              }
+            } else if (postData[i]?.O_STATUS === "0") {
+              return {
+                LOCKER_NO_: {
+                  value: field?.value,
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                REMARKS: {
+                  value: postData[i]?.ACCT_NM,
+                  isFieldFocused: false,
+                  ignoreUpdate: false,
+                },
+              };
+            }
+          }
+        }
+      },
       GridProps: { xs: 4, sm: 4, md: 4, lg: 1, xl: 1 },
     },
     {
@@ -392,10 +486,8 @@ export const lockerTrnsEntryFormMetadata = {
       label: "lockerSize",
       placeholder: "AccountTypePlaceHolder",
       disableCaching: true,
-      dependentFields: ["LOCKER_NO_", "ACCT_TYPE_"],
+      dependentFields: ["LOCKER_NO_", "ACCT_TYPE_", "REMARKS"],
       options: (dependentFields, formState, _, authState) => {
-        console.log(dependentFields, "dependentFields");
-
         return getLockerSizeDDWdata({
           COMP_CD: authState?.companyID,
           BRANCH_CD: authState?.user?.branchCode,
@@ -404,26 +496,86 @@ export const lockerTrnsEntryFormMetadata = {
           ALLOTED: "Y",
         });
       },
+
       _optionsKey: "getLockerSizeDDWdata",
-      required: "true",
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
         authState,
         dependentFieldValues
       ) => {
+        const payload = {
+          ACCT_TYPE: currentField?.optionData[0]?.ACCT_TYPE,
+          ACCT_CD: currentField?.optionData[0]?.LST_ACCT_CD,
+          LOCKER_NO: currentField?.optionData[0]?.LOCKER_NO,
+          ACCT_NM: currentField?.optionData[0]?.REMARKS,
+        };
+        console.log(payload, "payload");
+
+        formState.setDataOnFieldChange("VIEWMST_PAYLOAD", payload);
         if (
           currentField?.optionData[0]?.LST_ACCT_CD &&
           currentField?.optionData[0]?.LST_ACCT_CD
         ) {
-          const payload = {
-            ACCT_TYPE: currentField?.optionData[0]?.ACCT_TYPE,
-            ACCT_CD: currentField?.optionData[0]?.LST_ACCT_CD,
-            LOCKER_NO: currentField?.optionData[0]?.LOCKER_NO,
-          };
-          console.log(payload, "payload");
+          if (
+            currentField?.value &&
+            currentField?.optionData[0]?.ACCT_TYPE &&
+            currentField?.optionData[0]?.LST_ACCT_CD
+          ) {
+            const reqParameters = {
+              BRANCH_CD: authState?.user?.branchCode,
+              COMP_CD: authState?.companyID,
+              ACCT_TYPE: currentField?.optionData[0]?.ACCT_TYPE,
+              ACCT_CD: currentField?.optionData[0]?.LST_ACCT_CD,
+              SCREEN_REF: "RPT/49",
+            };
+            let postData = await GeneralAPI.getAccNoValidation(reqParameters);
+            let btn99, returnVal;
 
-          formState.setDataOnFieldChange("VIEWMST_PAYLOAD", payload);
+            const getButtonName = async (obj) => {
+              let btnName = await formState.MessageBox(obj);
+              return { btnName, obj };
+            };
+            for (let i = 0; i < postData?.MSG.length; i++) {
+              if (postData?.MSG[i]?.O_STATUS === "999") {
+                const btnName = await formState.MessageBox({
+                  messageTitle: "ValidationFailed",
+                  message: postData?.MSG[i]?.O_MESSAGE,
+                });
+                returnVal = "";
+              } else if (postData?.MSG[i]?.O_STATUS === "99") {
+                const btnName = await formState.MessageBox({
+                  messageTitle: "Confirmation",
+                  message: postData?.MSG[i]?.O_MESSAGE,
+                  buttonNames: ["Yes", "No"],
+                });
+                btn99 = btnName;
+                if (btnName === "No") {
+                  returnVal = "";
+                }
+              } else if (postData?.MSG[i]?.O_STATUS === "9") {
+                const btnName = await formState.MessageBox({
+                  messageTitle: "Alert",
+                  message: postData?.MSG[i]?.O_MESSAGE,
+                });
+              } else if (postData?.MSG[i]?.O_STATUS === "0") {
+                if (btn99 !== "No") {
+                  returnVal = postData;
+                } else {
+                  returnVal = "";
+                }
+              }
+            }
+            btn99 = 0;
+            return {
+              MAIN_ACCT_CD: {
+                value: currentField?.optionData[0]?.LST_ACCT_CD ?? "",
+              },
+              MAIN_ACCT_TYPE: {
+                value: currentField?.optionData[0]?.ACCT_TYPE ?? "",
+              },
+            };
+          }
         }
       },
       schemaValidation: {
@@ -438,10 +590,108 @@ export const lockerTrnsEntryFormMetadata = {
       },
       name: "OPER_STATUS",
       label: "Operation",
+      validationRun: "onChange",
       placeholder: "Operation",
       options: () => getLockerOperationDDWdata(),
       _optionsKey: "getLockerOperationDDWdata",
-      required: "true",
+      required: true,
+      dependentFields: ["LOC_SIZE_CD", "ACCT_TYPE_", "OPER_STATUS"],
+      postValidationSetCrossFieldValues: async (
+        currentField,
+        formState,
+        authState,
+        dependentFieldsValues
+      ) => {
+        if (formState?.isSubmitting) return {};
+        if (
+          currentField?.value &&
+          dependentFieldsValues?.LOC_SIZE_CD?.optionData[0]?.ACCT_TYPE &&
+          dependentFieldsValues?.LOC_SIZE_CD?.optionData[0]?.LST_ACCT_CD
+        ) {
+          let response = await validateLockerOperation({
+            BRANCH_CD: authState?.user?.branchCode,
+            COMP_CD: authState?.companyID,
+            ACCT_TYPE:
+              dependentFieldsValues?.LOC_SIZE_CD?.optionData[0]?.ACCT_TYPE,
+            ACCT_CD:
+              dependentFieldsValues?.LOC_SIZE_CD?.optionData[0]?.LST_ACCT_CD,
+            OPER_STATUS: currentField?.value,
+            WORKING_DT: authState?.workingDate ?? "",
+          });
+          let postData = response[0];
+          let btn99, returnVal;
+
+          for (let i = 0; i < postData?.MSG.length; i++) {
+            if (postData?.MSG[i]?.O_STATUS === "999") {
+              const btnName = await formState.MessageBox({
+                messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
+                message: postData?.MSG[i]?.O_MESSAGE,
+              });
+              returnVal = "";
+            } else if (postData?.MSG[i]?.O_STATUS === "99") {
+              const btnName = await formState.MessageBox({
+                messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
+                message: postData?.MSG[i]?.O_MESSAGE,
+                buttonNames: ["Yes", "No"],
+              });
+              btn99 = btnName;
+              if (btnName === "No") {
+                returnVal = "";
+              }
+            } else if (postData?.MSG[i]?.O_STATUS === "9") {
+              const btnName = await formState.MessageBox({
+                messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
+                message: postData?.MSG[i]?.O_MESSAGE,
+              });
+            } else if (postData?.MSG[i]?.O_STATUS === "0") {
+              if (btn99 !== "No") {
+                returnVal = postData;
+              } else {
+                returnVal = "";
+              }
+            }
+          }
+          btn99 = 0;
+          return {
+            ST_TIME: {
+              value: postData?.ST_TIME ?? "",
+            },
+            CL_TIME: {
+              value: postData?.CL_TIME ?? "",
+            },
+            GST_ROUND: {
+              value: postData?.GST_ROUND ?? "",
+            },
+            TAX_RATE: {
+              value: postData?.TAX_RATE ?? "",
+            },
+            OPER_STATUS: {
+              value: postData?.OPER_STATUS ?? "",
+            },
+            CHRG_AMT: {
+              value: postData?.CHRG_AMT ?? "",
+              isReadOnly: (fieldValue, dependentFields, formState) => {
+                if (postData?.ENABLE_DISABLE === "Y") {
+                  return true;
+                } else return false;
+              },
+            },
+            SERVICE_CHRGE_AUTO: {
+              value: postData?.SERVICE_TAX ?? "",
+              isReadOnly: (fieldValue, dependentFields, formState) => {
+                if (postData?.ENABLE_DISABLE === "Y") {
+                  return true;
+                } else return false;
+              },
+            },
+          };
+        } else if (!currentField?.value) {
+          return {
+            ST_TIME: { value: "" },
+            CL_TIME: { value: "" },
+          };
+        }
+      },
       GridProps: { xs: 12, sm: 4, md: 2, lg: 1.5, xl: 1.5 },
     },
     {
@@ -453,14 +703,13 @@ export const lockerTrnsEntryFormMetadata = {
       placeholder: "Remarks",
       type: "text",
       dependentFields: ["OPER_STATUS"],
+      isReadOnly: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 3, xl: 3 },
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        if (dependentFields?.OPER_STATUS?.value === "I") {
-          return "worked";
-        }
-      },
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.OPER_STATUS?.value === "I") {
+        if (
+          dependentFields?.OPER_STATUS?.value === "I" ||
+          dependentFields?.OPER_STATUS?.value === "B"
+        ) {
           return false;
         }
         return true;
@@ -468,47 +717,49 @@ export const lockerTrnsEntryFormMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "datetimePicker",
       },
       name: "ST_TIME",
       label: "timeIn",
       placeholder: "timeIn",
+      format: "HH:mm:ss",
       type: "text",
       isReadOnly: true,
       dependentFields: ["OPER_STATUS"],
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        if (dependentFields?.OPER_STATUS?.value === "I") {
-          const now = new Date();
-          const hours = now.getHours().toString().padStart(2, "0");
-          const minutes = now.getMinutes().toString().padStart(2, "0");
-          const seconds = now.getSeconds().toString().padStart(2, "0");
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 1.4, xl: 1.4 },
+      // setValueOnDependentFieldsChange: (dependentFields) => {
+      //   if (dependentFields?.OPER_STATUS?.value === "I") {
+      //     const now = new Date();
+      //     const hours = now.getHours().toString().padStart(2, "0");
+      //     const minutes = now.getMinutes().toString().padStart(2, "0");
+      //     const seconds = now.getSeconds().toString().padStart(2, "0");
 
-          return `${hours}:${minutes}:${seconds}`;
-        }
-      },
+      //     return `${hours}:${minutes}:${seconds}`;
+      //   }
+      // },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "datetimePicker",
       },
       name: "CL_TIME",
       label: "timeOut",
       placeholder: "timeOut",
+      format: "HH:mm:ss",
       dependentFields: ["OPER_STATUS"],
       type: "text",
       isReadOnly: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        if (dependentFields?.OPER_STATUS?.value === "O") {
-          const now = new Date();
-          const hours = now.getHours().toString().padStart(2, "0");
-          const minutes = now.getMinutes().toString().padStart(2, "0");
-          const seconds = now.getSeconds().toString().padStart(2, "0");
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 1.4, xl: 1.4 },
+      // setValueOnDependentFieldsChange: (dependentFields) => {
+      //   if (dependentFields?.OPER_STATUS?.value === "O") {
+      //     const now = new Date();
+      //     const hours = now.getHours().toString().padStart(2, "0");
+      //     const minutes = now.getMinutes().toString().padStart(2, "0");
+      //     const seconds = now.getSeconds().toString().padStart(2, "0");
 
-          return `${hours}:${minutes}:${seconds}`;
-        }
-      },
+      //     return `${hours}:${minutes}:${seconds}`;
+      //   }
+      // },
     },
     {
       render: {
@@ -517,6 +768,7 @@ export const lockerTrnsEntryFormMetadata = {
       name: "TRX_CD",
       label: "Trx",
       placeholder: "Trx",
+      dependentFields: ["OPER_STATUS"],
       options: () => getLockerTrxDDWdata(),
       _optionsKey: "getLockerTrxDDWdata",
       required: "true",
@@ -524,31 +776,133 @@ export const lockerTrnsEntryFormMetadata = {
         type: "string",
         rules: [{ name: "required", params: ["AccountTypeReqired"] }],
       },
+      shouldExclude: (val1, dependentFields) => {
+        if (dependentFields?.OPER_STATUS?.value === "B") {
+          return false;
+        }
+        return true;
+      },
       GridProps: { xs: 12, sm: 4, md: 2, lg: 1.2, xl: 1.2 },
     },
     {
       render: {
-        componentType: "amountField",
+        componentType: "hidden",
       },
-      name: "CHARGE",
-      label: "Charge",
-      placeholder: "",
-      type: "text",
-      fullWidth: true,
-      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
-      isReadOnly: true,
+      name: "TAX_RATE",
+      label: "TAX_RATE",
+      dependentFields: ["OPER_STATUS"],
+      GridProps: { xs: 12, sm: 4, md: 2, lg: 1.2, xl: 1.2 },
+      shouldExclude: (val1, dependentFields) => {
+        if (dependentFields?.OPER_STATUS?.value === "B") {
+          return false;
+        }
+        return true;
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "GST_ROUND",
+      label: "GST_ROUND",
+      dependentFields: ["OPER_STATUS"],
+      GridProps: { xs: 12, sm: 4, md: 2, lg: 1.2, xl: 1.2 },
+      shouldExclude: (val1, dependentFields) => {
+        if (dependentFields?.OPER_STATUS?.value === "B") {
+          return false;
+        }
+        return true;
+      },
     },
     {
       render: {
         componentType: "amountField",
       },
-      name: "SERVICE_CHARGE",
+      name: "CHRG_AMT",
+      label: "Charge",
+      validationRun: "onBlur",
+      placeholder: "",
+      type: "text",
+      fullWidth: true,
+      GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
+      dependentFields: ["TAX_RATE", "GST_ROUND", "OPER_STATUS"],
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: false,
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        auth,
+        dependentFields
+      ) => {
+        return {
+          SERVICE_CHRGE_AUTO: {
+            value:
+              dependentFields?.GST_ROUND?.value === "3"
+                ? Math.floor(
+                    (parseInt(field?.value) *
+                      parseInt(dependentFields?.TAX_RATE?.value)) /
+                      100
+                  ) ?? ""
+                : dependentFields?.GST_ROUND?.value === "2"
+                ? Math.ceil(
+                    (parseInt(field?.value) *
+                      parseInt(dependentFields?.TAX_RATE?.value)) /
+                      100
+                  ) ?? ""
+                : dependentFields?.GST_ROUND?.value === "1"
+                ? Math.round(
+                    (parseInt(field?.value) *
+                      parseInt(dependentFields?.TAX_RATE?.value)) /
+                      100
+                  ) ?? ""
+                : (parseInt(field?.value) *
+                    parseInt(dependentFields?.TAX_RATE?.value)) /
+                  100,
+          },
+        };
+      },
+      shouldExclude: (val1, dependentFields) => {
+        if (dependentFields?.OPER_STATUS?.value === "B") {
+          return false;
+        }
+        return true;
+      },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "SERVICE_CHRGE_AUTO",
       label: "GST",
       placeholder: "",
       type: "text",
       fullWidth: true,
       GridProps: { xs: 6, sm: 6, md: 4, lg: 1, xl: 1 },
-      isReadOnly: true,
+      dependentFields: ["OPER_STATUS"],
+
+      shouldExclude: (val1, dependentFields) => {
+        if (dependentFields?.OPER_STATUS?.value === "B") {
+          return false;
+        }
+        return true;
+      },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "SIGN",
+      label: "Signature",
+      type: "text",
+      GridProps: {
+        xs: 12,
+        sm: 3,
+        md: 1,
+        lg: 1,
+        xl: 1,
+      },
     },
     {
       render: {
@@ -558,25 +912,38 @@ export const lockerTrnsEntryFormMetadata = {
       label: "accompanyEmployeeName",
       placeholder: "accompanyEmployeeName",
       disableCaching: true,
-      options: (dependentValue, formState, _, authState) => {
-        return GeneralAPI.get_Account_Type({
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-          USER_NAME: authState?.user?.id,
-          DOC_CD: "RPT/49",
-        });
-      },
+      options: (dependentValue, formState, _, authState) =>
+        getRelationshipManagerOptions(authState?.companyID),
       _optionsKey: "getEmployeeName",
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["AccountTypeReqired"] }],
-      },
       dependentFields: ["OPER_STATUS"],
       shouldExclude: (val1, dependentFields) => {
-        if (dependentFields?.OPER_STATUS?.value === "I") {
+        if (
+          dependentFields?.OPER_STATUS?.value === "I" ||
+          dependentFields?.OPER_STATUS?.value === "B"
+        ) {
           return false;
         }
         return true;
+      },
+      validationRun: "onBlur",
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (formState?.refId && field.value) {
+          let buttonName = await formState.MessageBox({
+            messageTitle: "Confirmation",
+            message: `${t("Proceed")}?`,
+            icon: "CONFIRM",
+            buttonNames: ["Yes", "No"],
+          });
+          if (buttonName === "Yes") {
+            let event: any = { preventDefault: () => {} };
+            formState?.refId?.current?.handleSubmit(event, "BUTTON_CLICK");
+          }
+        }
       },
       GridProps: { xs: 12, sm: 4, md: 2, lg: 4, xl: 4 },
     },

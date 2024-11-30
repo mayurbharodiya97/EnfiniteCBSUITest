@@ -151,7 +151,6 @@ const Form15GHEntry = ({
         variant: "success",
       });
       isDataChangedRef.current = true;
-      // closeDialog();
       if (isErrorFuncRef?.current?.data?.ALLOW_PRINT === "Y") {
         const confirmation = await MessageBox({
           messageTitle: "Confirmation",

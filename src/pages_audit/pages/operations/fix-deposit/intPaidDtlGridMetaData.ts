@@ -28,7 +28,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -45,17 +45,17 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_CD",
-      columnName: "A/C No.",
+      columnName: "AccountNum",
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 100,
-      minWidth: 90,
-      maxWidth: 110,
+      width: 140,
+      minWidth: 120,
+      maxWidth: 200,
     },
     {
       accessor: "FD_NO",
-      columnName: "FD Number",
+      columnName: "FDNum",
       sequence: 3,
       alignment: "right",
       componentType: "default",
@@ -65,7 +65,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAID_STATUS",
-      columnName: "Status",
+      columnName: "status",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -75,7 +75,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "Tran. Date",
+      columnName: "TranDate",
       sequence: 5,
       alignment: "center",
       componentType: "date",
@@ -86,7 +86,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "FROM_DT",
-      columnName: "From Date",
+      columnName: "GeneralFromDate",
       sequence: 6,
       alignment: "center",
       componentType: "date",
@@ -97,7 +97,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TO_DT",
-      columnName: "To Date",
+      columnName: "toDate",
       sequence: 7,
       alignment: "center",
       componentType: "date",
@@ -108,7 +108,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PROV_INT_AMT",
-      columnName: "Prov. Int. Amt.",
+      columnName: "ProvIntAmt",
       sequence: 8,
       alignment: "right",
       componentType: "currency",
@@ -120,7 +120,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAID_INT_AMT",
-      columnName: "Paid Int. Amt.",
+      columnName: "PaidIntAmt",
       sequence: 9,
       alignment: "right",
       componentType: "currency",
@@ -132,7 +132,7 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TDS_INT_AMT",
-      columnName: "TDS Int. Amt.",
+      columnName: "TDSIntAmt",
       sequence: 10,
       alignment: "right",
       componentType: "currency",
@@ -144,13 +144,13 @@ export const IntPaidDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CR_AC_NO",
-      columnName: "Cr. A/c No.",
+      columnName: "CrAcNo",
       sequence: 11,
       alignment: "left",
       componentType: "default",
-      width: 130,
-      minWidth: 120,
-      maxWidth: 160,
+      width: 180,
+      minWidth: 150,
+      maxWidth: 250,
     },
   ],
 };

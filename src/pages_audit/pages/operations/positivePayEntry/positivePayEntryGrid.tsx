@@ -15,11 +15,8 @@ import {
   GridWrapper,
   queryClient,
   ActionTypes,
-  MetaDataType,
   utilFunction,
-  FormWrapper,
   usePopupContext,
-  extractMetaData,
   GridMetaDataType,
 } from "@acuteinfo/common-base";
 const actions: ActionTypes[] = [
@@ -61,7 +58,6 @@ export const PositivePayEntryGrid = () => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const retrievalParaRef = useRef<any>(null);
-  const [retrieveData, setRetrieveData] = useState<any>({});
   const [isDataRetrieved, setIsDataRetrieved] = useState(false);
   const { MessageBox } = usePopupContext();
 
@@ -103,7 +99,6 @@ export const PositivePayEntryGrid = () => {
     onSuccess: (data) => {
       setGridData([]);
       if (data.length === 1) {
-        setRetrieveData(data[0]);
         navigate("view-details", {
           state: { retrieveData: data[0] },
         });

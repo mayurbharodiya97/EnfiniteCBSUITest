@@ -1,54 +1,38 @@
-import { Fragment, useRef, useState } from "react";
-import { useQuery } from "react-query";
-import { LienDetailGridMetaData } from "./gridMetadata";
-import * as API from "./api";
-import { AuthContext } from "pages_audit/auth";
-import { AccDetailContext } from "pages_audit/auth";
-import { useContext } from "react";
-
 import {
-  usePopupContext,
   Alert,
-  GridWrapper,
   GridMetaDataType,
-  ActionTypes,
+  GridWrapper,
   queryClient,
 } from "@acuteinfo/common-base";
+import { AuthContext } from "pages_audit/auth";
+import { Fragment, useContext, useEffect } from "react";
+import { useQuery } from "react-query";
+import * as API from "./api";
+import { LienDetailGridMetaData } from "./gridMetadata";
 export const LienDetail = ({ reqData }) => {
-  const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
-  const [rows, setRows] = useState([]);
-
-  // api define
-  // const getLienDetailList = useMutation(API.getLienDetailList, {
-  //   onSuccess: (data) => {
-  //     console.log(data, " getLienDetailList detailssss");
-  //     setRows(data);
-  //   },
-  //   onError: (error) => {},
-  // });
-
-  // useEffect(() => {
-  //   tempStore?.accInfo?.ACCT_CD && getLienDetailList.mutate(tempStore.accInfo);
-  // }, [tempStore]);
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
   >(["getLienDetailList", { reqData }], () => API.getLienDetailList(reqData));
 
+  useEffect(() => {
+    return () => {
+      const keysToRemove = ["getLienDetailList"].map((key) => [
+        key,
+        authState?.user?.branchCode,
+      ]);
+      keysToRemove.forEach((key) => queryClient.removeQueries(key));
+    };
+  }, []);
   return (
-    <div style={{ padding: "8px" }}>
+    <Fragment>
       {isError ? (
-        <Fragment>
-          <div style={{ width: "100%", paddingTop: "10px" }}>
-            <Alert
-              severity={error?.severity ?? "error"}
-              errorMsg={error?.error_msg ?? "Error"}
-              errorDetail={error?.error_detail ?? ""}
-            />
-          </div>
-        </Fragment>
+        <Alert
+          severity={error?.severity ?? "error"}
+          errorMsg={error?.error_msg ?? "Error"}
+          errorDetail={error?.error_detail ?? ""}
+        />
       ) : null}
       <GridWrapper
         key={`LienDetailGridMetaData`}
@@ -56,9 +40,8 @@ export const LienDetail = ({ reqData }) => {
         loading={isLoading || isFetching}
         data={data ?? []}
         setData={() => null}
-        // refetchData={() => {}}
-        ref={myGridRef}
+        refetchData={refetch}
       />
-    </div>
+    </Fragment>
   );
 };

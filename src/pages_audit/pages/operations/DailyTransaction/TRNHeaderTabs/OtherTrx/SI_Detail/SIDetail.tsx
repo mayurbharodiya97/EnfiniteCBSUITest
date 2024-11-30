@@ -1,50 +1,60 @@
-import { Fragment, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
-import { SIDetailGridMetaData } from "./gridMetadata";
 import * as API from "./api";
+import { SIDetailGridMetaData } from "./gridMetadata";
+import {
+  ActionTypes,
+  Alert,
+  GridMetaDataType,
+  GridWrapper,
+  queryClient,
+} from "@acuteinfo/common-base";
+import SiExecuteDetailView from "pages_audit/pages/operations/standingInstruction/siExecuteDetailView";
 import { AuthContext } from "pages_audit/auth";
-import { AccDetailContext } from "pages_audit/auth";
-import { useContext } from "react";
-import { Grid } from "@mui/material";
 
-import { Alert, GridWrapper, GridMetaDataType } from "@acuteinfo/common-base";
+const actions: ActionTypes[] = [
+  {
+    actionName: "view-details",
+    actionLabel: "ViewDetail",
+    multiple: undefined,
+    rowDoubleClick: true,
+    alwaysAvailable: false,
+  },
+];
 
 export const SIDetail = ({ reqData }) => {
-  const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
-  const [rows, setRows] = useState([]);
-
-  // api define
-  // const getSIDetailList = useMutation(API.getSIDetailList, {
-  //   onSuccess: (data) => {
-  //     console.log(data, " getSIDetailList detailssss");
-  //     setRows(data);
-  //   },
-  //   onError: (error) => {},
-  // });
-
-  // useEffect(() => {
-  //   tempStore?.accInfo?.ACCT_CD && getSIDetailList.mutate(tempStore.accInfo);
-  // }, [tempStore]);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [rows, setRows] = useState<any>({});
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
   >(["getSIDetailList", { reqData }], () => API.getSIDetailList(reqData));
 
+  const setCurrentAction = useCallback(async (data) => {
+    if (data?.name === "view-details") {
+      setRows(data?.rows?.[0]?.data);
+      setDetailsOpen(true);
+    }
+  }, []);
+  useEffect(() => {
+    return () => {
+      const keysToRemove = ["getSIDetailList"].map((key) => [
+        key,
+        authState?.user?.branchCode,
+      ]);
+      keysToRemove.forEach((key) => queryClient.removeQueries(key));
+    };
+  }, []);
+
   return (
-    <div style={{ padding: "8px" }}>
-      {" "}
+    <>
       {isError ? (
-        <Fragment>
-          <div style={{ width: "100%", paddingTop: "10px" }}>
-            <Alert
-              severity={error?.severity ?? "error"}
-              errorMsg={error?.error_msg ?? "Error"}
-              errorDetail={error?.error_detail ?? ""}
-            />
-          </div>
-        </Fragment>
+        <Alert
+          severity={error?.severity ?? "error"}
+          errorMsg={error?.error_msg ?? "Error"}
+          errorDetail={error?.error_detail ?? ""}
+        />
       ) : null}
       <GridWrapper
         key={`SIDetailGridMetaData`}
@@ -52,29 +62,19 @@ export const SIDetail = ({ reqData }) => {
         loading={isLoading || isFetching}
         data={data ?? []}
         setData={() => null}
-        // refetchData={() => {}}
-        ref={myGridRef}
+        refetchData={() => refetch()}
+        actions={actions}
+        setAction={setCurrentAction}
       />
-      <Grid
-        item
-        xs={12}
-        sm={12}
-        sx={{
-          position: "relative",
-          top: "-3rem",
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "3rem",
-          alignItems: "center",
-        }}
-      >
-        <div></div>
-        <div></div>
 
-        <Grid item sx={{ display: "flex", gap: "1rem" }}>
-          *Double click to view Schedule
-        </Grid>
-      </Grid>
-    </div>
+      <SiExecuteDetailView
+        open={detailsOpen}
+        onClose={() => setDetailsOpen(false)}
+        lineId={rows?.LINE_ID ?? ""}
+        srCd={rows?.SR_CD ?? ""}
+        tran_cd={rows?.TRAN_CD ?? ""}
+        screenFlag={"SIDTL_TRN"}
+      />
+    </>
   );
 };

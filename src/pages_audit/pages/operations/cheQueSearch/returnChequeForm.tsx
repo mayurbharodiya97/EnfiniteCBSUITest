@@ -21,22 +21,21 @@ export const ReturnChequeForm = ({ open, onclose }) => {
 
   const returnChequeMutation = useMutation(API.cheQueReturn, {
     onSuccess: async (data) => {
-      enqueueSnackbar("Sucess", {
-        variant: "success",
+      onclose();
+      const btnName = await MessageBox({
+        messageTitle: data[0]?.O_MSG_TITLE,
+        message: data[0]?.O_MESSAGE ?? "",
+        icon: "SUCCESS",
       });
       CloseMessageBox();
-      onclose();
     },
-    onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+    onError: async (error: any) => {
+      const btnName = await MessageBox({
+        messageTitle: "ValidationFailed",
+        message: error?.error_msg ?? "",
+        icon: "ERROR",
       });
       CloseMessageBox();
-      onclose();
     },
   });
 

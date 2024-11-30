@@ -20,6 +20,7 @@ import {
   GridMetaDataType,
   ActionTypes,
 } from "@acuteinfo/common-base";
+import { Box } from "@mui/material";
 
 const actions: ActionTypes[] = [
   {
@@ -151,31 +152,37 @@ const BranchAccessRights = forwardRef<any, any>(
               color="error"
             />
           ))}
-        <GridWrapper
-          key={`userAccessbranch`}
-          finalMetaData={
-            extractGridMetaData(
-              userAccessbranch,
-              defaultView
-            ) as GridMetaDataType
-          }
-          data={gridData || []}
-          actions={defaultView === "edit" ? actions : []}
-          setAction={setCurrentAction}
-          loading={
-            newloading ||
-            editloading ||
-            newfetching ||
-            editfetching ||
-            mutation?.isLoading
-          }
-          setData={setGridData}
-          refetchData={() => {
-            newRefetch();
-            editRefetch();
+        <Box
+          style={{
+            padding: "0 10px 0px 10px",
           }}
-          ref={ref}
-        />
+        >
+          <GridWrapper
+            key={`userAccessbranch`}
+            finalMetaData={
+              extractGridMetaData(
+                userAccessbranch,
+                defaultView
+              ) as GridMetaDataType
+            }
+            data={gridData || []}
+            actions={defaultView === "edit" ? actions : []}
+            setAction={setCurrentAction}
+            loading={
+              newloading ||
+              editloading ||
+              newfetching ||
+              editfetching ||
+              mutation?.isLoading
+            }
+            setData={setGridData}
+            refetchData={() => {
+              newRefetch();
+              editRefetch();
+            }}
+            ref={ref}
+          />
+        </Box>
       </Fragment>
     );
   }

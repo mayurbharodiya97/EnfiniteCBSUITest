@@ -573,7 +573,7 @@ export const ChequeReturnPostForm: FC<{
                     authState?.role < "2"
                       ? ["Yes", "No"]
                       : ["Yes", "No", "Cancel"],
-                  loadingBtnName: ["Yes" || "No"],
+                  loadingBtnName: ["Yes", "No"],
                 });
                 const postData = {
                   oldReqData,

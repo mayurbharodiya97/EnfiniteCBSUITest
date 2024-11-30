@@ -60,10 +60,10 @@ export const confirmedHistoryMetaData = {
     {
       accessor: "ENTERED_DATE",
       columnName: "date",
+      dateFormat: "dd/MM/yyyy HH:mm:ss",
       sequence: 5,
       alignment: "left",
       componentType: "date",
-      dateFormat: "HH:mm:ss",
       width: 150,
       minWidth: 100,
       maxWidth: 200,
