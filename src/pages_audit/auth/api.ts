@@ -616,10 +616,10 @@ const cacheImageData = async (imageURL, cacheName = "image-cache") => {
       let fingerprint = await AuthSDK.Getfingerprintdata();
       return String(CRC32C.str((str || "") + fingerprint));
     };
-    sessionStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+    sessionStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR ?? "");
     sessionStorage.setItem(
       "charchecksum",
-      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
+      await GenerateCRC32(data?.[0]?.SPECIAL_CHAR ?? "")
     );
 
     return data;
@@ -658,10 +658,10 @@ const processImageData = async () => {
       !Boolean(sessionStorage.getItem("specialChar")) &&
       !Boolean(sessionStorage.getItem("charchecksum"))
     ) {
-      sessionStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR);
+      sessionStorage.setItem("specialChar", data?.[0]?.SPECIAL_CHAR ?? "");
       sessionStorage.setItem(
         "charchecksum",
-        await GenerateCRC32(data?.[0]?.SPECIAL_CHAR)
+        await GenerateCRC32(data?.[0]?.SPECIAL_CHAR ?? "")
       );
     }
   }
