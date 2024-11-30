@@ -1,11 +1,7 @@
 import { format, isValid } from "date-fns";
 import { GeneralAPI } from "registry/fns/functions";
 import { getPMISCData, GetPositivePayImportDdwn } from "../api";
-import {
-  utilFunction,
-  GridColumnType,
-  GridMetaDataType,
-} from "@acuteinfo/common-base";
+import { utilFunction, GridMetaDataType } from "@acuteinfo/common-base";
 import { validateHOBranch } from "components/utilFunction/function";
 export const PositivePayEntryFormMetadata = {
   form: {
@@ -190,8 +186,10 @@ export const PositivePayEntryFormMetadata = {
             for (let i = 0; i < postData?.MSG?.length; i++) {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
+                await getButtonName({
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
@@ -199,8 +197,10 @@ export const PositivePayEntryFormMetadata = {
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
                 formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
+                  await getButtonName({
+                    messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                      ? postData?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
                     icon: "WARNING",
                   });
@@ -208,8 +208,10 @@ export const PositivePayEntryFormMetadata = {
                 returnVal = postData;
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 formState?.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
+                const { btnName } = await getButtonName({
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "CONFIRM",
@@ -423,7 +425,7 @@ export const PositivePayEntryFormMetadata = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.ERR_CODE === "999") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              await getButtonName({
                 messageTitle: "ValidationFailed",
                 message: postData[i]?.ERR_MSG,
                 icon: "ERROR",
@@ -432,7 +434,7 @@ export const PositivePayEntryFormMetadata = {
             } else if (postData[i]?.ERR_CODE === "9") {
               formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
-                const { btnName, obj } = await getButtonName({
+                await getButtonName({
                   messageTitle: "Alert",
                   message: postData[i]?.ERR_MSG,
                   icon: "WARNING",
@@ -441,7 +443,7 @@ export const PositivePayEntryFormMetadata = {
               returnVal = postData;
             } else if (postData[i]?.ERR_CODE === "99") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              const { btnName } = await getButtonName({
                 messageTitle: "Confirmation",
                 message: postData[i]?.ERR_MSG,
                 buttonNames: ["Yes", "No"],
@@ -928,8 +930,10 @@ export const ResponseParameterFormMetaData = {
             for (let i = 0; i < postData?.MSG?.length; i++) {
               if (postData?.MSG?.[i]?.O_STATUS === "999") {
                 formState.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "ValidationFailed",
+                await getButtonName({
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "ValidationFailed",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   icon: "ERROR",
                 });
@@ -937,8 +941,10 @@ export const ResponseParameterFormMetaData = {
               } else if (postData?.MSG?.[i]?.O_STATUS === "9") {
                 formState.handleButtonDisable(false);
                 if (btn99 !== "No") {
-                  const { btnName, obj } = await getButtonName({
-                    messageTitle: "Alert",
+                  await getButtonName({
+                    messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                      ? postData?.MSG?.[i]?.O_MSG_TITLE
+                      : "Alert",
                     message: postData?.MSG?.[i]?.O_MESSAGE,
                     icon: "WARNING",
                   });
@@ -946,8 +952,10 @@ export const ResponseParameterFormMetaData = {
                 returnVal = postData;
               } else if (postData?.MSG?.[i]?.O_STATUS === "99") {
                 formState.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
-                  messageTitle: "Confirmation",
+                const { btnName } = await getButtonName({
+                  messageTitle: postData?.MSG?.[i]?.O_MSG_TITLE
+                    ? postData?.MSG?.[i]?.O_MSG_TITLE
+                    : "Confirmation",
                   message: postData?.MSG?.[i]?.O_MESSAGE,
                   buttonNames: ["Yes", "No"],
                   icon: "CONFIRM",

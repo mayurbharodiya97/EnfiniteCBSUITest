@@ -103,7 +103,6 @@ const FdInterestCalculator = () => {
           COMP_CD: authState?.companyID,
           BRANCH_CD: authState?.user?.branchCode,
           HANDBOOK_FLG: "Y",
-          // FR_DT: data?.TRAN_DT_S,
           FR_DT: format(new Date(data?.TRAN_DT_S), "dd/MMM/yyyy"),
           PERIOD_CD:
             data?.PERIOD_NO_DISP_S === "D"
@@ -119,6 +118,7 @@ const FdInterestCalculator = () => {
           TRAN_CD: data?.RATE_DEFINATION_S,
           GD_TODAY: authState?.workingDate,
           SPL_AMT_FLG: "Y",
+          SCREEN_REF: "RPT/405",
         },
         displayData,
         endSubmit,
@@ -136,6 +136,7 @@ const FdInterestCalculator = () => {
           TRAN_CD: data?.RATE_DEFINATION_F,
           CATEG_CD: data?.CATEG_CD_F,
           PROPOSED: data?.REMARK_F,
+          SCREEN_REF: "RPT/405",
         },
         displayData,
         endSubmit,

@@ -14,7 +14,7 @@ export const getSearchActiveSi = async ({
     });
 
   if (status === "0") {
-    return data.map((item) => ({
+    return data.map((item, index) => ({
       ...item,
       _rowColor: item.DOC_STATUS === "N" ? "rgb(255, 0, 0)" : undefined,
       FEQ_TYPE:
@@ -30,6 +30,7 @@ export const getSearchActiveSi = async ({
           ? "Half Yearly"
           : "",
       DOC_STATUS: item.DOC_STATUS === "Y",
+      INDEX: `${index}`,
     }));
   } else {
     throw DefaultErrorObject(message, messageDetails);

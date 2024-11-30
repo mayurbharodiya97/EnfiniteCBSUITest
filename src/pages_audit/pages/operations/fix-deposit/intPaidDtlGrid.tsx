@@ -72,7 +72,7 @@ export const IntPaidDtlGrid = ({ handleDialogClose }) => {
           width: "100%",
         },
       }}
-      maxWidth="lg"
+      maxWidth="xl"
       PaperComponent={(props) => (
         <Draggable
           handle="#draggable-dialog-title"

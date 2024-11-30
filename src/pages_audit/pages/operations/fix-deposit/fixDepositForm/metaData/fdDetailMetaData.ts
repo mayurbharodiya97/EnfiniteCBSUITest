@@ -67,7 +67,7 @@ export const FixDepositDetailFormMetadata = {
         componentType: "amountField",
       },
       name: "TOTAL_FD_AMOUNT",
-      label: "Total FD Amount",
+      label: "TotalFDAmount",
       placeholder: "",
       isReadOnly: true,
       type: "text",
@@ -184,7 +184,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "numberFormat",
           },
           name: "FD_NO",
-          label: "FD Number",
+          label: "FDNum",
           className: "textInputFromRight",
           placeholder: "",
           autoComplete: "off",
@@ -220,7 +220,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "datePicker",
           },
           name: "TRAN_DT",
-          label: "AsOn Date",
+          label: "asonDate",
           placeholder: "",
           type: "text",
           autoComplete: "off",
@@ -303,7 +303,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "select",
           },
           name: "PERIOD_CD",
-          label: "Period/Tenor",
+          label: "PeriodTenor",
           dependentFields: [
             "BRANCH_CD",
             "ACCT_TYPE",
@@ -369,7 +369,7 @@ export const FixDepositDetailFormMetadata = {
           name: "PERIOD_NO",
           label: "Tenor",
           className: "textInputFromRight",
-          placeholder: "Enter Tenor",
+          placeholder: "EnterTenor",
           autoComplete: "off",
           maxLength: 5,
           FormatProps: {
@@ -411,7 +411,7 @@ export const FixDepositDetailFormMetadata = {
           },
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["Tenor is Required."] }],
+            rules: [{ name: "required", params: ["TenorRequired"] }],
           },
           __VIEW__: { isReadOnly: true },
           GridProps: { xs: 12, sm: 4, md: 2.4, lg: 1.2, xl: 1.5 },
@@ -421,7 +421,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "rateOfInt",
           },
           name: "INT_RATE",
-          label: "Interest Rate",
+          label: "InterestRate",
           required: true,
           type: "text",
           autoComplete: "off",
@@ -464,9 +464,7 @@ export const FixDepositDetailFormMetadata = {
           },
           schemaValidation: {
             type: "string",
-            rules: [
-              { name: "required", params: ["Interest Rate is Required."] },
-            ],
+            rules: [{ name: "required", params: ["InterestRateIsRequired"] }],
           },
           FormatProps: {
             placeholder: "0.00",
@@ -488,7 +486,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "select",
           },
           name: "TERM_CD",
-          label: "Interest Term",
+          label: "InterestTerm",
           options: API.getFDIntTermDDWData,
           _optionsKey: "getFDIntTermDDWData",
           required: true,
@@ -531,10 +529,7 @@ export const FixDepositDetailFormMetadata = {
           },
           schemaValidation: {
             type: "string",
-            rules: [
-              { name: "required", params: ["Interest Term is required."] },
-              { name: "TERM_CD", params: ["Please select Interest Term"] },
-            ],
+            rules: [{ name: "required", params: ["InterestTermRequired"] }],
           },
           __VIEW__: {
             isReadOnly: true,
@@ -548,7 +543,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "amountField",
           },
           name: "MONTHLY_INT",
-          label: "Month Interest",
+          label: "MonthInterest",
           dependentFields: ["TERM_CD"],
           isReadOnly: true,
           shouldExclude: (_, dependentFieldsValues, formState) => {
@@ -580,7 +575,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "datePicker",
           },
           name: "MATURITY_DT",
-          label: "Maturity Date",
+          label: "MaturityDate",
           placeholder: "",
           format: "dd/MM/yyyy",
           isReadOnly: true,
@@ -706,7 +701,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "amountField",
           },
           name: "TRSF_AMT",
-          label: "Transfer Amount",
+          label: "TransferAmount",
           placeholder: "",
           autoComplete: "off",
           type: "text",
@@ -824,7 +819,7 @@ export const FixDepositDetailFormMetadata = {
           },
           branchCodeMetadata: {
             name: "CR_BRANCH_CD",
-            label: "Credit A/c Branch",
+            label: "CreditBranchCode",
             required: false,
             schemaValidation: {},
             validationRun: "onChange",
@@ -867,7 +862,7 @@ export const FixDepositDetailFormMetadata = {
           },
           accountTypeMetadata: {
             name: "CR_ACCT_TYPE",
-            label: "Credit A/c Type",
+            label: "CreditAcctType",
             required: false,
             validationRun: "onChange",
             schemaValidation: {},
@@ -896,7 +891,7 @@ export const FixDepositDetailFormMetadata = {
               ) {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: "Enter Account Branch.",
+                  message: "EnterAccountBranch",
                   buttonNames: ["Ok"],
                   icon: "ERROR",
                 });
@@ -932,7 +927,7 @@ export const FixDepositDetailFormMetadata = {
           },
           accountCodeMetadata: {
             name: "CR_ACCT_CD",
-            label: "Credit A/c No.",
+            label: "CreditAcctNo",
             required: false,
             schemaValidation: {},
             autoComplete: "off",
@@ -951,7 +946,7 @@ export const FixDepositDetailFormMetadata = {
               ) {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: "Enter Account Type.",
+                  message: "EnterAccountType",
                   buttonNames: ["Ok"],
                   icon: "ERROR",
                 });
@@ -1084,7 +1079,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "textField",
           },
           name: "CR_ACCT_NM",
-          label: "Credit A/c Name",
+          label: "CreditAcctName",
           type: "text",
           fullWidth: true,
           isReadOnly: true,
@@ -1095,7 +1090,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "amountField",
           },
           name: "MATURITY_AMT",
-          label: "Maturity Amount",
+          label: "MaturityAmount",
           type: "text",
           autoComplete: "off",
           required: true,
@@ -1116,9 +1111,9 @@ export const FixDepositDetailFormMetadata = {
           },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value)) {
-              return "Maturity Amount is Required.";
+              return "MaturityAmountRequired";
             } else if (columnValue.value <= 0) {
-              return "Maturity Amount must be greater than zero.";
+              return "MaturityAmountGreaterThanZero";
             }
             return "";
           },
@@ -1130,7 +1125,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "select",
           },
           name: "MATURE_INST",
-          label: "Mature Instruction",
+          label: "MatureInstruction",
           options: (dependentValue, formState, _, authState) => {
             if (
               authState?.companyID &&
@@ -1153,11 +1148,7 @@ export const FixDepositDetailFormMetadata = {
             rules: [
               {
                 name: "required",
-                params: ["FD Mature Instruction is required."],
-              },
-              {
-                name: "MATURE_INST",
-                params: ["Please select FD Mature Instruction"],
+                params: ["FDMatureInstructionRequired"],
               },
             ],
           },
@@ -1175,10 +1166,10 @@ export const FixDepositDetailFormMetadata = {
             componentType: "textField",
           },
           name: "FD_REMARK",
-          label: "FD Remark",
+          label: "FDRemark",
           type: "text",
           autoComplete: "off",
-          placeholder: "Enter FD Remark",
+          placeholder: "EnterFDRemark",
           isReadOnly(fieldData, dependentFieldsValues, formState) {
             if (formState?.screenFlag === "openLienForm") {
               return true;
@@ -1203,9 +1194,9 @@ export const FixDepositDetailFormMetadata = {
             componentType: "textField",
           },
           name: "NOMINEE_NM",
-          label: "Nominee Name",
+          label: "NomineeName",
           type: "text",
-          placeholder: "Enter Nominee Name",
+          placeholder: "EnterNomineeName",
           fullWidth: true,
           autoComplete: "off",
           GridProps: { xs: 12, sm: 12, md: 4, lg: 4, xl: 2 },
@@ -1440,7 +1431,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "textField",
           },
           name: "LEAN_COMP_CD",
-          label: "Bank Code",
+          label: "BankCode",
           type: "text",
           isReadOnly: true,
           autoComplete: "off",
@@ -1536,7 +1527,7 @@ export const FixDepositDetailFormMetadata = {
               ) {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: "Enter Account Branch.",
+                  message: "EnterAccountBranch",
                   buttonNames: ["Ok"],
                   icon: "ERROR",
                 });
@@ -1601,7 +1592,7 @@ export const FixDepositDetailFormMetadata = {
               ) {
                 let buttonName = await formState?.MessageBox({
                   messageTitle: "ValidationFailed",
-                  message: "Enter Account Type.",
+                  message: "EnterAccountType",
                   buttonNames: ["Ok"],
                   icon: "ERROR",
                 });

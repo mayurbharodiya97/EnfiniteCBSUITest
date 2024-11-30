@@ -6,7 +6,6 @@ import { useMutation, useQuery } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import { useLocation } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
-import { useTranslation } from "react-i18next";
 import {
   Alert,
   usePopupContext,
@@ -24,7 +23,6 @@ export const AddBranchGrid = ({ handleDialogClose }) => {
   const [updatedData, setUpdatedData] = useState([]);
   const myref = useRef<any>(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
-  const { t } = useTranslation();
   const [actions, setActions] = useState<ActionTypes[]>([
     {
       actionName: "close",

@@ -69,15 +69,12 @@ function PayslipConfirmationForm({
 
   const jointDetailMutation = useMutation(getJointDetailsList, {
     onError: async (error: any) => {
-      let errorMsg = "Unknownerroroccured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
       });
-      CloseMessageBox();
-      closeDialog();
     },
     onSuccess: async (data) => {
       setjointDtlData(data);
@@ -95,36 +92,36 @@ function PayslipConfirmationForm({
         CloseMessageBox();
         closeDialog();
       },
-      onError: (error: any) => {
-        let errorMsg = "Unknownerroroccured";
-        if (typeof error === "object") {
-          errorMsg = error?.error_msg ?? errorMsg;
-        }
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
+      onError: async (error: any) => {
+        await MessageBox({
+          message: error?.error_detail,
+          messageTitle: "Error",
+          icon: "ERROR",
+          buttonNames: ["Ok"],
         });
-        CloseMessageBox();
-        closeDialog();
       },
     }
   );
   const rejectMutaion = useMutation("rejectMutaion", API.getEntryReject, {
     onSuccess: (data) => {
       SetDeleteRemark(false);
-      enqueueSnackbar(`${data}`, {
+      enqueueSnackbar(`${t("RecordRemovedMsg")}`, {
         variant: "success",
       });
       slipdataRefetch();
       CloseMessageBox();
       closeDialog();
     },
-    onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
+    onError: async (error: any) => {
+      let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
       });
       CloseMessageBox();
       closeDialog();
@@ -367,6 +364,7 @@ function PayslipConfirmationForm({
               messageTitle: t("Confirmation"),
               message: t("DoYouWantDeleteRow"),
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
               defFocusBtnName: "Yes",
               loadingBtnName: ["Yes"],
             });

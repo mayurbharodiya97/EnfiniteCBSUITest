@@ -43,7 +43,7 @@ export const APBSAcctRegristrationMetadata = {
         componentType: "datePicker",
       },
       name: "TRAN_DT",
-      label: "Register Date",
+      label: "RegisterDate",
       placeholder: "DD/MM/YYYY",
       isReadOnly: true,
       GridProps: { xs: 12, sm: 3, md: 2, lg: 1.5, xl: 1.5 },
@@ -61,8 +61,8 @@ export const APBSAcctRegristrationMetadata = {
       },
       // name: "MASKED_UNIQUE_ID",
       name: "UNIQUE_ID",
-      label: "Aadhaar No.",
-      placeholder: "Enter Aadhaar No.",
+      label: "AadhaarNo",
+      placeholder: "EnterAadhaarNo",
       maxLength: 12,
       fullWidth: true,
       autoComplete: "off",
@@ -71,7 +71,7 @@ export const APBSAcctRegristrationMetadata = {
       preventSpecialChars: sessionStorage.getItem("specialChar") || "",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Aadhaar Number is required"] }],
+        rules: [{ name: "required", params: ["AadhaarNumberIsRequired"] }],
       },
       dependentFields: ["ALLOW_EDIT"],
       __EDIT__: {
@@ -117,7 +117,7 @@ export const APBSAcctRegristrationMetadata = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "ValidationFailed",
@@ -128,7 +128,7 @@ export const APBSAcctRegristrationMetadata = {
             } else if (postData[i]?.O_STATUS === "9") {
               formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
-                const { btnName, obj } = await getButtonName({
+                await getButtonName({
                   messageTitle: postData[i]?.O_MSG_TITLE?.length
                     ? postData[i]?.O_MSG_TITLE
                     : "Alert",
@@ -138,7 +138,7 @@ export const APBSAcctRegristrationMetadata = {
               }
             } else if (postData[i]?.O_STATUS === "99") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              const { btnName } = await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "Confirmation",
@@ -347,7 +347,7 @@ export const APBSAcctRegristrationMetadata = {
             for (let i = 0; i < postData.length; i++) {
               if (postData[i]?.O_STATUS === "999") {
                 formState?.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
+                await getButtonName({
                   messageTitle: postData[i]?.O_MSG_TITLE?.length
                     ? postData[i]?.O_MSG_TITLE
                     : "ValidationFailed",
@@ -358,7 +358,7 @@ export const APBSAcctRegristrationMetadata = {
               } else if (postData[i]?.O_STATUS === "9") {
                 formState?.handleButtonDisable(false);
                 if (btn99 !== "No") {
-                  const { btnName, obj } = await getButtonName({
+                  await getButtonName({
                     messageTitle: postData[i]?.O_MSG_TITLE?.length
                       ? postData[i]?.O_MSG_TITLE
                       : "Alert",
@@ -369,7 +369,7 @@ export const APBSAcctRegristrationMetadata = {
                 returnVal = postData[i];
               } else if (postData[i]?.O_STATUS === "99") {
                 formState?.handleButtonDisable(false);
-                const { btnName, obj } = await getButtonName({
+                const { btnName } = await getButtonName({
                   messageTitle: postData[i]?.O_MSG_TITLE?.length
                     ? postData[i]?.O_MSG_TITLE
                     : "Confirmation",
@@ -442,7 +442,7 @@ export const APBSAcctRegristrationMetadata = {
         componentType: "select",
       },
       name: "REG_FLAG",
-      label: "A/c Holder",
+      label: "ACHolder",
       fullWidth: true,
       defaultValue: "A",
       options: [
@@ -491,7 +491,7 @@ export const APBSAcctRegristrationMetadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Customer ID is required"] }],
+        rules: [{ name: "required", params: ["CustomerIDisrequired"] }],
       },
       dependentFields: [
         "REG_FLAG",
@@ -553,7 +553,7 @@ export const APBSAcctRegristrationMetadata = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "ValidationFailed",
@@ -564,7 +564,7 @@ export const APBSAcctRegristrationMetadata = {
             } else if (postData[i]?.O_STATUS === "9") {
               formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
-                const { btnName, obj } = await getButtonName({
+                await getButtonName({
                   messageTitle: postData[i]?.O_MSG_TITLE?.length
                     ? postData[i]?.O_MSG_TITLE
                     : "Alert",
@@ -575,7 +575,7 @@ export const APBSAcctRegristrationMetadata = {
               returnVal = postData[i];
             } else if (postData[i]?.O_STATUS === "99") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              const { btnName } = await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "Confirmation",
@@ -673,7 +673,7 @@ export const APBSAcctRegristrationMetadata = {
         componentType: "select",
       },
       name: "FRESH_REG",
-      label: "Fresh Registration",
+      label: "FreshRegistration",
       defaultValue: "Y",
       options: [
         { label: "Yes", value: "Y" },
@@ -682,9 +682,7 @@ export const APBSAcctRegristrationMetadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["Fresh Registration is Required."] },
-        ],
+        rules: [{ name: "required", params: ["FreshRegistrationIsRequired"] }],
       },
       dependentFields: ["UPLOAD"],
       __EDIT__: {
@@ -727,7 +725,7 @@ export const APBSAcctRegristrationMetadata = {
         componentType: "autocomplete",
       },
       name: "PREV_IIN_NO",
-      label: "Previous Bank IIN",
+      label: "PreviousBankIIN",
       fullWidth: true,
       placeholder: "SelectPreviousBankIIN",
       options: getPreviousBankIINDDW,
@@ -759,9 +757,7 @@ export const APBSAcctRegristrationMetadata = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [
-          { name: "required", params: ["Previous Bank IIN is Required."] },
-        ],
+        rules: [{ name: "required", params: ["PreviousBankIINIsRequired"] }],
       },
       GridProps: { xs: 12, sm: 9, md: 4.2, lg: 4.5, xl: 4.5 },
     },
@@ -792,7 +788,7 @@ export const APBSAcctRegristrationMetadata = {
         componentType: "textField",
       },
       name: "UPLOAD_DISP",
-      label: "Upload in NPCI",
+      label: "UploadNPCI",
       type: "text",
       isReadOnly: true,
       GridProps: { xs: 12, sm: 3, md: 1.5, lg: 2, xl: 2 },
@@ -807,7 +803,7 @@ export const APBSAcctRegristrationMetadata = {
         componentType: "datePicker",
       },
       name: "UPLOAD_DT",
-      label: "Upload Date",
+      label: "UploadDate",
       isReadOnly: true,
       placeholder: "DD/MM/YYYY",
       dependentFields: ["UPLOAD"],
@@ -894,7 +890,7 @@ export const APBSAcctRegristrationMetadata = {
         componentType: "select",
       },
       name: "ACTIVE",
-      label: "Status",
+      label: " ",
       fullWidth: true,
       options: [
         { label: "Active", value: "Y" },
@@ -909,13 +905,14 @@ export const APBSAcctRegristrationMetadata = {
         SelectProps: { IconComponent: () => null },
       },
       dependentFields: ["UNIQUE_ID", "UPLOAD", "VALIDATE_ACTIVE"],
-      validationRun: "onChange",
+      validationRun: "onChange", // If remove this it will not call api second time.
       postValidationSetCrossFieldValues: async (
         currentField,
         formState,
         authState,
         dependentFieldValues
       ) => {
+        if (formState?.isSubmitting) return {};
         if (
           Boolean(currentField?.value) &&
           currentField?.value !== dependentFieldValues?.VALIDATE_ACTIVE?.value
@@ -939,7 +936,7 @@ export const APBSAcctRegristrationMetadata = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.O_STATUS === "999") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "ValidationFailed",
@@ -950,7 +947,7 @@ export const APBSAcctRegristrationMetadata = {
             } else if (postData[i]?.O_STATUS === "9") {
               formState?.handleButtonDisable(false);
               if (btn99 !== "No") {
-                const { btnName, obj } = await getButtonName({
+                await getButtonName({
                   messageTitle: postData[i]?.O_MSG_TITLE?.length
                     ? postData[i]?.O_MSG_TITLE
                     : "Alert",
@@ -960,7 +957,7 @@ export const APBSAcctRegristrationMetadata = {
               }
             } else if (postData[i]?.O_STATUS === "99") {
               formState?.handleButtonDisable(false);
-              const { btnName, obj } = await getButtonName({
+              const { btnName } = await getButtonName({
                 messageTitle: postData[i]?.O_MSG_TITLE?.length
                   ? postData[i]?.O_MSG_TITLE
                   : "Confirmation",
@@ -1027,7 +1024,7 @@ export const APBSAcctRegristrationMetadata = {
         componentType: "datePicker",
       },
       name: "DEACTIVE_DT",
-      label: "De-Active Date",
+      label: "DeActiveDate",
       placeholder: "DD/MM/YYYY",
       dependentFields: ["ACTIVE"],
       __EDIT__: {
@@ -1098,7 +1095,7 @@ export const APBSAcctRegristrationMetadata = {
         componentType: "textField",
       },
       name: "UPLOAD_FILE_NM",
-      label: "Upload File Name",
+      label: "UploadFileName",
       type: "text",
       isReadOnly: true,
       __NEW__: {

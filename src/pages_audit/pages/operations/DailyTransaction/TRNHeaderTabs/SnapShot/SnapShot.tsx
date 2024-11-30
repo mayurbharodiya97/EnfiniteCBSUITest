@@ -243,7 +243,7 @@ export const SnapShot = ({ reqData }) => {
                     {t("Close")}
                   </GradientButton>
                 </DialogActions>
-                <ChequeSignImage imgData={imgData} isVisibleSign={false} />
+                <ChequeSignImage imgData={imgData} />
               </>
             )}
           </Dialog>

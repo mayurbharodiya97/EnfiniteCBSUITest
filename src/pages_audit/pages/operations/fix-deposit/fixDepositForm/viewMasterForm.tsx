@@ -100,9 +100,9 @@ export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
                 ...data?.[0],
                 FORM_60:
                   data?.[0]?.FORM_60 === "Y"
-                    ? "FORM 60 Submitted"
+                    ? t("FORM60Submitted")
                     : data?.[0]?.FORM_60 === "F"
-                    ? "FORM 61 Submitted"
+                    ? t("FORM61Submitted")
                     : data?.[0]?.FORM_60 === "N"
                     ? "N"
                     : "",
@@ -129,7 +129,7 @@ export const ViewMasterForm: React.FC<ViewMasterFormProps> = ({
             }}
           >
             <GradientButton onClick={() => handleDialogClose()}>
-              Close
+              {t("Close")}
             </GradientButton>
           </FormWrapper>
         )}

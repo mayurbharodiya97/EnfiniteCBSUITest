@@ -2925,6 +2925,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/VALIDATEACCOUNTDTL",
     packageName: "",
   },
+  VALIDATECUSTID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATECUSTID",
+    packageName: "",
+  },
   GETBRANCHDDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHDDDW",
     packageName: "",
@@ -2947,6 +2951,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETLOCKERTRXDDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERTRXDDDW",
+    packageName: "",
+  },
+  VALIDATELOCKERNO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATELOCKERNO",
+    packageName: "",
+  },
+  VALIDATELOCKEROPERATION: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATELOCKEROPERATION",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONRECEIPT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONRECEIPT",
     packageName: "",
   },
   GETSTPCHQISSUEUSED: {

@@ -9,17 +9,25 @@ import {
   GradientButton,
   FormWrapper,
   MetaDataType,
+  usePopupContext,
 } from "@acuteinfo/common-base";
 export const DataRetrival = ({ closeDialog, open, onUpload }) => {
   const formRef = useRef(null);
   const { authState } = useContext(AuthContext);
-
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const mutation = useMutation(API.getRetrievalDateWise, {
     onSuccess: (data) => {
       onUpload(data);
       closeDialog();
     },
-    onError: () => {},
+    onError: async (error: any) => {
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
+      });
+    },
   });
 
   const onSubmitHandler = (data, displayData, endSubmit, setFieldError) => {

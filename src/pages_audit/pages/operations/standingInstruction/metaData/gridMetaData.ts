@@ -474,7 +474,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "SearchSI",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "INDEX",
     defaultColumnConfig: {
       width: 200,
       maxWidth: 450,
@@ -493,15 +493,26 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
     footerNote: "ColorandSi",
   },
   columns: [
     {
+      accessor: "SrNo",
+      columnName: "SrNo",
+      sequence: 1,
+      alignment: "center",
+      componentType: "default",
+      width: 75,
+      minWidth: 70,
+      maxWidth: 100,
+      isAutoSequence: true,
+    },
+    {
       accessor: "DEBIT_ACCOUNT",
       columnName: "Debit From A/C",
-      sequence: 1,
+      sequence: 2,
       alignment: "left",
       componentType: "default",
       width: 150,
@@ -511,7 +522,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "DR_ACCT_NM",
       columnName: "Debit A/C Name",
-      sequence: 2,
+      sequence: 3,
       alignment: "left",
       componentType: "default",
       width: 300,
@@ -521,7 +532,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "START_DT",
       columnName: "StartDate",
-      sequence: 3,
+      sequence: 4,
       alignment: "left",
       componentType: "date",
       width: 100,
@@ -531,7 +542,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "EXECUTE_DAY",
       columnName: "ExecuteOnDay",
-      sequence: 4,
+      sequence: 5,
       alignment: "right",
       componentType: "default",
       width: 100,
@@ -541,7 +552,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "FEQ_TYPE",
       columnName: "FrequncyType",
-      sequence: 5,
+      sequence: 6,
       alignment: "left",
       componentType: "default",
       width: 100,
@@ -551,7 +562,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "FEQ_VALUE",
       columnName: "FrequencyValue",
-      sequence: 6,
+      sequence: 7,
       alignment: "right",
       componentType: "default",
       width: 100,
@@ -561,7 +572,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "CREDIT_ACCOUNT",
       columnName: "CreditToAccount",
-      sequence: 7,
+      sequence: 8,
       alignment: "left",
       componentType: "default",
       width: 150,
@@ -571,7 +582,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "CR_ACCT_NM",
       columnName: "CreditAcctName",
-      sequence: 8,
+      sequence: 9,
       alignment: "left",
       componentType: "default",
       width: 300,
@@ -581,7 +592,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "SI_AMOUNT",
       columnName: "SIAmount",
-      sequence: 9,
+      sequence: 10,
       alignment: "right",
       componentType: "currency",
       width: 150,
@@ -591,7 +602,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "SI_CHARGE",
       columnName: "SICharge",
-      sequence: 10,
+      sequence: 11,
       alignment: "right",
       componentType: "currency",
       width: 100,
@@ -601,7 +612,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "REMARKS",
       columnName: "Remark",
-      sequence: 11,
+      sequence: 12,
       alignment: "left",
       componentType: "default",
       width: 200,
@@ -611,7 +622,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "VALID_UPTO",
       columnName: "ValidUpto",
-      sequence: 12,
+      sequence: 13,
       alignment: "left",
       componentType: "date",
       width: 100,
@@ -621,7 +632,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
     {
       accessor: "DOC_STATUS",
       columnName: "Status",
-      sequence: 13,
+      sequence: 14,
       alignment: "left",
       componentType: "editableCheckbox",
       width: 100,
@@ -643,7 +654,7 @@ export const searchButttonGridMetaData: GridMetaDataType = {
       buttonLabel: "Delete",
       accessor: "delete",
       width: 80,
-      sequence: 14,
+      sequence: 15,
       alignment: "center",
       isVisible: true,
       shouldExclude: (initialValue, original, prevRows, nextRows) => {

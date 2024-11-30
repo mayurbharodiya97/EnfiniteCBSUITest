@@ -10,6 +10,7 @@ import { t } from "i18next";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import i18n from "components/multiLanguage/languagesConfiguration";
 import { format } from "date-fns";
+import { validateHOBranch } from "components/utilFunction/function";
 
 export const RetrieveFormConfigMetaData = {
   form: {
@@ -320,12 +321,14 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     allowColumnReordering: false,
     disableSorting: false,
     disableGroupBy: true,
-    defaultPageSize: 15,
     containerHeight: {
       min: "64vh",
       max: "65vh",
     },
     allowFilter: false,
+    enablePagination: true,
+    pageSizes: [50, 100, 150],
+    defaultPageSize: 100,
     allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
@@ -1042,7 +1045,7 @@ export const ddTransactionFormMetaData = {
           for (let i = 0; i < postData.length; i++) {
             if (postData[i]?.ERR_CODE === "999") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "Account Validation Failed",
+                messageTitle: postData[i]?.O_MSG_TITLE,
                 message: postData[i]?.ERR_MSG,
               });
               if (btnName === "Ok") {
@@ -1050,13 +1053,13 @@ export const ddTransactionFormMetaData = {
             } else if (postData[i]?.ERR_CODE === "9") {
               if (btn99 !== "No") {
                 const { btnName, obj } = await getButtonName({
-                  messageTitle: "HNI Alert",
+                  messageTitle: postData[i]?.O_MSG_TITLE,
                   message: postData[i]?.ERR_MSG,
                 });
               }
             } else if (postData[i]?.ERR_CODE === "99") {
               const { btnName, obj } = await getButtonName({
-                messageTitle: "Risk Category Alert",
+                messageTitle: postData[i]?.O_MSG_TITLE,
                 message: postData[i]?.ERR_MSG,
                 buttonNames: ["Yes", "No"],
               });
@@ -1072,8 +1075,6 @@ export const ddTransactionFormMetaData = {
           REGION_CD: {},
         };
       },
-
-      required: "true",
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["selectTransactionMode"] }],
@@ -1175,6 +1176,7 @@ export const ddTransactionFormMetaData = {
           MODULE: "",
           ASON_DT: authState?.workingDate,
         };
+        console.log(reqParams, "reqParams");
 
         if (
           reqParams.ACCT_CD !== "" &&
@@ -1254,6 +1256,34 @@ export const ddTransactionFormMetaData = {
             return true;
           } else return false;
         },
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+
+          const isHOBranch = await validateHOBranch(
+            currentField,
+            formState?.MessageBox,
+            authState
+          );
+          if (isHOBranch) {
+            return {
+              BRANCH_CD: {
+                value: "",
+                isFieldFocused: true,
+                ignoreUpdate: false,
+              },
+            };
+          }
+          return {
+            ACCT_TYPE: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: false },
+            ACCT_NM: { value: "" },
+          };
+        },
         shouldExclude: (val1, dependent) => {
           if (
             dependent?.C_C_T_SP_C?.value === "T" &&
@@ -1271,7 +1301,7 @@ export const ddTransactionFormMetaData = {
       accountTypeMetadata: {
         name: "TRF_ACCT_TYPE",
         GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-        dependentFields: ["C_C_T_SP_C", "SCREENFLAG"],
+        dependentFields: ["C_C_T_SP_C", "SCREENFLAG", "TRF_BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (
             dependentFields?.SCREENFLAG?.value === "REALIZECONFIRM" ||
@@ -1291,6 +1321,44 @@ export const ddTransactionFormMetaData = {
             return false;
           }
           return true;
+        },
+        postValidationSetCrossFieldValues: async (
+          currentField,
+          formState,
+          authState,
+          dependentFieldValues
+        ) => {
+          if (formState?.isSubmitting) return {};
+          if (
+            currentField?.value &&
+            dependentFieldValues?.TRF_BRANCH_CD?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: t("ValidationFailed"),
+              message: t("enterBranchCode"),
+              buttonNames: ["Ok"],
+              icon: "ERROR",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                TRF_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: true,
+                },
+                TRF_BRANCH_CD: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          }
+          return {
+            TRF_ACCT_CD: { value: "", ignoreUpdate: false },
+            TRF_NAME: { value: "" },
+          };
         },
       },
       accountCodeMetadata: {
@@ -1333,8 +1401,33 @@ export const ddTransactionFormMetaData = {
         ) => {
           if (formState?.isSubmitting) return {};
           if (
+            currentField.value &&
+            dependentFieldValues?.TRF_ACCT_TYPE?.value?.length === 0
+          ) {
+            let buttonName = await formState?.MessageBox({
+              messageTitle: t("ValidationFailed"),
+              message: t("enterAccountType"),
+              buttonNames: ["Ok"],
+              icon: "ERROR",
+            });
+
+            if (buttonName === "Ok") {
+              return {
+                TRF_ACCT_CD: {
+                  value: "",
+                  isFieldFocused: false,
+                  ignoreUpdate: false,
+                },
+                TRF_ACCT_TYPE: {
+                  value: "",
+                  isFieldFocused: true,
+                  ignoreUpdate: true,
+                },
+              };
+            }
+          } else if (
             currentField?.value &&
-            dependentFieldValues?.TRF_BRANCH_CD?.value &&
+            dependentFieldValues?.TRF_BRANCH_CD.value &&
             dependentFieldValues?.TRF_ACCT_TYPE?.value
           ) {
             const reqParameters = {
@@ -1354,14 +1447,16 @@ export const ddTransactionFormMetaData = {
             for (let i = 0; i < postData?.MSG.length; i++) {
               if (postData?.MSG[i]?.O_STATUS === "999") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "ValidationFailed",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
                   message: postData?.MSG[i]?.O_MESSAGE,
+                  icon: "ERROR",
                 });
                 returnVal = "";
               } else if (postData?.MSG[i]?.O_STATUS === "99") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "Confirmation",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
                   message: postData?.MSG[i]?.O_MESSAGE,
+                  icon: "CONFIRM",
                   buttonNames: ["Yes", "No"],
                 });
                 btn99 = btnName;
@@ -1370,8 +1465,9 @@ export const ddTransactionFormMetaData = {
                 }
               } else if (postData?.MSG[i]?.O_STATUS === "9") {
                 const btnName = await formState.MessageBox({
-                  messageTitle: "Alert",
+                  messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
                   message: postData?.MSG[i]?.O_MESSAGE,
+                  icon: "WARNING",
                 });
               } else if (postData?.MSG[i]?.O_STATUS === "0") {
                 if (btn99 !== "No") {
@@ -1381,14 +1477,14 @@ export const ddTransactionFormMetaData = {
                 }
               }
             }
-
+            btn99 = 0;
             return {
               TRF_ACCT_CD:
                 returnVal !== ""
                   ? {
                       value: utilFunction.getPadAccountNumber(
                         currentField?.value,
-                        dependentFieldValues?.ACCT_TYPE?.optionData
+                        dependentFieldValues?.TRF_ACCT_TYPE?.optionData
                       ),
                       ignoreUpdate: true,
                       isFieldFocused: false,
@@ -1396,7 +1492,7 @@ export const ddTransactionFormMetaData = {
                   : {
                       value: "",
                       isFieldFocused: true,
-                      ignoreUpdate: true,
+                      ignoreUpdate: false,
                     },
               TRF_NAME: {
                 value: postData?.ACCT_NM ?? "",
@@ -1405,7 +1501,6 @@ export const ddTransactionFormMetaData = {
           } else if (!currentField?.value) {
             return {
               TRF_NAME: { value: "" },
-              TRAN_BAL: { value: "" },
             };
           }
         },

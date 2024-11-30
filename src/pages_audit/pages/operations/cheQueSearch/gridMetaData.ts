@@ -2,7 +2,7 @@ export const RetrieveGridMetaData = {
   gridConfig: {
     dense: true,
     gridLabel: "",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "INDEX",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -11,12 +11,10 @@ export const RetrieveGridMetaData = {
     allowColumnReordering: true,
     disableSorting: false,
     disableGroupBy: true,
-    enablePagination: true,
-    pageSizes: [15, 30, 50],
     defaultPageSize: 20,
     containerHeight: {
-      min: "67vh",
-      max: "67vh",
+      min: "60vh",
+      max: "60vh",
     },
     allowFilter: true,
     allowColumnHiding: true,
@@ -95,6 +93,7 @@ export const RetrieveGridMetaData = {
       width: 150,
       minWidth: 150,
       maxWidth: 250,
+      isDisplayTotal: true,
     },
 
     {

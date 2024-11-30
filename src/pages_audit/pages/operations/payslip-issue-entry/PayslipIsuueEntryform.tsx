@@ -85,7 +85,6 @@ const PayslipIsuueEntryform = ({
   const isErrorFuncRef = useRef<any>(null);
   const formDataRef = useRef<any>(null);
   const billType = useRef<any>(null);
-  const dummyCheckData = useRef<any>(null);
   const headerClasses = useTypeStyles();
   const { authState } = useContext(AuthContext);
   const [formMode, setFormMode] = useState(defaultView);
@@ -94,7 +93,6 @@ const PayslipIsuueEntryform = ({
   const [OpenSignature, setOpenSignature] = useState(false);
   const [jointDtlData, setjointDtlData] = useState([]);
   const [openForm, setopenForm] = useState(true);
-  const [accNumber, setAccNumber] = useState({});
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const [mstState, setMstState] = useState<any>({
     PAYSLIP_MST_DTL: [
@@ -169,19 +167,16 @@ const PayslipIsuueEntryform = ({
   );
 
   const deleteMutation = useMutation(savePayslipEntry, {
-    onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+    onError: async (error: any) => {
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
       });
-      CloseMessageBox();
-      closeDialog();
     },
     onSuccess: (data) => {
-      enqueueSnackbar("deleteSuccessfully", {
+      enqueueSnackbar(t("RecordRemovedMsg"), {
         variant: "success",
       });
       slipdataRefetch();
@@ -191,9 +186,10 @@ const PayslipIsuueEntryform = ({
   });
   const jointDetailMutation = useMutation(getJointDetailsList, {
     onError: async (error: any) => {
-      const btnName = await MessageBox({
+      await MessageBox({
         message: error?.error_msg,
-        messageTitle: "error",
+        messageTitle: "Error",
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
     },
@@ -205,7 +201,8 @@ const PayslipIsuueEntryform = ({
     onError: async (error: any) => {
       const btnName = await MessageBox({
         message: error?.error_msg,
-        messageTitle: "error",
+        messageTitle: "Error",
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
       isErrorFuncRef.current?.endSubmit(false);
@@ -216,7 +213,8 @@ const PayslipIsuueEntryform = ({
       } else {
         const btnName = await MessageBox({
           message: data[0]?.VOUCHER_MSG,
-          messageTitle: "Vouchers Confirmation",
+          messageTitle: t("voucherConfirmationMSG"),
+          icon: "INFO",
           buttonNames: ["Ok"],
         });
       }
@@ -228,7 +226,8 @@ const PayslipIsuueEntryform = ({
     onError: async (error: any) => {
       const btnName = await MessageBox({
         message: error?.error_msg,
-        messageTitle: "error",
+        messageTitle: "Error",
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
       isErrorFuncRef.current?.endSubmit(false);
@@ -247,7 +246,7 @@ const PayslipIsuueEntryform = ({
       }
 
       slipdataRefetch();
-      enqueueSnackbar("insertSuccessfully", {
+      enqueueSnackbar(t("RecordInsertedMsg"), {
         variant: "success",
       });
       closeDialog();
@@ -291,6 +290,7 @@ const PayslipIsuueEntryform = ({
           const { btnName, obj } = await getButtonName({
             messageTitle: "Validation Failed",
             message: data[i]?.O_MESSAGE,
+            icon: "ERROR",
           });
           if (formMode == "edit") {
             setFormMode("edit");
@@ -307,6 +307,7 @@ const PayslipIsuueEntryform = ({
           const buttonName = await MessageBox({
             messageTitle: "Confirmation",
             message: "Proceed ?",
+            icon: "CONFIRM",
             buttonNames: ["Yes", "No"],
             loadingBtnName: ["Yes"],
           });
@@ -329,20 +330,18 @@ const PayslipIsuueEntryform = ({
       regionRefetch();
       setregionRefetch((prev) => prev + 1);
       setregionDialouge(false);
-      enqueueSnackbar("insertSuccessfully", {
+      enqueueSnackbar(t("insertSuccessfully"), {
         variant: "success",
       });
       CloseMessageBox();
     },
-    onError: (error: any) => {
-      let errorMsg = "Unknownerroroccured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+    onError: async (error: any) => {
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
       });
-      CloseMessageBox();
     },
   });
   const olddraftData = draftDtlData
@@ -476,7 +475,6 @@ const PayslipIsuueEntryform = ({
       }
     }
 
-    // Process account data
     for (let i = 0; i < data?.PAYSLIP_MST_DTL.length; i++) {
       const acctdata = data?.PAYSLIP_MST_DTL[i];
       if (acctdata && typeof acctdata === "object") {
@@ -545,8 +543,9 @@ const PayslipIsuueEntryform = ({
 
     if (data.MST_TOTAL !== data.FINAL_DRAFT_TOTAL) {
       const btn2 = await MessageBox({
-        messageTitle: "Validation Failed...!",
-        message: "Please Check Amount.",
+        messageTitle: t("ValidationFailed"),
+        message: t("amountCheckMsg"),
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
     } else {
@@ -586,6 +585,20 @@ const PayslipIsuueEntryform = ({
       queryClient.removeQueries(["draftdata"]);
       queryClient.removeQueries(["headerData"]);
       queryClient.removeQueries(["getSlipNo"]);
+    };
+  }, []);
+  useEffect(() => {
+    const handleKeyDown = async (event) => {
+      if ((event.ctrlKey && event.key === "j") || event.key === "J") {
+        setjointDtl(true);
+        event.preventDefault();
+      } else if (event && event?.key === "Escape") {
+        setjointDtl(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown, true);
     };
   }, []);
 
@@ -631,7 +644,7 @@ const PayslipIsuueEntryform = ({
                   }}
                   color={"primary"}
                 >
-                  Delete
+                  {t("delete")}
                 </GradientButton>
               )}
             {formMode === "edit" ? (
@@ -648,7 +661,7 @@ const PayslipIsuueEntryform = ({
                   }
                   color={"primary"}
                 >
-                  Save
+                  {t("Save")}
                 </GradientButton>
                 <GradientButton
                   onClick={() => {
@@ -656,7 +669,7 @@ const PayslipIsuueEntryform = ({
                   }}
                   color={"primary"}
                 >
-                  Cancel
+                  {t("Cancel")}
                 </GradientButton>
               </>
             ) : formMode === "add" ? (
@@ -673,38 +686,38 @@ const PayslipIsuueEntryform = ({
                   }
                   color={"primary"}
                 >
-                  Save
+                  {t("Save")}
                 </GradientButton>
                 <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
+                  {t("Close")}
                 </GradientButton>
               </>
             ) : (
               <>
                 {!isdraftDtlLoading && !isAcctDtlLoading ? (
                   <GradientButton
-                    onClick={() => {
+                    onClick={async () => {
                       if (rows) {
                         if (rows[0]?.data?.CONFIRMED !== "Y") {
                           setFormMode("edit");
                         } else {
-                          enqueueSnackbar(
-                            "Cannot make changes in confirmed entry",
-                            {
-                              variant: "error",
-                            }
-                          );
+                          await MessageBox({
+                            message: t("confirmEntryRestrictionMsg"),
+                            messageTitle: t("ValidationFailed"),
+                            icon: "ERROR",
+                            buttonNames: ["Ok"],
+                          });
                         }
                       }
                     }}
                     color={"primary"}
                   >
-                    Edit
+                    {t("edit")}
                   </GradientButton>
                 ) : null}
 
                 <GradientButton onClick={closeDialog} color={"primary"}>
-                  Close
+                  {t("Close")}
                 </GradientButton>
               </>
             )}
@@ -826,8 +839,8 @@ const PayslipIsuueEntryform = ({
               onFormButtonClickHandel={async (id) => {
                 if (id.slice(id.indexOf(".") + 1) === "REGIONBTN") {
                   const btnName = await MessageBox({
-                    message: "Are you sure to add region ?",
-                    messageTitle: "Confirmation",
+                    message: t("addRegionMSG"),
+                    messageTitle: t("Confirmation"),
                     buttonNames: ["Yes", "No"],
                   });
                   if (btnName === "Yes") {
@@ -856,7 +869,6 @@ const PayslipIsuueEntryform = ({
               }}
               setDataOnFieldChange={async (action, paylod) => {
                 if (action === "DEF_TRAN_CD") {
-                  // setBillType(paylod.BILL_TYPE_CD)
                   billType.current = {
                     paylod,
                   };
@@ -887,6 +899,15 @@ const PayslipIsuueEntryform = ({
                 FLAG: rows?.[0]?.data.PENDING_FLAG === "Confirmed" ? "Y" : "N",
               }}
             />
+            {/* <Typography
+              sx={{
+                fontSize: "15px",
+                marginLeft: "20px",
+                display: "inline-block",
+              }}
+            >
+              {t("PressCtrlJToViewJointInformation")}
+            </Typography> */}
           </>
         ) : (
           <Paper sx={{ display: "flex", justifyContent: "center" }}>
@@ -927,13 +948,13 @@ const PayslipIsuueEntryform = ({
                       isSubmitting ? <CircularProgress size={20} /> : null
                     }
                   >
-                    Ok
+                    {t("Ok")}
                   </GradientButton>
                   <GradientButton
                     onClick={() => setregionDialouge(false)}
                     color={"primary"}
                   >
-                    Close
+                    {t("Close")}
                   </GradientButton>
                 </>
               );
@@ -983,6 +1004,7 @@ const PayslipIsuueEntryform = ({
                 messageTitle: t("Confirmation"),
                 message: t("DoYouWantDeleteRow"),
                 buttonNames: ["Yes", "No"],
+                icon: "CONFIRM",
                 defFocusBtnName: "Yes",
                 loadingBtnName: ["Yes"],
               });

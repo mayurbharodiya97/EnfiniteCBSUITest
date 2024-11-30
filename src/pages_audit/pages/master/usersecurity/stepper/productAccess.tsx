@@ -19,6 +19,7 @@ import {
   ActionTypes,
   Alert,
 } from "@acuteinfo/common-base";
+import { Box } from "@mui/material";
 
 const actions: ActionTypes[] = [
   {
@@ -163,28 +164,37 @@ export const ProductAccess = forwardRef<any, any>(
               color="error"
             />
           ))}
-        <GridWrapper
-          key={`userAccessbranch`}
-          finalMetaData={
-            extractGridMetaData(productaccess, defaultView) as GridMetaDataType
-          }
-          data={gridData || []}
-          actions={defaultView === "edit" ? actions : []}
-          setAction={setCurrentAction}
-          loading={
-            newloading ||
-            editloading ||
-            newfetching ||
-            editfetching ||
-            mutation?.isLoading
-          }
-          setData={setGridData}
-          refetchData={() => {
-            newRefetch();
-            editRefetch();
+        <Box
+          style={{
+            padding: "0 10px 0px 10px",
           }}
-          ref={ref}
-        />
+        >
+          <GridWrapper
+            key={`userAccessbranch`}
+            finalMetaData={
+              extractGridMetaData(
+                productaccess,
+                defaultView
+              ) as GridMetaDataType
+            }
+            data={gridData || []}
+            actions={defaultView === "edit" ? actions : []}
+            setAction={setCurrentAction}
+            loading={
+              newloading ||
+              editloading ||
+              newfetching ||
+              editfetching ||
+              mutation?.isLoading
+            }
+            setData={setGridData}
+            refetchData={() => {
+              newRefetch();
+              editRefetch();
+            }}
+            ref={ref}
+          />
+        </Box>
       </Fragment>
     );
   }

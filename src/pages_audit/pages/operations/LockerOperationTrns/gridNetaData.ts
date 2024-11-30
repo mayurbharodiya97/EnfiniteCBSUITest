@@ -68,7 +68,7 @@ export const lockerDeatilsViewMetadata: GridMetaDataType = {
     {
       accessor: "ST_TIME",
       columnName: "inTime",
-      sequence: 6,
+      sequence: 5,
       alignment: "left",
       componentType: "date",
       width: 120,
@@ -79,7 +79,7 @@ export const lockerDeatilsViewMetadata: GridMetaDataType = {
     {
       accessor: "CL_TIME",
       columnName: "outTime",
-      sequence: 7,
+      sequence: 6,
       alignment: "left",
       componentType: "date",
       width: 120,
@@ -92,7 +92,7 @@ export const lockerDeatilsViewMetadata: GridMetaDataType = {
       columnName: "",
       componentType: "buttonRowCell",
       buttonLabel: "Delete",
-      sequence: 13,
+      sequence: 7,
       alignment: "center",
       width: 80,
       minWidth: 70,

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useMutation } from "react-query";
-import { enqueueSnackbar, useSnackbar } from "notistack";
+import { enqueueSnackbar } from "notistack";
 import { Dialog } from "@mui/material";
 import { ImportGridMetaData, positivePayImportData } from "./metadata";
 import { importFileData } from "../api";
@@ -16,7 +16,6 @@ import {
   MetaDataType,
   GradientButton,
   SubmitFnType,
-  Alert,
 } from "@acuteinfo/common-base";
 
 const actions: ActionTypes[] = [
@@ -64,7 +63,9 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
         for (let i = 0; i < data?.length; i++) {
           if (data[i]?.O_STATUS === "999") {
             const btnName = await MessageBox({
-              messageTitle: "ValidationFailed",
+              messageTitle: data[i]?.O_MSG_TITLE
+                ? data[i]?.O_MSG_TITLE
+                : "ValidationFailed",
               message: data[i]?.O_MESSAGE,
               buttonNames: ["Ok"],
               icon: "ERROR",
@@ -83,14 +84,18 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
               break;
             }
           } else if (data[i]?.O_STATUS === "9") {
-            const btnName = await MessageBox({
-              messageTitle: "Alert",
+            await MessageBox({
+              messageTitle: data[i]?.O_MSG_TITLE
+                ? data[i]?.O_MSG_TITLE
+                : "Alert",
               message: data[i]?.O_MESSAGE,
               icon: "WARNING",
             });
           } else if (data[i]?.O_STATUS === "99") {
             const btnName = await MessageBox({
-              messageTitle: "Confirmation",
+              messageTitle: data[i]?.O_MSG_TITLE
+                ? data[i]?.O_MSG_TITLE
+                : "Confirmation",
               message: data[i]?.O_MESSAGE,
               buttonNames: ["Yes", "No"],
               icon: "CONFIRM",
@@ -142,7 +147,6 @@ export default function ImportData({ CloseFileUpload, refetchData }) {
           key={"importData"}
           metaData={positivePayImportData as MetaDataType}
           onSubmitHandler={onSubmitHandler}
-          // initialValues={}
           formStyle={{
             background: "white",
           }}

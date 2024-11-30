@@ -500,6 +500,10 @@ export const RtgsEntryFormMetaData = {
                 PARA_UTR: {
                   value: returnVal?.PARA_UTR ?? "",
                 },
+                SER_CHRG_AMT: { value: "" },
+                COMM_AMT: { value: "" },
+                AMOUNT: { value: "" },
+                TOTAL: { value: "" },
               };
             } else if (!field?.value) {
               return {

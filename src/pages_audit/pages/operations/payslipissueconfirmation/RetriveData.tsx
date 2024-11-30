@@ -10,24 +10,29 @@ import {
   FormWrapper,
   MetaDataType,
   GradientButton,
+  usePopupContext,
 } from "@acuteinfo/common-base";
+import { t } from "i18next";
 
 export const DataRetrival = ({ closeDialog, open, onUpload }) => {
   const formRef = useRef(null);
   const { authState } = useContext(AuthContext);
-
+  const { MessageBox, CloseMessageBox } = usePopupContext();
   const mutation = useMutation(API.getPayslipCnfRetrieveData, {
     onSuccess: (data) => {
       onUpload(data);
       closeDialog();
     },
-    onError: (error: any) => {
+    onError: async (error: any) => {
       let errorMsg = "Unknownerroroccured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
+      await MessageBox({
+        message: error?.error_msg,
+        messageTitle: "Error",
+        icon: "ERROR",
+        buttonNames: ["Ok"],
       });
       closeDialog();
     },
@@ -83,10 +88,10 @@ export const DataRetrival = ({ closeDialog, open, onUpload }) => {
                   mutation.isLoading ? <CircularProgress size={20} /> : null
                 }
               >
-                Ok
+                {t("Ok")}
               </GradientButton>
               <GradientButton onClick={() => closeDialog()}>
-                Cancel
+                {t("Close")}
               </GradientButton>
             </>
           )}

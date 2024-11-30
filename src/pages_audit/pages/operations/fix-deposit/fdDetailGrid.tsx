@@ -63,10 +63,8 @@ export const FDDetailGrid = () => {
   const {
     data: actionButtonData,
     isLoading,
-    isFetching,
     isError,
     error,
-    refetch,
   } = useQuery<any, any>(["getFDButtons", authState?.user?.branchCode], () =>
     API.getFDButtons()
   );
@@ -346,7 +344,7 @@ export const FDDetailGrid = () => {
                 await MessageBox({
                   messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
                     ? allowModifyMutData?.O_MSG_TITLE
-                    : "Validation Failed",
+                    : "ValidationFailed",
                   message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -371,7 +369,7 @@ export const FDDetailGrid = () => {
                 await MessageBox({
                   messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
                     ? allowModifyMutData?.O_MSG_TITLE
-                    : "Validation Failed",
+                    : "ValidationFailed",
                   message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -533,7 +531,7 @@ export const FDDetailGrid = () => {
                 await MessageBox({
                   messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
                     ? allowModifyMutData?.O_MSG_TITLE
-                    : "Validation Failed",
+                    : "ValidationFailed",
                   message: allowModifyMutData?.O_MESSAGE ?? "",
                   icon: "ERROR",
                 });
@@ -692,25 +690,28 @@ export const FDDetailGrid = () => {
         </Dialog>
       )}
 
-      {(checkAllowModifyFDDataMutation?.isError ||
+      {checkAllowModifyFDDataMutation?.isError ||
         checkAllowFDPayMutation?.isError ||
-        getFDViewDtlMutation?.isError) && (
-        <Alert
-          severity="error"
-          errorMsg={
-            checkAllowModifyFDDataMutation?.error?.error_msg ||
-            checkAllowFDPayMutation?.error?.error_msg ||
-            getFDViewDtlMutation?.error?.error_msg ||
-            t("Somethingwenttowrong")
-          }
-          errorDetail={
-            checkAllowModifyFDDataMutation?.error?.error_detail ||
-            checkAllowFDPayMutation?.error?.error_detail ||
-            getFDViewDtlMutation?.error?.error_detail
-          }
-          color="error"
-        />
-      )}
+        getFDViewDtlMutation?.isError ||
+        (isError && (
+          <Alert
+            severity="error"
+            errorMsg={
+              checkAllowModifyFDDataMutation?.error?.error_msg ||
+              checkAllowFDPayMutation?.error?.error_msg ||
+              getFDViewDtlMutation?.error?.error_msg ||
+              error?.error_msg ||
+              t("Somethingwenttowrong")
+            }
+            errorDetail={
+              checkAllowModifyFDDataMutation?.error?.error_detail ||
+              checkAllowFDPayMutation?.error?.error_detail ||
+              getFDViewDtlMutation?.error?.error_detail ||
+              error?.error_detail
+            }
+            color="error"
+          />
+        ))}
 
       <GridWrapper
         key={
@@ -722,7 +723,7 @@ export const FDDetailGrid = () => {
         finalMetaData={FDDetailGridMetaData as GridMetaDataType}
         data={FDState?.viewDtlGridData ?? []}
         setData={() => null}
-        loading={getFDViewDtlMutation?.isLoading}
+        loading={getFDViewDtlMutation?.isLoading || isLoading}
         actions={actions}
         setAction={setCurrentAction}
         enableExport={true}
@@ -781,7 +782,7 @@ export const FDDetailGrid = () => {
                     await MessageBox({
                       messageTitle: allowModifyMutData?.O_MSG_TITLE?.length
                         ? allowModifyMutData?.O_MSG_TITLE
-                        : "Validation Failed",
+                        : "ValidationFailed",
                       message: allowModifyMutData?.O_MESSAGE ?? "",
                       icon: "ERROR",
                     });
