@@ -34,3 +34,7 @@ AIPLCert.crt
 AIPLprivateKey.pem
 
 .keys
+.env.production
+nginx_linux_no_ssl.conf
+nginx_linux.conf
+Dockerfile
