@@ -73,7 +73,7 @@ export const other_address_meta_data = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+            rules: [{ name: "required", params: ["AddressTypeIsRequired"] }],
           },
         },
         {
@@ -86,7 +86,7 @@ export const other_address_meta_data = {
           maxLength: 50,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+            rules: [{ name: "required", params: ["Line1IsRequired"] }],
           },
           validate: (columnValue, allField, flag) =>
             API.AlphaNumericValidate(columnValue),
@@ -132,7 +132,7 @@ export const other_address_meta_data = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+            rules: [{ name: "required", params: ["PINIsRequired"] }],
           },
           maxLength: 6,
           FormatProps: {
@@ -241,7 +241,7 @@ export const other_address_meta_data = {
           label: "City",
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+            rules: [{ name: "required", params: ["CityIsRequired"] }],
           },
           isReadOnly: true,
           placeholder: "",

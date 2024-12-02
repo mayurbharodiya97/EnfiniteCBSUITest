@@ -77,7 +77,9 @@ export const related_person_detail_data = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+            rules: [
+              { name: "required", params: ["RelatedPersonTypeIsRequired"] },
+            ],
           },
           placeholder: "",
           type: "text",
@@ -92,7 +94,7 @@ export const related_person_detail_data = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+            rules: [{ name: "required", params: ["RefTypeIsRequired"] }],
           },
           // options: () => API.getPMISCData("REF_RELATION"),
           options: [
@@ -130,7 +132,7 @@ export const related_person_detail_data = {
           reqired: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+            rules: [{ name: "required", params: ["RefCustIDIsRequired"] }],
           },
           dependentFields: ["REF_TYPE"],
           shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -156,7 +158,7 @@ export const related_person_detail_data = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+            rules: [{ name: "required", params: ["FirstNameIsRequired"] }],
           },
           validate: (columnValue, allField, flag) => {
             let regex = /^[a-zA-Z]+$/;
@@ -475,7 +477,7 @@ export const related_person_detail_data = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+            rules: [{ name: "required", params: ["DocReceivedIsRequired"] }],
           },
           type: "text",
           GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
@@ -508,7 +510,7 @@ export const related_person_detail_data = {
           required: true,
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+            rules: [{ name: "required", params: ["IPVFlagIsRequired"] }],
           },
           type: "text",
           GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },

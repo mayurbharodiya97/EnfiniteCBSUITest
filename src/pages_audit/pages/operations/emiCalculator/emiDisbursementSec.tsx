@@ -69,11 +69,12 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
             INST_START_DT: authState?.workingDate
               ? new Date(authState?.workingDate)
               : new Date(),
-            LOAN_AMT: initialRows[0]?.LOAN_AMT_MAIN,
+            LOAN_AMT: "",
           },
         ]
       : [];
   });
+  console.log(resetDaa);
 
   useEffect(() => {
     if (resetDaa === true) {
@@ -87,11 +88,11 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
           INST_START_DT: authState?.workingDate
             ? new Date(authState?.workingDate)
             : new Date(),
-          LOAN_AMT: initialRows[0]?.LOAN_AMT_MAIN,
+          LOAN_AMT: "",
         },
       ]);
     }
-  }, [resetDaa]);
+  }, [resetDaa, initialRows[0]?.LOAN_AMT_MAIN]);
 
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = useState();
@@ -171,7 +172,9 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
       } else {
         if (variables.A_FLAG === "LOAN_AMT" && data[0]?.O_STATUS === "0") {
           const newObj: any = {
-            ...data[0],
+            NO_OF_INST: data[0]?.TO_INST,
+            EMI_RS: data[0]?.EMI_RS,
+            TOT_INST: data[0]?.TO_INST,
             A_SR_CD: variables?.A_SR_CD,
           };
           const existingIndex = loanAmountRawsRef.current.findIndex(
@@ -184,11 +187,16 @@ export const CustomRowTable = ({ totalInstallment, initialRows, resetDaa }) => {
       }
     },
   });
+  const loanAmountRawsRefData = loanAmountRawsRef.current.map((item) => {
+    const { A_SR_CD, ...rest } = item;
+    return rest;
+  });
+  console.log(loanAmountRawsRefData, "loanAmountRawsRefData");
 
   saveData([
     mergedTableData,
     DisbursMentRaws,
-    mutation?.data,
+    loanAmountRawsRefData,
     {
       NO_OF_INST: initialRows[0]?.INSTALLMENT_NO,
       EMI_RS:

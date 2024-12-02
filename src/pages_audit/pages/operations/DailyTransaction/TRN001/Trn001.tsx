@@ -1,4 +1,4 @@
-import { Button, Card } from "@mui/material";
+import { Button, Card, Dialog } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -26,10 +26,9 @@ import {
   utilFunction,
 } from "@acuteinfo/common-base";
 import { useLocation } from "react-router-dom";
-import { DateRetrievalDialog } from "components/common/custom/dateRetrievalPara";
-import { useStyles } from "pages_audit/style";
 import { DateRetrival } from "./DateRetrival/DataRetrival";
 import { SingleAccountInterestReport } from "./DateRetrival/singleAccountInterestReport";
+import { ViewStatement } from "pages_audit/acct_Inquiry/viewStatement";
 export const Trn001 = () => {
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const { authState } = useContext(AuthContext);
@@ -74,7 +73,8 @@ export const Trn001 = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [dateDialog, setDateDialog] = useState(false);
   const [singleAccountInterest, setSingleAccountInterest] = useState(false);
-  const classes = useStyles();
+  const [isOpenPassbookStatement, setOpenPassbookStatement] = useState(false);
+  const [passbookStatementPara, setPassbookStatementPara] = useState<any>({});
   const {
     clearCache: clearTabsCache,
     error: tabsErorr,
@@ -924,6 +924,15 @@ export const Trn001 = () => {
       });
     }
   };
+  const handleDoubleClick = (event, unqID) => {
+    const reqParaDtl = state?.rows?.find((item) => item?.unqID === unqID);
+    setPassbookStatementPara(reqParaDtl);
+    setOpenPassbookStatement(true);
+  };
+  const handlePassbookStatementClose = () => {
+    setOpenPassbookStatement(false);
+    setPassbookStatementPara({});
+  };
 
   const maxUnqID = (state?.rows ?? [])?.reduce(
     (maxID, row) => Math.max(maxID, row?.unqID),
@@ -944,7 +953,6 @@ export const Trn001 = () => {
         cardsData={cardsData}
         reqData={reqData}
       />
-
       {!Boolean(viewOnly) && (
         <>
           {saveScroll.isError ? (
@@ -1003,6 +1011,7 @@ export const Trn001 = () => {
               removeRow={removeRow}
               handleScrollBlur={handleScrollBlur}
               onKeyUp={handleKeyUp}
+              onDoubleClick={handleDoubleClick}
             />
           </Card>
         </>
@@ -1031,7 +1040,6 @@ export const Trn001 = () => {
             </GradientButton>
           </div>
         )}
-
       {!Boolean(viewOnly) && (
         <>
           <GradientButton
@@ -1048,7 +1056,6 @@ export const Trn001 = () => {
           </GradientButton>
         </>
       )}
-
       {viewOnly && (
         <TRN001_Table
           handleGetHeaderTabs={handleGetHeaderTabs}
@@ -1084,6 +1091,35 @@ export const Trn001 = () => {
           }}
         />
       )}
+      {isOpenPassbookStatement ? (
+        <Dialog
+          open={isOpenPassbookStatement}
+          PaperProps={{
+            style: {
+              width: "100%",
+              overflow: "auto",
+            },
+          }}
+          maxWidth="md"
+        >
+          <ViewStatement
+            rowsData={[
+              {
+                data: {
+                  ACCT_CD: passbookStatementPara?.accNo ?? "",
+                  ACCT_TYPE: passbookStatementPara?.accType?.value ?? "",
+                  BRANCH_CD: passbookStatementPara?.branch?.value,
+                },
+              },
+            ]}
+            open={isOpenPassbookStatement}
+            onClose={handlePassbookStatementClose}
+            screenFlag={"ACCT_INQ"}
+            close={() => {}}
+          />
+        </Dialog>
+      ) : null}
+      ;
     </>
   );
 };

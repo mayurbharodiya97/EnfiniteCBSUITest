@@ -135,7 +135,6 @@ export const FixDepositProvider = ({ children }) => {
   };
 
   const openFDScheme = ({ fdTranCode, categCode }: FDSchemeParams) => {
-    console.log("in popup");
     return new Promise((resolve) => {
       setFDScheme({
         isOpen: true,

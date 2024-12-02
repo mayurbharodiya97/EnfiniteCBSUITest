@@ -2925,6 +2925,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/VALIDATEACCOUNTDTL",
     packageName: "",
   },
+  VALIDATECUSTID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATECUSTID",
+    packageName: "",
+  },
   GETBRANCHDDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHDDDW",
     packageName: "",
@@ -2949,6 +2953,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKERTRXDDDW",
     packageName: "",
   },
+  VALIDATELOCKERNO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATELOCKERNO",
+    packageName: "",
+  },
+  VALIDATELOCKEROPERATION: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATELOCKEROPERATION",
+    packageName: "",
+  },
+  GETLOCKEROPERATIONRECEIPT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLOCKEROPERATIONRECEIPT",
+    packageName: "",
+  },
   GETSTPCHQISSUEUSED: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTPCHQISSUEUSED",
     packageName: "",
@@ -2971,6 +2987,42 @@ export const ActionWiseAPIConfiguration = {
   },
   GETDLYSCROLLREGF1: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYSCROLLREGF1",
+    packageName: "",
+  },
+  GETAPBSGRIDDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAPBSGRIDDATA",
+    packageName: "",
+  },
+  VALIDATEAPBSUID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSUID",
+    packageName: "",
+  },
+  VALIDATEAPBSACCTNO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSACCTNO",
+    packageName: "",
+  },
+  VALIDATEAPBSCUSTID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSCUSTID",
+    packageName: "",
+  },
+  GETPREVBANKIINDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPREVBANKIINDDDW",
+    packageName: "",
+  },
+  DOAPBSACREGISTRATIONDML: {
+    url: "/transactionServiceAPI/DOAPBSACREGISTRATIONDML",
+    packageName: "",
+  },
+  VALIDATEAPBSSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/VALIDATEAPBSSTATUS",
+    packageName: "",
+  },
+  GETAPBSUIDRESPONSE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETAPBSUIDRESPONSE",
+    packageName: "",
+  },
+  DOCONFIRMAPBSREGISTRATIONENTRY: {
+    url: "/transactionServiceAPI/DOCONFIRMAPBSREGISTRATIONENTRY",
     packageName: "",
   },
 };

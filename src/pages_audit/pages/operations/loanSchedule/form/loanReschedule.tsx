@@ -467,11 +467,6 @@ export const LoanRescheduleForm = ({
     }
   };
 
-  console.log(
-    LoanScheduleGridMetaData.gridConfig.hideHeader,
-    LoanScheduleGridMetaData.gridConfig.containerHeight
-  );
-
   return (
     <>
       {isLoading || isFetching ? (

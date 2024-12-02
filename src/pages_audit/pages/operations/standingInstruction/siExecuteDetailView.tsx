@@ -24,31 +24,22 @@ import {
   GridMetaDataType,
 } from "@acuteinfo/common-base";
 
-const actions: ActionTypes[] = [
-  {
-    actionName: "edit",
-    actionLabel: "Edit",
-    rowDoubleClick: false,
-    alwaysAvailable: false,
-    multiple: false,
-  },
-  {
-    actionName: "close",
-    actionLabel: "Close",
-    multiple: undefined,
-    rowDoubleClick: false,
-    alwaysAvailable: true,
-  },
-  {
-    actionName: "delete",
-    actionLabel: "Delete",
-    rowDoubleClick: true,
-    alwaysAvailable: false,
-    multiple: undefined,
-  },
-];
-
-const SiExecuteDetailView = ({ open, lineId, srCd, tran_cd, onClose }) => {
+type SiExecuteDetailViewProps = {
+  open: any;
+  lineId: any;
+  srCd: any;
+  tran_cd: any;
+  onClose: any;
+  screenFlag?: any;
+};
+const SiExecuteDetailView: React.FC<SiExecuteDetailViewProps> = ({
+  open,
+  lineId,
+  srCd,
+  tran_cd,
+  onClose,
+  screenFlag,
+}) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const [data, setData] = useState<any>(null);
@@ -59,6 +50,33 @@ const SiExecuteDetailView = ({ open, lineId, srCd, tran_cd, onClose }) => {
   const [rows, setrows] = useState([]);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const isDeleteDataRef = useRef<any>(null);
+  const actions: ActionTypes[] = [
+    ...(screenFlag !== "SIDTL_TRN"
+      ? [
+          {
+            actionName: "edit",
+            actionLabel: "Edit",
+            rowDoubleClick: false,
+            alwaysAvailable: false,
+            multiple: false,
+          },
+        ]
+      : []),
+    {
+      actionName: "close",
+      actionLabel: "Close",
+      multiple: undefined,
+      rowDoubleClick: false,
+      alwaysAvailable: true,
+    },
+    {
+      actionName: "delete",
+      actionLabel: "Delete",
+      rowDoubleClick: true,
+      alwaysAvailable: false,
+      multiple: undefined,
+    },
+  ];
 
   const setCurrentAction = useCallback(
     async (data) => {
@@ -138,14 +156,16 @@ const SiExecuteDetailView = ({ open, lineId, srCd, tran_cd, onClose }) => {
         });
       } else if (data?.[0]?.O_STATUS === "999") {
         MessageBox({
-          messageTitle: t("Validationfailed"),
+          messageTitle: data?.[0]?.O_MSG_TITLE || "ValidationFailed",
           message: data?.[0]?.O_MESSAGE,
+          icon: "ERROR",
         });
       } else if (data?.[0]?.O_STATUS === "99") {
         const buttonName = await MessageBox({
-          messageTitle: t("Confirmation"),
+          messageTitle: data?.[0]?.O_MSG_TITLE || "Confirmation",
           message: data?.[0]?.O_MESSAGE,
           buttonNames: ["Yes", "No"],
+          icon: "CONFIRM",
         });
         if (buttonName === "Yes") {
           deleteMutation.mutate({
@@ -224,7 +244,12 @@ const SiExecuteDetailView = ({ open, lineId, srCd, tran_cd, onClose }) => {
         <GridWrapper
           key={"standingInsructionGridMetaData"}
           finalMetaData={siExecuteDetailViewGridMetaData as GridMetaDataType}
-          loading={isLoading || isFetching}
+          loading={
+            isLoading ||
+            isFetching ||
+            deleteValidationMutation?.isLoading ||
+            deleteMutation?.isLoading
+          }
           data={data ?? []}
           setData={() => null}
           actions={actions}

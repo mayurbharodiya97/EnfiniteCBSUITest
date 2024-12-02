@@ -313,22 +313,6 @@ export const getPMISCData = async (
     if (Array.isArray(responseData)) {
       // console.log("qweqwerr", responseData) // checked for pass, dr - expiry date
 
-      if (CATEGORY_CD == "Marital") {
-        // console.log("dkjawhdiqwuiugeqweqe", dependentValue)
-        let resOp: any = [];
-        const options =
-          dependentValue?.PREFIX_CD?.optionData?.[0]?.MARITIAL_STATUS ?? "";
-        responseData.map((element, i) => {
-          // console.log("element item", element?.DATA_VALUE, typeof element?.DATA_VALUE)
-          if (options.indexOf(element?.DATA_VALUE) != -1) {
-            resOp.push(element);
-          }
-        });
-        if (resOp && resOp.length > 0) {
-          // return resOp;
-          responseData = resOp;
-        }
-      }
       if (CATEGORY_CD == "CKYC_RELAT_PERS" && CUST_TYPE) {
         let resOp: any = [];
         responseData.map((element, i) => {
@@ -388,30 +372,28 @@ export const GetDynamicSalutationData = async (CATEGORY_CD) => {
 
 export const getGenderOp = (dependentValue) => {
   const opString = dependentValue?.PREFIX_CD?.optionData?.[0]?.GENDER ?? "";
-  const opArr =
-    opString.indexOf("-") == -1
-      ? Array.from(opString)
-      : opString.split(",").trim(); // [M,F,O]
-  let op = [
+  const opArr: any[] =
+    opString.indexOf(",") === -1
+      ? [opString]
+      : opString.split(",")?.map((el) => el.trim()); // [M,F,O]
+  let allOptions = [
     { label: "MALE", value: "M" },
     { label: "FEMALE", value: "F" },
     { label: "OTHER", value: "O" },
     { label: "TRANSGENDER", value: "T" },
   ];
-  if (opString) {
-    let options: any = [];
-    op.map((el, i) => {
-      if (opArr?.includes(el.value)) {
-        options.push(el);
-        // op.splice(i, 1)
+  if (Boolean(opString && Array.isArray(opArr))) {
+    let options: any[] = [];
+    allOptions.forEach((op) => {
+      if (opArr.includes(op.value)) {
+        options.push(op);
       }
     });
     if (options && options.length > 0) {
-      op = options;
+      allOptions = options;
     }
   }
-  // console.log(op, "oppopo,", opArr)
-  return op;
+  return allOptions;
 };
 
 export const getCountryOptions = async (COMP_CD, BRANCH_CD) => {

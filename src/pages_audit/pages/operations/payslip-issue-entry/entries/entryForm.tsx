@@ -72,15 +72,12 @@ const EntryFormView = ({
   const [formMode, setFormMode] = useState("add");
   const [openNewDDForm, setopenNewDDForm] = useState(false);
   const [isDeleteRemark, SetDeleteRemark] = useState(false);
-  const [reqPara, setReqPara] = useState(null);
   const { MessageBox, CloseMessageBox } = usePopupContext();
   const formRef = useRef<any>(null);
-  const ddFormSubmitRef = useRef<any>(null);
   const ddformRef = useRef<any>(null);
   const draftReqPara = useRef<any>(null);
   const isErrorFuncRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const headerClasses = useTypeStyles();
 
   const requestData = {
     COMP_CD: authState?.companyID,
@@ -122,8 +119,9 @@ const EntryFormView = ({
   const voucherMutation = useMutation(getVoucherList, {
     onError: async (error: any) => {
       const btnName = await MessageBox({
-        message: error?.error_msg,
+        message: error?.error_detail,
         messageTitle: "error",
+        icon: "ERROR",
         buttonNames: ["Ok"],
       });
       isErrorFuncRef.current?.endSubmit(false);
@@ -134,6 +132,7 @@ const EntryFormView = ({
       } else {
         const btnName = await MessageBox({
           message: data[0]?.VOUCHER_MSG,
+          icon: "INFO",
           messageTitle: "Vouchers Confirmation",
           buttonNames: ["Ok"],
         });
@@ -213,7 +212,7 @@ const EntryFormView = ({
     onError: async (error: any) => {
       let errorMsg = t("Unknownerroroccured");
       if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
+        errorMsg = error?.error_detail ?? errorMsg;
       }
       const btnName = await MessageBox({
         message: `${errorMsg}`,
@@ -228,7 +227,7 @@ const EntryFormView = ({
       CloseMessageBox();
     },
     onSuccess: (data) => {
-      enqueueSnackbar(t("insertSuccessfully"), {
+      enqueueSnackbar("success", {
         variant: "success",
       });
       CloseMessageBox();
@@ -241,27 +240,28 @@ const EntryFormView = ({
     API.DoddTransactionConfirmation,
     {
       onSuccess: async (data) => {
-        const responses = data || []; // Access the RESPONSE array
+        const responses = data || [];
         SetDeleteRemark(false);
         CloseMessageBox();
 
         for (const response of responses) {
-          const status = response.O_STATUS; // Access the O_STATUS directly
-          const message = response.O_MESSAGE; // Access the O_MESSAGE directly
+          const status = response.O_STATUS;
+          const message = response.O_MESSAGE;
+          const title = response.O_MSG_TITLE;
 
           if (status === "999") {
             await MessageBox({
-              messageTitle: "Validation Failed",
+              messageTitle: title || "Validation Failed",
               message: message,
               icon: "ERROR",
             });
-            // Optionally, you could return or break here if you want to stop on error
+
             break;
           } else if (status === "9") {
             await MessageBox({
-              messageTitle: "Alert",
+              messageTitle: title || "Alert",
               message: message,
-              icon: "INFO",
+              icon: "WARNING",
             });
           } else if (status === "99") {
             const buttonName = await MessageBox({
@@ -269,16 +269,16 @@ const EntryFormView = ({
               message: message,
               buttonNames: ["Yes", "No"],
               defFocusBtnName: "Yes",
-              icon: "INFO",
+              icon: "CONFIRM",
             });
             if (buttonName === "No") {
-              break; // Stop processing further if user selects "No"
+              break;
             }
           } else if (status === "0") {
             enqueueSnackbar(message, {
               variant: "success",
             });
-            onClose(); // Close the dialog if the process was successful
+            onClose();
           }
         }
       },
@@ -314,7 +314,7 @@ const EntryFormView = ({
     let buttonName = await MessageBox({
       messageTitle: t("Confirmatiopn"),
       message: t("AreYouSureToProceed"),
-      icon: "INFO",
+      icon: "CONFIRM",
       buttonNames: ["Yes", "No"],
       defFocusBtnName: "Yes",
       loadingBtnName: ["Yes"],
@@ -682,6 +682,7 @@ const EntryFormView = ({
                               await MessageBox({
                                 messageTitle: t("ValidationFailed"),
                                 message: t("ConfirmRestrictMsg"),
+                                icon: "CONFIRM",
                                 buttonNames: ["Ok"],
                               });
                             } else {
@@ -716,6 +717,7 @@ const EntryFormView = ({
                                 "payslipRealizeconfirmRestrictNSG"
                               )}PAYSLIP No. ${rowsData?.PAYSLIP_NO}`,
                               buttonNames: ["Yes", "No"],
+                              icon: "CONFIRM",
                               loadingBtnName: ["Yes"],
                             });
                             if (buttonName === "Yes") {
@@ -976,6 +978,7 @@ const EntryFormView = ({
               messageTitle: t("Confirmation"),
               message: t("DoYouWantDeleteRow"),
               buttonNames: ["Yes", "No"],
+              icon: "CONFIRM",
               defFocusBtnName: "Yes",
               loadingBtnName: ["Yes"],
             });

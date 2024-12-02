@@ -320,7 +320,7 @@ export const TRN001_Table = ({
           </Fragment>
         ) : null}
         <GridWrapper
-          key={`TRN001_TableMetaData${gridData}`}
+          key={`TRN001_TableMetaData${gridData}${isFetching}`}
           finalMetaData={TRN001_TableMetaData as GridMetaDataType}
           data={gridData ?? []}
           setData={() => null}

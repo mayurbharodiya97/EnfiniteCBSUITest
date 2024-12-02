@@ -51,8 +51,13 @@ const DayEndProcess = () => {
         A_GD_DATE: authState?.workingDate,
       }),
     {
-      onError: (error) => {
-        console.error("Error fetching day end process flag:", error);
+      onError: async (error: any) => {
+        await MessageBox({
+          message: error?.error_msg,
+          messageTitle: "Error",
+          icon: "ERROR",
+          buttonNames: ["Ok"],
+        });
       },
     }
   );
@@ -64,17 +69,13 @@ const DayEndProcess = () => {
   }, []);
 
   const handleOpenPendingTrns = async () => {
-    try {
-      const btnName = await MessageBox({
-        message: t("PendingTrnsProceed"),
-        messageTitle: "Confirmation",
-        buttonNames: ["Yes", "No"],
-      });
-      if (btnName === "Yes") {
-        setOpenPendingTrns(true);
-      }
-    } catch (err) {
-      console.error("Error in MessageBox:", err);
+    const btnName = await MessageBox({
+      message: t("PendingTrnsProceed"),
+      messageTitle: "Confirmation",
+      buttonNames: ["Yes", "No"],
+    });
+    if (btnName === "Yes") {
+      setOpenPendingTrns(true);
     }
   };
   let isHOLoggined =

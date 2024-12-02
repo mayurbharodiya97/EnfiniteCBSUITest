@@ -11,7 +11,6 @@ import {
   Toolbar,
   Typography,
   Theme,
-  Chip,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import { makeStyles } from "@mui/styles";
@@ -24,7 +23,6 @@ import {
   ColorlibStepIconRoot,
 } from "@acuteinfo/common-base";
 import { useTranslation } from "react-i18next";
-import { enqueueSnackbar } from "notistack";
 import { format } from "date-fns";
 import { useLocation } from "react-router-dom";
 import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
@@ -32,11 +30,8 @@ import { FDContext } from "../context/fdContext";
 import {
   GradientButton,
   usePopupContext,
-  queryClient,
-  utilFunction,
   LoaderPaperComponent,
   SubmitFnType,
-  ActionTypes,
 } from "@acuteinfo/common-base";
 import { FDPayment } from "./fdPayment";
 import { PayslipAndDDForm } from "../../recurringPaymentEntry/payslipAndNEFT/payslipAndDDForm";
@@ -68,7 +63,6 @@ type FDPaymentStepperFormProps = {
 
 const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
   handleDialogClose,
-  screenFlag,
   isDataChangedRef,
   openIntPayment,
   openRenew,
@@ -78,7 +72,6 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
   const { t } = useTranslation();
   const {
     FDState,
-    handleDisableButton,
     updateFDPaymentData,
     updateFdSavedPaymentData,
     updateSourceAcctFormData,
@@ -87,6 +80,8 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
     updateRenewDataForDeposit,
     setIsBackButton,
     setActiveStep,
+    updatePayslipAndDDData,
+    updateBeneficiaryAcctData,
   } = useContext(FDContext);
   const { authState } = useContext(AuthContext);
   const headerClasses = useTypeStyles();
@@ -143,6 +138,32 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
     );
   }
 
+  const commonPayNEFTValue = {
+    neftVal: {
+      PAYMENT_AMOUNT: Boolean(openRenew)
+        ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM) -
+          Number(FDState?.renewTrnsFormData?.RENEW_AMT)
+        : Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM),
+      ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
+      BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
+      ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+      ENTRY_TYPE: "NEFT",
+      SCREEN_NAME: t("BeneficiaryACDetails"),
+    },
+    payslipVal: {
+      PAYMENT_AMOUNT: Boolean(openRenew)
+        ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM) -
+          Number(FDState?.renewTrnsFormData?.RENEW_AMT)
+        : Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM),
+      ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
+      BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
+      ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
+      SCREEN_REF: "RPT/401",
+      SCREEN_NAME: t("PayslipAndDemandDraft"),
+      COMP_CD: authState?.companyID ?? "",
+    },
+  };
+
   //Initial values For Beneficiary Form
   const accountDetailsForBen = {
     BENEFIACCTDTL: [
@@ -158,15 +179,7 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
         }`,
       },
     ],
-    PAYMENT_AMOUNT: Boolean(openRenew)
-      ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM) -
-        Number(FDState?.renewTrnsFormData?.RENEW_AMT)
-      : Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM),
-    ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
-    BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
-    ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
-    ENTRY_TYPE: "NEFT",
-    SCREEN_NAME: t("BeneficiaryACDetails"),
+    ...commonPayNEFTValue?.neftVal,
   };
 
   //Initial values for Payslip Form
@@ -181,16 +194,7 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
         FROM_CERTI_NO: "",
       },
     ],
-    PAYMENT_AMOUNT: Boolean(openRenew)
-      ? Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM) -
-        Number(FDState?.renewTrnsFormData?.RENEW_AMT)
-      : Number(FDState?.fdSavedPaymentData?.TRANSFER_TOTAL_FOR_NEXT_FORM),
-    ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE ?? "",
-    BRANCH_CD: rows?.[0]?.data?.BRANCH_CD ?? "",
-    ACCT_CD: rows?.[0]?.data?.ACCT_CD ?? "",
-    SCREEN_REF: "RPT/401",
-    SCREEN_NAME: t("PayslipAndDemandDraft"),
-    COMP_CD: authState?.companyID ?? "",
+    ...commonPayNEFTValue?.payslipVal,
   };
 
   let reqParam = {
@@ -305,10 +309,10 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
 
   //Form Header title
   const formName = Boolean(openRenew)
-    ? "Renew"
+    ? t("Renew")
     : Boolean(openIntPayment)
-    ? "Interest Payment"
-    : "Payment";
+    ? t("InterestPayment")
+    : t("Payment");
   let label2 = `${formName} of A/c No.: ${
     FDState?.retrieveFormData?.BRANCH_CD?.trim() ?? ""
   }-${FDState?.retrieveFormData?.ACCT_TYPE?.trim() ?? ""}-${
@@ -577,7 +581,7 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
     } else {
       await MessageBox({
         messageTitle: "ValidationFailed",
-        message: "Total amount should be tally.",
+        message: "TotalAmountShouldBeTally",
         icon: "ERROR",
       });
       return;
@@ -612,6 +616,7 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
         await MessageBox({
           messageTitle: "PaymentAmountNotTally",
           message: "PayslipAmountShouldTallyWithPaymentAmount",
+          icon: "ERROR",
         });
         return;
       } else {
@@ -656,14 +661,16 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
               : "",
           });
           setOpenDepositForRenew(true);
+          updatePayslipAndDDData([...data?.PAYSLIPDD]);
           setActiveStep(FDState?.activeStep + 1);
         }
       }
     } else if (Boolean(FDState?.fdSavedPaymentData?.RTGS_NEFT)) {
       if (Number(data?.TOTAL_AMOUNT) !== Number(data?.PAYMENT_AMOUNT)) {
         await MessageBox({
-          message: "NEFTAmountShouldTallyWithPaymentAmount",
           messageTitle: "PaymentAmountNotTally",
+          message: "NEFTAmountShouldTallyWithPaymentAmount",
+          icon: "ERROR",
         });
         return;
       } else {
@@ -707,6 +714,7 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
                 : "",
             });
             setOpenDepositForRenew(true);
+            updateBeneficiaryAcctData([...data?.BENEFIACCTDTL]);
             setActiveStep(FDState?.activeStep + 1);
           }
         }
@@ -745,16 +753,16 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
 
       if (parseFloat(data?.TOTAL_DR_AMOUNT) <= 0) {
         MessageBox({
-          messageTitle: t("ValidationFailed"),
-          message: "Total credit amount can't be Zero/Negative.",
+          messageTitle: "ValidationFailed",
+          message: "TotalCreditAmountCantBeZeroNegative",
           icon: "ERROR",
         });
       } else if (
         parseFloat(data?.TOTAL_DR_AMOUNT) !== parseFloat(data?.TOTAL_FD_AMOUNT)
       ) {
         MessageBox({
-          messageTitle: t("ValidationFailed"),
-          message: "Total credit amount should be equal to total FD amount.",
+          messageTitle: "ValidationFailed",
+          message: "TotalCreditAmountEqualToTotalFDAmount",
           icon: "ERROR",
         });
       } else if (parseFloat(data?.DIFF_AMOUNT) === 0) {
@@ -807,7 +815,9 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
       ) {
         const buttonName = await MessageBox({
           messageTitle: "Confirmation",
-          message: `Are you sure to renew less than ${data?.PAYMENT_AMOUNT}?`,
+          message: `${t("AreYouSureToRenewLessThenPaymentAmountFDMsg", {
+            paymentAmount: data?.PAYMENT_AMOUNT,
+          })}`,
           buttonNames: ["Yes", "No"],
           defFocusBtnName: "Yes",
           loadingBtnName: ["Yes"],
@@ -863,11 +873,14 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
     if (!Boolean(openRenew)) {
       if (FDState.activeStep === 0) {
         fdPmtFormRef.current?.handleSubmit(e);
+        setIsBackButton(false);
       } else if (FDState.activeStep === 1) {
         if (Boolean(openPayslipForm)) {
           payslipAndDDRef.current?.handleSubmit(e);
+          setIsBackButton(false);
         } else if (Boolean(openNeftForm)) {
           beneficiaryAcctRef.current?.handleSubmit(e);
+          setIsBackButton(false);
         } else {
           sourceAcctformRef.current?.handleSubmit(e);
         }
@@ -909,15 +922,18 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
       setOpenNeftForm(false);
       setOpenTrnsForm(false);
       setOpenRenewTrnsForm(false);
+      setIsBackButton(true);
     } else if (FDState.activeStep === 2) {
       setActiveStep(FDState?.activeStep - 1);
       setOpenPayslipForm(false);
       setOpenNeftForm(false);
       setOpenTrnsForm(false);
       setOpenDepositForRenew(false);
+      setIsBackButton(true);
     } else if (FDState.activeStep === 3) {
       setActiveStep(FDState?.activeStep - 1);
       setOpenDepositForRenew(false);
+      setIsBackButton(true);
     }
   };
 
@@ -1141,7 +1157,14 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
                     </AppBar>
                     <PayslipAndDDForm
                       defaultView="new"
-                      accountDetailsForPayslip={accountDetailsForPayslip}
+                      accountDetailsForPayslip={
+                        Boolean(FDState?.isBackButton)
+                          ? {
+                              ...FDState?.payslipAndDDData,
+                              ...commonPayNEFTValue?.payslipVal,
+                            }
+                          : accountDetailsForPayslip
+                      }
                       onSubmitHandler={paysBenefSubmitHandler}
                       ref={payslipAndDDRef}
                     />
@@ -1165,7 +1188,14 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
                     <BeneficiaryAcctDetailsForm
                       defaultView="new"
                       onSubmitHandler={paysBenefSubmitHandler}
-                      accountDetailsForBen={accountDetailsForBen}
+                      accountDetailsForBen={
+                        Boolean(FDState?.isBackButton)
+                          ? {
+                              ...FDState?.beneficiaryAcctData,
+                              ...commonPayNEFTValue?.neftVal,
+                            }
+                          : accountDetailsForBen
+                      }
                       ref={beneficiaryAcctRef}
                     />
                   </>
@@ -1222,7 +1252,14 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
                     </AppBar>
                     <PayslipAndDDForm
                       defaultView="new"
-                      accountDetailsForPayslip={accountDetailsForPayslip}
+                      accountDetailsForPayslip={
+                        Boolean(FDState?.isBackButton)
+                          ? {
+                              ...FDState?.payslipAndDDData,
+                              ...commonPayNEFTValue?.payslipVal,
+                            }
+                          : accountDetailsForPayslip
+                      }
                       onSubmitHandler={paysBenefSubmitHandler}
                       ref={payslipAndDDRef}
                     />
@@ -1248,7 +1285,14 @@ const FDPaymentStepperForm: React.FC<FDPaymentStepperFormProps> = ({
                     <BeneficiaryAcctDetailsForm
                       defaultView="new"
                       onSubmitHandler={paysBenefSubmitHandler}
-                      accountDetailsForBen={accountDetailsForBen}
+                      accountDetailsForBen={
+                        Boolean(FDState?.isBackButton)
+                          ? {
+                              ...FDState?.beneficiaryAcctData,
+                              ...commonPayNEFTValue?.neftVal,
+                            }
+                          : accountDetailsForBen
+                      }
                       ref={beneficiaryAcctRef}
                     />
                   </>

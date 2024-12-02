@@ -13,6 +13,8 @@ import {
   geTrxDdw,
 } from "./api";
 import { MasterDetailsMetaData, utilFunction } from "@acuteinfo/common-base";
+import { validateHOBranch } from "components/utilFunction/function";
+import { t } from "i18next";
 
 export const RetrieveGridMetaData = {
   gridConfig: {
@@ -382,8 +384,6 @@ export const PayslipdetailsFormMetaData = {
       GridProps: { xs: 6, sm: 6, md: 6, lg: 2, xl: 1.5 },
       setValueOnDependentFieldsChange: (dependentFields) => {
         let totalValue = 0;
-
-        // Iterate through each row in PAYSLIP_MST_DTL
         dependentFields.PAYSLIP_MST_DTL.forEach((row) => {
           const amount = parseFloat(row?.AMOUNT?.value) || 0;
           const commission = parseFloat(row?.COMMISSION?.value) || 0;
@@ -473,10 +473,79 @@ export const AccdetailsFormMetaData = {
           branchCodeMetadata: {
             name: "BRANCH_CD",
             GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
-            // isReadOnly: true,
+            validationRun: "onChange",
+            postValidationSetCrossFieldValues: async (
+              currentField,
+              formState,
+              authState,
+              dependentFieldValues
+            ) => {
+              if (formState?.isSubmitting) return {};
+
+              const isHOBranch = await validateHOBranch(
+                currentField,
+                formState?.MessageBox,
+                authState
+              );
+              if (isHOBranch) {
+                return {
+                  BRANCH_CD: {
+                    value: "",
+                    isFieldFocused: true,
+                    ignoreUpdate: false,
+                  },
+                };
+              }
+              return {
+                ACCT_TYPE: { value: "" },
+                ACCT_CD: { value: "", ignoreUpdate: false },
+                ACCT_NM: { value: "" },
+              };
+            },
           },
           accountTypeMetadata: {
+            validationRun: "onChange",
             name: "ACCT_TYPE",
+            dependentFields: ["PAYSLIP_MST_DTL", "ACCT_TYPE", "BRANCH_CD"],
+            postValidationSetCrossFieldValues: async (
+              currentField,
+              formState,
+              authState,
+              dependentFieldValues
+            ) => {
+              if (formState?.isSubmitting) return {};
+              if (
+                currentField?.value &&
+                dependentFieldValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: t("ValidationFailed"),
+                  message: t("enterBranchCode"),
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: true,
+                    },
+                    BRANCH_CD: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              }
+              return {
+                ACCT_CD: { value: "", ignoreUpdate: false },
+                ACCT_NM: { value: "" },
+              };
+            },
             GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           },
           accountCodeMetadata: {
@@ -497,6 +566,32 @@ export const AccdetailsFormMetaData = {
             ) => {
               if (formState?.isSubmitting) return {};
               if (
+                currentField.value &&
+                dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value
+                  ?.length === 0
+              ) {
+                let buttonName = await formState?.MessageBox({
+                  messageTitle: t("ValidationFailed"),
+                  message: t("enterAccountType"),
+                  buttonNames: ["Ok"],
+                  icon: "ERROR",
+                });
+
+                if (buttonName === "Ok") {
+                  return {
+                    ACCT_CD: {
+                      value: "",
+                      isFieldFocused: false,
+                      ignoreUpdate: false,
+                    },
+                    ACCT_TYPE: {
+                      value: "",
+                      isFieldFocused: true,
+                      ignoreUpdate: true,
+                    },
+                  };
+                }
+              } else if (
                 currentField?.value &&
                 dependentFieldValues?.["PAYSLIP_MST_DTL.BRANCH_CD"]?.value &&
                 dependentFieldValues?.["PAYSLIP_MST_DTL.ACCT_TYPE"]?.value
@@ -519,22 +614,19 @@ export const AccdetailsFormMetaData = {
 
                 let btn99, returnVal;
 
-                const getButtonName = async (obj) => {
-                  let btnName = await formState.MessageBox(obj);
-                  return { btnName, obj };
-                };
-
                 for (let i = 0; i < postData?.MSG.length; i++) {
                   if (postData?.MSG[i]?.O_STATUS === "999") {
                     const btnName = await formState.MessageBox({
-                      messageTitle: "ValidationFailed",
+                      messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
                       message: postData?.MSG[i]?.O_MESSAGE,
+                      icon: "ERROR",
                     });
                     returnVal = "";
                   } else if (postData?.MSG[i]?.O_STATUS === "99") {
                     const btnName = await formState.MessageBox({
-                      messageTitle: "Confirmation",
+                      messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
                       message: postData?.MSG[i]?.O_MESSAGE,
+                      icon: "CONFIRM",
                       buttonNames: ["Yes", "No"],
                     });
                     btn99 = btnName;
@@ -543,8 +635,9 @@ export const AccdetailsFormMetaData = {
                     }
                   } else if (postData?.MSG[i]?.O_STATUS === "9") {
                     const btnName = await formState.MessageBox({
-                      messageTitle: "Alert",
+                      messageTitle: postData?.MSG[i]?.O_MSG_TITLE,
                       message: postData?.MSG[i]?.O_MESSAGE,
+                      icon: "WARNING",
                     });
                   } else if (postData?.MSG[i]?.O_STATUS === "0") {
                     if (btn99 !== "No") {
@@ -569,7 +662,7 @@ export const AccdetailsFormMetaData = {
                       : {
                           value: "",
                           isFieldFocused: true,
-                          ignoreUpdate: true,
+                          ignoreUpdate: false,
                         },
                   ACCT_NM: {
                     value: postData?.ACCT_NM ?? "",
@@ -588,7 +681,6 @@ export const AccdetailsFormMetaData = {
                 };
               }
             },
-
             fullWidth: true,
             GridProps: { xs: 6, sm: 6, md: 4, lg: 2, xl: 2 },
           },
@@ -1041,21 +1133,6 @@ export const AccdetailsFormMetaData = {
               return false;
             }
           },
-          // setValueOnDependentFieldsChange: (dependentFields) => {
-
-          //   if (dependentFields["PAYSLIP_MST_DTL"].length === 1) {
-          //     return ""
-          //   }
-          //   else {
-          //     const cctValue = dependentFields["PAYSLIP_MST_DTL.C_C_T"]?.value;
-
-          //     if (cctValue === "R") {
-          //       return false
-          //     }
-          //     return true
-          //   }
-          // },
-
           GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
         },
       ],
@@ -1277,7 +1354,6 @@ export const DraftdetailsFormMetaData = {
           FormatProps: {
             allowLeadingZeros: true,
             isAllowed: (values) => {
-              //@ts-ignore
               if (values?.value?.length > 12) {
                 return false;
               }
@@ -1370,9 +1446,7 @@ export const DraftdetailsFormMetaData = {
                   },
                 };
               } else if (!currentField?.value) {
-                return {
-                  // PAYSLIP_NO: { value: "", ignoreUpdate: true },
-                };
+                return {};
               }
               return {};
             }
@@ -1466,7 +1540,7 @@ export const DraftdetailsFormMetaData = {
                 AMOUNT: currentField?.value,
                 TYPE_CD: refID.current.paylod.TYPE_CD,
                 DEF_TRAN_CD: refID.current.paylod.BILL_TYPE_CD,
-                SCREEN_REF: "Rpt/14",
+                SCREEN_REF: "RPT/14",
               };
 
               if (
@@ -1616,15 +1690,12 @@ export const DraftdetailsFormMetaData = {
                 },
               };
             }
-
-            return {};
           },
 
           FormatProps: {
             allowLeadingZeros: false,
             allowNegative: false,
             isAllowed: (values) => {
-              //@ts-ignore
               if (values?.value?.length > 13) {
                 return false;
               }
@@ -1750,12 +1821,6 @@ export const DraftdetailsFormMetaData = {
               return true;
             }
           },
-          // setValueOnDependentFieldsChange: (dependentFields) => {
-          //   if (dependentFields?.["PAYSLIP_DRAFT_DTL.C_C_T"]?.value !== "C") {
-          //     return ""
-          //   }
-          //   else return
-          // }
         },
         {
           render: { componentType: "autocomplete" },
@@ -2389,14 +2454,6 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
           return value;
         },
       },
-      // {
-      //   render: {
-      //     componentType: "hidden",
-      //   },
-      //   name: "COMM_TYPE_CD",
-      //   label: "TRAN_CD",
-
-      // },
     ],
   },
   detailsGrid: {
@@ -2408,7 +2465,6 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
       allowColumnReordering: true,
       hideHeader: true,
       disableGroupBy: true,
-      // enablePagination: true,
       containerHeight: { min: "40vh", max: "40vh" },
       allowRowSelection: false,
       hiddenFlag: "_hidden",
@@ -2446,16 +2502,6 @@ export const regionMasterMetaData: MasterDetailsMetaData = {
         minWidth: 160,
         maxWidth: 200,
       },
-
-      // {
-      //   columnName: "Action",
-      //   componentType: "deleteRowCell",
-      //   accessor: "_hidden",
-      //   sequence: 6,
-      //   width: 160,
-      //   minWidth: 160,
-      //   maxWidth: 200,
-      // },
     ],
   },
 };

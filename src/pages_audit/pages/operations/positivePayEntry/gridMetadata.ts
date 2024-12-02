@@ -58,7 +58,7 @@ export const PositivePayEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_CD",
-      columnName: "AccCode",
+      columnName: "AccountNum",
       sequence: 4,
       alignment: "left",
       componentType: "default",

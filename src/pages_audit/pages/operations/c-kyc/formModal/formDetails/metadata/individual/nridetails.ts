@@ -60,7 +60,7 @@ export const nri_detail_meta_data = {
       isFieldFocused: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["VisaDetailsIsRequired"] }],
       },
       // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
@@ -78,7 +78,7 @@ export const nri_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["VisaIssueByIsRequired"] }],
       },
       validate: (columnValue, allField, flag) =>
         API.AlphaNumericValidate(columnValue),
@@ -105,7 +105,7 @@ export const nri_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["VisaIssueDateIsRequired"] }],
       },
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
     },
@@ -119,7 +119,7 @@ export const nri_detail_meta_data = {
       isMinWorkingDate: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["VisaExpiryDateIsRequired"] }],
       },
       validate: (currentField, dependentField, formState) => {
         if (Boolean(currentField.value)) {
@@ -158,7 +158,7 @@ export const nri_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["DomesticRiskIsRequired"] }],
       },
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
     },
@@ -179,7 +179,7 @@ export const nri_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["CountryofRiskIsRequired"] }],
       },
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
     },
@@ -196,7 +196,7 @@ export const nri_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["CrossBorderRiskIsRequired"] }],
       },
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.4, xl: 2 },
     },
@@ -216,7 +216,7 @@ export const nri_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [{ name: "required", params: ["VisuallyImpairedIsRequired"] }],
       },
       // dependentFields: ["DAILY_AMT"],
       // runValidationOnDependentFieldsChange: true,
@@ -242,7 +242,9 @@ export const nri_detail_meta_data = {
       required: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["ThisFieldisrequired"] }],
+        rules: [
+          { name: "required", params: ["CustomerEvaluationFlagIsRequired"] },
+        ],
       },
       placeholder: "",
       type: "text",
